@@ -1,0 +1,34 @@
+<!-- BEGIN: main -->
+<!DOCTYPE html>
+<html lang="en" ng-app="gears.app">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="resources/styles/misc.css"/>
+    <link rel="stylesheet" href="resources/styles/espreso.css"/>
+    <script src="libs/angularjs/angular.min.js"></script>
+</head>
+<body>
+
+
+    <table id="app-wrapper" class="width-100" cellpadding="0" cellspacing="0">
+        <tr id="app-header">
+            <td colspan="2"></td>
+        </tr>
+        <tr id="app-content">
+            <td id="app-menu"></td>
+            <td id="app-view" ng-view></td>
+        </tr>
+    </table>
+
+
+    <!-- Подключение библиотек и модулей -->
+    <script src="libs/angularjs/angular-route.min.js"></script>
+    <script src="libs/momentjs/moment-with-locales.min.js"></script>
+    <script src="libs/gearsjs/gears.js"></script>
+    <script src="modules/gears.app.js"></script>
+    <script src="modules/gears.app.controllers.js"></script>
+    <script src="modules/gears.app.titles.js"></script>
+</body>
+</html>
+<!-- END: main -->

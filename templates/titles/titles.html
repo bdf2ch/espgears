@@ -1,0 +1,30 @@
+<div class="pane-container width-100">
+
+    <!-- Титулы -->
+    <div class="pane width-15">
+        <div class="header">
+            <span class="caption">Титулы</span>
+        </div>
+        <div class="content" ng-repeat="title in titles.titles.items track by $id(title)">
+            <div class="list-item">
+                {{ title.title.value }}<br>
+                {{ title.length.value + " км" }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Участки титула -->
+    <div class="pane width-15">
+        <div class="header">
+            <span class="caption">Участки</span>
+        </div>
+    </div>
+
+    <!-- Подробности -->
+    <div class="pane width-70">
+        <div class="header">
+            <span class="caption">Подробности</span>
+        </div>
+    </div>
+
+</div>
