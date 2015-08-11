@@ -3,7 +3,7 @@
 * SCROLL VIEWS
 *****/
 .y-scrollable {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .x-scrollable {
@@ -106,11 +106,17 @@
   }
 
   .content {
+    height: 100%;
     padding: 5px;
 
     .list-item {
       margin-bottom: 5px;
       padding: 5px;
+      cursor: pointer;
+
+      &:hover {
+        background: #F5E7D3;
+      }
     }
   }
 }

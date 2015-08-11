@@ -2,7 +2,7 @@
 * SCROLL VIEWS
 *****/
 .y-scrollable {
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .x-scrollable {
   overflow-x: scroll;
@@ -82,9 +82,14 @@
   color: gray;
 }
 .pane .content {
+  height: 100%;
   padding: 5px;
 }
 .pane .content .list-item {
   margin-bottom: 5px;
   padding: 5px;
+  cursor: pointer;
+}
+.pane .content .list-item:hover {
+  background: #F5E7D3;
 }

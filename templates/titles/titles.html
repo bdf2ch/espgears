@@ -5,8 +5,8 @@
         <div class="header">
             <span class="caption">Титулы</span>
         </div>
-        <div class="content" ng-repeat="title in titles.titles.items track by $id(title)">
-            <div class="list-item">
+        <div class="content y-scrollable">
+            <div class="list-item" ng-repeat="title in titles.titles.items track by $id(title)">
                 {{ title.title.value }}<br>
                 {{ title.length.value + " км" }}
             </div>
