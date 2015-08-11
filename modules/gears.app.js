@@ -27,9 +27,9 @@ var application = angular.module("gears.app", [
                 templateUrl: "templates/titles/titles.html",
                 controller: "TitlesController"
             })
-            .when("/order", {
-                templateUrl: "templates/order/order.html",
-                controller: "OrderController"
+            .when("/new-title", {
+                templateUrl: "templates/titles/new-title.html",
+                controller: "AddTitleController"
             })
             .when("/confirm", {
                 templateUrl: "templates/order/confirm.html",
@@ -55,6 +55,8 @@ var application = angular.module("gears.app", [
 
             application.title = "Флористический салон Белый Лотос";
             application.description = "This is a test application provided by Shell Framework";
+            application.currentTitle = undefined;
+            application.currentTitlePart = undefined;
 
             return application;
         }]);

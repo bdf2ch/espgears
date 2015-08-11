@@ -4,11 +4,22 @@
     <div class="pane width-15">
         <div class="header">
             <span class="caption">Титулы</span>
+            <button class="blue right" title="Редактировать титул" ng-show="app.currentTitle !== undefined"></button>
+            <button class="red right" title="Удалить титул" ng-show="app.currentTitle !== undefined">-</button>
+            <span class="separator right" ng-show="app.currentTitle !== undefined"></span>
+            <button class="green right" title="Добавить титул" ng-click="gotoAddTitle()">+</button>
         </div>
         <div class="content y-scrollable">
-            <div class="list-item" ng-repeat="title in titles.titles.items track by $id(title)">
+            <div class="list-item"
+                 ng-class="{'active': title._states_.selected() === true}"
+                 ng-repeat="title in titles.titles.items track by $id(title)"
+                 ng-click="selectTitle(title.id.value)">
                 {{ title.title.value }}<br>
                 {{ title.length.value + " км" }}
+            </div>
+            <div class="service-message" ng-show="titles.titles._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Звгрузка"/>
+                <span>Загрузка...</span>
             </div>
         </div>
     </div>
@@ -17,6 +28,15 @@
     <div class="pane width-15">
         <div class="header">
             <span class="caption">Участки</span>
+            <button class="blue right" title="Редактировать участок" ng-show="app.currentTitlePart !== undefined"></button>
+            <button class="red right" title="Удалить участок" ng-show="app.currentTitlePart !== undefined">-</button>
+            <span class="separator right" ng-show="app.currentTitlePart !== undefined"></span>
+            <button class="green right" title="Добавить участок">+</button>
+        </div>
+        <div class="content y-scrollable">
+            <div class="service-message" ng-show="app.currentTitle === undefined">
+                Выберите титул
+            </div>
         </div>
     </div>
 

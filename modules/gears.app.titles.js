@@ -121,29 +121,26 @@ var titles = angular.module("gears.app.titles",[])
              * Переменные сервиса
              */
             //titles.titules = $factory.make({ classes: ["Collection"], base_class: "Collection" });
-            titles.titles = $factory({ classes: ["Collection"], base_class: "Collection" });
-            titles.parts = $factory({ classes: ["Collection"], base_class: "Collection" });
+            titles.titles = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            titles.parts = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
 
             /**
              * Получает список всех титулов и помещает их в коллекцию
              */
             titles.titlesQuery = function () {
+                titles.titles._states_.loaded(false);
                 $http.post("serverside/controllers/titules.php", {action: "query"})
                     .success(function (data) {
                         if (data !== undefined) {
                             angular.forEach(data, function (title_data, key) {
-                                //var titule = $factory.make({ classes: ["Titule", "Model", "Backup", "States"], base_class: "Titule" });
-                                //titule._model_.fromJSON(titule_data);
-                                //titule._backup_.setup();
-                                //titules.titules.append(titule);
-
-                                var test = $factory({ classes: ["Model", "Title", "Backup"], base_class: "Title" });
-                                test._model_.fromJSON(title_data);
-                                titles.titles.append(test);
-                                test._backup_.setup();
-                                $log.log("f = ", test);
+                                var temp_title = $factory({ classes: ["Model", "Title", "Backup", "States"], base_class: "Title" });
+                                temp_title._model_.fromJSON(title_data);
+                                titles.titles.append(temp_title);
+                                temp_title._backup_.setup();
+                                $log.log("f = ", temp_title);
                             });
+                            titles.titles._states_.loaded(true);
                         }
                         $log.log(titles.titles);
                     }

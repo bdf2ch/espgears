@@ -13,8 +13,32 @@
 
 
 /*****
+* ALIGNMENTS
+*****/
+.left {
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
+
+/*****
 * GRID
 *****/
+.row {
+  display: table;
+  width: 100%;
+}
+
 .width-10 {
   position: relative;
   width: 10%;
@@ -27,26 +51,35 @@
 
 .width-20 {
   position: relative;
+  float: left;
   width: 20%;
+
+  &.height-100 {
+    display: table-cell;
+  }
 }
 
 .width-30 {
   position: relative;
+  float: left;
   width: 30%;
 }
 
 .width-40 {
   position: relative;
+  float: left;
   width: 40%;
 }
 
 .width-50 {
   position: relative;
+  float: left;
   width: 50%;
 }
 
 .width-60 {
   position: relative;
+  float: left;
   width: 60%;
 }
 
@@ -57,6 +90,7 @@
 
 .width-80 {
   position: relative;
+  float: left;
   width: 80%;
 }
 
@@ -68,6 +102,10 @@
 .width-100 {
   position: relative;
   width: 100%;
+}
+
+.height-100 {
+  height: 100%;
 }
 
 
@@ -99,9 +137,35 @@
       font-family: "Helvetica";
       font-size: 14px;
       font-weight: bold;
+      vertical-align: middle;
       color: gray;
 
       //border: 1px solid red;
+    }
+
+    button {
+      //display: table-cell;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      vertical-align: bottom;
+      font-family: "Arial";
+      font-size: 18px;
+      line-height: 11px;
+      border-radius: 20px;
+      border: none;
+    }
+
+    .separator {
+      //display: table-cell;
+      position: relative;
+      height: 20px;
+      width: 1px;
+      margin-left: 1px;
+      margin-right: 3px;
+
+      vertical-align: bottom;
+      border-left: 1px dotted lightgrey;
     }
   }
 
@@ -117,6 +181,120 @@
       &:hover {
         background: #F5E7D3;
       }
+
+      &.active {
+        background: #EDD6B4;
+      }
     }
   }
+}
+
+
+
+
+/*****
+* BUTTONS
+*****/
+button {
+  border: none;
+  margin-right: 3px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 2px;
+
+  &:active {
+    outline: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:last-of-type {
+    background: yellow;
+  }
+
+  &.green {
+    color: white;
+    background: #54C478;
+
+    &:hover {
+      background: #58A678;
+    }
+  }
+
+  &.red {
+    color: white;
+    background: #E87C79;
+
+    &:hover {
+      background: #D64949;
+    }
+  }
+
+  &.blue {
+    color: white;
+    background: #84A8F0;
+    
+    &:hover {
+      background: #4B8CD1;
+    }
+  }
+}
+
+
+
+
+
+/*****
+* FORMS
+*****/
+input {
+  display: block;
+  padding: 7px;
+  font-size: 18px;
+}
+
+select {
+  display: block;
+  padding: 7px;
+  font-size: 18px;
+}
+
+
+
+
+/*****
+* MISC
+*****/
+.service-message {
+  height: 30px;
+  margin-top: 70px;
+  text-align: center;
+  vertical-align: bottom;
+  color: #C4C2C2;
+
+  img {
+
+    &.loading {
+      //display: inline-block;
+      width: 30px;
+      height: 30px;
+      margin-right: 5px;
+      margin-top: -8px;
+      //margin-bottom: -15px;
+      vertical-align: text-top;
+    }
+  }
+}
+
+
+
+
+
+/*****
+* PADDINGS
+*****/
+.no-padding {
+  padding: 0px !important;
 }

@@ -7,6 +7,7 @@ body {
 #app-wrapper {
   height: 100%;
   min-width: 1500px;
+  overflow-x: auto;
 }
 #app-header {
   height: 50px;
@@ -15,4 +16,13 @@ body {
 #app-menu {
   width: 50px;
   background: url("../img/menu_background.png");
+}
+/*****
+* NEW-TITLE-TEMPLATE
+*****/
+/*****
+* SHARED
+*****/
+.service-panel {
+  background: #FAF9F7;
 }
