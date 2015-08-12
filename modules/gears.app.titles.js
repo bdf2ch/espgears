@@ -24,11 +24,11 @@ var titles = angular.module("gears.app.titles",[])
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     title: new Field({ source: "TITUL_NAME", value: "", default_value: "", backupable: true, required: true }),
                     startPointId: new Field({ source: "START_POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    startObjectTypeId: new Field({ source: "START_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    startObjectId: new Field({ source: "START_OBJECT_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    startNodeTypeId: new Field({ source: "START_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    startNodeId: new Field({ source: "START_OBJECT_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     endPointId: new Field({ source: "END_POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    endObjectTypeId: new Field({ source: "END_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    endObjectId: new Field({ source: "END_OBJECT_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    endNodeTypeId: new Field({ source: "END_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    endNodeId: new Field({ source: "END_OBJECT_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     description: new Field({ source: "NAME_EXTRA", value: "", default_value: "", backupable: true }),
                     length: new Field({ source: "LENGTH", value: 0, default_value: 0, backupable: true })
                  },
@@ -47,6 +47,7 @@ var titles = angular.module("gears.app.titles",[])
                     endPointId: new Field({ source: "END_POINT_ID", value: 0, default_value: 0, backupable: true }),
                     endObjectTypeId: new Field({ source: "END_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     endObjectId: new Field({ source: "END_OBJECT_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    cableTypeId: new Field({ source: "CABLE_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     length: new Field({ source: "LENGTH", value: 0, default_value: 0, backupable: true })
                 },
 
