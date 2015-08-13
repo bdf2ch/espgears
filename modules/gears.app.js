@@ -7,8 +7,10 @@ var application = angular.module("gears.app", [
         "gears",                        // Подключаем модуль с сервисами ядра системы
         //"gears.auth",                   // Подключаем модуль с сервисами авторизации
         "gears.app.controllers",        // Подключаем модуль с контроллерами приложения
-        //"gears.app.filters"             // Подключаем модуль с фильтрами приложения
-        "gears.app.titles"
+        "gears.app.filters",             // Подключаем модуль с фильтрами приложения
+        "gears.app.titles",
+        "gears.app.nodes",
+        "gears.app.misc"
     ])
     .config(function ($provide, $routeProvider) {
 
@@ -61,7 +63,7 @@ var application = angular.module("gears.app", [
             return application;
         }]);
     })
-    .run(function ($log, $application, $menu, $rootScope, $modules, $factory, $location) {
+    .run(function ($log, $application, $menu, $rootScope, $modules) {
         $modules.load($application);
         $menu.register();
         $rootScope.application = $application;

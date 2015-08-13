@@ -2,5 +2,8 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/libs/gearsjs/gears.ui.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/gears.app.controllers.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/gears.app.filters.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/gears.app.misc.js" charset="UTF-8" />
   </component>
 </project>

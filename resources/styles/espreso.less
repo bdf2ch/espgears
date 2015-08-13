@@ -10,7 +10,7 @@ html, body {
 
 #app-wrapper {
   height: 100%;
-  min-width: 1500px;
+  min-width: 1200px;
   overflow-x: auto;
 }
 
@@ -41,8 +41,15 @@ html, body {
 /*****
 * NEW-TITLE-TEMPLATE
 *****/
-#new-title-template {
+#new-title-template-content {
+  padding-top: 50px;
 
+  .mdash {
+    padding-top: 80px;
+    font-size: 64px;
+    font-weight: bold;
+    color: lightgrey;
+  }
 }
 
 
@@ -51,5 +58,49 @@ html, body {
 * SHARED
 *****/
 .service-panel {
+  //padding: 20px;
+  padding-top: 66px;
   background: #FAF9F7;
+}
+
+.block-title {
+  font-family: "Helvetica";
+  font-size: 18px;
+  color: #CFCCCC;
+}
+
+.node-icon {
+
+  &.pylon {
+    background: url("../img/icons/pylon.png") no-repeat;
+    background-origin: border-box;
+  }
+
+  &.big {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+.required {
+  display: inline-block;
+  margin-left: 5px;
+  font-family: "Helvetica";
+  font-size: 18px;
+  color: #D64949;
+
+  &:after {
+    content: "*"
+  }
+}
+
+.error-message {
+  margin-bottom: 5px;
+  padding: 10px;
+  font-family: "Helvetica";
+  font-size: 14px;
+  line-height: 14px;
+  color: #D64949;
+  background: #F5D0D0;
+  border: 1px dotted #F0B1B1;
 }

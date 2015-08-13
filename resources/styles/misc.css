@@ -17,18 +17,42 @@
   float: right;
 }
 .centered {
+  float: none !important;
   margin-left: auto;
   margin-right: auto;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+.text-centered {
+  text-align: center;
 }
 /*****
 * GRID
 *****/
 .row {
   display: table;
+  position: relative;
   width: 100%;
+}
+.row.split-10 {
+  margin-bottom: 10px;
+}
+.row.split-20 {
+  margin-bottom: 20px;
+}
+.row.split-30 {
+  margin-bottom: 30px;
+}
+.row.split-50 {
+  margin-bottom: 50px;
 }
 .width-10 {
   position: relative;
+  float: left;
   width: 10%;
 }
 .width-15 {
@@ -52,6 +76,11 @@
   position: relative;
   float: left;
   width: 40%;
+}
+.width-45 {
+  position: relative;
+  float: left;
+  width: 45%;
 }
 .width-50 {
   position: relative;
@@ -114,6 +143,7 @@
 .pane .header button {
   width: 20px;
   height: 20px;
+  padding: 5px;
   text-align: center;
   vertical-align: bottom;
   font-family: "Arial";
@@ -138,6 +168,8 @@
 .pane .content .list-item {
   margin-bottom: 5px;
   padding: 5px;
+  font-family: "Helvetica";
+  font-size: 15px;
   cursor: pointer;
 }
 .pane .content .list-item:hover {
@@ -152,7 +184,7 @@
 button {
   border: none;
   margin-right: 3px;
-  padding: 5px;
+  padding: 10px;
   cursor: pointer;
   border-radius: 2px;
 }
@@ -162,8 +194,9 @@ button:active {
 button:focus {
   outline: none;
 }
-button:last-of-type {
-  background: yellow;
+button.block {
+  display: block;
+  width: 100%;
 }
 button.green {
   color: white;
@@ -189,15 +222,27 @@ button.blue:hover {
 /*****
 * FORMS
 *****/
+label {
+  display: inline-block;
+  float: left;
+  margin-bottom: 4px;
+  font-family: "Helvetica";
+  font-size: 14px;
+  color: #CFCCCC;
+}
 input {
   display: block;
   padding: 7px;
   font-size: 18px;
+  box-sizing: border-box;
+  border: 1px solid lightgrey;
 }
 select {
   display: block;
-  padding: 7px;
-  font-size: 18px;
+  padding: 8px;
+  font-size: 15px;
+  box-sizing: border-box;
+  border: 1px solid lightgrey;
 }
 /*****
 * MISC
@@ -205,6 +250,8 @@ select {
 .service-message {
   height: 30px;
   margin-top: 70px;
+  font-family: "Helvetica";
+  font-size: 14px;
   text-align: center;
   vertical-align: bottom;
   color: #C4C2C2;
