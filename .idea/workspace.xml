@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="6a17ee48-cc45-46a8-9ede-66c4a63147ed" name="Default" comment="">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/img/icons/pylon.png" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/serverside/core.php" />
@@ -11,19 +12,23 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modules/gears.app.nodes.js" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/serverside/controllers/misc.php" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/serverside/controllers/nodes.php" />
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/ui/typeahead/typeahead.html" />
+>>>>>>> 45c4021fef27622fed3530a501f0d036fab7e22b
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/application.html" afterPath="$PROJECT_DIR$/templates/application.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/espreso.css" afterPath="$PROJECT_DIR$/resources/styles/espreso.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/espreso.less" afterPath="$PROJECT_DIR$/resources/styles/espreso.less" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/gears.app.controllers.js" afterPath="$PROJECT_DIR$/modules/gears.app.controllers.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/gears.app.js" afterPath="$PROJECT_DIR$/modules/gears.app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/gears.app.titles.js" afterPath="$PROJECT_DIR$/modules/gears.app.titles.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libs/gearsjs/gears.js" afterPath="$PROJECT_DIR$/libs/gearsjs/gears.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libs/gearsjs/gears.ui.js" afterPath="$PROJECT_DIR$/libs/gearsjs/gears.ui.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/misc.css" afterPath="$PROJECT_DIR$/resources/styles/misc.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/misc.less" afterPath="$PROJECT_DIR$/resources/styles/misc.less" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/titles/new-title.html" afterPath="$PROJECT_DIR$/templates/titles/new-title.html" />
+<<<<<<< HEAD
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/titles/titles.html" afterPath="$PROJECT_DIR$/templates/titles/titles.html" />
 >>>>>>> fe0b92a4d85385ce0bac2520a97225baf236aa55
+=======
+>>>>>>> 45c4021fef27622fed3530a501f0d036fab7e22b
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="espgears.iws" />
@@ -45,11 +50,31 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="application.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/templates/application.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-24.192308">
+              <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="misc.less" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/resources/styles/misc.less">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-30.346153">
-              <caret line="322" column="6" selection-start-line="322" selection-start-column="6" selection-end-line="322" selection-end-column="6" />
+            <state vertical-scroll-proportion="-26.423077">
+              <caret line="377" column="19" selection-start-line="377" selection-start-column="19" selection-end-line="377" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="espreso.less" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/resources/styles/espreso.less">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-27.73077">
+              <caret line="108" column="3" selection-start-line="108" selection-start-column="3" selection-end-line="108" selection-end-column="3" />
               <folding />
             </state>
           </provider>
@@ -59,7 +84,17 @@
         <entry file="file://$PROJECT_DIR$/modules/gears.app.controllers.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="66" column="15" selection-start-line="66" selection-start-column="15" selection-end-line="66" selection-end-column="15" />
+              <caret line="65" column="13" selection-start-line="65" selection-start-column="13" selection-end-line="65" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gears.ui.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/libs/gearsjs/gears.ui.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="168" column="17" selection-start-line="168" selection-start-column="17" selection-end-line="168" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -68,8 +103,8 @@
       <file leaf-file-name="new-title.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/templates/titles/new-title.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.4562427">
-              <caret line="23" column="34" selection-start-line="23" selection-start-column="34" selection-end-line="23" selection-end-column="34" />
+            <state vertical-scroll-proportion="0.62310386">
+              <caret line="129" column="47" selection-start-line="129" selection-start-column="47" selection-end-line="129" selection-end-column="47" />
               <folding />
             </state>
           </provider>
@@ -95,51 +130,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="gears.app.filters.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/modules/gears.app.filters.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="25" column="0" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="misc.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/serverside/controllers/misc.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="99" column="20" selection-start-line="99" selection-start-column="20" selection-end-line="99" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="gears.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/libs/gearsjs/gears.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="309" column="42" selection-start-line="309" selection-start-column="42" selection-end-line="309" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="core.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/serverside/core.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="gears.app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/modules/gears.app.js">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="14" column="49" selection-start-line="14" selection-start-column="49" selection-end-line="14" selection-end-column="49" />
+              <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
               <folding />
             </state>
           </provider>
@@ -150,8 +145,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Html5" />
         <option value="JavaScript File" />
+        <option value="Html5" />
       </list>
     </option>
   </component>
@@ -169,16 +164,18 @@
         <option value="$PROJECT_DIR$/templates/titles/titles.html" />
         <option value="$PROJECT_DIR$/serverside/controllers/nodes.php" />
         <option value="$PROJECT_DIR$/modules/gears.app.nodes.js" />
-        <option value="$PROJECT_DIR$/resources/styles/espreso.less" />
-        <option value="$PROJECT_DIR$/templates/application.html" />
-        <option value="$PROJECT_DIR$/modules/gears.app.js" />
-        <option value="$PROJECT_DIR$/modules/gears.app.controllers.js" />
-        <option value="$PROJECT_DIR$/resources/styles/misc.less" />
         <option value="$PROJECT_DIR$/libs/gearsjs/gears.js" />
         <option value="$PROJECT_DIR$/modules/gears.app.filters.js" />
         <option value="$PROJECT_DIR$/serverside/controllers/misc.php" />
         <option value="$PROJECT_DIR$/modules/gears.app.titles.js" />
         <option value="$PROJECT_DIR$/modules/gears.app.misc.js" />
+        <option value="$PROJECT_DIR$/resources/styles/espreso.less" />
+        <option value="$PROJECT_DIR$/modules/gears.app.controllers.js" />
+        <option value="$PROJECT_DIR$/templates/application.html" />
+        <option value="$PROJECT_DIR$/modules/gears.app.js" />
+        <option value="$PROJECT_DIR$/templates/ui/typeahead/typeahead.html" />
+        <option value="$PROJECT_DIR$/resources/styles/misc.less" />
+        <option value="$PROJECT_DIR$/libs/gearsjs/gears.ui.js" />
         <option value="$PROJECT_DIR$/templates/titles/new-title.html" />
       </list>
     </option>
@@ -193,7 +190,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="1" />
     <option name="y" value="3" />
-    <option name="width" value="1706" />
+    <option name="width" value="1783" />
     <option name="height" value="1041" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -266,7 +263,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="titles" />
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="typeahead" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -483,14 +484,18 @@
   </component>
   <component name="ToolWindowManager">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <frame x="1" y="3" width="1543" height="1041" extended-state="0" />
     <editor active="false" />
 =======
     <frame x="1" y="3" width="1706" height="1041" extended-state="0" />
+=======
+    <frame x="1" y="3" width="1783" height="1041" extended-state="0" />
+>>>>>>> 45c4021fef27622fed3530a501f0d036fab7e22b
     <editor active="true" />
 >>>>>>> fe0b92a4d85385ce0bac2520a97225baf236aa55
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24820144" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23724928" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -747,14 +752,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/resources/styles/espreso.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-29.692308">
-          <caret line="105" column="1" selection-start-line="105" selection-start-column="1" selection-end-line="105" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/modules/gears.app.nodes.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -771,42 +768,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/application.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-21.576923">
-          <caret line="33" column="42" selection-start-line="33" selection-start-column="42" selection-end-line="33" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules/gears.app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="49" selection-start-line="14" selection-start-column="49" selection-end-line="14" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/serverside/core.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/modules/gears.app.controllers.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="66" column="15" selection-start-line="66" selection-start-column="15" selection-end-line="66" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/resources/styles/misc.less">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-30.346153">
-          <caret line="322" column="6" selection-start-line="322" selection-start-column="6" selection-end-line="322" selection-end-column="6" />
           <folding />
         </state>
       </provider>
@@ -835,14 +800,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules/gears.app.titles.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="51" column="18" selection-start-line="51" selection-start-column="18" selection-end-line="51" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/modules/gears.app.misc.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -851,10 +808,74 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/modules/gears.app.controllers.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="65" column="13" selection-start-line="65" selection-start-column="13" selection-end-line="65" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/application.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-24.192308">
+          <caret line="37" column="18" selection-start-line="37" selection-start-column="18" selection-end-line="37" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/gears.app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="7" column="19" selection-start-line="7" selection-start-column="19" selection-end-line="7" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/styles/espreso.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-27.73077">
+          <caret line="108" column="3" selection-start-line="108" selection-start-column="3" selection-end-line="108" selection-end-column="3" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/resources/styles/misc.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-26.423077">
+          <caret line="377" column="19" selection-start-line="377" selection-start-column="19" selection-end-line="377" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/ui/typeahead/typeahead.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="15" selection-start-line="0" selection-start-column="15" selection-end-line="0" selection-end-column="15" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/gears.app.titles.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="51" column="18" selection-start-line="51" selection-start-column="18" selection-end-line="51" selection-end-column="18" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/libs/gearsjs/gears.ui.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="168" column="17" selection-start-line="168" selection-start-column="17" selection-end-line="168" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/templates/titles/new-title.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4562427">
-          <caret line="23" column="34" selection-start-line="23" selection-start-column="34" selection-end-line="23" selection-end-column="34" />
+        <state vertical-scroll-proportion="0.62310386">
+          <caret line="129" column="47" selection-start-line="129" selection-start-column="47" selection-end-line="129" selection-end-column="47" />
           <folding />
         </state>
       </provider>

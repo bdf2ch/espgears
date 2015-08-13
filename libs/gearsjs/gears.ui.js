@@ -1,37 +1,236 @@
 "use strict";
 
 
-var grUi = angular.module("gears.ui", []);
+var grUi = angular.module("gears.ui", [])
+    .config(function ($provide) {
+        $provide.factory("$popup", ["$log", "$factory", function ($log, $factory) {
+            var popup = {};
 
-
-grUi.directive("tabs", ["$log", function ($log) {
-    return {
-        restrict: "E",
-        scope: {
-            caption: "@"
-        },
-        transclude: true,
-
-        controller: function ($scope) {
-            var tabs = $scope.tabs = [];
-            //tabs.push({title: "test"});
-
-            $scope.add = function (tab) {
-                if (tab !== undefined) {
-                    this.tabs.push(tab);
+            popup.classes = {
+                /**
+                 * Popup
+                 * Набор свойст, описывающих всплывабщий элемент интерфейса
+                 */
+                Popup: {
+                    id: 0,
+                    element: HTMLElement,
+                    target: HTMLElement,
+                    visible: false
                 }
-                $log.log("tabs = ", tabs);
             };
 
-        },
+            var items = $factory({ classes: ["Collection"], base_class: "Collection" });
 
-        template: "<ul>{{caption}}<li ng-repeat='tab in tabs'>{{ tab.title }}</li></ul>",
-        link: function (scope, element, attributes, ctrl) {
-            $log.log("TABS DIRECTIVE HERE");
-            $log.log("caption = ", scope.caption);
-            $log.log(ctrl);
+            function position (element) {
+                var top = 0, left = 0;
+                while (element) {
+                    top = top + parseFloat(element.offsetTop);
+                    left = left + parseFloat(element.offsetLeft);
+                    element = element.offsetParent;
+                }
+                return {top: Math.round(top), left: Math.round(left)};
+            }
+
+
+            /**
+             * Создает новый попап
+             * @returns {Popup} - Возвращает созданный попап
+             */
+            popup.register = function (target) {
+                var result = false;
+                if (target !== undefined) {
+                    var temp_popup = $factory({ classes: ["Popup"], base_class: "Popup" });
+                    temp_popup.target = target;
+                    temp_popup.id = target.id + "_typeahead";
+                    items.append(temp_popup);
+
+                    var element = document.createElement("div");
+                    var content = document.createElement("div");
+                    content.id = temp_popup.id + "_content";
+                    content.className = "content";
+                    var corner = document.createElement("div");
+                    corner.className = "corner-bottom";
+                    var pos = position(temp_popup.target);
+                    $log.log("pos = ", pos);
+                    temp_popup.element = element;
+                    angular.element(temp_popup.element).prop("id", popup.id);
+                    angular.element(temp_popup.element).prop("className", "gears-ui-typeahead");
+                    element.appendChild(content);
+                    element.appendChild(corner);
+                    document.body.appendChild(element);
+                    angular.element(element).css({
+                        display: "block",
+                        width: angular.element(temp_popup.target).prop("clientWidth") + 2 + "px",
+                        //left: pos.left + "px",
+                        //top: pos.top - angular.element(temp_popup.element).css("height") + "px",
+                        visibility: "hidden"
+                    });
+
+                    result = temp_popup;
+                    $log.log("created popup = ", temp_popup);
+                }
+                return result;
+            };
+
+            /**
+             * Удаляет попап с идентификатором popupId
+             * @param popupId {number} - идентификатор попапа
+             * @returns {boolean} - Возвращает true в случае успеха, иначе - false
+             */
+            popup.delete = function (popupId) {
+                var result = false;
+                if (popupId !== undefined) {
+                    var temp_popup = items.find("id", popupId);
+                    if (temp_popup !== false) {
+                        items.delete("id", popupId);
+                        result = true;
+                    }
+                }
+                return result;
+            };
+
+            /**
+             * Делает попап с идентификатором popupId видимым
+             * @param popupId {number} - Идентификатор попапа
+             * @returns {boolean} - Возвращает true в случае успеха, иначе - false
+             */
+            popup.show = function (popupId) {
+                var result = false;
+                if (popupId !== undefined) {
+                    angular.forEach(items.items, function (popup) {
+                        if (popup.id === popupId) {
+                            var pos = position(popup.target);
+                            $log.log("element height = ", angular.element(popup.element).css("height"));
+                            angular.element(popup.element).css({
+                                left: pos.left + "px",
+                                top: pos.top - popup.element.clientHeight + 5 + "px",
+                                visibility: "hidden"
+                            });
+                            angular.element(popup.element).css("visibility", "visible");
+                            popup.visible = true;
+                            result = true;
+                        }
+                    });
+                }
+                return result;
+            };
+
+            /**
+             * Делает попап с идентификатором popupId невидимым
+             * @param popupId {number} - Идентификатор попапа
+             * @returns {boolean} - Возвращает true в случае успеха, иначе - false
+             */
+            popup.hide = function (popupId) {
+                var result = false;
+                if (popupId !== undefined) {
+                    angular.forEach(items.items, function (popup) {
+                        if (popup.id === popupId) {
+                            angular.element(popup.element).css("visibility", "hidden");
+                            //document.removeChild(popup.element);
+                            popup.visible = false;
+                            result = true;
+                        }
+                    });
+                }
+                return result;
+            };
+
+            return popup;
+        }]);
+    })
+    .run(function ($modules, $popup) {
+        $modules.load($popup);
+    });
+
+grUi.directive("typeahead", ["$log", "$popup", function ($log, $popup) {
+    return {
+        restrict: "A",
+        scope: {
+            typeaheadItemsLimit: "=",
+            typeaheadDataSource: "="
+        },
+        controller: function ($scope) {
+            var items = $scope.items = [];
+            items[0] = "element 1";
+            items[1] = "element 2";
+            items[2] = "element 3";
+        },
+        link: function (scope, element, attrs, ctrl) {
+            var popup = $popup.register(element[0]);
+            $log.log("typeaheadItemsLimit = ", scope.typeaheadItemsLimit);
+            $log.log("typeaheadDataSource = ", scope.typeaheadDataSource);
+
+            var select = function (event) {
+                $log.log("selected value = ", event.target.innerHTML);
+            };
+
+            function refresh () {
+                $log.log("target = ", popup.target);
+                var content = document.getElementById(popup.target.id + "_typeahead_content");
+                content.innerHTML = "";
+                for (var item in scope.typeaheadDataSource) {
+                    $log.log("item = ", scope.typeaheadDataSource[item]);
+                    var variant = document.createElement("div");
+                    variant.className = "typeahead-item";
+                    variant.innerHTML = scope.typeaheadDataSource[item].display;
+                    variant.onclick = select;
+                    content.appendChild(variant);
+                }
+            };
+
+            refresh();
+
+            scope.$watch("typeaheadDataSource.length", function (value) {
+                $log.log("updated ", value);
+               refresh();
+            });
+
+            element.on('mousedown', function(event) {
+
+            });
+
+            element.on("focus", function (event) {
+                $log.log("element focused");
+                $popup.show(popup.id);
+            });
+
+            element.on("blur", function (event) {
+                $log.log("element focused out");
+                //$popup.hide(popup.id);
+            });
+
         }
     }
+}]);
+
+    grUi.directive("tabs", ["$log", function ($log) {
+        return {
+            restrict: "E",
+            scope: {
+                caption: "@"
+            },
+            transclude: true,
+
+            controller: function ($scope) {
+                var tabs = $scope.tabs = [];
+                //tabs.push({title: "test"});
+
+                $scope.add = function (tab) {
+                    if (tab !== undefined) {
+                        this.tabs.push(tab);
+                    }
+                    $log.log("tabs = ", tabs);
+                };
+
+            },
+
+            template: "<ul>{{caption}}<li ng-repeat='tab in tabs'>{{ tab.title }}</li></ul>",
+            link: function (scope, element, attributes, ctrl) {
+                $log.log("TABS DIRECTIVE HERE");
+                $log.log("caption = ", scope.caption);
+                $log.log(ctrl);
+            }
+        }
 }]);
 
 grUi.directive("tab", ["$log", function ($log) {
@@ -143,3 +342,6 @@ grUi.directive("datepicker", ["$log", function ($log) {
         templateUrl: "templates/gears-ui/datepicker.html"
     }
 }]);
+
+
+
