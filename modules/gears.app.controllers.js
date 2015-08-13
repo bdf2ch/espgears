@@ -4,6 +4,7 @@
 var appControllers = angular.module("gears.app.controllers", [])
 
 
+
      /**
      * TitlesController
      * Ктонтроллер раздела титулов
@@ -35,6 +36,7 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
+
     /**
      * AddTitleController
      * Контроллер добавления титула
@@ -58,7 +60,7 @@ var appControllers = angular.module("gears.app.controllers", [])
              */
             if ($scope.newTitle.startNodeTypeId.value === 1) {
                 if ($scope.startNodePowerLineId === 0)
-                    $scope.errors.push("Вы не выбрали линию в начале титула");
+                    $scope.errors.push("Вы не выбрали линию опоры в начале титула");
                 if ($scope.newTitle.startNodeId.value === 0)
                     $scope.errors.push("Вы не указали номер опоры в начале титула");
             }
@@ -67,7 +69,7 @@ var appControllers = angular.module("gears.app.controllers", [])
              */
             if ($scope.newTitle.endNodeTypeId.value === 1) {
                 if ($scope.endNodePowerLineId === 0)
-                    $scope.errors.push("Вы не выбрали линию в конце титула");
+                    $scope.errors.push("Вы не выбрали линию опоры в конце титула");
                 if ($scope.newTitle.endNodeId.value === 0)
                     $scope.errors.push("Вы не указали номер опоры в конце титула");
             }

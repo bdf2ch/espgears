@@ -269,3 +269,21 @@ select {
 .no-padding {
   padding: 0px !important;
 }
+/*****
+* TEMP
+*****/
+.gears-ui-typeahead {
+  position: absolute;
+  top: 400px;
+  left: 300px;
+  display: block;
+  background: white;
+  border: 1px solid lightgrey;
+}
+.gears-ui-typeahead .typeahead-item {
+  padding: 10px;
+  cursor: pointer;
+}
+.gears-ui-typeahead .typeahead-item:hover {
+  background: #F7F2F2;
+}

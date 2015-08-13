@@ -59,13 +59,15 @@ body {
 .required:after {
   content: "*";
 }
-.error-message {
-  margin-bottom: 5px;
-  padding: 10px;
+.errors-container {
+  border-left: 5px solid #F0B1B1;
+}
+.errors-container .error-item {
+  padding-top: 10px;
+  padding-bottom: 10px;
   font-family: "Helvetica";
   font-size: 14px;
   line-height: 14px;
   color: #D64949;
-  background: #F5D0D0;
-  border: 1px dotted #F0B1B1;
+  box-sizing: border-box;
 }
