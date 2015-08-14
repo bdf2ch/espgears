@@ -34,6 +34,10 @@ var application = angular.module("gears.app", [
                 templateUrl: "templates/titles/new-title.html",
                 controller: "AddTitleController"
             })
+            .when("/titles/:titleId", {
+                templateUrl: "templates/titles/edit-title.html",
+                controller: "EditTitleController"
+            })
             .when("/confirm", {
                 templateUrl: "templates/order/confirm.html",
                 controller: "ConfirmationController"

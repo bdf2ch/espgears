@@ -59,15 +59,23 @@ body {
 .required:after {
   content: "*";
 }
-.errors-container {
+.messages-container.errors {
   border-left: 5px solid #F0B1B1;
 }
-.errors-container .error-item {
+.messages-container.success {
+  border-left: 5px solid #6ECC97;
+}
+.messages-container .message-item {
   padding-top: 10px;
   padding-bottom: 10px;
   font-family: "Helvetica";
   font-size: 14px;
   line-height: 14px;
-  color: #D64949;
   box-sizing: border-box;
+}
+.messages-container .message-item.error {
+  color: #D64949;
+}
+.messages-container .message-item.success {
+  color: #1CA658;
 }

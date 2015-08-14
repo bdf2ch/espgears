@@ -22,14 +22,16 @@ var grUi = angular.module("gears.ui", [])
             var items = $factory({ classes: ["Collection"], base_class: "Collection" });
 
             function position (element) {
-                var top = 0, left = 0;
+                var top = 0, left = 0, offsetX = 0, offsetY = 0;
                 while (element) {
                     top = top + parseFloat(element.offsetTop);
                     left = left + parseFloat(element.offsetLeft);
+                    offsetX = offsetX + parseFloat(element.scrollLeft);
+                    offsetY = offsetY + parseFloat(element.scrollTop);
                     element = element.offsetParent;
                 }
-                return {top: Math.round(top), left: Math.round(left)};
-            }
+                return {top: Math.round(top), left: Math.round(left), offsetX: Math.round(offsetX), offsetY: Math.round(offsetY)};
+            };
 
 
             /**
@@ -45,15 +47,22 @@ var grUi = angular.module("gears.ui", [])
                     items.append(temp_popup);
 
                     var element = document.createElement("div");
+                    var content = document.createElement("div");
+                    content.id = temp_popup.id + "_content";
+                    content.className = "content";
+                    var corner = document.createElement("div");
+                    corner.className = "corner-bottom";
                     var pos = position(temp_popup.target);
                     $log.log("pos = ", pos);
                     temp_popup.element = element;
                     angular.element(temp_popup.element).prop("id", popup.id);
                     angular.element(temp_popup.element).prop("className", "gears-ui-typeahead");
+                    element.appendChild(content);
+                    element.appendChild(corner);
                     document.body.appendChild(element);
                     angular.element(element).css({
                         display: "block",
-                        width: angular.element(temp_popup.target).prop("clientWidth") + "px",
+                        width: angular.element(temp_popup.target).prop("clientWidth") + 12 + "px",
                         //left: pos.left + "px",
                         //top: pos.top - angular.element(temp_popup.element).css("height") + "px",
                         visibility: "hidden"
@@ -93,10 +102,12 @@ var grUi = angular.module("gears.ui", [])
                     angular.forEach(items.items, function (popup) {
                         if (popup.id === popupId) {
                             var pos = position(popup.target);
+                            $log.log("position = ", pos);
                             $log.log("element height = ", angular.element(popup.element).css("height"));
+                            $log.log("window offset y = ", window.document.scrollHeight);
                             angular.element(popup.element).css({
-                                left: pos.left + "px",
-                                top: pos.top - popup.element.clientHeight + "px",
+                                //left: pos.left - 6 + "px",
+                                //top: pos.top - popup.element.clientHeight - pos.offsetY + 8 + "px",
                                 visibility: "hidden"
                             });
                             angular.element(popup.element).css("visibility", "visible");
@@ -135,59 +146,218 @@ var grUi = angular.module("gears.ui", [])
         $modules.load($popup);
     });
 
-grUi.directive("typeahead", ["$log", "$popup", function ($log, $popup) {
+grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function ($log, $window, $document, $popup) {
     return {
         restrict: "A",
+        require: "ngModel",
         scope: {
-            typeaheadItemsLimit: "=",
-            typeaheadDataSource: "="
-        },
-        controller: function ($scope) {
-            var items = $scope.items = [];
-            items[0] = "element 1";
-            items[1] = "element 2";
-            items[2] = "element 3";
+            typeaheadItemsLimit: "@",
+            typeaheadDataSource: "=",
+            typeaheadModelField: "@",
+            typeaheadDisplayField: "@"
         },
         link: function (scope, element, attrs, ctrl) {
+            var variants = scope.variants = [];
             var popup = $popup.register(element[0]);
-            $log.log("typeaheadItemsLimit = ", scope.typeaheadItemsLimit);
-            $log.log("typeaheadDataSource = ", scope.typeaheadDataSource);
+            //$log.log("typeaheadItemsLimit = ", scope.typeaheadItemsLimit);
+            //$log.log("typeaheadDataSource = ", scope.typeaheadDataSource);
+            $log.log("typeaheadDisplayField = ", scope.typeaheadDisplayField);
+            //$log.log("registered popup = ", popup);
 
-            var select = function (event) {
-                $log.log("selected value = ", event.target.innerHTML);
-            };
+            ctrl.$parsers.push(function (value) {
+                if (value !== undefined) {
+                    var result = "";
+                    $log.log("parser value = ", value);
+                    if (value === "")
+                        result = 0;
+                    else {
+                        angular.forEach(scope.typeaheadDataSource, function (item) {
+                            var item_display = "";
+                            var item_model = "";
+                            if (item.hasOwnProperty(scope.typeaheadDisplayField)) {
+                                if (item[scope.typeaheadDisplayField].constructor === Field)
+                                    item_display = item[scope.typeaheadDisplayField].value;
+                                else
+                                    item_display = item[scope.typeaheadDisplayField];
 
-            function refresh () {
-                popup.element.innerHTML = "";
-                for (var item in scope.typeaheadDataSource) {
-                    $log.log("item = ", scope.typeaheadDataSource[item]);
-                    var variant = document.createElement("div");
-                    variant.className = "typeahead-item";
-                    variant.innerHTML = scope.typeaheadDataSource[item].display;
-                    variant.onclick = select;
-                    popup.element.appendChild(variant);
+
+
+                                if (item_display == value) {
+                                    $log.log("item display = ", item_display);
+                                    if (item.hasOwnProperty(scope.typeaheadModelField)) {
+                                        if (item[scope.typeaheadModelField].constructor === Field)
+                                            result = item[scope.typeaheadModelField].value;
+                                        else
+                                            result = item[scope.typeaheadModelField];
+
+                                        $log.log("model value = ", result);
+                                    } else
+                                        $log.error("$typeahead: Поле '" + scope.typeaheadModelField + "' не найдено");
+                                }
+                            } else
+                                $log.error("$typeahead: Поле '" + scope.typeaheadDisplayField + "' не найдено");
+
+                        });
+                    }
+
+                    return result;
+                }
+            });
+
+
+            ctrl.$formatters.push(function (value) {
+                if (value !== undefined) {
+                    if (value === 0)
+                        return "";
+                }
+            });
+
+
+            /**
+             * Вычисляет метрики элемента
+             * @param element {HTMLElement} - Элемент, для которого производится перерасчет
+             * @returns {Object} - Возвращает митрики элемента
+             */
+            var metrics = function (element) {
+                if (element !== undefined) {
+                    var top = 0,
+                        left = 0,
+                        offsetY = 0,
+                        offsetX = 0,
+                        scrollY = 0,
+                        scrollX = 0,
+                        width = element.clientWidth,
+                        height = element.clientHeight;
+                    while (element) {
+                        top = top + parseFloat(element.offsetTop);
+                        left = left + parseFloat(element.offsetLeft);
+                        offsetX = offsetX + parseFloat(element.offsetLeft);
+                        offsetY = offsetY + parseFloat(element.offsetTop);
+                        scrollY = scrollY + parseFloat(element.scrollTop);
+                        scrollX = scrollX + parseFloat(element.scrollLeft);
+                        element = element.offsetParent;
+                    }
+                    return {
+                        width: width,
+                        height: height,
+                        top: Math.round(top),
+                        left: Math.round(left),
+                        offsetX: Math.round(offsetX),
+                        offsetY: Math.round(offsetY),
+                        scrollX: Math.round(scrollX),
+                        scrollY: Math.round(scrollY)
+                    }
                 }
             };
 
-            refresh();
+
+            var recalculate_position = function () {
+                var target_metrics = metrics(element[0]);
+                var balloon_metrics = metrics(popup.element);
+                angular.element(popup.element).css({
+                    width: target_metrics.width  + 12 + "px",
+                    top: target_metrics.top - balloon_metrics.height - target_metrics.scrollY + 6 + "px",
+                    left: target_metrics.left - 6 + "px"
+                });
+            };
+
+
+            var refresh_variants = function () {
+                var text = popup.target.value.toString().toLowerCase();
+                var content = document.getElementById(popup.target.id + "_typeahead_content");
+                content.innerHTML = "";
+                scope.variants.splice(0, scope.variants.length);
+                var data_length = scope.typeaheadDataSource.length;
+                var item_counter = 0;
+                for (var i = 0; i < data_length; i++) {
+                    var display_value = "";
+                    var model_value = "";
+                    if (scope.typeaheadDataSource[i].hasOwnProperty(scope.typeaheadDisplayField)) {
+                        $log.log("exists, ", scope.typeaheadDisplayField);
+                        if (scope.typeaheadDataSource[i][scope.typeaheadDisplayField].constructor === Field)
+                            display_value = scope.typeaheadDataSource[i][scope.typeaheadDisplayField].value;
+                        else
+                            display_value = scope.typeaheadDataSource[i][scope.typeaheadDisplayField];
+
+                        if (display_value.toString().toLowerCase().indexOf(text) !== -1 && text !== "" && text !== " " && item_counter < scope.typeaheadItemsLimit) {
+                            scope.variants.push(display_value);
+                            var variant = document.createElement("div");
+                            variant.className = "typeahead-item";
+                            variant.innerHTML = display_value;
+                            variant.onclick = select;
+                            content.appendChild(variant);
+                            $log.log(display_value + " matched");
+                            item_counter++;
+                        }
+
+                    }
+                }
+                if (scope.variants.length > 0) {
+                    recalculate_position();
+                    $popup.show(popup.id);
+                } else
+                    $popup.hide(popup.id);
+            };
+
+
+            var get_text = function () {
+                return popup.target.value;
+            };
+
+
+            var select = function (event) {
+                $log.log("selected value = ", event.target.innerHTML);
+                var variants_length = scope.variants.length;
+                var display_value = event.target.innerHTML;
+                ctrl.$setViewValue(display_value);
+                popup.target.value = display_value;
+                $popup.hide(popup.id);
+            };
+
+
+
+            //recalculate_position();
 
             scope.$watch("typeaheadDataSource.length", function (value) {
                 $log.log("updated ", value);
-               refresh();
-            });
-
-            element.on('mousedown', function(event) {
-
+               //refresh();
             });
 
             element.on("focus", function (event) {
-                $log.log("element focused");
-                $popup.show(popup.id);
+                //$log.log("element focused");
+                //recalculate_position();
+                //if (get_text() !== "")
+                //    $popup.show(popup.id);
             });
 
             element.on("blur", function (event) {
-                $log.log("element focused out");
+
+                //if (popup.visible === true) {
+                //    preventDefault();
+                //}
                 //$popup.hide(popup.id);
+            });
+
+            element.on("change", function (event) {
+            });
+
+            element.on("keyup", function (event) {
+                refresh_variants();
+            });
+
+            angular.element($window).bind("resize", function (event) {
+                //$log.log("window resized");
+                recalculate_position();
+            });
+
+            angular.element($window).bind("scroll", function (event) {
+                $log.log("window scrolled");
+                //recalculate_position();
+            });
+
+
+            $document.on("scroll", function (event) {
+                $log.log("document scrolled");
             });
 
         }

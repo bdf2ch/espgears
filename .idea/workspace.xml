@@ -1,7 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="6a17ee48-cc45-46a8-9ede-66c4a63147ed" name="Default" comment="" />
+=======
+    <list default="true" id="6a17ee48-cc45-46a8-9ede-66c4a63147ed" name="Default" comment="">
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/resources/img/icons/pylon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/serverside/core.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modules/gears.app.filters.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modules/gears.app.misc.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modules/gears.app.nodes.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/serverside/controllers/misc.php" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/serverside/controllers/nodes.php" />
+=======
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/ui/typeahead/typeahead.html" />
+>>>>>>> 45c4021fef27622fed3530a501f0d036fab7e22b
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/application.html" afterPath="$PROJECT_DIR$/templates/application.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/espreso.css" afterPath="$PROJECT_DIR$/resources/styles/espreso.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/espreso.less" afterPath="$PROJECT_DIR$/resources/styles/espreso.less" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/gears.app.controllers.js" afterPath="$PROJECT_DIR$/modules/gears.app.controllers.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/gears.app.js" afterPath="$PROJECT_DIR$/modules/gears.app.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libs/gearsjs/gears.ui.js" afterPath="$PROJECT_DIR$/libs/gearsjs/gears.ui.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/misc.css" afterPath="$PROJECT_DIR$/resources/styles/misc.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/misc.less" afterPath="$PROJECT_DIR$/resources/styles/misc.less" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/titles/new-title.html" afterPath="$PROJECT_DIR$/templates/titles/new-title.html" />
+<<<<<<< HEAD
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/titles/titles.html" afterPath="$PROJECT_DIR$/templates/titles/titles.html" />
+>>>>>>> fe0b92a4d85385ce0bac2520a97225baf236aa55
+=======
+>>>>>>> 45c4021fef27622fed3530a501f0d036fab7e22b
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+    </list>
+>>>>>>> 77471cec5ad2df2fb3085889bd561eb586aed8dd
     <ignored path="espgears.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -389,6 +422,7 @@
     <property name="HbShouldOpenHtmlAsHb" value="" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
     <property name="ignore_missing_gitignore" value="true" />
+    <property name="FullScreen" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -453,8 +487,17 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
+<<<<<<< HEAD
+    <frame x="1" y="3" width="1543" height="1041" extended-state="0" />
+    <editor active="false" />
+=======
+    <frame x="1" y="3" width="1706" height="1041" extended-state="0" />
+=======
     <frame x="1" y="3" width="1783" height="1041" extended-state="0" />
+>>>>>>> 45c4021fef27622fed3530a501f0d036fab7e22b
     <editor active="true" />
+>>>>>>> fe0b92a4d85385ce0bac2520a97225baf236aa55
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23724928" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
