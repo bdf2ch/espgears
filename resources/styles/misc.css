@@ -278,10 +278,13 @@ select {
   left: 300px;
   display: block;
   background: transparent;
+  box-shadow: inset -1px 1px 3px rgba(0, 0, 0, 0.08);
 }
 .gears-ui-typeahead .content {
   background: white;
   border: 1px solid lightgrey;
+  -webkit-box-shadow: inset -1px 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: inset -1px 1px 3px rgba(0, 0, 0, 0.08);
 }
 .gears-ui-typeahead .corner-bottom {
   width: 0px;
