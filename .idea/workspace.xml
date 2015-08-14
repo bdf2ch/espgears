@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6a17ee48-cc45-46a8-9ede-66c4a63147ed" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/templates/ui/typeahead/typeahead.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/application.html" afterPath="$PROJECT_DIR$/templates/application.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/espreso.css" afterPath="$PROJECT_DIR$/resources/styles/espreso.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/espreso.less" afterPath="$PROJECT_DIR$/resources/styles/espreso.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/gears.app.controllers.js" afterPath="$PROJECT_DIR$/modules/gears.app.controllers.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/gears.app.js" afterPath="$PROJECT_DIR$/modules/gears.app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/libs/gearsjs/gears.ui.js" afterPath="$PROJECT_DIR$/libs/gearsjs/gears.ui.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/misc.css" afterPath="$PROJECT_DIR$/resources/styles/misc.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/resources/styles/misc.less" afterPath="$PROJECT_DIR$/resources/styles/misc.less" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/titles/new-title.html" afterPath="$PROJECT_DIR$/templates/titles/new-title.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="6a17ee48-cc45-46a8-9ede-66c4a63147ed" name="Default" comment="" />
     <ignored path="espgears.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
