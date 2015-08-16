@@ -121,7 +121,6 @@ var titles = angular.module("gears.app.titles",[])
             /**
              * Переменные сервиса
              */
-            //titles.titules = $factory.make({ classes: ["Collection"], base_class: "Collection" });
             titles.titles = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.parts = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
@@ -131,7 +130,7 @@ var titles = angular.module("gears.app.titles",[])
              */
             titles.titlesQuery = function () {
                 titles.titles._states_.loaded(false);
-                $http.post("serverside/controllers/titules.php", {action: "query"})
+                $http.post("serverside/controllers/titles.php", {action: "query"})
                     .success(function (data) {
                         if (data !== undefined) {
                             angular.forEach(data, function (title_data, key) {
@@ -172,17 +171,40 @@ var titles = angular.module("gears.app.titles",[])
              * Отправляет данные нового титула на сервер и добавляет его в коллекцию
              * @param title
              */
-            titles.add = function (title) {
-                $http.post("")
-                    .success(function (data) {
-                        if (data !== undefined) {
-                            var added_title = $factory.make({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
-                            added_title._model_.fromJSON(data);
-                            added_title._backup_.setup();
-                            titles.titles.append(added_title);
+            titles.add = function (title, callback) {
+                if (title !== undefined) {
+                    var params = {
+                        action: "add",
+                        data: {
+                            startNodeTypeId: title.startNodeTypeId.value,
+                            endNodeTypeId: title.endNodeTypeId.value,
+                            startPointId: 0,
+                            endPointId: 0,
+                            startNodeId: title.startNodeId.value,
+                            endNodeId: title.endNodeId.value,
+                            title: title.title.value,
+                            description: title.description.value
                         }
-                    }
-                );
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+                                    temp_title._model_.fromJSON(data);
+                                    temp_title._backup_.setup();
+                                    titles.titles.append(temp_title);
+                                    if (callback !== undefined)
+                                        callback(temp_title);
+                                }
+                            }
+                        }
+                    );
+                }
             };
 
 

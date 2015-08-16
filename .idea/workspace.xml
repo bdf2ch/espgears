@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="6a17ee48-cc45-46a8-9ede-66c4a63147ed" name="Default" comment="" />
+=======
     <list default="true" id="6a17ee48-cc45-46a8-9ede-66c4a63147ed" name="Default" comment="">
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -31,6 +34,7 @@
 >>>>>>> 45c4021fef27622fed3530a501f0d036fab7e22b
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
+>>>>>>> 77471cec5ad2df2fb3085889bd561eb586aed8dd
     <ignored path="espgears.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />

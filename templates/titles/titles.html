@@ -4,7 +4,7 @@
     <div class="pane width-15">
         <div class="header">
             <span class="caption">Титулы</span>
-            <button class="blue right" title="Редактировать титул" ng-show="app.currentTitle !== undefined"></button>
+            <button class="blue right" title="Редактировать титул" ng-show="app.currentTitle !== undefined" ng-click="gotoEditTitle(app.currentTitle.id.value)"></button>
             <button class="red right" title="Удалить титул" ng-show="app.currentTitle !== undefined">-</button>
             <span class="separator right" ng-show="app.currentTitle !== undefined"></span>
             <button class="green right" title="Добавить титул" ng-click="gotoAddTitle()">+</button>

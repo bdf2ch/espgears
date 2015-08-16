@@ -26,6 +26,11 @@
                     get_node_types();
                     break;
 
+
+                case "getPylonsByPowerLineId":
+                    get_pylons_by_power_line_id ($postdata);
+                    break;
+
                 /* Получение дочерних узлов по id узла */
                 //case "getChildNodes":
                 //    get_child_nodes($postdata);
@@ -89,6 +94,47 @@
             echo json_encode(0);
         else
             echo json_encode($result);
+    };
+
+
+    function get_pylons_by_power_line_id ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $result = array();
+        $powerLineId = $postdata -> data -> powerLineId;
+
+        if (!$statement = oci_parse($connection, "begin PKG_PYLONS.P_GET_PYLONS_BY_POWER_LINE(:pl_id, :pylons); end;")) {
+            $error = oci_error();
+            echo $error["message"];
+        } else {
+            if (!oci_bind_by_name($statement, ":pl_id", $powerLineId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                echo $error["message"];
+            }
+            if (!oci_bind_by_name($statement, ":pylons", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                echo $error["message"];
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                echo $error["message"];
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    echo $error["message"];
+                } else {
+                    while ($pylon = oci_fetch_assoc($cursor))
+                        array_push($result, $pylon);
+                }
+            }
+        }
+
+        // Освобождение ресурсов
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        // Возврат результата
+        echo json_encode($result);
     };
 
 ?>

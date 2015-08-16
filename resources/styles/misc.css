@@ -205,6 +205,9 @@ button.green {
 button.green:hover {
   background: #58A678;
 }
+button.green[disabled] {
+  background: #A7C9B2;
+}
 button.red {
   color: white;
   background: #E87C79;
@@ -218,6 +221,9 @@ button.blue {
 }
 button.blue:hover {
   background: #4B8CD1;
+}
+button.blue[disabled] {
+  background: #BECBE6;
 }
 /*****
 * FORMS
@@ -281,22 +287,32 @@ select {
   box-shadow: inset -1px 1px 3px rgba(0, 0, 0, 0.08);
 }
 .gears-ui-typeahead .content {
+  padding-top: 5px;
+  padding-bottom: 5px;
   background: white;
   border: 1px solid lightgrey;
   -webkit-box-shadow: inset -1px 1px 3px rgba(0, 0, 0, 0.08);
   box-shadow: inset -1px 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  box-shadow: -1px 7px 36px -6px #b5b5b5;
 }
 .gears-ui-typeahead .corner-bottom {
   width: 0px;
-  margin-left: 10px;
-  border: 8px solid transparent;
-  border-top-color: lightgrey;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -1px;
+  border: 12px solid transparent;
+  border-top-color: white;
   border-bottom: 0;
 }
 .gears-ui-typeahead .typeahead-item {
   padding: 10px;
+  font-family: "Helvetica";
+  font-size: 14px;
   cursor: pointer;
+  border-left: 3px solid transparent;
 }
 .gears-ui-typeahead .typeahead-item:hover {
-  background: #F7F2F2;
+  background: #EDF1F5;
+  border-left: 3px solid #B3D6F2;
 }

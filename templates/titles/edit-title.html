@@ -3,7 +3,7 @@
     <!-- Новый титул -->
     <div class="pane width-100">
         <div class="header">
-            <span class="caption">Новый титул</span>
+            <span class="caption">Редактирование титула</span>
         </div>
         <div class="content y-scrollable no-padding">
             <div class="row height-100">
@@ -20,7 +20,8 @@
                                        id="new-title-title"
                                        class="width-100"
                                        placeholder="Наименование титула"
-                                       ng-model="newTitle.title.value"/>
+                                       ng-model="title.title.value"
+                                       ng-change="title._states_.changed(true)"/>
                             </div>
                         </div>
                         <div class="width-20">&nbsp;</div>
@@ -36,7 +37,7 @@
                                    id="new-title-description"
                                    class="width-100"
                                    placeholder="Описание титула"
-                                   ng-model="newTitle.description.value"/>
+                                   ng-model="title.description.value"/>
                         </div>
                         <div class="width-20">&nbsp;</div>
                     </div>
@@ -51,7 +52,7 @@
                                         Объект в начале титула
                                     </div>
 
-                                     <!-- Иконка узла в начале титула -->
+                                    <!-- Иконка узла в начале титула -->
                                     <div class="row node-icon pylon big"></div>
 
                                     <!-- Тип узла в начале титула -->
@@ -60,13 +61,13 @@
                                         <select name=new-title-start-node-type""
                                                 id="new-title-start-node-type"
                                                 class="width-100"
-                                                ng-model="newTitle.startNodeTypeId.value"
+                                                ng-model="title.startNodeTypeId.value"
                                                 ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
                                         </select>
                                     </div>
 
                                     <!-- Линия -->
-                                    <div class="row split-10" ng-show="newTitle.startNodeTypeId.value === 1">
+                                    <div class="row split-10" ng-show="title.startNodeTypeId.value === 1">
                                         <label for="new-title-start-node-powerline">Линия</label>
                                         <select name="new-title-start-node-power-line"
                                                 id="new-title-start-node-powerline"
@@ -78,13 +79,13 @@
                                     </div>
 
                                     <!-- # опоры -->
-                                    <div class="row" ng-show="newTitle.startNodeTypeId.value === 1">
+                                    <div class="row" ng-show="title.startNodeTypeId.value === 1">
                                         <label for="new-title-start-node-pylon-number"># Опоры</label>
                                         <input type="text"
                                                name="new-title-start-node-pylon-number"
                                                id="new-title-start-node-pylon-number"
                                                class="width-100" placeholder="# Опоры"
-                                               ng-model="newTitle.startNodeId.value"
+                                               ng-model="title.startNodeId.value"
                                                ng-disabled="startNodePylons._states_.loaded() === false"
                                                typeahead
                                                typeahead-data-source="startNodePylons.items"
@@ -114,13 +115,13 @@
                                         <select name=new-title-end-node-type""
                                                 id="new-title-end-node-type"
                                                 class="width-100"
-                                                ng-model="newTitle.endNodeTypeId.value"
+                                                ng-model="title.endNodeTypeId.value"
                                                 ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
                                         </select>
                                     </div>
 
                                     <!-- Линия -->
-                                    <div class="row split-10" ng-show="newTitle.endNodeTypeId.value === 1">
+                                    <div class="row split-10" ng-show="title.endNodeTypeId.value === 1">
                                         <label for="new-title-end-node-powerline">Линия</label>
                                         <select name="new-title-end-node-powerline"
                                                 id="new-title-end-node-powerline"
@@ -132,14 +133,14 @@
                                     </div>
 
                                     <!-- # опоры -->
-                                    <div class="row" ng-show="newTitle.endNodeTypeId.value === 1">
+                                    <div class="row" ng-show="title.endNodeTypeId.value === 1">
                                         <label for="new-title-end-node-pylon-number"># Опоры</label>
                                         <input type="text"
                                                name="new-title-end-node-pylon-number"
                                                id="new-title-end-node-pylon-number"
                                                class="width-100"
                                                placeholder="# Опоры"
-                                               ng-model="newTitle.endNodeId.value"
+                                               ng-model="title.endNodeId.value"
                                                ng-disabled="endNodePylons._states_.loaded() === false"
                                                typeahead
                                                typeahead-items-limit="10"
@@ -158,13 +159,19 @@
 
                     <div class="row split-10">
                         <div class="width-100 text-centered">
-                            <button class="green width-80 centered" ng-click="validate()">Добавить титул</button>
+                            <button class="green width-80 centered" ng-click="validate()" ng-disabled="title._states_.changed() === false">Сохранить изменения</button>
+                        </div>
+                    </div>
+
+                    <div class="row split-10">
+                        <div class="width-100 text-centered">
+                            <button class="red width-80 centered" ng-show="title._states_.changed() === true" ng-click="validate()">Отмена</button>
                         </div>
                     </div>
 
                     <div class="row split-30">
                         <div class="width-100 text-centered">
-                            <button class="blue width-80 centered" ng-click="gotoTitles()">Перейти в раздел титулов</button>
+                            <button class="blue width-80 centered" ng-show="title._states_.changed() === false" ng-click="gotoTitles()">Перейти в раздел титулов</button>
                         </div>
                     </div>
 
@@ -174,9 +181,9 @@
                         </div>
                     </div>
 
-                    <div class="row" ng-show="newTitle._states_.loaded() === true">
+                    <div class="row" ng-show="title._states_.loaded() === true">
                         <div class="width-100 text-centered messages-container success">
-                            <div class="width-80 centered message-item success text-left">Титул успешно добавлен</div>
+                            <div class="width-80 centered message-item success text-left">Изменения сохранены успешно</div>
                         </div>
                     </div>
 
