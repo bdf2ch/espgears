@@ -36,6 +36,7 @@ var nodes = angular.module("gears.app.nodes", [])
                  */
                 UnknownNode: {
                     id: new Field({ source: "NODE_ID", value: 0, default_value: 0 }),
+                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     pointId: new Field({ source: "POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     titleId: new Field({ source: "TITULE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     titlePartId: new Field({ source: "TITULE_PART_ID", value: 0, default_value: 0, backupable: true, required: true }),
@@ -132,6 +133,30 @@ var nodes = angular.module("gears.app.nodes", [])
                     );
                 }
             };
+
+
+            nodes.parseNode = function (node) {
+                var result = false;
+                if (node !== undefined) {
+                    if (node["OBJECT_TYPE_ID"] !== undefined) {
+                        var node_type_id = parseInt(node["OBJECT_TYPE_ID"]);
+                        switch (node_type_id) {
+                            case 0:
+                                result = $factory({ classes: ["UnknownNode", "Model", "Backup", "States"], base_class: "UnknownNode" });
+                                result._model_.fromJSON(node);
+                                result._backup_.setup();
+                                break;
+                            case 1:
+                                result = $factory({ classes: ["Pylon", "Model", "Backup", "States"], base_class: "Pylon" });
+                                result._model_.fromJSON(node);
+                                result._backup_.setup();
+                                break;
+                        }
+                    }
+                }
+                return result;
+            };
+
 
             return nodes;
         }]);

@@ -21,7 +21,7 @@
                                        class="width-100"
                                        placeholder="Наименование титула"
                                        ng-model="title.title.value"
-                                       ng-change="title._states_.changed(true)"/>
+                                       ng-change="onChangeTitle()"/>
                             </div>
                         </div>
                         <div class="width-20">&nbsp;</div>
@@ -37,7 +37,8 @@
                                    id="new-title-description"
                                    class="width-100"
                                    placeholder="Описание титула"
-                                   ng-model="title.description.value"/>
+                                   ng-model="title.description.value"
+                                   ng-change="onChangeTitle()"/>
                         </div>
                         <div class="width-20">&nbsp;</div>
                     </div>
@@ -62,7 +63,8 @@
                                                 id="new-title-start-node-type"
                                                 class="width-100"
                                                 ng-model="title.startNodeTypeId.value"
-                                                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
+                                                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes"
+                                                ng-change="onChangeTitle()">
                                         </select>
                                     </div>
 
@@ -74,19 +76,22 @@
                                                 class="width-100"
                                                 ng-model="startNodePowerLineId"
                                                 ng-options="powerline.id.value as powerline.display for powerline in misc.powerLines.items"
-                                                ng-change="selectStartNodePowerLine(startNodePowerLineId)">
+                                                ng-change="selectStartNodePowerLine(startNodePowerLineId); onChangeTitle()">
                                         </select>
                                     </div>
 
                                     <!-- # опоры -->
                                     <div class="row" ng-show="title.startNodeTypeId.value === 1">
                                         <label for="new-title-start-node-pylon-number"># Опоры</label>
+
                                         <input type="text"
                                                name="new-title-start-node-pylon-number"
                                                id="new-title-start-node-pylon-number"
-                                               class="width-100" placeholder="# Опоры"
+                                               class="width-100"
+                                               placeholder="# Опоры"
                                                ng-model="title.startNodeId.value"
                                                ng-disabled="startNodePylons._states_.loaded() === false"
+                                               ng-change="onChangeTitle()"
                                                typeahead
                                                typeahead-data-source="startNodePylons.items"
                                                typeahead-items-limit="10"
@@ -116,7 +121,8 @@
                                                 id="new-title-end-node-type"
                                                 class="width-100"
                                                 ng-model="title.endNodeTypeId.value"
-                                                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
+                                                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes"
+                                                ng-change="onChangeTitle()">
                                         </select>
                                     </div>
 
@@ -127,8 +133,8 @@
                                                 id="new-title-end-node-powerline"
                                                 class="width-100"
                                                 ng-model="endNodePowerLineId"
-                                                ng-options="powerline.id.value as powerline.title.value for powerline in misc.powerLines.items"
-                                                ng-change="selectEndNodePowerLine(endNodePowerLineId)">
+                                                ng-options="powerline.id.value as powerline.display for powerline in misc.powerLines.items"
+                                                ng-change="selectEndNodePowerLine(endNodePowerLineId); onChangeTitle()">
                                         </select>
                                     </div>
 
@@ -142,6 +148,7 @@
                                                placeholder="# Опоры"
                                                ng-model="title.endNodeId.value"
                                                ng-disabled="endNodePylons._states_.loaded() === false"
+                                               ng-change="onChangeTitle()"
                                                typeahead
                                                typeahead-items-limit="10"
                                                typeahead-data-source="endNodePylons.items"
@@ -159,19 +166,29 @@
 
                     <div class="row split-10">
                         <div class="width-100 text-centered">
-                            <button class="green width-80 centered" ng-click="validate()" ng-disabled="title._states_.changed() === false">Сохранить изменения</button>
+                            <button class="green width-80 centered"
+                                    ng-click="validate()"
+                                    ng-disabled="title._states_.changed() === false">
+                                Сохранить изменения
+                            </button>
                         </div>
                     </div>
 
-                    <div class="row split-10">
+                    <div class="row split-30" ng-show="title._states_.changed() === true">
                         <div class="width-100 text-centered">
-                            <button class="red width-80 centered" ng-show="title._states_.changed() === true" ng-click="validate()">Отмена</button>
+                            <button class="red width-80 centered"
+                                    ng-click="cancelChanges()">
+                                Отменить изменения
+                            </button>
                         </div>
                     </div>
 
-                    <div class="row split-30">
+                    <div class="row split-30" ng-show="title._states_.changed() === false">
                         <div class="width-100 text-centered">
-                            <button class="blue width-80 centered" ng-show="title._states_.changed() === false" ng-click="gotoTitles()">Перейти в раздел титулов</button>
+                            <button class="blue width-80 centered"
+                                    ng-click="gotoTitles()">
+                                Перейти в раздел титулов
+                            </button>
                         </div>
                     </div>
 

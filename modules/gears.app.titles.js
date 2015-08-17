@@ -6,19 +6,19 @@ var titles = angular.module("gears.app.titles",[])
 
         /**
          * $titles
-         * Сервис, одержащий функционал для работы с титулами
+         * РЎРµСЂРІРёСЃ, РѕРґРµСЂР¶Р°С‰РёР№ С„СѓРЅРєС†РёРѕРЅР°Р» РґР»СЏ СЂР°Р±РѕС‚С‹ СЃ С‚РёС‚СѓР»Р°РјРё
          */
         $provide.factory("$titles", ["$log", "$http", "$factory", function ($log, $http, $factory) {
             var titles = {};
 
 
             /**
-             * Наборы свойст и методов, описывающих модели данных
+             * РќР°Р±РѕСЂС‹ СЃРІРѕР№СЃС‚ Рё РјРµС‚РѕРґРѕРІ, РѕРїРёСЃС‹РІР°СЋС‰РёС… РјРѕРґРµР»Рё РґР°РЅРЅС‹С…
              */
             titles.classes = {
                 /**
                  * Title
-                 * Набор свойств, описывающих титул
+                 * РќР°Р±РѕСЂ СЃРІРѕР№СЃС‚РІ, РѕРїРёСЃС‹РІР°СЋС‰РёС… С‚РёС‚СѓР»
                  */
                 Title: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
@@ -35,7 +35,7 @@ var titles = angular.module("gears.app.titles",[])
 
                 /**
                  * TitlePart
-                 * Набор свойст, описывающих участок титула
+                 * РќР°Р±РѕСЂ СЃРІРѕР№СЃС‚, РѕРїРёСЃС‹РІР°СЋС‰РёС… СѓС‡Р°СЃС‚РѕРє С‚РёС‚СѓР»Р°
                  */
                 TitlePart: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
@@ -53,7 +53,7 @@ var titles = angular.module("gears.app.titles",[])
 
                 /**
                  * TitleNodes
-                 * Набор свойст и методов, описывающих иерархию узлов, входящих в титул
+                 * РќР°Р±РѕСЂ СЃРІРѕР№СЃС‚ Рё РјРµС‚РѕРґРѕРІ, РѕРїРёСЃС‹РІР°СЋС‰РёС… РёРµСЂР°СЂС…РёСЋ СѓР·Р»РѕРІ, РІС…РѕРґСЏС‰РёС… РІ С‚РёС‚СѓР»
                  */
                 TitleNodes: {
                     nodes: [],
@@ -80,9 +80,9 @@ var titles = angular.module("gears.app.titles",[])
                     },
 
                     /**
-                     * Возвращает узел с заданным идентификатором
-                     * @param nodeId {number} - Идентификатор узла
-                     * @returns {boolean / object} - Возвращает искомый узел, в противном случае - false
+                     * Р’РѕР·РІСЂР°С‰Р°РµС‚ СѓР·РµР» СЃ Р·Р°РґР°РЅРЅС‹Рј РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРј
+                     * @param nodeId {number} - РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓР·Р»Р°
+                     * @returns {boolean / object} - Р’РѕР·РІСЂР°С‰Р°РµС‚ РёСЃРєРѕРјС‹Р№ СѓР·РµР», РІ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ - false
                      */
                     getNode: function (nodeId) {
                         var result = false;
@@ -97,9 +97,9 @@ var titles = angular.module("gears.app.titles",[])
                     },
 
                     /**
-                     * Возвращает массив ответвлений узла с заданныи идентификатором
-                     * @param nodeId {number} - Идентификатор узла
-                     * @returns {boolean / array} - Возвращает массив ответвлений узла, в противном случае - false
+                     * Р’РѕР·РІСЂР°С‰Р°РµС‚ РјР°СЃСЃРёРІ РѕС‚РІРµС‚РІР»РµРЅРёР№ СѓР·Р»Р° СЃ Р·Р°РґР°РЅРЅС‹Рё РёРґРµРЅС‚РёС„РёРєР°С‚РѕСЂРѕРј
+                     * @param nodeId {number} - РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ СѓР·Р»Р°
+                     * @returns {boolean / array} - Р’РѕР·РІСЂР°С‰Р°РµС‚ РјР°СЃСЃРёРІ РѕС‚РІРµС‚РІР»РµРЅРёР№ СѓР·Р»Р°, РІ РїСЂРѕС‚РёРІРЅРѕРј СЃР»СѓС‡Р°Рµ - false
                      */
                     getBranches: function (nodeId) {
                         var result = false;
@@ -119,14 +119,14 @@ var titles = angular.module("gears.app.titles",[])
 
 
             /**
-             * Переменные сервиса
+             * РџРµСЂРµРјРµРЅРЅС‹Рµ СЃРµСЂРІРёСЃР°
              */
             titles.titles = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.parts = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
 
             /**
-             * Получает список всех титулов и помещает их в коллекцию
+             * РџРѕР»СѓС‡Р°РµС‚ СЃРїРёСЃРѕРє РІСЃРµС… С‚РёС‚СѓР»РѕРІ Рё РїРѕРјРµС‰Р°РµС‚ РёС… РІ РєРѕР»Р»РµРєС†РёСЋ
              */
             titles.titlesQuery = function () {
                 titles.titles._states_.loaded(false);
@@ -149,7 +149,7 @@ var titles = angular.module("gears.app.titles",[])
 
 
             /**
-             * Получает список частей титулов всех титулов
+             * РџРѕР»СѓС‡Р°РµС‚ СЃРїРёСЃРѕРє С‡Р°СЃС‚РµР№ С‚РёС‚СѓР»РѕРІ РІСЃРµС… С‚РёС‚СѓР»РѕРІ
              */
             titles.partsQuery = function () {
                 $http.post("serverside/controllers/titule-parts.php", {action: "query"})
@@ -168,7 +168,7 @@ var titles = angular.module("gears.app.titles",[])
 
 
             /**
-             * Отправляет данные нового титула на сервер и добавляет его в коллекцию
+             * РћС‚РїСЂР°РІР»СЏРµС‚ РґР°РЅРЅС‹Рµ РЅРѕРІРѕРіРѕ С‚РёС‚СѓР»Р° РЅР° СЃРµСЂРІРµСЂ Рё РґРѕР±Р°РІР»СЏРµС‚ РµРіРѕ РІ РєРѕР»Р»РµРєС†РёСЋ
              * @param title
              */
             titles.add = function (title, callback) {
@@ -200,6 +200,70 @@ var titles = angular.module("gears.app.titles",[])
                                     titles.titles.append(temp_title);
                                     if (callback !== undefined)
                                         callback(temp_title);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.edit = function (title, callback) {
+                if (title !== undefined) {
+                    var params = {
+                        action: "edit",
+                        data: {
+                            id: title.id.value,
+                            startNodeTypeId: title.startNodeTypeId.value,
+                            endNodeTypeId: title.endNodeTypeId.value,
+                            startPointId: 0,
+                            endPointId: 0,
+                            startNodeId: title.startNodeId.value,
+                            endNodeId: title.endNodeId.value,
+                            title: title.title.value,
+                            description: title.description.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            /**
+             * Р’РѕР·РІСЂР°С‰Р°РµС‚ РЅР°С‡Р°Р»СЊРЅС‹Р№ Рё РєРѕРЅРµС‡РЅС‹Р№ СѓР·Р»С‹ С‚РёС‚СѓР»Р°
+             * @param titleId {Number} - РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ С‚РёС‚СѓР»Р°
+             */
+            titles.getBoundaryNodes = function (titleId, callback) {
+                if (titleId !== undefined) {
+                    var params = {
+                        action: "getBoundaryNodes",
+                        data: {
+                            id: titleId
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
                                 }
                             }
                         }

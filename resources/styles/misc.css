@@ -194,6 +194,9 @@ button:active {
 button:focus {
   outline: none;
 }
+button[disabled] {
+  cursor: default;
+}
 button.block {
   display: block;
   width: 100%;

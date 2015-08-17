@@ -38,6 +38,9 @@
                 case "getTituleById":
                     get_path($postdata);
                     break;
+                case "getBoundaryNodes":
+                    get_boundary_nodes($postdata);
+                    break;
             }
         }
         oci_close($connection);
@@ -138,66 +141,88 @@
 
 
     /* Функция изменения группы */
-    function edit_titule ($postdata) {
+    function edit_title ($postdata) {
         global $connection;
         $cursor = oci_new_cursor($connection);
-        $data = $postdata -> data;
-        $result = array();
+        $id = $postdata -> data -> id;
+        $startNodeTypeId = $postdata -> data -> startNodeTypeId;
+        $endNodeTypeId = $postdata -> data -> endNodeTypeId;
+        $startPointId = $postdata -> data -> startPointId;
+        $endPointId = $postdata -> data -> endPointId;
+        $startNodeId = $postdata -> data -> startNodeId;
+        $endNodeId = $postdata -> data -> endNodeId;
+        $title = $postdata -> data -> title;
+        $description = $postdata -> data -> description;
+        $result = new stdClass;
 
-        if (!$statement = oci_parse($connection, "begin pkg_titules.p_edit_titule(:ttl_id, :ttl_start_object_type_id, :ttl_end_object_type_id, :ttl_start_point_id, :ttl_end_point_id, :ttl_start_object_id, :ttl_end_object_id, :ttl_name, :ttl_name_extra, :edited_ttl); end;")) {
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_edit_titule(:ttl_id, :ttl_start_node_type_id, :ttl_end_node_type_id, :ttl_start_point_id, :ttl_end_point_id, :ttl_start_node_id, :ttl_end_node_id, :ttl_title, :ttl_description, :edited_ttl); end;")) {
             $error = oci_error();
-            echo $error["message"];
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
         } else {
-            if (!oci_bind_by_name($statement, ":ttl_id", $data -> id, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_id", $id, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_start_object_type_id", $data -> startObjectTypeId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_start_node_type_id", $startNodeTypeId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_end_object_type_id", $data -> endObjectTypeId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_end_node_type_id", $endNodeTypeId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_start_point_id", $data -> startPointId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_start_point_id", $startPointId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_end_point_id", $data -> endPointId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_end_point_id", $endPointId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_start_object_id", $data -> startObjectId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_start_node_id", $startNodeId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_end_object_id", $data -> endObjectId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_end_node_id", $endNodeId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_name", $data -> title, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_title", $title, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":ttl_name_extra", $data -> description, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":ttl_description", $description, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
             if (!oci_bind_by_name($statement, ":edited_ttl", $cursor, -1, OCI_B_CURSOR)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
             if (!oci_execute($statement)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             } else {
                 if (!oci_execute($cursor)) {
                     $error = oci_error();
-                    echo $error["message"];
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
                 } else {
-                    while ($titule = oci_fetch_assoc($cursor))
-                        array_push($result, $titule);
+                    //while ($titule = oci_fetch_assoc($cursor))
+                        //array_push($result, $titule);
+                    $result = oci_fetch_object($cursor);
                 }
             }
         }
@@ -207,10 +232,7 @@
         oci_free_statement($cursor);
 
         // Возврат результата
-        if (sizeof($result) == 0)
-            echo json_encode(0);
-        else
-            echo json_encode($result);
+        echo json_encode($result);
     };
 
 
@@ -347,6 +369,52 @@
         else
             echo json_encode($result);
 
+    };
+
+
+    function get_boundary_nodes ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $id = $postdata -> data -> id;
+        $result = array();;
+
+        if (!$statement = oci_parse($connection, "begin PKG_TITULES.p_get_boundary_nodes(:p_title_id, :p_boundary_nodes); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":p_title_id", $id, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":p_boundary_nodes", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($node = oci_fetch_assoc($cursor))
+                        array_push($result, $node);
+                }
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        /* Возврат результата */
+        echo json_encode($result);
     };
 
 ?>

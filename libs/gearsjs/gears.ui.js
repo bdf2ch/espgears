@@ -159,18 +159,42 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
         link: function (scope, element, attrs, ctrl) {
             var variants = scope.variants = [];
             var popup = $popup.register(element[0]);
-            //$log.log("typeaheadItemsLimit = ", scope.typeaheadItemsLimit);
-            //$log.log("typeaheadDataSource = ", scope.typeaheadDataSource);
-            $log.log("typeaheadDisplayField = ", scope.typeaheadDisplayField);
-            //$log.log("registered popup = ", popup);
+
+
+            var getViewValue = function (modelValue) {
+                var result = "";
+                if (modelValue !== undefined) {
+                    angular.forEach(scope.typeaheadDataSource, function (item) {
+                        if (item.hasOwnProperty(scope.typeaheadModelField)) {
+                            var itemModelValue = item[scope.typeaheadModelField].constructor === Field ? item[scope.typeaheadModelField].value : item[scope.typeaheadModelField];
+                            if (itemModelValue === modelValue) {
+                                if (item.hasOwnProperty(scope.typeaheadDisplayField)) {
+                                    result = item[scope.typeaheadDisplayField].constructor === Field ? item[scope.typeaheadDisplayField].value : item[scope.typeaheadDisplayField];
+                                }
+                            }
+                        }
+                    });
+                }
+                return result;
+            };
+
+
+
+            scope.$watch("typeaheadDataSource.length", function (newVal, oldVal) {
+                if (newVal !== 0) {
+                    $log.log("typeahead data source length changed, ", newVal);
+                    //$log.log("item view value = , ", getViewValue(ctrl.$modelValue));
+                    ctrl.$setViewValue(getViewValue(ctrl.$modelValue));
+                    ctrl.$render();
+                }
+            });
+
 
             ctrl.$parsers.push(function (value) {
                 if (value !== undefined) {
-                    var result = "";
+                    var result = 0;
                     $log.log("parser value = ", value);
-                    if (value === "")
-                        result = 0;
-                    else {
+                    if (value != "") {
                         angular.forEach(scope.typeaheadDataSource, function (item) {
                             var item_display = "";
                             var item_model = "";
@@ -179,18 +203,15 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
                                     item_display = item[scope.typeaheadDisplayField].value;
                                 else
                                     item_display = item[scope.typeaheadDisplayField];
-
-
-
                                 if (item_display == value) {
-                                    $log.log("item display = ", item_display);
+                                    //$log.log("item display = ", item_display);
                                     if (item.hasOwnProperty(scope.typeaheadModelField)) {
                                         if (item[scope.typeaheadModelField].constructor === Field)
                                             result = item[scope.typeaheadModelField].value;
                                         else
                                             result = item[scope.typeaheadModelField];
 
-                                        $log.log("model value = ", result);
+                                        //$log.log("model value = ", result);
                                     } else
                                         $log.error("$typeahead: Поле '" + scope.typeaheadModelField + "' не найдено");
                                 }
@@ -201,14 +222,16 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
                     }
 
                     return result;
+
                 }
             });
 
 
             ctrl.$formatters.push(function (value) {
                 if (value !== undefined) {
-                    if (value === 0)
-                        return "";
+                    $log.log("model value in formatter = ", value);
+                    var result = value != 0 ? getViewValue(value) : "";
+                    return result;
                 }
             });
 
@@ -273,7 +296,7 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
                     var display_value = "";
                     var model_value = "";
                     if (scope.typeaheadDataSource[i].hasOwnProperty(scope.typeaheadDisplayField)) {
-                        $log.log("exists, ", scope.typeaheadDisplayField);
+                        //$log.log("exists, ", scope.typeaheadDisplayField);
                         if (scope.typeaheadDataSource[i][scope.typeaheadDisplayField].constructor === Field)
                             display_value = scope.typeaheadDataSource[i][scope.typeaheadDisplayField].value;
                         else
@@ -286,7 +309,7 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
                             variant.innerHTML = display_value;
                             variant.onclick = select;
                             content.appendChild(variant);
-                            $log.log(display_value + " matched");
+                            //$log.log(display_value + " matched");
                             item_counter++;
                         }
 
@@ -305,23 +328,21 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
             };
 
 
+
             var select = function (event) {
-                $log.log("selected value = ", event.target.innerHTML);
-                var variants_length = scope.variants.length;
+                //$log.log("selected value = ", event.target.innerHTML);
+                //$log.log("model value before = ", ctrl.$modelValue);
                 var display_value = event.target.innerHTML;
                 ctrl.$setViewValue(display_value);
                 popup.target.value = display_value;
                 $popup.hide(popup.id);
+                //$log.log("model value after = ", ctrl.$modelValue);
             };
 
 
 
             //recalculate_position();
 
-            scope.$watch("typeaheadDataSource.length", function (value) {
-                $log.log("updated ", value);
-               //refresh();
-            });
 
             element.on("focus", function (event) {
                 //$log.log("element focused");
@@ -361,89 +382,6 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
             });
 
         }
-    }
-}]);
-
-    grUi.directive("tabs", ["$log", function ($log) {
-        return {
-            restrict: "E",
-            scope: {
-                caption: "@"
-            },
-            transclude: true,
-
-            controller: function ($scope) {
-                var tabs = $scope.tabs = [];
-                //tabs.push({title: "test"});
-
-                $scope.add = function (tab) {
-                    if (tab !== undefined) {
-                        this.tabs.push(tab);
-                    }
-                    $log.log("tabs = ", tabs);
-                };
-
-            },
-
-            template: "<ul>{{caption}}<li ng-repeat='tab in tabs'>{{ tab.title }}</li></ul>",
-            link: function (scope, element, attributes, ctrl) {
-                $log.log("TABS DIRECTIVE HERE");
-                $log.log("caption = ", scope.caption);
-                $log.log(ctrl);
-            }
-        }
-}]);
-
-grUi.directive("tab", ["$log", function ($log) {
-    return {
-        restrict: "E",
-        require: "^tabs",
-        //transclude: true,
-        scope: {
-            title: "@"
-        },
-        //template: "jhjh",
-        link: function (scope, element, attributes, tabsCtrl) {
-            if (tabsCtrl === undefined)
-                $log.log("no tabsCtrl");
-
-            $log.log("TAB DIRECTIVE HERE");
-            tabsCtrl.add(scope);
-            $log.log(scope);
-        }
-    }
-}]);
-
-
-
-grUi.directive("typeahead", ["$log", function ($log) {
-    return {
-        restrict: "E",
-        scope: {
-            placeholder: "@"
-        },
-        controller: function ($scope) {
-            var label = $scope.label = "testlabel";
-            var title = $scope.title = "Очистить";
-
-            $scope.$watch("label", function (newVal, oldVal) {
-               $log.log("oldVal = ", oldVal);
-                $log.log("newVal = ", newVal);
-                if (newVal === "") {
-                    this.title = "";
-                } else {
-                    this.title = "Очистить";
-                }
-                $log.log("title = ", title);
-            });
-
-            $scope.clear = function () {
-                $log.log("clear called");
-                this.label = "";
-            };
-        },
-
-        templateUrl: "templates/gears-ui/typeahead.html"
     }
 }]);
 
@@ -501,6 +439,22 @@ grUi.directive("datepicker", ["$log", function ($log) {
             $log.log("first day in calendar = ", firstDayInCalendar.format("DD.MM.YYYY HH:mm"));
         },
         templateUrl: "templates/gears-ui/datepicker.html"
+    }
+}]);
+
+
+
+grUi.directive("tabs", ["$log", function ($log) {
+    return {
+        restrict: "E",
+        scope: {
+            tabsSource: "=",
+            class: "@"
+        },
+        templateUrl: "templates/ui/tabs/tabs.html",
+        link: function (scope, element, attr, ctrl) {
+            $log.log("this is tabs, bitches!");
+        }
     }
 }]);
 
