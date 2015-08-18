@@ -16,14 +16,14 @@ var appControllers = angular.module("gears.app.controllers", [])
             {
                 id: 1,
                 title: "Информация о титуле",
-                template: "",
+                template: "templates/titles/title-info.html",
                 isActive: true
             },
             {
                 id: 2,
                 title: "Монтажная ведомость",
-                template: "",
-                isActive: true
+                template: "templates/titles/title-montage-scheme.html",
+                isActive: false
             }
         ];
 
@@ -337,4 +337,30 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
+    }])
+
+
+    /**
+     * ContractorsController
+     * Контроллер раздела контрагентов
+     */
+    .controller("ContractorsController", ["$log", "$scope", "$contractors", "$application", function ($log, $scope, $contractors, $application) {
+        $scope.contractors = $contractors;
+        $scope.app = $application;
+
+        $scope.selectContractorType = function (contractorTypeId) {
+            if (contractorTypeId !== undefined) {
+                angular.forEach($contractors.contractorTypes.items, function (contractorType) {
+                    if (contractorType.id.value === contractorTypeId) {
+                        if (contractorType._states_.selected() === true) {
+                            contractorType._states_.selected(false);
+                            $application.currentContractorType = undefined;
+                        } else {
+                            contractorType._states_.selected(true);
+                            $application.currentContractorType = contractorType;
+                        }
+                    }
+                });
+            }
+        };
     }]);

@@ -454,6 +454,26 @@ grUi.directive("tabs", ["$log", function ($log) {
         templateUrl: "templates/ui/tabs/tabs.html",
         link: function (scope, element, attr, ctrl) {
             $log.log("this is tabs, bitches!");
+
+            var currentTemplate = scope.currentTemplate = "";
+
+            angular.forEach(scope.tabsSource, function (tab) {
+                if (tab.isActive === true)
+                    scope.currentTemplate = tab.template;
+            });
+
+            scope.select = function (tabId) {
+                $log.log("select called");
+                if (tabId !== undefined) {
+                    angular.forEach(scope.tabsSource, function (tab) {
+                        if (tab.id === tabId) {
+                            tab.isActive = true;
+                            scope.currentTemplate = tab.template;
+                        } else
+                            tab.isActive = false;
+                    });
+                }
+            };
         }
     }
 }]);

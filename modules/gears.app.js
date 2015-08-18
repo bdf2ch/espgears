@@ -11,7 +11,8 @@ var application = angular.module("gears.app", [
         "gears.app.filters",             // Подключаем модуль с фильтрами приложения
         "gears.app.titles",
         "gears.app.nodes",
-        "gears.app.misc"
+        "gears.app.misc",
+        "gears.app.contractors"
     ])
     .config(function ($provide, $routeProvider) {
 
@@ -37,6 +38,10 @@ var application = angular.module("gears.app", [
             .when("/titles/:titleId", {
                 templateUrl: "templates/titles/edit-title.html",
                 controller: "EditTitleController"
+            })
+            .when("/contractors", {
+                templateUrl: "templates/contractors/contractors.html",
+                controller: "ContractorsController"
             })
             .when("/confirm", {
                 templateUrl: "templates/order/confirm.html",
@@ -64,6 +69,8 @@ var application = angular.module("gears.app", [
             application.description = "This is a test application provided by Shell Framework";
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
+            application.currentContractorType = undefined;
+            application.currentContractor = undefined;
 
             return application;
         }]);

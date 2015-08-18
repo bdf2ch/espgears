@@ -79,3 +79,9 @@ body {
 .messages-container .message-item.success {
   color: #1CA658;
 }
+.item-description {
+  font-family: "Helvetica";
+  font-size: 13px;
+  font-style: italic;
+  color: gray;
+}

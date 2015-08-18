@@ -49,9 +49,12 @@
             <span class="caption">Подробности</span>
         </div>
         <div class="content no-padding">
+            <div class="service-message" ng-show="app.currentTitle === undefined">
+                Выберите титул
+            </div>
             <div class="row height-100">
                 <div class="width-100 height-100">
-                    <tabs tabs-source="tabs" class="height-100"></tabs>
+                    <tabs tabs-source="tabs" ng-show="app.currentTitle !== undefined"></tabs>
                 </div>
             </div>
         </div>

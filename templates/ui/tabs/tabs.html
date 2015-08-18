@@ -1,4 +1,10 @@
-<div>content</div>
-<ul class="{{ class }}">
-    <li ng-repeat="tab in tabsSource">{{ tab.title }}</li>
-</ul>
+<div class="{{ class + ' ui-tabs' }}">
+    <div class="tab-content">
+        <div ng-include="currentTemplate"></div>
+    </div>
+    <ul>
+        <li ng-repeat="tab in tabsSource"
+            ng-class="{ 'active': tab.isActive === true }"
+            ng-click="select(tab.id)">{{ tab.title }}</li>
+    </ul>
+</div>

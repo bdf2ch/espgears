@@ -24,6 +24,25 @@ var AppFilters = angular.module("gears.app.filters", [])
             }
         }]);
 
+
+        /**
+         * byContractorType
+         * Фильтр контрагентов по типу контрагента
+         */
+        $filterProvider.register("byContractorType", ["$log", function ($log) {
+            return function (input, contractorTypeId) {
+                if (contractorTypeId !== undefined && contractorTypeId !== 0) {
+                    var result = [];
+                    angular.forEach(input, function (contractor) {
+                        if (contractor.contractorTypeId.value === contractorTypeId)
+                            result.push(contractor);
+                    });
+                    return result;
+                } else
+                    return input;
+            }
+        }]);
+
     })
     .run(function () {
 

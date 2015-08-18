@@ -1,0 +1,51 @@
+<div class="pane-container width-100">
+
+    <!-- Типы контрагентов -->
+    <div class="pane width-15">
+        <div class="header">
+            <span class="caption">Типы контрагентов</span>
+            <button class="blue right" title="Редактировать тип контрагента" ng-show="app.currentTitle !== undefined" ng-click="gotoEditTitle(app.currentTitle.id.value)"></button>
+            <button class="red right" title="Удалить тип контрагента" ng-show="app.currentTitle !== undefined">-</button>
+            <span class="separator right" ng-show="app.currentTitle !== undefined"></span>
+            <button class="green right" title="Добавить тип контрагента" ng-click="gotoAddTitle()">+</button>
+        </div>
+        <div class="content y-scrollable">
+            <div class="list-item"
+                 ng-class="{'active': contractor_type._states_.selected() === true}"
+                 ng-repeat="contractor_type in contractors.contractorTypes.items track by $id(contractor_type)"
+                 ng-click="selectContractorType(contractor_type.id.value)">
+                {{ contractor_type.title.value }}<br>
+                {{ "Всего " + contractors.getContractorCountByType(contractor_type.id.value) }}
+                <span class="item-description">Отсутствуют</span>
+            </div>
+            <div class="service-message" ng-show="contractors.contractorTypes._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Звгрузка"/>
+                <span>Загрузка...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Контрагенты -->
+    <div class="pane width-70">
+        <div class="header">
+            <span class="caption">Контрагенты</span>
+        </div>
+        <div class="content">
+            <div class="service-message" ng-show="contractors.contractors._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Звгрузка"/>
+                <span>Загрузка...</span>
+            </div>
+            <div class="service-message" ng-show="app.currentContractorType !== undefined && result.length === 0">
+                Контрагенты выбранного типа отсутствуют
+            </div>
+            <div class="list-item"
+                 ng-class="{'active': contractor._states_.selected() === true}"
+                 ng-repeat="contractor in result = (contractors.contractors.items | byContractorType: app.currentContractorType.id.value) track by $id(contractor)"
+                 ng-click="selectTitle(title.id.value)">
+                {{ contractor.title.value }}<br>
+                {{ contractors.contractorTypes.find("id", contractor.contractorTypeId.value).title.value }}
+            </div>
+        </div>
+    </div>
+
+</div>
