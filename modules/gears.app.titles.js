@@ -52,6 +52,15 @@ var titles = angular.module("gears.app.titles",[])
                 },
 
                 /**
+                 * TitleStatus
+                 * Набор свойств, описывающих статус титула
+                 */
+                TitleStatus: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
+                },
+
+                /**
                  * TitleNodes
                  * Набор свойст и методов, описывающих иерархию узлов, входящих в титул
                  */
@@ -123,14 +132,15 @@ var titles = angular.module("gears.app.titles",[])
              */
             titles.titles = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.parts = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            titles.statuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
 
             /**
              * Получает список всех титулов и помещает их в коллекцию
              */
-            titles.titlesQuery = function () {
+            titles.getTitles = function () {
                 titles.titles._states_.loaded(false);
-                $http.post("serverside/controllers/titles.php", {action: "query"})
+                $http.post("serverside/controllers/titles.php", {action: "getTitles"})
                     .success(function (data) {
                         if (data !== undefined) {
                             angular.forEach(data, function (title_data, key) {
@@ -151,8 +161,8 @@ var titles = angular.module("gears.app.titles",[])
             /**
              * Получает список частей титулов всех титулов
              */
-            titles.partsQuery = function () {
-                $http.post("serverside/controllers/titule-parts.php", {action: "query"})
+            titles.getParts = function () {
+                $http.post("serverside/controllers/titles.php", {action: "getParts"})
                     .success(function (data) {
                         if (data !== undefined) {
                             angular.forEach(data, function (title_part) {
@@ -168,13 +178,41 @@ var titles = angular.module("gears.app.titles",[])
 
 
             /**
+             * Получает список статусов титула
+             */
+            titles.getStatuses = function () {
+                titles.statuses._states_.loaded(false);
+                $http.post("serverside/controllers/titles.php", { action: "getStatuses" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (status) {
+                                    var temp_status = $factory({ classes: ["TitleStatus", "Model", "Backup", "States"], base_class: "TitleStatus" });
+                                    temp_status._model_.fromJSON(status);
+                                    temp_status._backup_.setup();
+                                    titles.statuses.append(temp_status);
+                                });
+                            }
+                        }
+                        titles.statuses._states_.loaded(true);
+                        $log.log("statuses = ", titles.statuses.items);
+                    }
+                );
+            };
+
+
+            /**
              * Отправляет данные нового титула на сервер и добавляет его в коллекцию
              * @param title
              */
-            titles.add = function (title, callback) {
+            titles.addTitle = function (title, callback) {
                 if (title !== undefined) {
                     var params = {
-                        action: "add",
+                        action: "addTitle",
                         data: {
                             startNodeTypeId: title.startNodeTypeId.value,
                             endNodeTypeId: title.endNodeTypeId.value,
@@ -208,10 +246,10 @@ var titles = angular.module("gears.app.titles",[])
             };
 
 
-            titles.edit = function (title, callback) {
+            titles.editTitle = function (title, callback) {
                 if (title !== undefined) {
                     var params = {
-                        action: "edit",
+                        action: "editTitle",
                         data: {
                             id: title.id.value,
                             startNodeTypeId: title.startNodeTypeId.value,
@@ -277,7 +315,8 @@ var titles = angular.module("gears.app.titles",[])
     })
     .run(function ($modules, $titles, $log) {
         $modules.load($titles);
-        $titles.titlesQuery();
+        $titles.getTitles();
+        $titles.getStatuses();
         //$log.log($titules.titules);
         //$titules.titules.display();
     });

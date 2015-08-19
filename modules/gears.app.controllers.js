@@ -359,6 +359,8 @@ var appControllers = angular.module("gears.app.controllers", [])
                             contractorType._states_.selected(true);
                             $application.currentContractorType = contractorType;
                         }
+                    } else {
+                        contractorType._states_.selected(false);
                     }
                 });
             }

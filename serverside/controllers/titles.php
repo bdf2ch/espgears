@@ -19,19 +19,15 @@
         } else {
             switch ($action) {
                 /* Добавление титула */
-                case "add":
+                case "addTitle":
                     add_title($postdata);
                     break;
                 /* Изменение титула */
-                case "edit":
+                case "editTitle":
                     edit_title($postdata);
                     break;
-                /* Удаление титула */
-                case "delete":
-                    delete_group($postdata);
-                    break;
                 /* Получение всех титулов */
-                case "query":
+                case "getTitles":
                     get_titles();
                     break;
                 /* Получение титула по идентификатору */
@@ -41,11 +37,55 @@
                 case "getBoundaryNodes":
                     get_boundary_nodes($postdata);
                     break;
+                /* Получение всех статусов титула */
+                case "getStatuses":
+                    get_statuses ();
+                    break;
             }
         }
         oci_close($connection);
     //}
 
+
+       /* Функция получения всех титулов */
+        function get_titles () {
+            global $connection;
+            $cursor = oci_new_cursor($connection);
+            $result = array();
+
+            if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_titules(:data); end;")) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                }
+                if (!oci_execute($statement)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    if (!oci_execute($cursor)) {
+                        $error = oci_error();
+                        $result = new DBError($error["code"], $error["message"]);
+                        echo(json_encode($result));
+                    } else {
+                        while ($title = oci_fetch_assoc($cursor))
+                            array_push($result, $title);
+                    }
+                }
+            }
+
+            /* Освобождение ресурсов */
+            oci_free_statement($statement);
+            oci_free_statement($cursor);
+
+            /* Возврат результата */
+            echo json_encode($result);
+        };
 
 
     /* Функция добавления группы */
@@ -237,79 +277,6 @@
 
 
 
-    /* Функция удаления группы */
-    function delete_group ($postdata) {
-        global $connection;
-        $data = $postdata -> data;
-        $moment = 0;
-
-        if (!$statement = oci_parse($connection, "begin pkg_usergroups.p_delete_group(:group_id, :moment); end;")) {
-            $error = oci_error();
-            echo $error["message"];
-        } else {
-            if (!oci_bind_by_name($statement, ":group_id", $data -> id, -1, OCI_DEFAULT)) {
-                $error = oci_error();
-                echo $error["message"];
-            }
-            if (!oci_bind_by_name($statement, ":moment", $moment, -1, OCI_B_INT)) {
-                $error = oci_error();
-                echo $error["message"];
-            }
-            if (!oci_execute($statement)) {
-                $error = oci_error();
-                echo $error["message"];
-            }
-        }
-
-        // Освобождение ресурсов
-        oci_free_statement($statement);
-
-        // Возврат результата
-        echo json_encode($moment);
-    };
-
-
-
-    /* Функция получения всех титулов */
-    function get_titles () {
-        global $connection;
-        $cursor = oci_new_cursor($connection);
-        $result = array();
-
-        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_titules(:data); end;")) {
-            $error = oci_error();
-            echo $error["message"];
-        } else {
-            if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
-                $error = oci_error();
-                echo $error["message"];
-            }
-            if (!oci_execute($statement)) {
-                $error = oci_error();
-                echo $error["message"];
-            } else {
-                if (!oci_execute($cursor)) {
-                    $error = oci_error();
-                    echo $error["message"];
-                } else {
-                    while ($data = oci_fetch_assoc($cursor))
-                        array_push($result, $data);
-                }
-            }
-        }
-
-        /* Освобождение ресурсов */
-        oci_free_statement($statement);
-        oci_free_statement($cursor);
-
-        /* Возврат результата */
-        if (sizeof($result) == 0)
-            echo json_encode(0);
-        else
-            echo json_encode($result);
-    };
-
-
     /* Функция получения объектов титула */
     function get_path ($postdata) {
         global $connection;
@@ -405,6 +372,46 @@
                 } else {
                     while ($node = oci_fetch_assoc($cursor))
                         array_push($result, $node);
+                }
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
+
+    function get_statuses () {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_statuses.p_get_statuses(:data); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($status = oci_fetch_assoc($cursor))
+                        array_push($result, $status);
                 }
             }
         }

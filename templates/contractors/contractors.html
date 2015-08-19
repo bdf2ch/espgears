@@ -43,7 +43,8 @@
                  ng-repeat="contractor in result = (contractors.contractors.items | byContractorType: app.currentContractorType.id.value) track by $id(contractor)"
                  ng-click="selectTitle(title.id.value)">
                 {{ contractor.title.value }}<br>
-                {{ contractors.contractorTypes.find("id", contractor.contractorTypeId.value).title.value }}
+                <span class="item-description">{{ contractors.contractorTypes.find("id", contractor.contractorTypeId.value).title.value }}</span>
+
             </div>
         </div>
     </div>

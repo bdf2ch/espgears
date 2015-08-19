@@ -89,13 +89,61 @@ var grData = angular.module("gears.data", [])
          * $vcs
          * Сервис контроля версий данных
          */
-        $provide.factory("$vcs", ["$log", "$cookies", "$http", "$storage", function ($log, $cookies, $http, $storage) {
+        $provide.factory("$vcs", ["$log", "$cookies", "$http", "$factory", "$storage", function ($log, $cookies, $http, $factory, $storage) {
             var vcs = {};
 
-            vcs.items = [];
+            vcs.classes = {
+
+                /**
+                 * VCSData
+                 * Набор свойств, описывающих версию набор данных
+                 */
+                VCSData: {
+                    title: "",
+                    localVersion: 0,
+                    remoteVersion: 0,
+                    data: undefined
+                }
+            };
+
+            vcs.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             vcs.localVersions = undefined;       // Объект с информацией о локальных версиях данных
             vcs.remoteVersions = undefined;      // Объект с информацией об удаленных версиях данных
             vcs.sendingInProgress = false;       // Флаг состояния отправки данных на сервер
+
+
+            vcs.local = {
+
+                versions: {},
+
+                getData: function (title) {
+                    var result = false;
+                    if (title !== undefined) {
+                        var local_data = vcs.items.find("title", title);
+                        if (local_data !== false) {
+                            if (local_data.data !== undefined)
+                                result = JSON.parse(local_data.data);
+                        }
+                    }
+                    return result;
+                },
+
+                getVersion: function (title) {
+                    var result = false;
+                    if (title !== undefined) {
+                        var local_data = vcs.items.find("title", title);
+                        if (local_data !== false) {
+                            result = local_data.localVersion;
+                        }
+                    }
+                }
+
+            };
+
+
+            vcs.remote = {
+                versions: {}
+            };
 
 
             /**
@@ -110,15 +158,19 @@ var grData = angular.module("gears.data", [])
                 /* Проверяем, доступен ли localStorage */
                 if ($storage.isLocalStorageEnabled === true) {
                     /* Проверяем, есть ли в localStorage информация о версиях данных */
-                    if ($storage.isDataExists("$vcs_versions") === true) {
-                        vcs.localVersions = JSON.parse($storage.get("$vcs_versions"));
+                    if ($storage.isDataExists("vcs_versions") === true) {
+                        vcs.localVersions = JSON.parse($storage.get("vcs_versions"));
+                        vcs.local.versions = JSON.parse($storage.get("vcs_versions"));
                         result = vcs.localVersions;
+                        $log.log("local $vcs found, ", vcs.local.versions);
                     }
                 }
 
                 /* Если в куках есть информация о версиях данных на сервере */
                 if ($cookies.vcs_versions !== undefined) {
                     vcs.remoteVersions = JSON.parse($cookies.vcs_versions);
+                    vcs.remote.versions = JSON.parse($cookies.vcs_versions);
+                    $log.log("remote $vcs found, ", vcs.remote.versions);
                 }
 
                 return result;
@@ -216,6 +268,8 @@ var grData = angular.module("gears.data", [])
             return vcs;
         }]);
 
-    }).run(function ($storage) {
+    }).run(function ($modules, $storage, $vcs) {
+        $modules.load($vcs);
         $storage.init();
+        $vcs.init();
     });

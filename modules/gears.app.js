@@ -4,8 +4,10 @@
 
 var application = angular.module("gears.app", [
         "ngRoute",                      // Подключаем модуль управления рутами
+        "ngCookies",
         "gears",                        // Подключаем модуль с сервисами ядра системы
         "gears.ui",
+        "gears.data",
         //"gears.auth",                   // Подключаем модуль с сервисами авторизации
         "gears.app.controllers",        // Подключаем модуль с контроллерами приложения
         "gears.app.filters",             // Подключаем модуль с фильтрами приложения
