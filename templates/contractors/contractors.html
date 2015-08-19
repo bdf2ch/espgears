@@ -15,8 +15,8 @@
                  ng-repeat="contractor_type in contractors.contractorTypes.items track by $id(contractor_type)"
                  ng-click="selectContractorType(contractor_type.id.value)">
                 {{ contractor_type.title.value }}<br>
-                {{ "Всего " + contractors.getContractorCountByType(contractor_type.id.value) }}
-                <span class="item-description">Отсутствуют</span>
+                <span class="item-description" ng-show="contractors.getContractorCountByType(contractor_type.id.value) !== 0">{{ "Всего " + contractors.getContractorCountByType(contractor_type.id.value) }}</span>
+                <span class="item-description" ng-show="contractors.getContractorCountByType(contractor_type.id.value) === 0">Отсутствуют</span>
             </div>
             <div class="service-message" ng-show="contractors.contractorTypes._states_.loaded() === false">
                 <img class="loading" src="resources/img/loader.gif" alt="Звгрузка"/>
