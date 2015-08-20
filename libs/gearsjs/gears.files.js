@@ -50,7 +50,55 @@ var grFiles = angular.module("gears.files", [])
 
             };
 
-            files.scan = function () {
+
+            files.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+
+
+            var parseFile = function (data) {
+                var result = false;
+                if (data !== undefined) {
+                    switch (data["isDirectory"]) {
+                        case true:
+                            result = $factory({ classes: ["Folder", "Model", "Backup", "States"], base_class: "Folder" });
+                            break;
+                        case false:
+                            result = $factory({ classes: ["File", "Model", "Backup", "States"], base_class: "File" });
+                            break;
+                    }
+                    result._model_.fromJSON(data);
+                    result._backup_.setup();
+                }
+                return result;
+            };
+
+
+            files.scan = function (path) {
+                if (path !== undefined) {
+
+                } else {
+                    $http.post("serverside/controllers/gears.files.php", { action: "scan" })
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_type"] !== undefined) {
+                                    //var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    //db_error.init(data);
+                                    //db_error.display();
+                                    $log.error("FSError");
+                                } else {
+                                    angular.forEach(data, function (file) {
+                                        var temp_file = parseFile(file);
+                                        files.items.append(temp_file);
+                                    });
+                                    $log.log("files answer = ", files.items.items);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+            
+            files.add = function () {
 
             };
 
@@ -59,6 +107,7 @@ var grFiles = angular.module("gears.files", [])
 
     })
     .run(function ($modules, $files) {
-
+        $modules.load($files);
+        $files.scan();
     }
 );

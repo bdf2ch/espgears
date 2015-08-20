@@ -14,4 +14,24 @@
         }
     };
 
+
+    class FileItem {
+        public $isDirectory = false;
+        public $title = "";
+        public $size = 0;
+        public $path = "";
+
+        public function __construct ($path_to) {
+            if (file_exists($path_to)) {
+                $this -> path = $path_to;
+                $this -> title = basename($path_to);
+                $this -> size = filesize($path_to);
+                if (is_dir($path_to))
+                    $this -> isDirectory = true;
+                //else
+                //    $this -> size = filesize($path_to);
+            }
+        }
+    };
+
 ?>

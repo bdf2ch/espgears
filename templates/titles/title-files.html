@@ -1,0 +1,16 @@
+<div class="padding-10" ng-controller="TestController">
+    <div class="list-item"
+            ng-class="{'active': title._states_.selected() === true}"
+            ng-repeat="file in files.items.items track by $id(file)"
+            ng-click="selectTitle(title.id.value)">
+        <div class="row">
+            <div>
+                <div class="file-item-img" ng-class="{ 'folder': file.__class__ === 'Folder' }"></div>
+            </div>
+            <div>
+                {{ file.title.value }}<br>
+                <span class="item-description">{{ file.size.value }}</span>
+            </div>
+        </div>
+    </div>
+</div>

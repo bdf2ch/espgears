@@ -1,6 +1,6 @@
 <div class="{{ class + ' ui-tabs' }}">
     <div class="tab-content">
-        <div ng-include="currentTemplate"></div>
+        <div ng-include="currentTab.template"></div>
     </div>
     <ul>
         <li ng-repeat="tab in tabsSource"

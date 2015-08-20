@@ -8,6 +8,7 @@ var application = angular.module("gears.app", [
         "gears",                        // Подключаем модуль с сервисами ядра системы
         "gears.ui",
         "gears.data",
+        "gears.files",
         //"gears.auth",                   // Подключаем модуль с сервисами авторизации
         "gears.app.controllers",        // Подключаем модуль с контроллерами приложения
         "gears.app.filters",             // Подключаем модуль с фильтрами приложения

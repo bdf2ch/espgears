@@ -148,7 +148,6 @@ var titles = angular.module("gears.app.titles",[])
                                 temp_title._model_.fromJSON(title_data);
                                 titles.titles.append(temp_title);
                                 temp_title._backup_.setup();
-                                $log.log("f = ", temp_title);
                             });
                             titles.titles._states_.loaded(true);
                         }
