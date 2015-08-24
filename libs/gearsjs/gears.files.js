@@ -11,7 +11,7 @@ var grFiles = angular.module("gears.files", [])
             files.classes = {
                 /**
                  * File
-                 * ����� �������, ����������� ����
+                 * Набор свойств, описывающих файл
                  */
                 File: {
                     title: new Field({ source: "title", value: "", default_value: "", backupable: true, required: true }),
@@ -23,7 +23,7 @@ var grFiles = angular.module("gears.files", [])
 
                 /**
                  * Folder
-                 * ����� ������, ����������� �����
+                 * Набор свойст, описывающих папку
                  */
                 Folder: {
                     title: new Field({ source: "title" }),
@@ -43,6 +43,16 @@ var grFiles = angular.module("gears.files", [])
                     appendToRoot: function (item) {
                         if (item !== undefined) {
                             this.root.push(item);
+                        }
+                    },
+
+                    appendToFolder: function (path, item) {
+                        if (path !== undefined && item !== undefined) {
+                            angular.forEach(this.items, function (item) {
+                                if (item.path.value === path && item.__class__ === "Folder") {
+                                    item.items.push(item);
+                                }
+                            });
                         }
                     },
 
@@ -75,7 +85,7 @@ var grFiles = angular.module("gears.files", [])
             };
 
 
-            files.scan = function (path) {
+            files.scan = function (path, calback) {
                 if (path !== undefined) {
                     var params = {
                         action: "scan",
@@ -128,6 +138,28 @@ var grFiles = angular.module("gears.files", [])
             files.add = function () {
 
             };
+
+            /**
+             * Коллбэк, вызываемый при завершении сканировании папки на наличие вложений
+             */
+            files.onSuccessScanFolder = function () {};
+
+            /**
+             * Коллбэк, вызываемый при добавлении папки
+             */
+            files.onSuccessAddFolder = function () {};
+
+            /**
+             * Коллбэк, выхзываемый при добавлении файла
+             */
+            files.onSuccessAddFile = function () {};
+
+            /**
+             * Коллбэк, вызываемый при переименованиее файла или папки
+             */
+            files.onSuccessRename = function () {};
+
+
 
             return files;
         }]);

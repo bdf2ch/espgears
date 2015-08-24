@@ -27,7 +27,7 @@
    <ul class="file-tree">
        <li ng-repeat="item in files.items.root">
                <div class="expander-container first-line" ng-init="first_in_line = $first; last_in_line = $last; middle_in_line = $middle">
-                   <div class="collapse" ng-show="item.__class__ === 'Folder' && item.isEmpty.value === false" ng-click="files.scan(item.title.value)">+</div>
+                   <div class="collapse" ng-show="item.__class__ === 'Folder' && item.isEmpty.value === false" ng-click="files.scan(item.title.value, onSuccessScanFolder)">+</div>
                    <div class="expander exp-top-left"></div>
                    <div class="expander exp-top-right" ng-class="{'first-in-line' : first_in_line === true, 'middle-in-line': middle_in_line === true}"></div>
                    <div class="expander exp-bottom-left"></div>

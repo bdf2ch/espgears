@@ -376,4 +376,8 @@ var appControllers = angular.module("gears.app.controllers", [])
 
     .controller("DocumentsController", ["$scope", "$files", function ($scope, $files) {
         $scope.files = $files;
+
+        $scope.onSuccessScanFolder = function () {
+            $log.log("ONSUCCESSSCANFOLDER");
+        };
     }]);
