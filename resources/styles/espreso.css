@@ -94,3 +94,89 @@ body {
 .file-item-img.folder {
   background: url("../img/icons/folder.png");
 }
+.file-tree {
+  position: relative;
+  display: block;
+  overflow: visible;
+  list-style: none;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-left: 0px;
+}
+.file-tree li {
+  position: relative;
+  display: block;
+  margin-left: 0px;
+  float: left;
+  width: 100%;
+}
+.file-tree li .item-container {
+  height: 40px;
+  margin-left: 24px;
+  padding: 5px;
+}
+.file-tree li .item-container:hover {
+  background: mistyrose;
+}
+.file-tree li .expander-container {
+  float: left;
+  width: 24px;
+  height: 100%;
+}
+.file-tree li .expander-container .collapse {
+  position: absolute;
+  top: 17px;
+  left: 6px;
+  padding: 2px;
+  font-size: 12px;
+  line-height: 8px;
+  text-align: center;
+  background: white;
+  cursor: pointer;
+  border: 1px solid black;
+}
+.file-tree li .expander-container .collapse:hover {
+  background: black;
+  color: white;
+}
+.file-tree li .expander-container.first-line .exp-top-right {
+  border-left: 1px dotted black;
+}
+.file-tree li .expander-container.first-line .exp-top-right.first-in-line {
+  border-left: 1px solid transparent;
+  border-bottom: 1px dotted black;
+}
+.file-tree li .expander-container.first-line .exp-top-right.middle-in-line {
+  border-bottom: 1px dotted black;
+}
+.file-tree li .expander-container.first-line .exp-bottom-right {
+  border-left: 1px dotted black;
+}
+.file-tree li .expander-container.first-line .exp-bottom-right.last-in-line {
+  border-left: 1px solid transparent;
+  border-top: 1px dotted black;
+}
+.file-tree li .expander-container .expander {
+  float: left;
+  width: 10px;
+  height: 24px;
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+}
+.file-tree li .item-content {
+  float: left;
+  padding-left: 10px;
+  font-family: "Helvetica";
+  font-size: 15px;
+}
+.file-tree li .item-icon {
+  float: left;
+  width: 32px;
+  height: 30px;
+  margin-left: 5px;
+  margin-top: 5px;
+  background-repeat: no-repeat;
+}
+.file-tree li .item-icon.folder {
+  background: url("../img/icons/folder.png");
+}

@@ -18,21 +18,18 @@ var appControllers = angular.module("gears.app.controllers", [])
                 id: 1,
                 title: "Информация о титуле",
                 template: "templates/titles/title-info.html",
-                controller: function () {},
                 isActive: true
             },
             {
                 id: 2,
                 title: "Монтажная ведомость",
                 template: "templates/titles/title-montage-scheme.html",
-                controller: function () {},
                 isActive: false
             },
             {
                 id: 3,
                 title: "Документы",
                 template: "templates/titles/title-files.html",
-                controller: function () {},
                 isActive: false
             }
         ];
@@ -377,6 +374,6 @@ var appControllers = angular.module("gears.app.controllers", [])
         };
     }])
 
-    .controller("TestController", ["$scope", "$files", function ($scope, $files) {
+    .controller("DocumentsController", ["$scope", "$files", function ($scope, $files) {
         $scope.files = $files;
     }]);

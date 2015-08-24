@@ -143,3 +143,146 @@ html, body {
     background: url("../img/icons/folder.png");
   }
 }
+
+
+
+.file-tree {
+  position: relative;
+  display: block;
+  overflow: visible;
+  list-style: none;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-left: 0px;
+ // border: 1px solid red;
+
+  li {
+    position: relative;
+    display: block;
+    //height: 40px;
+    margin-left: 0px;
+    float: left;
+    width: 100%;
+    //border: 1px solid black;
+
+    .item-container {
+      //position: relative;
+      //float: left;
+      //overflow: visible;
+      //width: 100%;
+      height: 40px;
+      margin-left: 24px;
+      padding: 5px;
+      //border: 1px solid green;
+      &:hover {
+        background: mistyrose;
+      }
+    }
+
+    .expander-container {
+      //position: relative;
+      float: left;
+      width: 24px;
+      height: 100%;
+
+      .collapse {
+        position: absolute;
+        top: 17px;
+        left: 6px;
+        //width: 10px;
+        //height: 10px;
+        padding: 2px;
+        font-size: 12px;
+        line-height: 8px;
+        text-align: center;
+        background: white;
+        cursor: pointer;
+        border: 1px solid black;
+
+        &:hover {
+          background: black;
+          color: white;
+        }
+      }
+
+      &.first-line {
+        .exp-top-left {
+          //background: red;
+        }
+
+        .exp-top-right {
+          border-left: 1px dotted black;
+          //background: blue;
+          &.first-in-line {
+            border-left: 1px solid transparent;
+            border-bottom: 1px dotted black;
+          }
+          &.middle-in-line {
+            border-bottom: 1px dotted black;
+          }
+        }
+
+        .exp-bottom-left {
+          //background: red;
+        }
+
+        .exp-bottom-right {
+          border-left: 1px dotted black;
+          &.last-in-line {
+            border-left: 1px solid transparent;
+            border-top: 1px dotted black;
+          }
+        }
+      }
+
+      .expander {
+        float: left;
+        width: 10px;
+        height: 24px;
+        border-left: 1px solid transparent;
+        border-right: 1px solid transparent;
+      }
+
+      .exp-top-left {
+        //background: red;
+      }
+
+      .exp-top-right {
+        //border-left: 1px dotted black;
+        //background: blue;
+      }
+
+      .exp-bottom-left {
+        //background: red;
+      }
+
+      .exp-bottom-right {
+        //border-left: 1px dotted black;
+        //background: blue;
+      }
+    }
+
+
+
+    .item-content {
+      float: left;
+      //margin-top: 5px;
+      padding-left: 10px;
+      font-family: "Helvetica";
+      font-size: 15px;
+    }
+
+    .item-icon {
+      float: left;
+      width: 32px;
+      height: 30px;
+      margin-left: 5px;
+      margin-top: 5px;
+      background-repeat: no-repeat;
+
+      &.folder {
+        background: url("../img/icons/folder.png");
+      }
+    }
+  }
+}

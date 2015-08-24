@@ -16,7 +16,9 @@ var grFiles = angular.module("gears.files", [])
                 File: {
                     title: new Field({ source: "title", value: "", default_value: "", backupable: true, required: true }),
                     size: new Field({ source: "size", value: 0, default_value: 0 }),
-                    path: new Field({ source: "path", value: "", default_value: "" })
+                    path: new Field({ source: "path", value: "", default_value: "" }),
+                    url: new Field({ source: "url", value: "", default_value: "" }),
+                    parentPath: ""
                 },
 
                 /**
@@ -26,20 +28,21 @@ var grFiles = angular.module("gears.files", [])
                 Folder: {
                     title: new Field({ source: "title" }),
                     path: new Field({ source: "path", value: "", default_value: "" }),
+                    isEmpty: new Field({ source: "isEmpty", value: true, default_value: true }),
                     items: $factory({ classes: ["Collection"], base_class: "Collection" })
+
+                    //_init_: function () {
+                    //    $log.log("isEmpty = ", this.isEmpty);
+                    //}
                 },
 
                 FileTree: {
                     items: [],
+                    root: [],
 
-                    append: function (path, item) {
-                        if (path !== undefined && item !== undefined) {
-                            var length = this.items.length;
-                            for (var i = 0; i < length; i++) {
-                                if (this.items[i].path.value === path) {
-                                    this.items[i].items.append(item);
-                                }
-                            }
+                    appendToRoot: function (item) {
+                        if (item !== undefined) {
+                            this.root.push(item);
                         }
                     },
 
@@ -51,7 +54,7 @@ var grFiles = angular.module("gears.files", [])
             };
 
 
-            files.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            //files.items = $factory({ classes: ["FileTree", "States"], base_class: "FileTree" });
 
 
             var parseFile = function (data) {
@@ -74,7 +77,31 @@ var grFiles = angular.module("gears.files", [])
 
             files.scan = function (path) {
                 if (path !== undefined) {
+                    var params = {
+                        action: "scan",
+                        data: {
+                            path: path
+                        }
+                    };
+                    $http.post("serverside/controllers/gears.files.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_type"] !== undefined) {
+                                    //var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    //db_error.init(data);
+                                    //db_error.display();
+                                    $log.error("FSError");
+                                } else {
+                                    angular.forEach(data, function (file) {
+                                        var temp_file = parseFile(file);
+                                        //files.items.append(temp_file);
+                                        $log.log("file = ", temp_file);
+                                    });
 
+                                }
+                            }
+                        }
+                    );
                 } else {
                     $http.post("serverside/controllers/gears.files.php", { action: "scan" })
                         .success(function (data) {
@@ -87,9 +114,9 @@ var grFiles = angular.module("gears.files", [])
                                 } else {
                                     angular.forEach(data, function (file) {
                                         var temp_file = parseFile(file);
-                                        files.items.append(temp_file);
+                                        files.items.appendToRoot(temp_file);
                                     });
-                                    $log.log("files answer = ", files.items.items);
+                                    $log.log("files answer = ", files.items.root);
                                 }
                             }
                         }
@@ -97,7 +124,7 @@ var grFiles = angular.module("gears.files", [])
                 }
             };
 
-            
+
             files.add = function () {
 
             };
@@ -106,8 +133,10 @@ var grFiles = angular.module("gears.files", [])
         }]);
 
     })
-    .run(function ($modules, $files) {
+    .run(function ($modules, $files, $factory, $log) {
         $modules.load($files);
+        $files.items = $factory({ classes: ["FileTree", "States"], base_class: "FileTree" });
+        $log.log("items = ", $files.items);
         $files.scan();
     }
 );

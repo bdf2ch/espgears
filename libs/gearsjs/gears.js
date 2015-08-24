@@ -289,14 +289,18 @@ var gears = angular.module("gears", [])
                                     if (this.__instance__[prop].constructor === Field &&
                                         this.__instance__[prop].source === data) {
                                         if (JSONdata[data] !== "") {
-                                            if (isNaN(JSONdata[data]) === false)
-                                                this.__instance__[prop].value = parseInt(JSONdata[data]);
-                                            else
+                                            if (isNaN(JSONdata[data]) === false) {
+                                                if (JSONdata[data] !== null) {
+                                                    if (JSONdata[data].constructor === Boolean) {
+                                                        this.__instance__[prop].value = JSONdata[data];
+                                                    } else
+                                                        this.__instance__[prop].value = parseInt(JSONdata[data]);
+                                                }
+                                            } else {
                                                 this.__instance__[prop].value = JSONdata[data];
+                                            }
                                         } else
                                             this.__instance__[prop].value = "";
-
-
 
                                         result++;
                                     }

@@ -1,16 +1,50 @@
-<div class="padding-10" ng-controller="TestController">
-    <div class="list-item"
-            ng-class="{'active': title._states_.selected() === true}"
-            ng-repeat="file in files.items.items track by $id(file)"
-            ng-click="selectTitle(title.id.value)">
-        <div class="row">
-            <div>
-                <div class="file-item-img" ng-class="{ 'folder': file.__class__ === 'Folder' }"></div>
+<script type="text/ng-template" id="files">
+    <ul class="file-tree">
+        <li ng-repeat="item in files.items.items">
+            <div class="expander-container" ng-init="first_in_line = $first; last_in_line = $last; middle_in_line = $middle">
+                <div class="collapse" ng-show="item.__class__ === 'Folder' && item.isEmpty.value === false">+</div>
+                <div class="expander exp-top-left"></div>
+                <div class="expander exp-top-right" ng-class="{'first-in-line' : first_in_line === true, 'middle-in-line': middle_in_line === true}"></div>
+                <div class="expander exp-bottom-left"></div>
+                <div class="expander exp-bottom-right"ng-class="{'last-in-line' : last_in_line === true}"></div>
             </div>
-            <div>
-                {{ file.title.value }}<br>
-                <span class="item-description">{{ file.size.value }}</span>
+            <div class="item-container">
+                <div class="item-icon" ng-class="{'folder': item.__class__ === 'Folder'}"></div>
+                <div class="item-content">
+                    <a href="{{ item.url.value }}" ng-show="item.__class__ === 'File'">{{ item.title.value }}</a>
+                    <span ng-show="item.__class__ === 'Folder'">{{ item.title.value }}</span><br>
+                    <span class="item-description" ng-show="item.__class__ === 'Folder'">Папка</span>
+                    <span class="item-description" ng-show="item.__class__ === 'File'">{{ item.size.value }}</span>
+                </div>
             </div>
-        </div>
-    </div>
+        </li>
+    </ul>
+</script>
+
+
+
+<div class="padding-10" ng-controller="DocumentsController">
+   <ul class="file-tree">
+       <li ng-repeat="item in files.items.root">
+               <div class="expander-container first-line" ng-init="first_in_line = $first; last_in_line = $last; middle_in_line = $middle">
+                   <div class="collapse" ng-show="item.__class__ === 'Folder' && item.isEmpty.value === false" ng-click="files.scan(item.title.value)">+</div>
+                   <div class="expander exp-top-left"></div>
+                   <div class="expander exp-top-right" ng-class="{'first-in-line' : first_in_line === true, 'middle-in-line': middle_in_line === true}"></div>
+                   <div class="expander exp-bottom-left"></div>
+                   <div class="expander exp-bottom-right"ng-class="{'last-in-line' : last_in_line === true}"></div>
+               </div>
+           <div class="item-container">
+               <div class="item-icon" ng-class="{'folder': item.__class__ === 'Folder'}"></div>
+               <div class="item-content">
+                   <a href="{{ item.url.value }}" ng-show="item.__class__ === 'File'">{{ item.title.value }}</a>
+                   <span ng-show="item.__class__ === 'Folder'">{{ item.title.value }}</span><br>
+                   <span class="item-description" ng-show="item.__class__ === 'Folder'">Папка</span>
+                   <span class="item-description" ng-show="item.__class__ === 'File'">{{ item.size.value }}</span>
+               </div>
+
+               <div ng-include="'files'" ng-if="item.__class__ === 'Folder' && item.items.size() > 0"></div>
+
+           </div>
+       </li>
+   </ul>
 </div>
