@@ -97,11 +97,45 @@ body {
 .file-tree {
   position: relative;
   display: block;
-  overflow: visible;
+  overflow: hidden;
   list-style: none;
   margin-top: 0px;
   margin-bottom: 0px;
   padding-left: 0px;
+}
+.file-tree.inner {
+  margin-left: 12px;
+}
+.file-tree.inner li {
+  padding-left: 25px;
+  border-left: 1px dotted black;
+}
+.file-tree.inner li.last-in-line .exp-top-right {
+  border-left: 1px dotted black;
+  border-bottom: 1px dotted black;
+}
+.file-tree.inner li.last-in-parent {
+  border-left: 0px solid transparent !important;
+}
+.file-tree.inner li.in-the-middle .exp-top-right {
+  border-left: 1px dotted black;
+  border-bottom: 1px dotted black;
+}
+.file-tree.inner li.in-the-middle .exp-bottom-right {
+  border-left: 1px dotted black;
+}
+.file-tree.inner li.first-in-line .exp-bottom-right {
+  border-left: 1px dotted black;
+}
+.file-tree.inner li.only-one .exp-bottom-right {
+  border-left: 1px solid transparent;
+}
+.file-tree.inner .expander-container .collapse {
+  left: 0px;
+}
+.file-tree.inner .expander-container .exp-top-right.first-in-line {
+  border-left: 1px dotted black;
+  border-bottom: 1px dotted black;
 }
 .file-tree li {
   position: relative;
@@ -118,15 +152,11 @@ body {
 .file-tree li .item-container:hover {
   background: mistyrose;
 }
-.file-tree li .expander-container {
-  float: left;
-  width: 24px;
-  height: 100%;
-}
-.file-tree li .expander-container .collapse {
-  position: absolute;
-  top: 17px;
-  left: 6px;
+.file-tree li .collapse {
+  position: relative;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
   padding: 2px;
   font-size: 12px;
   line-height: 8px;
@@ -134,10 +164,17 @@ body {
   background: white;
   cursor: pointer;
   border: 1px solid black;
+  margin-top: 17px;
+  margin-left: 5px;
 }
-.file-tree li .expander-container .collapse:hover {
+.file-tree li .collapse:hover {
   background: black;
   color: white;
+}
+.file-tree li .expander-container {
+  float: left;
+  width: 24px;
+  height: 100%;
 }
 .file-tree li .expander-container.first-line .exp-top-right {
   border-left: 1px dotted black;
@@ -155,6 +192,9 @@ body {
 .file-tree li .expander-container.first-line .exp-bottom-right.last-in-line {
   border-left: 1px solid transparent;
   border-top: 1px dotted black;
+}
+.file-tree li .expander-container.first-line .exp-bottom-right.expanded {
+  border-left: 1px dotted black;
 }
 .file-tree li .expander-container .expander {
   float: left;
@@ -179,4 +219,7 @@ body {
 }
 .file-tree li .item-icon.folder {
   background: url("../img/icons/folder.png");
+}
+.file-tree li .item-icon.file {
+  background: url("../img/icons/file.png");
 }

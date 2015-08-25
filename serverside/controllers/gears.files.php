@@ -6,7 +6,7 @@
 
     switch ($postdata -> action) {
         case "scan":
-            if ($postdata -> data !== null)
+            if ($postdata -> data -> path !== null)
                 scan_folder($postdata -> data -> path);
             else
                 scan_folder();
@@ -18,7 +18,7 @@
         $result = array();
         $target = "";
         if (!is_null($path))
-            $target = $_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR."uploads".DIRECTORY_SEPARATOR.$path;
+            $target = $_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR."uploads".DIRECTORY_SEPARATOR.iconv("UTF-8", "windows-1251", $path);
         else
             $target = $_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR."uploads";
         if (file_exists($target)) {
@@ -26,7 +26,7 @@
                 if ($handler = opendir($target)) {
                     while (false !== ($file = readdir($handler))) {
                         if ($file !== "." && $file !== "..") {
-                            $full_path = $path.DIRECTORY_SEPARATOR.$file;
+                            $full_path = iconv("UTF-8", "windows-1251", $path).DIRECTORY_SEPARATOR.$file;
                             $temp_file = new FileItem($full_path);
                             array_push($result, $temp_file);
                         }

@@ -33,7 +33,7 @@
                             $this -> isEmpty = false;
                     }
                     $this -> path = iconv("windows-1251", "UTF-8", $path);
-                    $this -> url = "uploads".DIRECTORY_SEPARATOR.$path;
+                    $this -> url = "uploads".iconv("windows-1251", "UTF-8", $path);
                     $this -> title = iconv("windows-1251", "UTF-8", basename($path));
                     $this -> size = filesize($full_path);
 

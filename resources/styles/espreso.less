@@ -149,61 +149,120 @@ html, body {
 .file-tree {
   position: relative;
   display: block;
-  overflow: visible;
+  overflow: hidden;
   list-style: none;
   margin-top: 0px;
   margin-bottom: 0px;
   padding-left: 0px;
- // border: 1px solid red;
+
+
+  &.inner {
+    margin-left: 12px;
+
+
+    li {
+      padding-left: 25px;
+      border-left: 1px dotted black;
+
+      &.last-in-line {
+        .exp-top-right {
+          border-left: 1px dotted black;
+          border-bottom: 1px dotted black;
+        }
+      }
+
+      &.last-in-parent {
+        border-left: 0px solid transparent !important;
+      }
+
+      &.in-the-middle {
+        .exp-top-right {
+          border-left: 1px dotted black;
+          border-bottom: 1px dotted black;
+        }
+        .exp-bottom-right {
+          border-left: 1px dotted black;
+        }
+      }
+
+      &.first-in-line {
+        .exp-bottom-right {
+          border-left: 1px dotted black;
+        }
+      }
+
+      &.only-one {
+        .exp-bottom-right {
+          border-left: 1px solid transparent;
+        }
+      }
+    }
+
+    .expander-container {
+      //border-left: 1px dotted black;
+      .collapse {
+        left: 0px;
+      }
+
+      .exp-top-right {
+        &.first-in-line {
+          border-left: 1px dotted black;
+          border-bottom: 1px dotted black;
+        }
+      }
+    }
+
+
+  }
+
 
   li {
     position: relative;
     display: block;
-    //height: 40px;
     margin-left: 0px;
     float: left;
     width: 100%;
-    //border: 1px solid black;
 
     .item-container {
-      //position: relative;
-      //float: left;
-      //overflow: visible;
-      //width: 100%;
       height: 40px;
       margin-left: 24px;
       padding: 5px;
-      //border: 1px solid green;
+
       &:hover {
         background: mistyrose;
       }
     }
 
+
+    .collapse {
+      position: relative;
+      display: inline-block;
+      //top: 17px;
+      //left: 6px;
+      width: 8px;
+      height: 8px;
+      padding: 2px;
+      font-size: 12px;
+      line-height: 8px;
+      text-align: center;
+      background: white;
+      cursor: pointer;
+      border: 1px solid black;
+      margin-top: 17px;
+      margin-left: 5px;
+
+      &:hover {
+        background: black;
+        color: white;
+      }
+    }
+
     .expander-container {
-      //position: relative;
       float: left;
       width: 24px;
       height: 100%;
 
-      .collapse {
-        position: absolute;
-        top: 17px;
-        left: 6px;
-        //width: 10px;
-        //height: 10px;
-        padding: 2px;
-        font-size: 12px;
-        line-height: 8px;
-        text-align: center;
-        background: white;
-        cursor: pointer;
-        border: 1px solid black;
 
-        &:hover {
-          background: black;
-          color: white;
-        }
-      }
 
       &.first-line {
         .exp-top-left {
@@ -231,6 +290,9 @@ html, body {
           &.last-in-line {
             border-left: 1px solid transparent;
             border-top: 1px dotted black;
+          }
+          &.expanded {
+            border-left: 1px dotted black;
           }
         }
       }
@@ -282,6 +344,10 @@ html, body {
 
       &.folder {
         background: url("../img/icons/folder.png");
+      }
+
+      &.file {
+        background: url("../img/icons/file.png");
       }
     }
   }

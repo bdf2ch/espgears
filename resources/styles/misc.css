@@ -334,19 +334,24 @@ select {
   overflow: auto;
   left: 0px;
   right: 0px;
+  z-index: 1;
+}
+.ui-tabs .tab-content.top {
+  top: 35px;
+  bottom: 0px;
+  border-top: 1px solid lightgrey;
+}
+.ui-tabs .tab-content.bottom {
   top: 0px;
   bottom: 70px;
-  z-index: 1;
   border-bottom: 1px solid lightgrey;
 }
 .ui-tabs .tab-container {
   position: absolute;
+  display: block;
   left: 0px;
   right: 0px;
-  bottom: 0px;
-  height: 70px;
-  display: block;
-  overflow: visible;
+  height: 30px;
   margin-top: 0px;
   margin-left: 0px;
   margin-bottom: 0px;
@@ -361,17 +366,37 @@ select {
 .ui-tabs .tab-container li {
   display: inline-block;
   float: left;
-  margin-top: -1px;
   margin-left: 3px;
-  padding: 6px 6px;
+  cursor: pointer;
+  text-transform: uppercase;
+  background: white;
+  padding: 6px;
   list-style-type: none;
   font-family: "Helvetica";
   font-size: 12px;
   color: gray;
-  text-transform: uppercase;
-  background: white;
   border: 1px solid lightgrey;
-  cursor: pointer;
+}
+.ui-tabs .tab-container.top {
+  top: 0px;
+  padding-top: 5px;
+}
+.ui-tabs .tab-container.top li.active {
+  padding-bottom: 8px !important;
+  padding-bottom: 6px;
+  color: black;
+  border-bottom: 1px solid white;
+}
+.ui-tabs .tab-container.bottom {
+  bottom: 0px;
+}
+.ui-tabs .tab-container.bottom li {
+  margin-top: -1px;
+}
+.ui-tabs .tab-container.bottom li.active {
+  padding-top: 12px;
+  color: black;
+  border-top: 1px solid white;
 }
 .ui-tabs .tab-container li.active {
   padding-top: 12px;

@@ -445,20 +445,33 @@ select {
     overflow: auto;
     left: 0px;
     right: 0px;
-    top: 0px;
-    bottom: 70px;
+    //top: 0px;
+    //bottom: 70px;
     z-index: 1;
-    border-bottom: 1px solid lightgrey;
+
+
+    &.top {
+      top: 35px;
+      bottom: 0px;
+      border-top: 1px solid lightgrey;
+    }
+
+    &.bottom {
+      top: 0px;
+      bottom: 70px;
+      border-bottom: 1px solid lightgrey;
+    }
   }
 
   .tab-container {
     position: absolute;
+    display: block;
     left: 0px;
     right: 0px;
-    bottom: 0px;
-    height: 70px;
-    display: block;
-    overflow: visible;
+    //bottom: 0px;
+    height: 30px;
+
+    //overflow: visible;
     //float: left;
     margin-top: 0px;
     margin-left: 0px;
@@ -474,17 +487,54 @@ select {
     li {
       display: inline-block;
       float: left;
-      margin-top: -1px;
       margin-left: 3px;
-      padding: 6px 6px;
+      cursor: pointer;
+      text-transform: uppercase;
+      background: white;
+      padding: 6px;
       list-style-type: none;
       font-family: "Helvetica";
       font-size: 12px;
       color: gray;
-      text-transform: uppercase;
-      background: white;
       border: 1px solid lightgrey;
-      cursor: pointer;
+    }
+
+    &.top {
+      top: 0px;
+      padding-top: 5px;
+      li {
+        &.active {
+          padding-bottom: 8px !important;
+          padding-bottom: 6px;
+          color: black;
+          border-bottom: 1px solid white;
+        }
+      }
+    }
+
+    &.bottom {
+      bottom: 0px;
+      li {
+        margin-top: -1px;
+        &.active {
+          padding-top: 12px;
+          color: black;
+          border-top: 1px solid white;
+        }
+      }
+    }
+
+    li {
+
+
+
+
+
+
+
+
+
+
 
 
       &:hover {

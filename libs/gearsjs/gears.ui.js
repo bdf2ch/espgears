@@ -449,7 +449,8 @@ grUi.directive("tabs", ["$log", function ($log) {
         restrict: "E",
         scope: {
             tabsSource: "=",
-            class: "@"
+            class: "@",
+            tabsPosition: "@"
         },
         templateUrl: "templates/ui/tabs/tabs.html",
         link: function (scope, element, attr, ctrl) {
