@@ -147,18 +147,22 @@
 
 
 .pane-container {
-  display: table;
+  display: table-row;
   height: 100%;
 }
 
 
 .pane {
-  position: relative;
+  //position: relative;
   display: table-cell;
   border-right: 1px solid #E3E3E3;
 
   .header {
+  display: table-cell;
+    float: left;
+    width: 100%;
     padding: 5px;
+    box-sizing: border-box;
     background-color: #fafafa;
     background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
@@ -208,7 +212,11 @@
   }
 
   .content {
-    height: 100%;
+    display: table-column;
+    float: left;
+    //height: 100%;
+    width: 100%;
+    box-sizing: border-box;
     padding: 5px;
 
     .list-item {
@@ -436,8 +444,11 @@ select {
 .ui-tabs {
   position: relative;
   display: block;
-  width: 100%;
-  height: 100%;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  //height: 100%;
 
   .tab-content {
     display: block;
@@ -445,10 +456,7 @@ select {
     overflow: auto;
     left: 0px;
     right: 0px;
-    //top: 0px;
-    //bottom: 70px;
     z-index: 1;
-
 
     &.top {
       top: 35px;
@@ -458,7 +466,7 @@ select {
 
     &.bottom {
       top: 0px;
-      bottom: 70px;
+      bottom: 35px;
       border-bottom: 1px solid lightgrey;
     }
   }
@@ -502,10 +510,11 @@ select {
     &.top {
       top: 0px;
       padding-top: 5px;
+      margin-bottom: -1px;
       li {
         &.active {
-          padding-bottom: 8px !important;
-          padding-bottom: 6px;
+          //padding-bottom: 9px;
+          //padding-bottom: 6px;
           color: black;
           border-bottom: 1px solid white;
         }
@@ -513,7 +522,7 @@ select {
     }
 
     &.bottom {
-      bottom: 0px;
+      bottom: 40px;
       li {
         margin-top: -1px;
         &.active {
@@ -524,30 +533,64 @@ select {
       }
     }
 
-    li {
+  }
+
+}
 
 
 
 
+.gears-ui-tabs {
+  //left: 0px;
+  //right: 0px;
+  //top: 0px;
+  //bottom: 0px;
+  position: relative;
+  height: 100%;
+  border: 1px solid red;
 
+  .tab-container {
+    //position: absolute;
+    display: block;
+    //float: left;
+    //left: 0px;
+    //right: 0px;
+    height: 35px;
+    //width: 100%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    background: green;
 
+    &.top {
+      top: 0px;
+    }
 
+    &.bottom {
 
-
-
-
-
-      &:hover {
-        //transition: 0.1s;
-        //padding-top: 10px;
-      }
-
-      &.active {
-        padding-top: 12px;
-        color: black;
-        border-top: 1px solid white;
-      }
     }
   }
 
+  .tab-content {
+    position: relative;
+    display: block;
+    clear: left;
+    //float: left;
+    left: 0px;
+    //right: 0px;
+    //width: 100%;
+    height: 100%;
+    border: 1px dashed blue;
+    //background: blue;
+
+    &.top {
+      //top: 35px;
+      //margin-top: 35px;
+      //bottom: 0px;
+    }
+
+    &.bottom {
+      top: 0px;
+      bottom: 35px;
+    }
+  }
 }

@@ -1,11 +1,13 @@
-<div class="{{ class + ' ui-tabs' }}">
+<div class="gears-ui-tabs">
     <ul class="tab-container top" ng-if="tabsPosition === 'top'">
         <li ng-repeat="tab in tabsSource"
             ng-class="{ 'active': tab.isActive === true }"
             ng-click="select(tab.id)">{{ tab.title }}</li>
     </ul>
-    <div class="tab-content" ng-class="{'top': tabsPosition === 'top', 'bottom': tabsPosition === 'bottom'}">
-        <div ng-include="currentTab.template"></div>
+    <div class="tab-content"
+         ng-class="{'top': tabsPosition === 'top', 'bottom': tabsPosition === 'bottom'}"
+         ng-include="currentTab.template">
+       <!-- <div ng-include="currentTab.template"></div> -->
     </div>
     <ul class="tab-container bottom" ng-if="tabsPosition === 'bottom'">
         <li ng-repeat="tab in tabsSource"

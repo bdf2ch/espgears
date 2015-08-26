@@ -113,16 +113,19 @@
   height: 100%;
 }
 .pane-container {
-  display: table;
+  display: table-row;
   height: 100%;
 }
 .pane {
-  position: relative;
   display: table-cell;
   border-right: 1px solid #E3E3E3;
 }
 .pane .header {
+  display: table-cell;
+  float: left;
+  width: 100%;
   padding: 5px;
+  box-sizing: border-box;
   background-color: #fafafa;
   background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
@@ -162,7 +165,10 @@
   border-left: 1px dotted lightgrey;
 }
 .pane .content {
-  height: 100%;
+  display: table-column;
+  float: left;
+  width: 100%;
+  box-sizing: border-box;
   padding: 5px;
 }
 .pane .content .list-item {
@@ -325,8 +331,10 @@ select {
 .ui-tabs {
   position: relative;
   display: block;
-  width: 100%;
-  height: 100%;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
 }
 .ui-tabs .tab-content {
   display: block;
@@ -343,7 +351,7 @@ select {
 }
 .ui-tabs .tab-content.bottom {
   top: 0px;
-  bottom: 70px;
+  bottom: 35px;
   border-bottom: 1px solid lightgrey;
 }
 .ui-tabs .tab-container {
@@ -380,15 +388,14 @@ select {
 .ui-tabs .tab-container.top {
   top: 0px;
   padding-top: 5px;
+  margin-bottom: -1px;
 }
 .ui-tabs .tab-container.top li.active {
-  padding-bottom: 8px !important;
-  padding-bottom: 6px;
   color: black;
   border-bottom: 1px solid white;
 }
 .ui-tabs .tab-container.bottom {
-  bottom: 0px;
+  bottom: 40px;
 }
 .ui-tabs .tab-container.bottom li {
   margin-top: -1px;
@@ -398,8 +405,30 @@ select {
   color: black;
   border-top: 1px solid white;
 }
-.ui-tabs .tab-container li.active {
-  padding-top: 12px;
-  color: black;
-  border-top: 1px solid white;
+.gears-ui-tabs {
+  position: relative;
+  height: 100%;
+  border: 1px solid red;
+}
+.gears-ui-tabs .tab-container {
+  display: block;
+  height: 35px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background: green;
+}
+.gears-ui-tabs .tab-container.top {
+  top: 0px;
+}
+.gears-ui-tabs .tab-content {
+  position: relative;
+  display: block;
+  clear: left;
+  left: 0px;
+  height: 100%;
+  border: 1px dashed blue;
+}
+.gears-ui-tabs .tab-content.bottom {
+  top: 0px;
+  bottom: 35px;
 }
