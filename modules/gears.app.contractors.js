@@ -105,7 +105,7 @@ var contractors = angular.module("gears.app.contractors", [])
     })
     .run(function ($modules, $contractors) {
         $modules.load($contractors);
-        $contractors.getContractorTypes();
-        $contractors.getContractors();
+        //$contractors.getContractorTypes();
+        //$contractors.getContractors();
     }
 );

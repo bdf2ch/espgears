@@ -102,7 +102,7 @@ var misc = angular.module("gears.app.misc", [])
     })
     .run(function ($modules, $misc) {
         $modules.load($misc);
-        $misc.getPowerLines();
-        $misc.getCableTypes();
+        //$misc.getPowerLines();
+        //$misc.getCableTypes();
     }
 );

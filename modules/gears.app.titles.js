@@ -23,6 +23,7 @@ var titles = angular.module("gears.app.titles",[])
                 Title: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     title: new Field({ source: "TITUL_NAME", value: "", default_value: "", backupable: true, required: true }),
+                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
                     startPointId: new Field({ source: "START_POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     startNodeTypeId: new Field({ source: "START_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     startNodeId: new Field({ source: "START_OBJECT_ID", value: 0, default_value: 0, backupable: true, required: true }),

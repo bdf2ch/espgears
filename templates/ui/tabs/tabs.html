@@ -1,17 +1,52 @@
+<!--
 <div class="gears-ui-tabs">
-    <ul class="tab-container top" ng-if="tabsPosition === 'top'">
+
+    <ul class="tabs top" ng-if="tabsPosition === 'top'">
         <li ng-repeat="tab in tabsSource"
             ng-class="{ 'active': tab.isActive === true }"
-            ng-click="select(tab.id)">{{ tab.title }}</li>
+            ng-click="select(tab.id)">{{ tab.title }}
+        </li>
     </ul>
     <div class="tab-content"
          ng-class="{'top': tabsPosition === 'top', 'bottom': tabsPosition === 'bottom'}"
          ng-include="currentTab.template">
-       <!-- <div ng-include="currentTab.template"></div> -->
     </div>
-    <ul class="tab-container bottom" ng-if="tabsPosition === 'bottom'">
+    <ul class="tabs bottom" ng-if="tabsPosition === 'bottom'">
         <li ng-repeat="tab in tabsSource"
             ng-class="{ 'active': tab.isActive === true }"
-            ng-click="select(tab.id)">{{ tab.title }}</li>
+            ng-click="select(tab.id)">{{ tab.title }}
+        </li>
     </ul>
 </div>
+-->
+
+
+
+<table class="gears-ui-tabs_">
+    <tr ng-if="tabsPosition === 'top'">
+        <td class="tab-container">
+            <ul class="tabs top" ng-if="tabsPosition === 'top'">
+                <li ng-repeat="tab in tabsSource"
+                    ng-class="{'active': tab.isActive === true}"
+                    ng-click="select(tab.id)">{{ tab.title }}
+                </li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td class="tab-content"
+            ng-class="{'top': tabsPosition === 'top', 'bottom': tabsPosition === 'bottom'}"
+            ng-include="currentTab.template">
+        </td>
+    </tr>
+    <tr ng-if="tabsPosition === 'bottom'">
+        <td>
+            <ul class="tabs bottom" ng-if="tabsPosition === 'bottom'">
+                <li ng-repeat="tab in tabsSource"
+                    ng-class="{ 'active': tab.isActive === true }"
+                    ng-click="select(tab.id)">{{ tab.title }}
+                </li>
+            </ul>
+        </td>
+    </tr>
+</table>

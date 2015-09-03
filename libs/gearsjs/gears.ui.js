@@ -141,6 +141,14 @@ var grUi = angular.module("gears.ui", [])
 
             return popup;
         }]);
+
+        $provide.factory("$modals", ["$log", "$factory", function ($log, $factory) {
+            var modals = {};
+
+            module.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+
+            return modals;
+        }]);
     })
     .run(function ($modules, $popup) {
         $modules.load($popup);

@@ -138,30 +138,61 @@
 
 .width-100 {
   position: relative;
+  float: left;
   width: 100%;
 }
 
+
+
+/*****
+* HEIGHTS
+*****/
 .height-100 {
   height: 100%;
 }
 
 
-.pane-container {
-  display: table-row;
+
+
+/*****
+* PANE
+*****/
+.column-container {
+  display: block;
+  position: relative;
+  //overflow: auto;
   height: 100%;
+  box-sizing: border-box;
+  //border: 1px solid black;
 }
 
 
-.pane {
-  //position: relative;
-  display: table-cell;
-  border-right: 1px solid #E3E3E3;
 
-  .header {
-  display: table-cell;
+/*****
+* COLUMN
+*****/
+.column {
+  position: relative;
+  float: left;
+  height: 100%;
+  padding: 0px;
+  border-spacing: 0px;
+  border-right: 1px solid #E3E3E3;
+  box-sizing: border-box;
+
+  td {
+    position: relative;
+    //height: 100%;
+  }
+
+  .column-header {
+    //display: table-row;
+    //position: absolute;
     float: left;
     width: 100%;
+    height: 30px;
     padding: 5px;
+    vertical-align: middle;
     box-sizing: border-box;
     background-color: #fafafa;
     background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
@@ -211,13 +242,26 @@
     }
   }
 
-  .content {
-    display: table-column;
-    float: left;
-    //height: 100%;
-    width: 100%;
-    box-sizing: border-box;
+  .column-content-container {
+    position: relative;
+    height: 100%;
     padding: 5px;
+    box-sizing: content-box;
+    vertical-align: top;
+    border: 1px solid red;
+
+
+    .column-content {
+      position:absolute;
+      top:0;
+      left:0;
+      width: 100%;
+      height: 100%;
+      //border: 1px solid blue;
+      box-sizing: border-box;
+      //overflow-x: hidden;
+    }
+
 
     .list-item {
       margin-bottom: 5px;
@@ -366,6 +410,52 @@ select {
 }
 
 
+.list {
+  padding-left: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+
+  li {
+    list-style-type: none;
+    margin-bottom: 2px;
+    padding: 10px;
+    //border-bottom: 1px solid #F5F5F5;
+  }
+
+  &.hover {
+    cursor: pointer;
+
+    li.active {
+      color: white;
+      background: #2196F3;
+
+      &:hover {
+        background: #2196F3;
+      }
+    }
+
+    li:hover {
+      background: #BBDEFB;
+    }
+  }
+}
+
+
+.primary-text {
+  font-family: "Roboto Regular";
+  font-size: 16px;
+}
+
+.secondary-text {
+  font-family: "Roboto Regular";
+  font-size: 14px;
+  color: #757575;
+
+  &.light {
+    color: #FAFAFA;
+  }
+}
+
 
 
 
@@ -374,6 +464,10 @@ select {
 *****/
 .no-padding {
   padding: 0px !important;
+}
+
+.padding-5 {
+  padding: 5px;
 }
 
 .padding-10 {
@@ -541,33 +635,66 @@ select {
 
 
 .gears-ui-tabs {
-  //left: 0px;
-  //right: 0px;
-  //top: 0px;
-  //bottom: 0px;
   position: relative;
   height: 100%;
-  border: 1px solid red;
+  box-sizing: border-box;
+  //border: 1px solid red;
 
-  .tab-container {
-    //position: absolute;
+  .tabs {
+    position: relative;
     display: block;
-    //float: left;
-    //left: 0px;
-    //right: 0px;
-    height: 35px;
-    //width: 100%;
+    height: 40px;
     margin-top: 0px;
     margin-bottom: 0px;
-    background: green;
+    padding-top: 10px;
+    padding-left: 10px;
+    box-sizing: border-box;
+
+    li {
+      position: relative;
+      display: inline-block;
+      padding: 5px 10px;
+      margin-right: 5px;
+      vertical-align: bottom;
+      z-index: 1;
+      font-family: "Helvetica";
+      font-size: 12px;
+      color: gray;
+      text-transform: uppercase;
+      background: white;
+      border: 1px solid lightgrey;
+      cursor: pointer;
+    }
 
     &.top {
-      top: 0px;
+      background-image: -moz-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#ffffff));
+      background-image: -webkit-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: -o-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: linear-gradient(to top, #F7F7F7, #ffffff);
+
+      li {
+        margin-top: 5px;
+        &.active {
+          z-index: 3;
+          margin-top: -3px;
+          padding-bottom: 10px;
+          color: black;
+          border-bottom: 1px solid white;
+        }
+      }
     }
 
     &.bottom {
-
+      background-image: -moz-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#ffffff));
+      background-image: -webkit-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: -o-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: linear-gradient(to bottom, #F7F7F7, #ffffff);
     }
+
+
+
   }
 
   .tab-content {
@@ -578,19 +705,128 @@ select {
     left: 0px;
     //right: 0px;
     //width: 100%;
-    height: 100%;
-    border: 1px dashed blue;
-    //background: blue;
+    //height: 100%;
+    border: 1px solid blue;
+    background: white;
+    box-sizing: content-box;
+    z-index: 2;
 
     &.top {
       //top: 35px;
       //margin-top: 35px;
       //bottom: 0px;
+      border-top: 1px solid lightgrey;
     }
 
     &.bottom {
-      top: 0px;
-      bottom: 35px;
+      border-bottom: 1px solid lightgrey;
+    }
+  }
+}
+
+
+
+
+/*****
+* TABS
+*****/
+.gears-ui-tabs_ {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  border-spacing: 0px;
+  //border: 1px solid red;
+
+  .tab-container {
+    height: 35px;
+    //border: 1px solid blue;
+  }
+
+  .tabs {
+    position: relative;
+    height: 35px;
+    overflow: visible;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 10px;
+    box-sizing: border-box;
+
+    li {
+      position: relative;
+      display: inline-block;
+      float: left;
+      margin-right: 5px;
+      padding: 5px 10px;
+      vertical-align: bottom;
+      z-index: 1;
+      font-family: "Helvetica";
+      font-size: 12px;
+      color: gray;
+      text-transform: uppercase;
+      background: white;
+      border: 1px solid lightgrey;
+      cursor: pointer;
+    }
+
+    &.top {
+      padding-top: 8px;
+      background-image: -moz-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#ffffff));
+      background-image: -webkit-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: -o-linear-gradient(top, #f2f2f2, #ffffff);
+      background-image: linear-gradient(to top, #F7F7F7, #ffffff);
+
+      li {
+        margin-top: 5px;
+        margin-bottom: -4px;
+        &.active {
+          z-index: 3;
+          margin-top: -2px;
+          padding-bottom: 10px;
+          color: black;
+          border-bottom: 1px solid white;
+        }
+      }
+    }
+
+    &.bottom {
+      padding-bottom: 8px;
+      background-image: -moz-linear-gradient(bottom, #f2f2f2, #ffffff);
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#f2f2f2), to(#ffffff));
+      background-image: -webkit-linear-gradient(bottom, #f2f2f2, #ffffff);
+      background-image: -o-linear-gradient(bottom, #f2f2f2, #ffffff);
+      background-image: linear-gradient(to bottom, #F7F7F7, #ffffff);
+
+      li {
+        margin-bottom: 5px;
+        margin-top: -2px;
+        &.active {
+          z-index: 3;
+          margin-top: -2px;
+          padding-top: 10px;
+          color: black;
+          border-top: 1px solid white;
+        }
+      }
+    }
+  }
+
+  .tab-content {
+    position: relative;
+    height: 100%;
+    vertical-align: top;
+    background: white;
+    box-sizing: content-box;
+    z-index: 2;
+    //border: 1px solid green;
+
+    &.top {
+      border-top: 1px solid lightgrey;
+    }
+
+    &.bottom {
+      border-bottom: 1px solid lightgrey;
     }
   }
 }

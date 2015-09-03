@@ -2,6 +2,7 @@ html,
 body {
   height: 100%;
   margin: 0px;
+  padding: 0px;
   overflow: hidden;
 }
 #app-wrapper {
@@ -16,6 +17,9 @@ body {
 #app-menu {
   width: 50px;
   background: url("../img/menu_background.png");
+}
+#app-view {
+  vertical-align: top;
 }
 /*****
 * NEW-TITLE-TEMPLATE
