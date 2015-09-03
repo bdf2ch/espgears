@@ -53,12 +53,25 @@ var appControllers = angular.module("gears.app.controllers", [])
                         } else {
                             title._states_.selected(true);
                             $scope.app.currentTitle = title;
+                            $titles.getTitleNodes(titleId, -1, -1, -1);
                         }
                     } else
                         title._states_.selected(false);
                 });
             }
         };
+
+
+        $scope.onSuccessGetTitleNodes = function (data) {
+            if (data !== undefined) {
+                angular.forEach(data, function (node) {
+                    var temp_node = $nodes.parseNode(node)
+                    $log.log("appended node = ", temp_node);
+                    $titles.currentTitleNodes.appendNode({ node: temp_node });
+                });
+            }
+        };
+
     }])
 
 
@@ -372,6 +385,11 @@ var appControllers = angular.module("gears.app.controllers", [])
                 });
             }
         };
+    }])
+
+
+    .controller("MontageSchemeController", ["$log", "$scope", "$application", "$titles", "$nodes", function ($log, $scope, $application, $titles, $nodes) {
+
     }])
 
     .controller("DocumentsController", ["$scope", "$files", function ($scope, $files) {

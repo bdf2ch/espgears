@@ -67,61 +67,40 @@ var titles = angular.module("gears.app.titles",[])
                  */
                 TitleNodes: {
                     nodes: [],
-                    path: {
-                        __instance__: "",
-                        nodes: [],
+                    root: [],
 
-                        append: function (node) {
-                            if (node !== undefined) {
-                                if (this.__instance__.path.nodes.length > 0) {
-                                    node.previousNodeId = this.__instance__.path.nodes[this.__instance__.path.nodes.length - 1].id.value;
-                                    this.__instance__.path.nodes[this.__instance__.path.nodes.length - 1].nextNodeId = node.id.value;
-                                } else
-                                    node.previousNodeId = -1;
+                    appendNode: function (parameters) {
+                        if (parameters !== undefined) {
+                            if (parameters["node"] !== undefined) {
+                                var node = parameters["node"];
+                                if (parameters["nodeId"] !== undefined && parameters["branchId"] !== undefined) {
+                                    var length = this.nodes.length;
+                                    for (var i = 0; i < length; i++) {
+                                        if (this.nodes[i].id.value === parameters["nodeId"]) {
 
-                                node.nextNodeId = -1;
-                                node.haveBranches = node.branchesCount.value > 0 ? true : false;
-                                node.collapsed = true;
-
-                                this.__instance__.path.nodes.push(node);
-                                this.__instance__.nodes.push(node);
+                                        }
+                                    }
+                                } else {
+                                    node.haveBranches = false;
+                                    node.isExpanded = false;
+                                    node.branches = [];
+                                    node.parentId = -1;
+                                    node.prevNodeId = this.root.length > 0 ? this.root[this.root.length - 1].id.value : -1;
+                                    node.nextNodeId = -1;
+                                    this.root.push(node);
+                                    this.nodes.push(node);
+                                    return true;
+                                }
+                            } else {
+                                $log.error("TitleNodes: Не задан узел, который требуется добавить");
+                                return false;
                             }
+                        } else {
+                            $log.error("TitleNodes: Не заданы параметры при добавлении узла");
+                            return false;
                         }
-                    },
-
-                    /**
-                     * Возвращает узел с заданным идентификатором
-                     * @param nodeId {number} - Идентификатор узла
-                     * @returns {boolean / object} - Возвращает искомый узел, в противном случае - false
-                     */
-                    getNode: function (nodeId) {
-                        var result = false;
-                        if (nodeId !== undefined) {
-                            var length = this.nodes.length;
-                            for (var i = 0; i < length; i++) {
-                                if (this.nodes[i].id.value === nodeId)
-                                    result = this.nodes[i];
-                            }
-                        }
-                        return result;
-                    },
-
-                    /**
-                     * Возвращает массив ответвлений узла с заданныи идентификатором
-                     * @param nodeId {number} - Идентификатор узла
-                     * @returns {boolean / array} - Возвращает массив ответвлений узла, в противном случае - false
-                     */
-                    getBranches: function (nodeId) {
-                        var result = false;
-                        if (nodeId !== undefined) {
-                            var length = this.nodes.length;
-                            for (var i = 0; i < length; i++) {
-                                if (this.nodes[i].branches !== undefined)
-                                    result = this.nodes[i].branches;
-                            }
-                        }
-                        return result;
                     }
+
                 }
 
 
@@ -290,6 +269,36 @@ var titles = angular.module("gears.app.titles",[])
                         action: "getBoundaryNodes",
                         data: {
                             id: titleId
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.getTitleNodes = function (titleId, titlePartId, nodeId, branchId, callback) {
+                if (titleId !== undefined) {
+                    var params = {
+                        action: "getTitleNodes",
+                        data: {
+                            titleId: titleId,
+                            titlePartId: titlePartId,
+                            nodeId: nodeId,
+                            branchId: branchId,
+                            sessionId: "test"
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)

@@ -71,6 +71,7 @@ var application = angular.module("gears.app", [
             application.title = "Флористический салон Белый Лотос";
             application.description = "This is a test application provided by Shell Framework";
             application.currentTitle = undefined;
+            application.currentTitleNodes = $factory({ classes: ["TitleNodes"], base_class: "TitleNodes" });
             application.currentTitlePart = undefined;
             application.currentContractorType = undefined;
             application.currentContractor = undefined;

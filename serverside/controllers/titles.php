@@ -30,9 +30,9 @@
                 case "getTitles":
                     get_titles();
                     break;
-                /* Получение титула по идентификатору */
-                case "getTituleById":
-                    get_path($postdata);
+                /* Получение узлов титула */
+                case "getTitleNodes":
+                    get_title_nodes($postdata);
                     break;
                 case "getBoundaryNodes":
                     get_boundary_nodes($postdata);
@@ -278,47 +278,60 @@
 
 
     /* Функция получения объектов титула */
-    function get_path ($postdata) {
+    function get_title_nodes ($postdata) {
         global $connection;
         $cursor = oci_new_cursor($connection);
-        $data = $postdata -> data;
+        $titleId = $postdata -> data -> titleId;
+        $titlePartId = $postdata -> data -> titlePartId;
+        $nodeId = $postdata -> data -> nodeId;
+        $branchId = $postdata -> data -> branchId;
+        $sessionId = $postdata -> data -> sessionId;
         $result = array();
 
-        if (!$statement = oci_parse($connection, "begin PKG_PATHS.p_get_path(:p_titule_id, :p_titule_part_id, :p_node_id, :p_path_id, :session_id, :p_nodes); end;")) {
+        if (!$statement = oci_parse($connection, "begin pkg_paths.p_get_path(:p_title_id, :p_title_part_id, :p_node_id, :p_branch_id, :session_id, :p_nodes); end;")) {
             $error = oci_error();
-            echo $error["message"];
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
         } else {
-            if (!oci_bind_by_name($statement, ":p_titule_id", $data -> tituleId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":p_title_id", $titleId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":p_titule_part_id", $data -> titulePartId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":p_title_part_id", $titlePartId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":p_node_id", $data -> nodeId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":p_node_id", $nodeId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":p_path_id", $data -> pathId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":p_branch_id", $branchId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":session_id", $data -> sessionId, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":session_id", $sessionId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
             if (!oci_bind_by_name($statement, ":p_nodes", $cursor, -1, OCI_B_CURSOR)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             }
             if (!oci_execute($statement)) {
                 $error = oci_error();
-                echo $error["message"];
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
             } else {
                 if (!oci_execute($cursor)) {
                     $error = oci_error();
-                    echo $error["message"];
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
                 } else {
                     while ($node = oci_fetch_assoc($cursor))
                         array_push($result, $node);
@@ -331,11 +344,7 @@
         oci_free_statement($cursor);
 
         /* Возврат результата */
-        if (sizeof($result) == 0)
-            echo json_encode(0);
-        else
-            echo json_encode($result);
-
+        echo json_encode($result);
     };
 
 
