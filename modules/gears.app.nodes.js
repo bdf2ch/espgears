@@ -158,6 +158,35 @@ var nodes = angular.module("gears.app.nodes", [])
             };
 
 
+            nodes.getBranches = function (titleId, titlePartId, nodeId, callback) {
+                if (titleId !== undefined && titlePartId !== undefined && nodeId !== undefined) {
+                    var params = {
+                        action: "getBranches",
+                        data: {
+                            titleId: titleId,
+                            titlePartId: titlePartId,
+                            nodeId: nodeId,
+                            sessionId: "test"
+                        }
+                    };
+                    $http.post("serverside/controllers/nodes.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(nodeId, data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
             return nodes;
         }]);
     })

@@ -71,21 +71,21 @@ var application = angular.module("gears.app", [
             application.title = "Флористический салон Белый Лотос";
             application.description = "This is a test application provided by Shell Framework";
             application.currentTitle = undefined;
-            application.currentTitleNodes = $factory({ classes: ["TitleNodes"], base_class: "TitleNodes" });
             application.currentTitlePart = undefined;
+            application.currentNode = undefined;
             application.currentContractorType = undefined;
             application.currentContractor = undefined;
 
             return application;
         }]);
     })
-    .run(function ($log, $application, $menu, $rootScope, $modules) {
+    .run(function ($log, $application, $menu, $rootScope, $modules, $factory) {
         $modules.load($application);
         $menu.register();
         $rootScope.application = $application;
         $rootScope.menu = $menu;
         moment.locale("ru");
 
-
+        $application.currentTitleNodes = $factory({ classes: ["TitleNodes", "States"], base_class: "TitleNodes" });
     }
 );

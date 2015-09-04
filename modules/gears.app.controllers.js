@@ -9,7 +9,7 @@ var appControllers = angular.module("gears.app.controllers", [])
      * TitlesController
      * Ктонтроллер раздела титулов
      */
-    .controller("TitlesController", ["$log", "$scope", "$location", "$titles", "$application", "$files", function ($log, $scope, $location, $titles, $application, $files) {
+    .controller("TitlesController", ["$log", "$scope", "$location", "$titles", "$application", "$files", "$nodes", function ($log, $scope, $location, $titles, $application, $files, $nodes) {
         $scope.titles = $titles;
         $scope.files = $files;
         $scope.app = $application;
@@ -53,7 +53,17 @@ var appControllers = angular.module("gears.app.controllers", [])
                         } else {
                             title._states_.selected(true);
                             $scope.app.currentTitle = title;
-                            $titles.getTitleNodes(titleId, -1, -1, -1);
+                            if ($scope.app.currentTitleNodes.titleId !== 0) {
+                                if ($scope.app.currentTitleNodes.titleId !== titleId) {
+                                    $scope.app.currentTitleNodes.clear();
+                                    $titles.getTitleNodes(titleId, -1, -1, -1, $scope.onSuccessGetTitleNodes);
+                                    $scope.app.currentTitleNodes.titleId = titleId;
+                                }
+                            } else {
+                                $scope.app.currentTitleNodes.clear();
+                                $titles.getTitleNodes(titleId, -1, -1, -1, $scope.onSuccessGetTitleNodes);
+                                $scope.app.currentTitleNodes.titleId = titleId;
+                            }
                         }
                     } else
                         title._states_.selected(false);
@@ -65,9 +75,9 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.onSuccessGetTitleNodes = function (data) {
             if (data !== undefined) {
                 angular.forEach(data, function (node) {
-                    var temp_node = $nodes.parseNode(node)
+                    var temp_node = $nodes.parseNode(node);
                     $log.log("appended node = ", temp_node);
-                    $titles.currentTitleNodes.appendNode({ node: temp_node });
+                    $application.currentTitleNodes.appendNode({ node: temp_node });
                 });
             }
         };
@@ -389,7 +399,20 @@ var appControllers = angular.module("gears.app.controllers", [])
 
 
     .controller("MontageSchemeController", ["$log", "$scope", "$application", "$titles", "$nodes", function ($log, $scope, $application, $titles, $nodes) {
+        $scope.titles = $titles;
+        $scope.app = $application;
+        $scope.nodes = $nodes;
 
+
+        $scope.onSuccessGetBranches = function (nodeId, data) {
+            if (nodeId !== undefined && data !== undefined) {
+                angular.forEach(data, function (node) {
+                    var temp_node = $nodes.parseNode(node);
+                    $log.log("branched node = ", temp_node);
+                    $application.currentTitleNodes.appendNode({ nodeId: nodeId, branchId: "", node: temp_node })
+                });
+            }
+        };
     }])
 
     .controller("DocumentsController", ["$scope", "$files", function ($scope, $files) {

@@ -8,7 +8,7 @@ var titles = angular.module("gears.app.titles",[])
          * $titles
          * Сервис, одержащий функционал для работы с титулами
          */
-        $provide.factory("$titles", ["$log", "$http", "$factory", function ($log, $http, $factory) {
+        $provide.factory("$titles", ["$log", "$http", "$factory", "$application", function ($log, $http, $factory, $application) {
             var titles = {};
 
 
@@ -68,6 +68,12 @@ var titles = angular.module("gears.app.titles",[])
                 TitleNodes: {
                     nodes: [],
                     root: [],
+                    titleId: 0,
+
+                    clear: function () {
+                        this.root.splice(0, this.root.length);
+                        this.nodes.splice(0, this.nodes.length);
+                    },
 
                     appendNode: function (parameters) {
                         if (parameters !== undefined) {
@@ -77,11 +83,15 @@ var titles = angular.module("gears.app.titles",[])
                                     var length = this.nodes.length;
                                     for (var i = 0; i < length; i++) {
                                         if (this.nodes[i].id.value === parameters["nodeId"]) {
-
+                                            var branches_count = this.nodes[i].branches.length;
+                                            for (var x = 0; x < branches_count; x++) {
+                                                if (this.nodes[i].branches[x].id === parameters["branchId"]) {
+                                                    
+                                                }
+                                            }
                                         }
                                     }
                                 } else {
-                                    node.haveBranches = false;
                                     node.isExpanded = false;
                                     node.branches = [];
                                     node.parentId = -1;
@@ -97,6 +107,70 @@ var titles = angular.module("gears.app.titles",[])
                             }
                         } else {
                             $log.error("TitleNodes: Не заданы параметры при добавлении узла");
+                            return false;
+                        }
+                    },
+
+                    getBranches: function (parameters) {
+                        if (parameters !== undefined) {
+                            if (parameters["nodeId"] !== undefined) {
+                                var nodeId = parameters["nodeId"];
+                                var length = this.nodes.length;
+                                for (var i = 0; i < length; i++) {
+                                    if (this.nodes.id.value === nodeId) {
+                                        if (parameters["parentId"] !== undefined) {
+                                            if (this.nodes[i].parentId === parameters["parentId"]) {
+                                                return this.nodes[i].branches;
+                                            }
+                                        } else
+                                            return this.nodes[i].branches;
+                                    }
+                                }
+                            }
+                        } else {
+                            $log.error("TitleNodes: Не заданы параметры при получении ветвей узла");
+                            return false;
+                        }
+                    },
+
+
+                    select: function (parameters) {
+                        if (parameters !== undefined) {
+                            if (parameters["nodeId"] !== undefined) {
+                                var length = this.nodes.length;
+                                for (var i = 0; i < length; i++) {
+                                    if (this.nodes[i].id.value === parameters["nodeId"]) {
+                                        if (parameters["parentId"] !== undefined) {
+                                            if (this.nodes[i].parentId === parameters["parentId"]) {
+                                                if (this.nodes[i]._states_.selected() === false) {
+                                                    this.nodes[i]._states_.selected(true);
+                                                    $application.currentNode = this.nodes[i];
+                                                } else {
+                                                    this.nodes[i]._states_.selected(false);
+                                                    $application.currentNode = undefined;
+                                                }
+                                            }
+                                        } else {
+                                            if (this.nodes[i]._states_.selected() === false) {
+                                                this.nodes[i]._states_.selected(true);
+                                                $application.currentNode = this.nodes[i];
+                                            } else {
+                                                this.nodes[i]._states_.selected(false);
+                                                $application.currentNode = undefined;
+                                            }
+                                        }
+                                    } else {
+                                        if (this.nodes[i]._states_.selected() === true)
+                                            this.nodes[i]._states_.selected(false);
+                                    }
+                                }
+                                $log.log("selected node = ", $application.currentNode);
+                            } else {
+                                $log.error("TitleNodes: Не задан идентификатор выбираемого узла");
+                                return false;
+                            }
+                        } else {
+                            $log.error("TitleNodes: Не заданы параметры при выборе узла");
                             return false;
                         }
                     }
@@ -301,6 +375,7 @@ var titles = angular.module("gears.app.titles",[])
                             sessionId: "test"
                         }
                     };
+                    $application.currentTitleNodes._states_.loaded(false);
                     $http.post("serverside/controllers/titles.php", params)
                         .success(function (data) {
                             if (data !== undefined) {
@@ -313,6 +388,7 @@ var titles = angular.module("gears.app.titles",[])
                                         callback(data);
                                 }
                             }
+                            $application.currentTitleNodes._states_.loaded(true);
                         }
                     );
                 }

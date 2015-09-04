@@ -1,6 +1,6 @@
-<script type="text/ng-template" id="files">
-    <ul class="file-tree inner">
-        <li ng-repeat="inner_item in this.items.items track by $id(inner_item)"
+<script type="text/ng-template" id="nodes">
+    <ul class="node-tree branch" ng-repeat="branch in this.branches track by $id(branch)">
+        <li ng-repeat="node in this.branch track by $id(node)"
             ng-init="last_in_line = $last; in_the_middle = $middle; first_in_line = $first"
             ng-class="{'last-in-line': last_in_line === true && inner_item.parentPath !== '', 'in-the-middle': in_the_middle === true, 'first-in-line': first_in_line === true, 'only-one': this.items.size() === 1, 'last-in-parent': this.parent_last_in_line === true }">
             <div class="expander-container" ng-init="first_in_line = $first; last_in_line = $last; middle_in_line = $middle">
@@ -12,19 +12,19 @@
                 <div class="expander exp-bottom-left"></div>
                 <div class="expander exp-bottom-right" ng-class="{'last-in-line' : last_in_line === true}"></div>
             </div>
-            <div class="item-container">
-                <div class="item-icon" ng-class="{'folder': inner_item.__class__ === 'Folder', 'file': inner_item.__class__ === 'File'}"></div>
-                <div class="item-content">
+            <div class="node-container">
+                <div class="node-icon" ng-class="{'folder': inner_item.__class__ === 'Folder', 'file': inner_item.__class__ === 'File'}"></div>
+                <div class="node-content">
                     <a href="{{ inner_item.url.value }}" ng-show="inner_item.__class__ === 'File'">{{ inner_item.title.value }}</a>
                     <span ng-show="inner_item.__class__ === 'Folder'">{{ inner_item.title.value }}</span><br>
-                    <span class="item-description" ng-show="inner_item.__class__ === 'Folder'">�����</span>
+                    <span class="item-description" ng-show="inner_item.__class__ === 'Folder'">Папка</span>
                     <span class="item-description" ng-show="inner_item.__class__ === 'File'">{{ inner_item.size.value }}</span>
                 </div>
             </div>
             <div ng-include="'files'"
-                 ng-if="inner_item.__class__ === 'Folder' && inner_item.items.size() > 0"
-                 ng-show="inner_item.isExpanded === true"
-                 ng-init="this.items = scope.files.items.getFolderContent(inner_item.path.value); this.scope = scope;">
+                 ng-if="node.branches.length > 0"
+                 ng-show="node.isExpanded === true"
+                 ng-init="this.items = scope.app.currentTitleNodes.getBranches({ nodeId: node.id.value, parentId: node.parentId }); this.scope = scope;">
             </div>
         </li>
     </ul>
@@ -32,32 +32,47 @@
 
 
 
-<div class="padding-10" ng-controller="MontageSchemeController">
-    <ul class="file-tree">
-        <li ng-repeat="rootNode in application.currentTitleNodes.root track by $id(rootNode)">
-            {{ rootNode.id.value }}
+<div class="padding-10 y-scrollable" ng-controller="MontageSchemeController">
+
+    <div class="service-message" ng-show="app.currentTitleNodes._states_.loaded() === false">
+        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+        <span>Загрузка...</span>
+    </div>
+
+    <ul class="node-tree">
+        <li ng-repeat="rootNode in app.currentTitleNodes.root track by $id(rootNode)">
             <div class="expander-container first-line" ng-init="first_in_line = $first; last_in_line = $last; middle_in_line = $middle">
                 <div class="expander exp-top-left">
-                    <span class="collapse" ng-show="rootNode.haveBranches === true && rootNode.isExpanded == false" ng-click="application.currentTitleNodes.getBranches({ nodeId: rootNode.id.value })">+</span>
-                    <span class="collapse" ng-show="item.__class__ === 'Folder' && item.isExpanded === true" ng-click="files.items.collapse(item.path.value)">-</span>
+                    <span class="collapse" ng-show="rootNode.branchesCount.value > 0 && rootNode.isExpanded == false" ng-click="nodes.getBranches(app.currentTitle.id.value, -1, rootNode.id.value, onSuccessGetBranches)">+</span>
+                    <span class="collapse" ng-show="rootNode.isExpanded === true" ng-click="app.currentTitleNodes.collapse({ nodeId: rootNode.id.value, parentId: rootNode.parentId })">-</span>
                 </div>
                 <div class="expander exp-top-right" ng-class="{'first-in-line' : first_in_line === true, 'middle-in-line': middle_in_line === true}"></div>
                 <div class="expander exp-bottom-left"></div>
-                <div class="expander exp-bottom-right"ng-class="{'last-in-line' : last_in_line === true}"></div>
+                <div class="expander exp-bottom-right" ng-class="{'last-in-line' : last_in_line === true}"></div>
             </div>
-            <div class="item-container">
-                <div class="item-icon" ng-class="{'folder': item.__class__ === 'Folder', 'file': item.__class__ === 'File'}"></div>
-                <div class="item-content">
-                    <a href="{{ item.url.value }}" ng-show="item.__class__ === 'File'">{{ item.title.value }}</a>
-                    <span ng-show="item.__class__ === 'Folder'">{{ item.title.value }}</span><br>
-                    <span class="item-description" ng-show="item.__class__ === 'Folder'">�����</span>
-                    <span class="item-description" ng-show="item.__class__ === 'File'">{{ item.size.value }}</span>
+            <div class="node-container"
+                 ng-class="{ 'selected': rootNode._states_.selected() === true }"
+                 ng-click="app.currentTitleNodes.select({ nodeId: rootNode.id.value, parentId: -1 })">
+                <div class="node-icon" ng-class="{'pylon': rootNode.__class__ === 'Pylon', 'unknown': rootNode.__class__ === 'UnknownNode'}"></div>
+                <div class="node-content">
+
+                    <div ng-show="rootNode.__class__ === 'UnknownNode'">
+                        <span class="primary-text">Неформализованный объект</span><br>
+                        <span class="secondary-text">Тип этого объекта не был указан</span>
+                    </div>
+
+                    <div ng-show="rootNode.__class__ === 'Pylon'">
+                        <span class="primary-text">{{ "Опора #" + rootNode.number.value }}</span><br>
+                        <span class="secondary-text">{{ "ВЛ: " + misc.powerLines.find("id", rootNode.powerLineId.value).title.value }}</span> &nbsp; &nbsp; &nbsp;
+                        <span class="secondary-text">{{ "Тип опоры: " }}</span>
+                    </div>
+
                 </div>
             </div>
-            <div ng-include="'files'"
-                 ng-if="item.__class__ === 'Folder' && item.items.size() > 0"
-                 ng-show="item.isExpanded === true"
-                 ng-init="this.items = files.items.getFolderContent(item.path.value); scope = this; parent_last_in_line = $last">
+            <div ng-include="'branches'"
+                 ng-if="rootNode.branches.length > 0"
+                 ng-show="rootNode.isExpanded === true"
+                 ng-init="this.branches = app.currentTitleNodes.getBranches({ nodeId: rootNode.id.value, parentId: rootNode.parentId }); scope = this">
             </div>
         </li>
     </ul>

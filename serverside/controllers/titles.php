@@ -48,44 +48,44 @@
 
 
        /* Функция получения всех титулов */
-        function get_titles () {
-            global $connection;
-            $cursor = oci_new_cursor($connection);
-            $result = array();
+    function get_titles () {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $result = array();
 
-            if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_titules(:data); end;")) {
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_titules(:data); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             } else {
-                if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
-                    $error = oci_error();
-                    $result = new DBError($error["code"], $error["message"]);
-                    echo(json_encode($result));
-                }
-                if (!oci_execute($statement)) {
+                if (!oci_execute($cursor)) {
                     $error = oci_error();
                     $result = new DBError($error["code"], $error["message"]);
                     echo(json_encode($result));
                 } else {
-                    if (!oci_execute($cursor)) {
-                        $error = oci_error();
-                        $result = new DBError($error["code"], $error["message"]);
-                        echo(json_encode($result));
-                    } else {
-                        while ($title = oci_fetch_assoc($cursor))
-                            array_push($result, $title);
-                    }
+                    while ($title = oci_fetch_assoc($cursor))
+                        array_push($result, $title);
                 }
             }
+        }
 
-            /* Освобождение ресурсов */
-            oci_free_statement($statement);
-            oci_free_statement($cursor);
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
 
-            /* Возврат результата */
-            echo json_encode($result);
-        };
+        /* Возврат результата */
+        echo json_encode($result);
+    };
 
 
     /* Функция добавления группы */

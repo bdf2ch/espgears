@@ -37,9 +37,9 @@
                 //    break;
 
                 /* Получает узлы, вхоядящие в состав путей, исходящих из заданного узла */
-                //case "getBranches":
-                //    get_branches($postdata);
-                //    break;
+                case "getBranches":
+                    get_branches($postdata);
+                    break;
 
                 //case "change":
                 //    change_node($postdata);
@@ -97,6 +97,7 @@
     };
 
 
+
     function get_pylons_by_power_line_id ($postdata) {
         global $connection;
         $cursor = oci_new_cursor($connection);
@@ -125,6 +126,71 @@
                 } else {
                     while ($pylon = oci_fetch_assoc($cursor))
                         array_push($result, $pylon);
+                }
+            }
+        }
+
+        // Освобождение ресурсов
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        // Возврат результата
+        echo json_encode($result);
+    };
+
+
+    /* Получает узлы, вхоядящие в состав путей, исходящих из заданного узла */
+    function get_branches ($postdata) {
+        global $connection;
+        $titleId = $postdata -> data -> titleId;
+        $titlePartId = $postdata -> data -> titlePartId;
+        $nodeId = $postdata -> data -> nodeId;
+        $sessionId = $postdata -> data -> sessionId;
+        $cursor = oci_new_cursor($connection);
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin PKG_NODES.P_GET_BRANCHES(:title_id, :title_part_id, :node_id, :session_id, :nodes); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":title_id", $titleId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":title_part_id", $titlePartId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":node_id", $nodeId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":session_id", $sessionId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":nodes", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($node = oci_fetch_assoc($cursor))
+                        array_push($result, $node);
                 }
             }
         }
