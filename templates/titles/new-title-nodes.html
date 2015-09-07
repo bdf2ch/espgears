@@ -1,0 +1,155 @@
+<!-- Наименование титула -->
+                    <div class="row split-20">
+                        <div class="width-20">&nbsp;</div>
+                        <div class="width-60">
+                            <div class="width-100">
+                                <label for="new-title-title">Наименование титула</label>
+                                <input type="text"
+                                       name="new-title-title"
+                                       id="new-title-title"
+                                       class="width-100"
+                                       placeholder="Наименование титула"
+                                       ng-model="newTitle.title.value"/>
+                            </div>
+                        </div>
+                        <div class="width-20">&nbsp;</div>
+                    </div>
+
+<!-- Описание титула -->
+
+                    <div class="row split-30">
+                        <div class="width-20">&nbsp;</div>
+                        <div class="width-60">
+                            <label for="new-title-description">Описание титула</label>
+                            <input type="text"
+                                   name="new-title-description"
+                                   id="new-title-description"
+                                   class="width-100"
+                                   placeholder="Описание титула"
+                                   ng-model="newTitle.description.value"/>
+                        </div>
+                        <div class="width-20">&nbsp;</div>
+                    </div>
+
+<!-- Узлы в начале и в конце титула -->
+
+                    <div class="row split-30">
+                        <div class="width-20">&nbsp;</div>
+                        <div class="width-20">
+                            <div class="row">
+                                <div class="width-100">
+                                    <div class="row block-title text-centered">
+                                        Объект в начале титула
+                                    </div>
+
+<!-- Иконка узла в начале титула -->
+                                    <div class="row node-icon pylon big"></div>
+
+<!-- Тип узла в начале титула -->
+                                    <div class="row split-10">
+                                        <label for="new-title-start-node-type">Тип объекта</label>
+                                        <select name=new-title-start-node-type""
+                                                id="new-title-start-node-type"
+                                                class="width-100"
+                                                ng-model="newTitle.startNodeTypeId.value"
+                                                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
+                                        </select>
+                                    </div>
+
+<!-- Линия -->
+
+                                    <div class="row split-10" ng-show="newTitle.startNodeTypeId.value === 1">
+                                        <label for="new-title-start-node-powerline">Линия</label>
+                                        <select name="new-title-start-node-power-line"
+                                                id="new-title-start-node-powerline"
+                                                class="width-100"
+                                                ng-model="startNodePowerLineId"
+                                                ng-options="powerline.id.value as powerline.display for powerline in misc.powerLines.items"
+                                                ng-change="selectStartNodePowerLine(startNodePowerLineId)">
+                                        </select>
+                                    </div>
+
+
+<!-- # опоры -->
+
+                                    <div class="row" ng-show="newTitle.startNodeTypeId.value === 1">
+                                        <label for="new-title-start-node-pylon-number"># Опоры</label>
+                                        <input type="text"
+                                               name="new-title-start-node-pylon-number"
+                                               id="new-title-start-node-pylon-number"
+                                               class="width-100" placeholder="# Опоры"
+                                               ng-model="newTitle.startNodeId.value"
+                                               ng-disabled="startNodePylons._states_.loaded() === false"
+                                               typeahead
+                                               typeahead-data-source="startNodePylons.items"
+                                               typeahead-items-limit="10"
+                                               typeahead-model-field="id"
+                                               typeahead-display-field="number"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-20 text-centered mdash">&mdash;</div>
+
+                        <div class="width-20">
+                            <div class="row">
+                                <div class="width-100">
+                                    <div class="row block-title text-centered">
+                                        Объект в конце титула
+                                    </div>
+
+<!-- Иконка узла в конце титула -->
+
+                                    <div class="row node-icon pylon big">
+
+                                    </div>
+
+<!-- Тип узла в конце титула -->
+
+                                    <div class="row split-10">
+                                        <label for="new-title-end-node-type">Тип объекта</label>
+                                        <select name=new-title-end-node-type""
+                                                id="new-title-end-node-type"
+                                                class="width-100"
+                                                ng-model="newTitle.endNodeTypeId.value"
+                                                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
+                                        </select>
+                                    </div>
+
+
+<!-- Линия -->
+
+                                    <div class="row split-10" ng-show="newTitle.endNodeTypeId.value === 1">
+                                        <label for="new-title-end-node-powerline">Линия</label>
+                                        <select name="new-title-end-node-powerline"
+                                                id="new-title-end-node-powerline"
+                                                class="width-100"
+                                                ng-model="endNodePowerLineId"
+                                                ng-options="powerline.id.value as powerline.title.value for powerline in misc.powerLines.items"
+                                                ng-change="selectEndNodePowerLine(endNodePowerLineId)">
+                                        </select>
+                                    </div>
+
+<!-- # опоры -->
+                                    <div class="row" ng-show="newTitle.endNodeTypeId.value === 1">
+                                        <label for="new-title-end-node-pylon-number"># Опоры</label>
+                                        <input type="text"
+                                               name="new-title-end-node-pylon-number"
+                                               id="new-title-end-node-pylon-number"
+                                               class="width-100"
+                                               placeholder="# Опоры"
+                                               ng-model="newTitle.endNodeId.value"
+                                               ng-disabled="endNodePylons._states_.loaded() === false"
+                                               typeahead
+                                               typeahead-items-limit="10"
+                                               typeahead-data-source="endNodePylons.items"
+                                               typeahead-model-field="id"
+                                               typeahead-display-field="number"/>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="width-20">&nbsp;</div>
+                    </div>

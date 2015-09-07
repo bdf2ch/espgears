@@ -77,6 +77,9 @@ body {
 .required:after {
   content: "*";
 }
+.messages-container {
+  box-sizing: border-box;
+}
 .messages-container.errors {
   border-left: 5px solid #F0B1B1;
 }
@@ -381,15 +384,14 @@ body {
 }
 .node-tree.branch .node-icon {
   float: left;
-  width: 32px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   margin-left: 5px;
-  margin-top: 5px;
   background-repeat: no-repeat;
 }
-.node-tree.branch .node-icon.folder {
+.node-tree.branch .node-icon.pylon {
   background: url("../img/icons/pylon.png");
 }
-.node-tree.branch .node-icon.file {
+.node-tree.branch .node-icon.unknown {
   background: url("../img/icons/unknown.png");
 }

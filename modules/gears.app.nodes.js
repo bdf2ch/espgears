@@ -152,6 +152,10 @@ var nodes = angular.module("gears.app.nodes", [])
                                 result._backup_.setup();
                                 break;
                         }
+                        if (node["PATH_ID"] !== undefined && node["PATH_ID"] !== null)
+                            result.branchId = parseInt(node["PATH_ID"]);
+                         else
+                            result.branchId = -1;
                     }
                 }
                 return result;

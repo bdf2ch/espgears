@@ -454,7 +454,7 @@ var gears = angular.module("gears", [])
                         selected: function (flag) {
                             if (flag !== undefined && flag.constructor === Boolean) {
                                 this.isSelected = flag;
-                                console.log("selected = ", this.isSelected);
+                                //console.log("selected = ", this.isSelected);
                             }
                             return this.isSelected;
                         },
@@ -589,7 +589,7 @@ var gears = angular.module("gears", [])
 
                         /* Если требуется найти элемент коллекции по значению поля */
                         if (field !== undefined && value !== undefined) {
-                            console.log("finding item by field and value");
+                            //console.log("finding item by field and value");
                             for (var i = 0; i < length; i++) {
                                 if (this.items[i][field] !== undefined) {
                                     if (this.items[i][field].constructor === Field) {
@@ -619,7 +619,7 @@ var gears = angular.module("gears", [])
 
                         /* Если требуется найти элемент коллекции по значению */
                         if (field !== undefined && value === undefined) {
-                            console.log("finding item by value");
+                            //console.log("finding item by value");
                             for (var i = 0; i < length; i++) {
                                 if (this.items[i] === field) {
                                     if (this.allowMultipleSearch === true) {

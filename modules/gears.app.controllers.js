@@ -99,6 +99,20 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.endNodePowerLineId = 0;
         $scope.endNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
         $scope.errors = [];
+        $scope.tabs = [
+            {
+                id: 1,
+                title: "Объекты титула",
+                template: "templates/titles/new-title-nodes.html",
+                isActive: true
+            },
+            {
+                id: 2,
+                title: "Контрагенты",
+                template: "templates/titles/title-montage-scheme.html",
+                isActive: false
+            }
+        ];
 
 
         $scope.newTitle._states_.loaded(false);
@@ -404,13 +418,28 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.nodes = $nodes;
 
 
+        $scope.getBranches = function (nodeId, parentId) {
+            if (nodeId !== undefined && parentId !== undefined) {
+                if ($application.currentTitleNodes.getBranches({ nodeId: nodeId, parentId: parentId }).length > 0)
+                    $application.currentTitleNodes.expand({ nodeId: nodeId, parentId: parentId });
+                else
+                    $nodes.getBranches(
+                        $application.currentTitle.id.value,
+                        $application.currentTitlePart !== undefined ? $application.currentTitlePart.id.value : -1,
+                        nodeId,
+                        $scope.onSuccessGetBranches
+                    );
+            }
+        };
+
         $scope.onSuccessGetBranches = function (nodeId, data) {
             if (nodeId !== undefined && data !== undefined) {
                 angular.forEach(data, function (node) {
                     var temp_node = $nodes.parseNode(node);
-                    $log.log("branched node = ", temp_node);
-                    $application.currentTitleNodes.appendNode({ nodeId: nodeId, branchId: "", node: temp_node })
+                    $log.log("branched node = ", temp_node.id.value);
+                    $application.currentTitleNodes.appendNode({ nodeId: nodeId, branchId: temp_node.branchId, node: temp_node })
                 });
+                //$application.currentTitleNodes.expand({ nodeId: nodeId, parentId:  });
             }
         };
     }])

@@ -52,6 +52,11 @@
   position: relative;
   width: 100%;
 
+  div {
+    overflow: auto;
+    box-sizing: border-box;
+  }
+
   &.split-10 {
     margin-bottom: 10px;
   }
@@ -70,18 +75,19 @@
 }
 
 .width-10 {
-  position: relative;
+  //position: relative;
   float: left;
   width: 10%;
 }
 
 .width-15 {
-  position: relative;
+  //position: relative;
+  float: left;
   width: 15%;
 }
 
 .width-20 {
-  position: relative;
+  //position: relative;
   float: left;
   width: 20%;
 
@@ -122,11 +128,12 @@
 
 .width-70 {
   position: relative;
+  float: left;
   width: 70%;
 }
 
 .width-80 {
-  position: relative;
+  //position: relative;
   float: left;
   width: 80%;
 }
@@ -179,9 +186,15 @@
   border-spacing: 0px;
   border-right: 1px solid #E3E3E3;
   box-sizing: border-box;
+  
+  &.service-panel {
+    background: #FAF9F7;
+    border-right: none;
+  }
 
   td {
     position: relative;
+    box-sizing: border-box;
     //height: 100%;
   }
 
@@ -217,14 +230,15 @@
 
     button {
       //display: table-cell;
+      position: relative;
       width: 20px;
       height: 20px;
       padding: 5px;
       text-align: center;
       vertical-align: bottom;
-      font-family: "Arial";
+      font-family: "Roboto Regular";
       font-size: 18px;
-      line-height: 11px;
+      line-height: 9px;
       border-radius: 20px;
       border: none;
     }
@@ -472,6 +486,10 @@ select {
 
 .padding-10 {
   padding: 10px;
+}
+
+.padding-50 {
+  padding: 50px;
 }
 
 

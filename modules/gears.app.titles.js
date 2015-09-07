@@ -80,15 +80,62 @@ var titles = angular.module("gears.app.titles",[])
                             if (parameters["node"] !== undefined) {
                                 var node = parameters["node"];
                                 if (parameters["nodeId"] !== undefined && parameters["branchId"] !== undefined) {
+                                    $log.log("appending to branch ", parameters["branchId"]);
                                     var length = this.nodes.length;
                                     for (var i = 0; i < length; i++) {
                                         if (this.nodes[i].id.value === parameters["nodeId"]) {
-                                            var branches_count = this.nodes[i].branches.length;
-                                            for (var x = 0; x < branches_count; x++) {
-                                                if (this.nodes[i].branches[x].id === parameters["branchId"]) {
-
+                                            if (this.nodes[i].branches.length > 0) {
+                                                var branches_count = this.nodes[i].branches.length;
+                                                var found = false;
+                                                for (var x = 0; x < branches_count; x++) {
+                                                    if (this.nodes[i].branches[x].id === parameters["branchId"]) {
+                                                        $log.log("branch #" + parameters["branchId"] + " found");
+                                                        found = true;
+                                                        node.isExpanded = false;
+                                                        node.branches = [];
+                                                        node.parentId = parameters["nodeId"];
+                                                        node.prevNodeId = this.nodes[i].branches[x].length > 0 ? this.nodes[i].branches[x][this.nodes[i].branches[x].length - 1].id.value : -1;
+                                                        if (this.nodes[i].branches[x][this.nodes[i].branches[x].length - 1] !== undefined)
+                                                            this.nodes[i].branches[x][this.nodes[i].branches[x].length - 1].nextNodeId = node.id.value;
+                                                        node.nextNodeId = -1;
+                                                        this.nodes.push(node);
+                                                        this.nodes[i].branches[x].push(node);
+                                                        this.nodes[i].isExpanded = true;
+                                                        return true;
+                                                    }
                                                 }
+                                                if (found == false) {
+                                                    $log.log("branch #" + parameters["branchId"] + " not found");
+                                                    var new_branch = [];
+                                                    new_branch.id = parameters["branchId"];
+                                                    node.isExpanded = false;
+                                                    node.branches = [];
+                                                    node.parentId = parameters["nodeId"];
+                                                    node.prevNodeId = -1;
+                                                    node.nextNodeId = -1;
+                                                    new_branch.push(node);
+                                                    this.nodes.push(node);
+                                                    this.nodes[i].branches.push(new_branch);
+                                                    this.nodes[i].isExpanded = true;
+                                                    return true;
+                                                }
+
+                                            } else {
+                                                $log.log("branch #" + parameters["branchId"] + " not found");
+                                                var new_branch = [];
+                                                new_branch.id = parameters["branchId"];
+                                                node.isExpanded = false;
+                                                node.branches = [];
+                                                node.parentId = parameters["nodeId"];
+                                                node.prevNodeId = -1;
+                                                node.nextNodeId = -1;
+                                                new_branch.push(node);
+                                                this.nodes.push(node);
+                                                this.nodes[i].branches.push(new_branch);
+                                                this.nodes[i].isExpanded = true;
+                                                return true;
                                             }
+                                            //this.nodes[i].isExpanded = true;
                                         }
                                     }
                                 } else {
@@ -96,6 +143,8 @@ var titles = angular.module("gears.app.titles",[])
                                     node.branches = [];
                                     node.parentId = -1;
                                     node.prevNodeId = this.root.length > 0 ? this.root[this.root.length - 1].id.value : -1;
+                                    if (this.root[this.root.length - 1] !== undefined)
+                                        this.root[this.root.length - 1].nextNodeId = node.id.value;
                                     node.nextNodeId = -1;
                                     this.root.push(node);
                                     this.nodes.push(node);
@@ -117,7 +166,7 @@ var titles = angular.module("gears.app.titles",[])
                                 var nodeId = parameters["nodeId"];
                                 var length = this.nodes.length;
                                 for (var i = 0; i < length; i++) {
-                                    if (this.nodes.id.value === nodeId) {
+                                    if (this.nodes[i].id.value === nodeId) {
                                         if (parameters["parentId"] !== undefined) {
                                             if (this.nodes[i].parentId === parameters["parentId"]) {
                                                 return this.nodes[i].branches;
@@ -136,21 +185,11 @@ var titles = angular.module("gears.app.titles",[])
 
                     select: function (parameters) {
                         if (parameters !== undefined) {
-                            if (parameters["nodeId"] !== undefined) {
+                            if (parameters["nodeId"] !== undefined && parameters["parentId"] !== undefined) {
                                 var length = this.nodes.length;
                                 for (var i = 0; i < length; i++) {
                                     if (this.nodes[i].id.value === parameters["nodeId"]) {
-                                        if (parameters["parentId"] !== undefined) {
-                                            if (this.nodes[i].parentId === parameters["parentId"]) {
-                                                if (this.nodes[i]._states_.selected() === false) {
-                                                    this.nodes[i]._states_.selected(true);
-                                                    $application.currentNode = this.nodes[i];
-                                                } else {
-                                                    this.nodes[i]._states_.selected(false);
-                                                    $application.currentNode = undefined;
-                                                }
-                                            }
-                                        } else {
+                                        if (this.nodes[i].parentId === parameters["parentId"]) {
                                             if (this.nodes[i]._states_.selected() === false) {
                                                 this.nodes[i]._states_.selected(true);
                                                 $application.currentNode = this.nodes[i];
@@ -164,13 +203,65 @@ var titles = angular.module("gears.app.titles",[])
                                             this.nodes[i]._states_.selected(false);
                                     }
                                 }
-                                $log.log("selected node = ", $application.currentNode);
+                                if ($application.currentNode !== undefined) {
+                                    $log.log("node id = " + $application.currentNode.id.value + ", prev node id = " + $application.currentNode.prevNodeId + ", next node id = " + $application.currentNode.nextNodeId);
+                                    $log.log("selected node = ", $application.currentNode);
+                                }
                             } else {
                                 $log.error("TitleNodes: Не задан идентификатор выбираемого узла");
                                 return false;
                             }
                         } else {
                             $log.error("TitleNodes: Не заданы параметры при выборе узла");
+                            return false;
+                        }
+                    },
+
+                    expand: function (parameters) {
+                        if (parameters !== undefined) {
+                            if (parameters["nodeId"] !== undefined) {
+                                var length = this.nodes.length;
+                                for (var i = 0; i < length; i++) {
+                                    if (this.nodes[i].id.value === parameters["nodeId"]) {
+                                        if (parameters["parentId"] !== undefined) {
+                                            if (this.nodes[i].parentId === parameters["parentId"]) {
+                                                this.nodes[i].isExpanded = true;
+                                                return true;
+                                            }
+                                        } else {
+                                            this.nodes[i].isExpanded = true;
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        } else {
+                            $log.error("TitleNodes: Не заданы параметры при разворачивании узла");
+                            return false;
+                        }
+                    },
+
+
+                    collapse: function (parameters) {
+                        if (parameters !== undefined) {
+                            if (parameters["nodeId"] !== undefined) {
+                                var length = this.nodes.length;
+                                for (var i = 0; i < length; i++) {
+                                    if (this.nodes[i].id.value === parameters["nodeId"]) {
+                                        if (parameters["parentId"] !== undefined && parameters["parentId"] !== -1) {
+                                            if (this.nodes[i].parentId === parameters["parentId"]) {
+                                                this.nodes[i].isExpanded = false;
+                                                return true;
+                                            }
+                                        } else {
+                                            this.nodes[i].isExpanded = false;
+                                            return true;
+                                        }
+                                    }
+                                }
+                            }
+                        }  else {
+                            $log.error("TitleNodes: Не заданы параметры при сворачивании узла");
                             return false;
                         }
                     }

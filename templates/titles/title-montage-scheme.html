@@ -5,26 +5,34 @@
             ng-class="{'last-in-line': last_in_line === true && inner_item.parentPath !== '', 'in-the-middle': in_the_middle === true, 'first-in-line': first_in_line === true, 'only-one': this.items.size() === 1, 'last-in-parent': this.parent_last_in_line === true }">
             <div class="expander-container" ng-init="first_in_line = $first; last_in_line = $last; middle_in_line = $middle">
                 <div class="expander exp-top-left" ng-class="{'first-in-line': first_in_line === true}">
-                    <span class="collapse" ng-show="inner_item.__class__ === 'Folder' && inner_item.isEmpty.value === false && inner_item.isExpanded == false" ng-click="files.items.expand(inner_item.path.value)">+</span>
-                    <span class="collapse" ng-show="inner_item.__class__ === 'Folder' && inner_item.isExpanded === true" ng-click="files.items.collapse(inner_item.path.value)">-</span>
+                    <span class="collapse" ng-show="node.branches.length > 0 && node.isExpanded == false" ng-click="scope.getBranches(node.id.value, node.parentId)">+</span>
+                    <span class="collapse" ng-show="node.isExpanded === true" ng-click="scope.app.currentTitleNodes.collapse({ nodeId: node.id.value, parentId: node.parentId })">-</span>
                 </div>
                 <div class="expander exp-top-right" ng-class="{'first-in-line' : first_in_line === true, 'middle-in-line': middle_in_line === true}"></div>
                 <div class="expander exp-bottom-left"></div>
                 <div class="expander exp-bottom-right" ng-class="{'last-in-line' : last_in_line === true}"></div>
             </div>
-            <div class="node-container">
-                <div class="node-icon" ng-class="{'folder': inner_item.__class__ === 'Folder', 'file': inner_item.__class__ === 'File'}"></div>
+            <div class="node-container"
+                 ng-class="{ 'selected': node._states_.selected() === true }"
+                 ng-click="scope.app.currentTitleNodes.select({ nodeId: node.id.value, parentId: node.parentId })">
+                <div class="node-icon" ng-class="{'pylon': node.__class__ === 'Pylon', 'unknown': node.__class__ === 'UnknownNode'}"></div>
                 <div class="node-content">
-                    <a href="{{ inner_item.url.value }}" ng-show="inner_item.__class__ === 'File'">{{ inner_item.title.value }}</a>
-                    <span ng-show="inner_item.__class__ === 'Folder'">{{ inner_item.title.value }}</span><br>
-                    <span class="item-description" ng-show="inner_item.__class__ === 'Folder'">Папка</span>
-                    <span class="item-description" ng-show="inner_item.__class__ === 'File'">{{ inner_item.size.value }}</span>
+                    <div ng-show="node.__class__ === 'UnknownNode'">
+                        <span class="primary-text">Неформализованный объект</span><br>
+                        <span class="secondary-text">Тип этого объекта не был указан</span>
+                    </div>
+
+                    <div ng-show="node.__class__ === 'Pylon'">
+                        <span class="primary-text">{{ "Опора #" + node.number.value }}</span><br>
+                        <span class="secondary-text">{{ "ВЛ: " + misc.powerLines.find("id", node.powerLineId.value).title.value }}</span> &nbsp; &nbsp; &nbsp;
+                        <span class="secondary-text">{{ "Тип опоры: " }}</span>
+                    </div>
                 </div>
             </div>
-            <div ng-include="'files'"
+            <div ng-include="'nodes'"
                  ng-if="node.branches.length > 0"
                  ng-show="node.isExpanded === true"
-                 ng-init="this.items = scope.app.currentTitleNodes.getBranches({ nodeId: node.id.value, parentId: node.parentId }); this.scope = scope;">
+                 ng-init="this.branches = scope.app.currentTitleNodes.getBranches({ nodeId: node.id.value, parentId: node.parentId }); this.scope = scope;">
             </div>
         </li>
     </ul>
@@ -43,7 +51,7 @@
         <li ng-repeat="rootNode in app.currentTitleNodes.root track by $id(rootNode)">
             <div class="expander-container first-line" ng-init="first_in_line = $first; last_in_line = $last; middle_in_line = $middle">
                 <div class="expander exp-top-left">
-                    <span class="collapse" ng-show="rootNode.branchesCount.value > 0 && rootNode.isExpanded == false" ng-click="nodes.getBranches(app.currentTitle.id.value, -1, rootNode.id.value, onSuccessGetBranches)">+</span>
+                    <span class="collapse" ng-show="rootNode.branchesCount.value > 0 && rootNode.isExpanded == false" ng-click="getBranches(rootNode.id.value, rootNode.parentId)">+</span>
                     <span class="collapse" ng-show="rootNode.isExpanded === true" ng-click="app.currentTitleNodes.collapse({ nodeId: rootNode.id.value, parentId: rootNode.parentId })">-</span>
                 </div>
                 <div class="expander exp-top-right" ng-class="{'first-in-line' : first_in_line === true, 'middle-in-line': middle_in_line === true}"></div>
@@ -52,7 +60,7 @@
             </div>
             <div class="node-container"
                  ng-class="{ 'selected': rootNode._states_.selected() === true }"
-                 ng-click="app.currentTitleNodes.select({ nodeId: rootNode.id.value, parentId: -1 })">
+                 ng-click="app.currentTitleNodes.select({ nodeId: rootNode.id.value, parentId: rootNode.parentId })">
                 <div class="node-icon" ng-class="{'pylon': rootNode.__class__ === 'Pylon', 'unknown': rootNode.__class__ === 'UnknownNode'}"></div>
                 <div class="node-content">
 
@@ -69,9 +77,9 @@
 
                 </div>
             </div>
-            <div ng-include="'branches'"
+            <div ng-include="'nodes'"
                  ng-if="rootNode.branches.length > 0"
-                 ng-show="rootNode.isExpanded === true"
+                 ng-show="rootNode.isExpanded == true"
                  ng-init="this.branches = app.currentTitleNodes.getBranches({ nodeId: rootNode.id.value, parentId: rootNode.parentId }); scope = this">
             </div>
         </li>

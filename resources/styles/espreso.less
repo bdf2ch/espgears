@@ -108,6 +108,7 @@ html, body {
 
 
 .messages-container {
+  box-sizing: border-box;
 
   &.errors {
     border-left: 5px solid #F0B1B1;
@@ -588,17 +589,17 @@ html, body {
 
     .node-icon {
       float: left;
-      width: 32px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       margin-left: 5px;
-      margin-top: 5px;
+      //margin-top: 5px;
       background-repeat: no-repeat;
 
-      &.folder {
+      &.pylon {
         background: url("../img/icons/pylon.png");
       }
 
-      &.file {
+      &.unknown {
         background: url("../img/icons/unknown.png");
       }
     }
