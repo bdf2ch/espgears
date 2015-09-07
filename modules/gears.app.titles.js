@@ -86,7 +86,7 @@ var titles = angular.module("gears.app.titles",[])
                                             var branches_count = this.nodes[i].branches.length;
                                             for (var x = 0; x < branches_count; x++) {
                                                 if (this.nodes[i].branches[x].id === parameters["branchId"]) {
-                                                    
+
                                                 }
                                             }
                                         }
