@@ -1,0 +1,65 @@
+<table class="column width-20">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Группы
+            <button class="green right" ng-click="gotoAddTitle()" title="Добавить группу">+</button>
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="users.groups._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <li ng-repeat="group in users.groups.items track by $id(group)"
+                        ng-class="{'active': group._states_.selected() === true}"
+                        ng-click="selectGroup(group.id.value)">
+                        <span class="primary-text">{{ group.title.value }}</span><br>
+                        <span class="secondary-text" ng-show="users.countUsersInGroup(group.id.value) !== 0" ng-class="{'light': title._states_.selected() === true }">
+                            {{ users.countUsersInGroup(group.id.value) + " пользователей" }}
+                        </span>
+                        <span class="secondary-text" ng-show="users.countUsersInGroup(group.id.value) === 0" ng-class="{'light': title._states_.selected() === true }">
+                            Нет пользователей
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<table class="column width-80">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Пользователи
+            <button class="green right" ng-click="gotoAddUser()" title="Добавить пользователя">+</button>
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="users.users._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <div class="service-message" ng-show="app.currentUserGroup !== undefined && usersList.length === 0">
+                        В выбранной группе отстутствуют пользователи
+                    </div>
+                    <li ng-repeat="user in usersList = (users.users.items | byUserGroup:app.currentUserGroup.id.value) track by $id(user)"
+                        ng-class="{'active': user._states_.selected() === true}"
+                        ng-click="selectUser(user.id.value)">
+                        <span class="primary-text">{{ user.fio }}</span><br>
+                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
+                            <span class="secondary-text">{{ "группа: " + users.groups.find("id", user.groupId.value).title.value }}</span> &nbsp; &nbsp; &nbsp;
+                            <span class="secondary-text">{{ "e-mail: " + user.email.value }}</span> &nbsp; &nbsp; &nbsp;
+                            <span class="secondary-text">{{ "телефон: " + user.phone.value }}</span> &nbsp; &nbsp; &nbsp;
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>

@@ -412,6 +412,98 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
+    /**
+     * UsersController
+     * Контроллер раздела пользователей системы
+     */
+    .controller("UsersController", ["$log", "$scope", "$location", "$users", "$application", function ($log, $scope, $location, $users, $application) {
+        $scope.users = $users;
+        $scope.app = $application;
+
+        $scope.gotoAddUser = function () {
+            $location.url("/new-user");
+        };
+
+        $scope.selectGroup = function (groupId) {
+            if (groupId !== undefined) {
+                angular.forEach($scope.users.groups.items, function (group) {
+                    if (group.id.value === groupId) {
+                        if (group._states_.selected() === true) {
+                            group._states_.selected(false);
+                            $application.currentUserGroup = undefined;
+                        } else {
+                            group._states_.selected(true);
+                            $application.currentUserGroup = group;
+                            $log.log("group " + $users.groups.find("id", groupId).title.value + " selected");
+                        }
+                    } else {
+                        group._states_.selected(false);
+                    }
+                });
+            }
+        };
+
+        $scope.selectUser = function (userId) {
+            if (userId !== undefined) {
+                angular.forEach($scope.users.users.items, function (user) {
+                    if (user.id.value === userId) {
+                        if (user._states_.selected() === true) {
+                            user._states_.selected(false);
+                            $application.currentUser = undefined;
+                        } else {
+                            user._states_.selected(true);
+                            $application.currentUser = user;
+                            $log.log("user " + $users.users.find("id", userId).fio + " selected");
+                        }
+                    } else {
+                        user._states_.selected(false);
+                    }
+                });
+            }
+        };
+    }])
+
+
+    .controller("AddUserController", ["$log", "$scope", "$location", "$factory", "$users", "$application", function ($log, $scope, $location, $factory, $users, $application) {
+        $scope.users = $users;
+        $scope.app = $application
+        $scope.newUser = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+        $scope.errors = [];
+
+        $scope.newUser._states_.loaded(false);
+
+        $scope.gotoUsers = function () {
+            $location.url("/users");
+        };
+
+        $scope.onSuccessAddUser = function () {
+            $scope.newUser._states_.loaded(true);
+            $scope.newTitle._model_.reset();
+        };
+
+        $scope.validate = function () {
+            $scope.newUser._states_.loaded(false);
+            $scope.errors.splice(0, $scope.errors.length);
+
+            if ($scope.newUser.name.value === "")
+                $scope.errors.push("Вы не указали имя пользователя");
+            if ($scope.newUser.fname.value === "")
+                $scope.errors.push("Вы не указали отчество пользователя");
+            if ($scope.newUser.surname.value === "")
+                $scope.errors.push("Вы не указали фамилию пользователя");
+            if ($scope.newUser.groupId.value === 0)
+                $scope.errors.push("Вы не указали группу пользователя");
+            if ($scope.newUser.email.value === "")
+                $scope.errors.push("Вы не указали e-mail пользователя");
+
+            if ($scope.errors.length === 0) {
+                $scope.users.add($scope.newUser);
+            }
+
+        };
+    }])
+
+
     .controller("MontageSchemeController", ["$log", "$scope", "$application", "$titles", "$nodes", function ($log, $scope, $application, $titles, $nodes) {
         $scope.titles = $titles;
         $scope.app = $application;

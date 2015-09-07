@@ -15,7 +15,8 @@ var application = angular.module("gears.app", [
         "gears.app.titles",
         "gears.app.nodes",
         "gears.app.misc",
-        "gears.app.contractors"
+        "gears.app.contractors",
+        "gears.app.users"
     ])
     .config(function ($provide, $routeProvider) {
 
@@ -25,10 +26,6 @@ var application = angular.module("gears.app", [
                 //templateUrl: "templates/bouquets/bouquets.html",
                 //controller: "BouquetsController"
                 redirectTo: "/titles"
-            })
-            .when("/bouquet/:bouquetId", {
-                templateUrl: "templates/bouquet/bouquet.html",
-                controller: "BouquetController"
             })
             .when("/titles", {
                 templateUrl: "templates/titles/titles.html",
@@ -46,17 +43,13 @@ var application = angular.module("gears.app", [
                 templateUrl: "templates/contractors/contractors.html",
                 controller: "ContractorsController"
             })
-            .when("/confirm", {
-                templateUrl: "templates/order/confirm.html",
-                controller: "ConfirmationController"
+            .when("/users", {
+                templateUrl: "templates/users/users.html",
+                controller: "UsersController"
             })
-            .when("/account", {
-                templateUrl: "templates/account/account.html",
-                controller: "AccountController"
-            })
-            .when("/contacts", {
-                templateUrl: "templates/contacts/contacts.html",
-                controller: "ContactsController"
+            .when("/new-user", {
+                templateUrl: "templates/users/new-user.html",
+                controller: "AddUserController"
             })
             .otherwise({ redirectTo: '/titles' });
 
@@ -75,6 +68,8 @@ var application = angular.module("gears.app", [
             application.currentNode = undefined;
             application.currentContractorType = undefined;
             application.currentContractor = undefined;
+            application.currentUserGroup = undefined;
+            application.currentUser = undefined;
 
             return application;
         }]);

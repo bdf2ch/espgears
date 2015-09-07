@@ -43,6 +43,26 @@ var AppFilters = angular.module("gears.app.filters", [])
             }
         }]);
 
+
+        /**
+         * byUserGroup
+         * Фильтр пользователей по группе
+         */
+        $filterProvider.register("byUserGroup", ["$log", function ($log) {
+            return function (input, userGroupId) {
+                if (userGroupId !== undefined && userGroupId !== 0) {
+                    var result = [];
+                    angular.forEach(input, function (user) {
+                        if (user.groupId.value === userGroupId)
+                            result.push(user);
+                    });
+                    return result;
+                } else
+                    return input;
+            }
+        }]);
+
+
     })
     .run(function () {
 
