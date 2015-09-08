@@ -15,20 +15,17 @@ var application = angular.module("gears.app", [
         "gears.app.titles",
         "gears.app.nodes",
         "gears.app.misc",
-        "gears.app.contractors"
+        "gears.app.contractors",
+        "gears.app.users"
     ])
     .config(function ($provide, $routeProvider) {
 
 
         $routeProvider
             .when("/", {
-                //templateUrl: "templates/bouquets/bouquets.html",
-                //controller: "BouquetsController"
-                redirectTo: "/titles"
-            })
-            .when("/bouquet/:bouquetId", {
-                templateUrl: "templates/bouquet/bouquet.html",
-                controller: "BouquetController"
+                templateUrl: "templates/dashboard/dashboard.html",
+                controller: "DashboardController"
+                //redirectTo: "/titles"
             })
             .when("/titles", {
                 templateUrl: "templates/titles/titles.html",
@@ -42,21 +39,21 @@ var application = angular.module("gears.app", [
                 templateUrl: "templates/titles/edit-title.html",
                 controller: "EditTitleController"
             })
+            .when("/building", {
+                templateUrl: "templates/building/building.html",
+                controller: "BuildingController"
+            })
             .when("/contractors", {
                 templateUrl: "templates/contractors/contractors.html",
                 controller: "ContractorsController"
             })
-            .when("/confirm", {
-                templateUrl: "templates/order/confirm.html",
-                controller: "ConfirmationController"
+            .when("/users", {
+                templateUrl: "templates/users/users.html",
+                controller: "UsersController"
             })
-            .when("/account", {
-                templateUrl: "templates/account/account.html",
-                controller: "AccountController"
-            })
-            .when("/contacts", {
-                templateUrl: "templates/contacts/contacts.html",
-                controller: "ContactsController"
+            .when("/new-user", {
+                templateUrl: "templates/users/new-user.html",
+                controller: "AddUserController"
             })
             .otherwise({ redirectTo: '/titles' });
 
@@ -68,13 +65,15 @@ var application = angular.module("gears.app", [
         $provide.factory("$application", ["$log", "$factory", function ($log, $factory) {
             var application = {};
 
-            application.title = "Флористический салон Белый Лотос";
-            application.description = "This is a test application provided by Shell Framework";
+            application.title = "ЭСпРЭСО";
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
             application.currentNode = undefined;
             application.currentContractorType = undefined;
             application.currentContractor = undefined;
+            application.currentUserGroup = undefined;
+            application.currentUser = undefined;
+            application.currentBuildingPlanItem = undefined;
 
             return application;
         }]);

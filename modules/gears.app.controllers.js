@@ -3,7 +3,14 @@
 
 var appControllers = angular.module("gears.app.controllers", [])
 
-
+    /**
+     * DashboardController
+     * Контроллер стартовой страницы
+     */
+    .controller("DashboardController", ["$log", "$scope", "$location", "$application", "$users", function ($log, $scope, $location, $application, $users) {
+        $scope.app = $application;
+        $scope.users = $users;
+    }])
 
      /**
      * TitlesController
@@ -22,12 +29,18 @@ var appControllers = angular.module("gears.app.controllers", [])
             },
             {
                 id: 2,
+                title: "Строительство",
+                template: "templates/titles/title-building-plan.html",
+                isActive: false
+            },
+            {
+                id: 3,
                 title: "Монтажная ведомость",
                 template: "templates/titles/title-montage-scheme.html",
                 isActive: false
             },
             {
-                id: 3,
+                id: 4,
                 title: "Документы",
                 template: "templates/titles/title-files.html",
                 isActive: false
@@ -99,20 +112,6 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.endNodePowerLineId = 0;
         $scope.endNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
         $scope.errors = [];
-        $scope.tabs = [
-            {
-                id: 1,
-                title: "Объекты титула",
-                template: "templates/titles/new-title-nodes.html",
-                isActive: true
-            },
-            {
-                id: 2,
-                title: "Контрагенты",
-                template: "templates/titles/title-montage-scheme.html",
-                isActive: false
-            }
-        ];
 
 
         $scope.newTitle._states_.loaded(false);
@@ -385,6 +384,18 @@ var appControllers = angular.module("gears.app.controllers", [])
 
 
     /**
+     * TitleBuildingController
+     * Контроллер раздела строительства титула
+     */
+    .controller("BuildingController", ["$log", "$scope", "$titles", "$application", function ($log, $scope, $titles, $application) {
+        $scope.titles = $titles;
+        $scope.app = $application;
+
+        $log.log("BUILDING CONTROLLER");
+    }])
+
+
+    /**
      * ContractorsController
      * Контроллер раздела контрагентов
      */
@@ -409,6 +420,163 @@ var appControllers = angular.module("gears.app.controllers", [])
                 });
             }
         };
+    }])
+
+
+    /**
+     * UsersController
+     * Контроллер раздела пользователей системы
+     */
+    .controller("UsersController", ["$log", "$scope", "$location", "$users", "$application", function ($log, $scope, $location, $users, $application) {
+        $scope.users = $users;
+        $scope.app = $application;
+
+        $scope.gotoAddUser = function () {
+            $location.url("/new-user");
+        };
+
+        $scope.selectGroup = function (groupId) {
+            if (groupId !== undefined) {
+                angular.forEach($scope.users.groups.items, function (group) {
+                    if (group.id.value === groupId) {
+                        if (group._states_.selected() === true) {
+                            group._states_.selected(false);
+                            $application.currentUserGroup = undefined;
+                        } else {
+                            group._states_.selected(true);
+                            $application.currentUserGroup = group;
+                            $log.log("group " + $users.groups.find("id", groupId).title.value + " selected");
+                        }
+                    } else {
+                        group._states_.selected(false);
+                    }
+                });
+            }
+        };
+
+        $scope.selectUser = function (userId) {
+            if (userId !== undefined) {
+                angular.forEach($scope.users.users.items, function (user) {
+                    if (user.id.value === userId) {
+                        if (user._states_.selected() === true) {
+                            user._states_.selected(false);
+                            $application.currentUser = undefined;
+                        } else {
+                            user._states_.selected(true);
+                            $application.currentUser = user;
+                            $log.log("user " + $users.users.find("id", userId).fio + " selected");
+                        }
+                    } else {
+                        user._states_.selected(false);
+                    }
+                });
+            }
+        };
+
+        $scope.onSuccessDeleteUser = function (moment) {
+            $log.log("user deleted, moment = ", moment);
+            $users.users.delete("id", $application.currentUser.id.value);
+            $application.currentUser = undefined;
+        };
+    }])
+
+
+    .controller("AddUserController", ["$log", "$scope", "$location", "$factory", "$users", "$application", function ($log, $scope, $location, $factory, $users, $application) {
+        $scope.users = $users;
+        $scope.app = $application
+        $scope.newUser = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+        $scope.newUser.password = "";
+        $scope.errors = [];
+
+        $scope.newUser._states_.loaded(false);
+
+        $scope.gotoUsers = function () {
+            $location.url("/users");
+        };
+
+        $scope.onSuccessAddUser = function (user) {
+            $scope.newUser._states_.loaded(true);
+            $scope.newUser._model_.reset();
+            $scope.newUser.password = "";
+        };
+
+        $scope.validate = function () {
+            $scope.newUser._states_.loaded(false);
+            $scope.errors.splice(0, $scope.errors.length);
+
+            if ($scope.newUser.name.value === "")
+                $scope.errors.push("Вы не указали имя пользователя");
+            if ($scope.newUser.fname.value === "")
+                $scope.errors.push("Вы не указали отчество пользователя");
+            if ($scope.newUser.surname.value === "")
+                $scope.errors.push("Вы не указали фамилию пользователя");
+            if ($scope.newUser.groupId.value === 0)
+                $scope.errors.push("Вы не указали группу пользователя");
+            if ($scope.newUser.email.value === "")
+                $scope.errors.push("Вы не указали e-mail пользователя");
+            if ($scope.newUser.password === "")
+                $scope.errors.push("Вы не указали пароль пользователя");
+
+            if ($scope.errors.length === 0) {
+                $scope.users.addUser($scope.newUser, $scope.onSuccessAddUser);
+            }
+
+        };
+    }])
+
+
+    .controller("BuildingController", ["$log", "$scope", "$application", "$titles", function ($log, $scope, $application, $titles) {
+        $scope.titles = $titles;
+        $scope.app = $application;
+        $scope.tabs = [
+            {
+                id: 1,
+                title: "План работ",
+                template: "templates/building/title-building-plan.html",
+                isActive: true
+            },
+            {
+                id: 2,
+                title: "Рабочие коммиссии",
+                template: "templates/building/work-commissions.html",
+                isActive: false
+            },
+            {
+                id: 3,
+                title: "Приемочная коммиссия",
+                template: "templates/building/acceptance-commissions.html",
+                isActive: false
+            }
+        ];
+
+
+        $scope.selectPlanItem = function (itemId) {
+            if (itemId !== undefined) {
+                angular.forEach($scope.titles.plans.items, function (plan) {
+                    if (plan.id.value === itemId) {
+                        if (plan._states_.selected() === true) {
+                            plan._states_.selected(false);
+                            $application.currentBuildingPlanItem = undefined;
+                        } else {
+                            plan._states_.selected(true);
+                            $application.currentBuildingPlanItem = plan;
+                            //$log.log("plan " + $users.users.find("id", userId).fio + " selected");
+                        }
+                    } else {
+                        plan._states_.selected(false);
+                    }
+                });
+            }
+        };
+
+    }])
+
+
+    .controller("BuildingPlanController", ["$log", "$scope", "$application", "$titles", function ($log, $scope, $application, $titles) {
+        $scope.titles = $titles;
+        $scope.app = $application;
+
+
     }])
 
 

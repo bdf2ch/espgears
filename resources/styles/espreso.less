@@ -11,6 +11,11 @@
   src: url("../fonts/Roboto-Bold.ttf"); /* Путь к файлу со шрифтом */
 }
 
+@font-face {
+  font-family: "Roboto Italic"; /* Гарнитура шрифта */
+  src: url("../fonts/Roboto-Italic.ttf"); /* Путь к файлу со шрифтом */
+}
+
 html, body {
   height: 100%;
   margin: 0px;
@@ -65,6 +70,24 @@ html, body {
 }
 
 
+/*****
+* NEW-USER-TEMPLATE
+******/
+#new-user-template-content {
+  padding-top: 50px;
+  box-sizing: content-box;
+  overflow-y: auto;
+}
+
+/*****
+* TITLE-BUILDING-TEMPLATE
+*****/
+#title-building-plan-details {
+  //background: #FAFAFA;
+  //border-right: 1px dotted lightgrey;
+  font-family: "Roboto Regular";
+}
+
 
 /*****
 * SHARED
@@ -79,6 +102,14 @@ html, body {
   font-family: "Helvetica";
   font-size: 18px;
   color: #CFCCCC;
+}
+
+.column-title {
+  display: block;
+  font-family: "Roboto Regular";
+  margin-bottom: 5px;
+  font-size: 18px;
+  color: #BDBDBD;
 }
 
 .node-icon {
@@ -121,7 +152,7 @@ html, body {
   .message-item {
     padding-top: 10px;
     padding-bottom: 10px;
-    font-family: "Helvetica";
+    font-family: "Roboto Regular";
     font-size: 14px;
     line-height: 14px;
 

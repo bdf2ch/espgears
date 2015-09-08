@@ -43,6 +43,48 @@ var AppFilters = angular.module("gears.app.filters", [])
             }
         }]);
 
+
+        /**
+         * byUserGroup
+         * Фильтр пользователей по группе
+         */
+        $filterProvider.register("byUserGroup", ["$log", function ($log) {
+            return function (input, userGroupId) {
+                if (userGroupId !== undefined && userGroupId !== 0) {
+                    var result = [];
+                    angular.forEach(input, function (user) {
+                        if (user.groupId.value === userGroupId)
+                            result.push(user);
+                    });
+                    return result;
+                } else
+                    return input;
+            }
+        }]);
+
+
+        /**
+         * timestamp
+         * Фильтр пользователей по группе
+         */
+        $filterProvider.register("timestamp", ["$log", function ($log) {
+            return function (input, format) {
+                if (format !== undefined && format !== "") {
+                    var result = "";
+                    switch (format) {
+                        case "DDMMYYY":
+                            result = moment.unix(input).format("DD.MM.YYYY");
+                            break;
+                        case "DDMMMYYYY":
+                            result = moment.unix(input).format("DD MMM YYYY");
+                    }
+                    return result;
+                } else
+                    return input;
+            }
+        }]);
+
+
     })
     .run(function () {
 

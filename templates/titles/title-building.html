@@ -1,0 +1,54 @@
+<div class="height-100" ng-controller="TitleBuildingController">
+    <div class="row height-100">
+        <table class="column width-50">
+            <tr class="column-content-container">
+                <td>
+                    <div id="title-building-plan" class="column-content y-scrollable padding-10">
+                        <span class="column-title">План производства работ</span>
+                        <ul class="list hover">
+                            <div class="service-message" ng-show="titles.plans._states_.loaded() === false">
+                                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                                <span>Загрузка...</span>
+                            </div>
+                            <li ng-repeat="planItem in titles.plans.items track by $id(plan)"
+                                ng-class="{'active': planItem._states_.selected() === true}"
+                                ng-click="selectGroup(group.id.value)">
+                                <span class="primary-text">{{ planItem.title.value }}</span><br>
+                                <span class="secondary-text italic light">{{ planItem.description.value }}</span><br>
+                                <span class="secondary-text">
+                                    {{(planItem.start.value | timestamp:'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
+                                    <span class="secondary-text right">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table class="column width-50">
+            <tr class="column-content-container">
+                <td>
+                    <div id="title-building-comisions" class="column-content y-scrollable padding-10">
+                        <span class="column-title">Состав рабочей комиссии</span>
+                        <ul class="list hover">
+                            <div class="service-message" ng-show="titles.plans._states_.loaded() === false">
+                                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                                <span>Загрузка...</span>
+                            </div>
+                            <li ng-repeat="planItem in titles.plans.items track by $id(plan)"
+                                ng-class="{'active': planItem._states_.selected() === true}"
+                                ng-click="selectGroup(group.id.value)">
+                                <span class="primary-text">{{ planItem.title.value }}</span><br>
+                                <span class="secondary-text">
+                                    {{(planItem.start.value | timestamp:'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
+                                    <span class="secondary-text right">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

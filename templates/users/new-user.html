@@ -1,0 +1,174 @@
+<table class="column width-100">
+    <tr class="column-header">
+        <td class="caption">Новый пользователь</td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content ">
+
+                <table class="column width-80 height-100">
+                    <tr class="column-content-container height-100 y-scrollable">
+                        <td id="new-user-template-content" class="width-100 height-100">
+                            <div class="row width-100 height-100">
+
+                                <div class="width-100">
+
+                                    <!-- Имя пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <div class="width-100">
+                                                <label for="new-user-name">Имя пользователя</label>
+                                                <input type="text"
+                                                       name="new-user-name"
+                                                       id="new-user-name"
+                                                       class="width-100"
+                                                       placeholder="Имя пользователя"
+                                                       ng-model="newUser.name.value"/>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Отчество пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <label for="new-user-fname">Отчество пользователя</label>
+                                            <input type="text"
+                                                   name="new-user-fname"
+                                                   id="new-user-fname"
+                                                   class="width-100"
+                                                   placeholder="Отчество пользователя"
+                                                   ng-model="newUser.fname.value"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Фамилия пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <label for="new-user-surname">Фамилия пользователя</label>
+                                            <input type="text"
+                                                   name="new-user-surname"
+                                                   id="new-user-surname"
+                                                   class="width-100"
+                                                   placeholder="Фамилия пользователя"
+                                                   ng-model="newUser.surname.value"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Должность пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <label for="new-user-position">Должность пользователя</label>
+                                            <input type="text"
+                                                   name="new-user-position"
+                                                   id="new-user-position"
+                                                   class="width-100"
+                                                   placeholder="Должность пользователя"
+                                                   ng-model="newUser.position.value"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Группа пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <label for="new-user-group">Группа</label>
+                                            <select class="width-100"
+                                                    name="new-user-group"
+                                                    id="new-user-group"
+                                                    ng-model="newUser.groupId.value"
+                                                    ng-options="group.id.value as group.title.value for group in users.groups.items">
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- E-mail пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <label for="new-user-email">E-mail пользователя</label>
+                                            <input type="text"
+                                                   name="new-user-email"
+                                                   id="new-user-email"
+                                                   class="width-100"
+                                                   placeholder="E-mail пользователя"
+                                                   ng-model="newUser.email.value"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Телефон пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <label for="new-user-phone">Телефон пользователя</label>
+                                            <input type="text"
+                                                   name="new-user-phone"
+                                                   id="new-user-phone"
+                                                   class="width-100"
+                                                   placeholder="Телефон пользователя"
+                                                   ng-model="newUser.phone.value"/>
+                                        </div>
+                                    </div>
+
+                                    <!-- Пароль пользователя -->
+                                    <div class="row split-20">
+                                        <div class="width-70 centered">
+                                            <label for="new-user-password">Пароль пользователя</label>
+                                            <input type="text"
+                                                   name="new-user-password"
+                                                   id="new-user-password"
+                                                   class="width-100"
+                                                   placeholder="Пароль пользователя"
+                                                   ng-model="newUser.password"
+                                                   maxlength="10"/>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                </table>
+
+                <table class="column width-20 service-panel">
+                    <tr class="column-content-container height-100">
+                        <td class="width-100 service-panel">
+                            <div class="column-content">
+
+                                <div class="row split-10">
+                                    <div class="width-100 text-centered">
+                                        <button class="green width-80 centered" ng-click="validate()">Добавить пользователя
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row split-30">
+                                    <div class="width-100 text-centered">
+                                        <button class="blue width-80 centered" ng-click="gotoUsers()">Перейти в раздел
+                                            пользователей
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="width-100 text-centered messages-container errors">
+                                        <div class="width-80 centered message-item error text-left"
+                                             ng-repeat="error in errors track by $id(error)">{{ error }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" ng-show="newUser._states_.loaded() === true">
+                                    <div class="width-100 text-centered messages-container success">
+                                        <div class="width-80 centered message-item success text-left">Пользователь успешно
+                                            добавлен
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        </td>
+    </tr>
+</table>

@@ -62,6 +62,29 @@ var titles = angular.module("gears.app.titles",[])
                 },
 
                 /**
+                 * TitleBuildingPlanItem
+                 * Набор свойст, описывающих этап строительства титула
+                 */
+                TitleBuildingPlanItem: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0 }),
+                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
+                    description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
+                    start: new Field({ source: "START_PERIOD", value: 0, default_value: 0, backupable: true, required: true }),
+                    end: new Field({ source: "END_PERIOD", value: 0, default_value: 0, backupable: true, required: true })
+                },
+
+                /**
+                 * BuildingStatus
+                 * Набор свойств, описывающих статус этапа строительства титула
+                 */
+                BuildingStatus: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
+                },
+
+                /**
                  * TitleNodes
                  * Набор свойст и методов, описывающих иерархию узлов, входящих в титул
                  */
@@ -278,6 +301,8 @@ var titles = angular.module("gears.app.titles",[])
             titles.titles = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.parts = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.statuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            titles.plans = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            titles.buildingStatuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
 
             /**
@@ -344,6 +369,61 @@ var titles = angular.module("gears.app.titles",[])
                         }
                         titles.statuses._states_.loaded(true);
                         $log.log("statuses = ", titles.statuses.items);
+                    }
+                );
+            };
+
+            /**
+             * Получает список всех этапов всех планов строительства всех титулов
+             */
+            titles.getBuildingPlans = function () {
+                titles.plans._states_.loaded(false);
+                $http.post("serverside/controllers/titles.php", { action: "getBuildingPlans" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (plan) {
+                                    var temp_plan = $factory({ classes: ["TitleBuildingPlanItem", "Model", "Backup", "States"], base_class: "TitleBuildingPlanItem" });
+                                    temp_plan._model_.fromJSON(plan);
+                                    temp_plan._backup_.setup();
+                                    titles.plans.append(temp_plan);
+                                });
+                            }
+                        }
+                        titles.plans._states_.loaded(true);
+                        $log.log("building plans = ", titles.plans.items);
+                    }
+                );
+            };
+
+
+            /**
+             * Получает список всех этапов всех планов строительства всех титулов
+             */
+            titles.getBuildingStatuses = function () {
+                titles.buildingStatuses._states_.loaded(false);
+                $http.post("serverside/controllers/titles.php", { action: "getBuildingStatuses" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (building_status) {
+                                    var temp_building_status = $factory({ classes: ["BuildingStatus", "Model", "Backup", "States"], base_class: "BuildingStatus" });
+                                    temp_building_status._model_.fromJSON(building_status);
+                                    temp_building_status._backup_.setup();
+                                    titles.buildingStatuses.append(temp_building_status);
+                                });
+                            }
+                        }
+                        titles.buildingStatuses._states_.loaded(true);
+                        $log.log("building statuses = ", titles.buildingStatuses.items);
                     }
                 );
             };
@@ -493,6 +573,8 @@ var titles = angular.module("gears.app.titles",[])
         $modules.load($titles);
         $titles.getTitles();
         $titles.getStatuses();
+        $titles.getBuildingPlans();
+        $titles.getBuildingStatuses();
         //$log.log($titules.titules);
         //$titules.titules.display();
     });

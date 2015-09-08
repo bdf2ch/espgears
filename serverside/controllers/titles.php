@@ -41,6 +41,12 @@
                 case "getStatuses":
                     get_statuses ();
                     break;
+                case "getBuildingPlans":
+                    get_building_plans();
+                    break;
+                case "getBuildingStatuses":
+                    get_building_statuses();
+                    break;
             }
         }
         oci_close($connection);
@@ -421,6 +427,92 @@
                 } else {
                     while ($status = oci_fetch_assoc($cursor))
                         array_push($result, $status);
+                }
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
+
+    /**
+    * Возвращает список всех этапов планов строительства всех титулов
+    **/
+    function get_building_plans () {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_building_plans(:plans); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":plans", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($plan = oci_fetch_assoc($cursor))
+                        array_push($result, $plan);
+                }
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
+
+    /**
+    * Возвращает список всех этапов планов строительства всех титулов
+    **/
+    function get_building_statuses () {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_building_statuses(:building_statuses); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":building_statuses", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($building_status = oci_fetch_assoc($cursor))
+                        array_push($result, $building_status);
                 }
             }
         }

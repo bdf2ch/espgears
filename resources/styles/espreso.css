@@ -12,6 +12,13 @@
   /* Гарнитура шрифта */
   /* Путь к файлу со шрифтом */
 }
+@font-face {
+  font-family: "Roboto Italic";
+  src: url("../fonts/Roboto-Italic.ttf");
+  
+  /* Гарнитура шрифта */
+  /* Путь к файлу со шрифтом */
+}
 html,
 body {
   height: 100%;
@@ -48,6 +55,20 @@ body {
   color: lightgrey;
 }
 /*****
+* NEW-USER-TEMPLATE
+******/
+#new-user-template-content {
+  padding-top: 50px;
+  box-sizing: content-box;
+  overflow-y: auto;
+}
+/*****
+* TITLE-BUILDING-TEMPLATE
+*****/
+#title-building-plan-details {
+  font-family: "Roboto Regular";
+}
+/*****
 * SHARED
 *****/
 .service-panel {
@@ -58,6 +79,13 @@ body {
   font-family: "Helvetica";
   font-size: 18px;
   color: #CFCCCC;
+}
+.column-title {
+  display: block;
+  font-family: "Roboto Regular";
+  margin-bottom: 5px;
+  font-size: 18px;
+  color: #BDBDBD;
 }
 .node-icon.pylon {
   background: url("../img/icons/pylon.png") no-repeat;
@@ -89,7 +117,7 @@ body {
 .messages-container .message-item {
   padding-top: 10px;
   padding-bottom: 10px;
-  font-family: "Helvetica";
+  font-family: "Roboto Regular";
   font-size: 14px;
   line-height: 14px;
   box-sizing: border-box;
