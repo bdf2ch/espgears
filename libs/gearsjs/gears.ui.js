@@ -147,6 +147,10 @@ var grUi = angular.module("gears.ui", [])
 
             module.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
+            module.register = function () {
+
+            };
+
             return modals;
         }]);
     })

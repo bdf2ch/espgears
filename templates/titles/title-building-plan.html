@@ -5,20 +5,38 @@
                 <div id="title-building-plan-details" class="column-content y-scrollable padding-10">
                     <span class="column-title">План строительства</span>
                     <span>{{ app.currentBuildingPlanItem.description.value }}</span>
+                    <!--
                     <ul class="list hover">
-                        <div class="service-message" ng-show="titles.plans._states_.loaded() === false">
-                            <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                            <span>Загрузка...</span>
-                        </div>
+
                         <li ng-repeat="planItem in titles.plans.items track by $id(planItem)"
                             ng-class="{'active': planItem._states_.selected() === true}"
                             ng-click="selectPlanItem(planItem.id.value)">
+                            <img src="resources/img/icons.pylon.png" alt=""/>
                             <span class="primary-text">{{ planItem.title.value }}</span><br>
-                            <span class="secondary-text light">{{ planItem.description.value }}</span><br>
                             <span class="secondary-text">
                                 {{(planItem.start.value | timestamp:'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
+                            </span><br>
+                            <span class="secondary-text light">{{ planItem.description.value }}</span><br>
+                            <span class="secondary-text">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
+                        </li>
+                    </ul>
+                    -->
+
+                    <div class="service-message" ng-show="titles.plans._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <ul class="chronology">
+                        <li ng-repeat="planItem in titles.plans.items track by $id(planItem)"
+                            ng-class="{'active': planItem._states_.selected() === true, 'last': $last === true}"
+                            ng-click="selectPlanItem(planItem.id.value)">
+                            <span class="primary-text">
+                                {{(planItem.start.value | timestamp:'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
                                 <span class="secondary-text right">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
-                            </span>
+                            </span><br>
+                            <span class="secondary-text dark">{{planItem.title.value }}</span><br>
+                            <span class="secondary-text light">{{ planItem.description.value }}</span><br>
+
                         </li>
                     </ul>
                 </div>

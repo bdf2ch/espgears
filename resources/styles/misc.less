@@ -449,22 +449,73 @@ select {
     margin-bottom: 2px;
     padding: 10px;
     //border-bottom: 1px solid #F5F5F5;
+
+    img {
+      display: inline-block;
+      width: 48px;
+      height: 48px;
+      margin-right: 10px;
+    }
   }
 
   &.hover {
     cursor: pointer;
+    //border: 1px solid lightgrey;
 
     li.active {
-      color: white;
-      background: #42A5F5;
+      //color: white;
+      background: #BBDEFB;
 
       &:hover {
-        background: #42A5F5;
+        background: #BBDEFB;
       }
     }
 
     li:hover {
-      background: #BBDEFB;
+      background: #E3F2FD
+    ;
+      //border: 1px solid #E0E0E0;
+    }
+  }
+}
+
+
+
+.chronology {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-left: 10px;
+  list-style-type: none;
+
+  li {
+    display: block;
+    //margin-left: -25px;
+    padding-bottom: 30px;
+    border-left: 4px solid #90CAF9;
+
+    .primary-text {
+      display: inline-block;
+      width: 95%;
+      //margin-left: 40px;
+    }
+
+    .secondary-text {
+      display: inline-block;
+      margin-left: 20px;
+    }
+
+    &:before {
+      content: "\2022";
+      display: inline-block;
+      margin-left: -16px;
+      font-size: 80px;
+      vertical-align: top;
+      line-height: 20px;
+      color: #90CAF9;
+    }
+
+    &.last {
+      border-left: 4px solid transparent;
     }
   }
 }
@@ -482,6 +533,10 @@ select {
 
   &.light {
     color: #9E9E9E;
+  }
+
+  &.dark {
+    color: black;
   }
 
   &.italic {

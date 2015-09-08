@@ -338,18 +338,55 @@ select {
   margin-bottom: 2px;
   padding: 10px;
 }
+.list li img {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  margin-right: 10px;
+}
 .list.hover {
   cursor: pointer;
 }
 .list.hover li.active {
-  color: white;
-  background: #42A5F5;
+  background: #BBDEFB;
 }
 .list.hover li.active:hover {
-  background: #42A5F5;
+  background: #BBDEFB;
 }
 .list.hover li:hover {
-  background: #BBDEFB;
+  background: #E3F2FD
+    ;
+}
+.chronology {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-left: 10px;
+  list-style-type: none;
+}
+.chronology li {
+  display: block;
+  padding-bottom: 30px;
+  border-left: 4px solid #90CAF9;
+}
+.chronology li .primary-text {
+  display: inline-block;
+  width: 95%;
+}
+.chronology li .secondary-text {
+  display: inline-block;
+  margin-left: 20px;
+}
+.chronology li:before {
+  content: "\2022";
+  display: inline-block;
+  margin-left: -16px;
+  font-size: 80px;
+  vertical-align: top;
+  line-height: 20px;
+  color: #90CAF9;
+}
+.chronology li.last {
+  border-left: 4px solid transparent;
 }
 .primary-text {
   font-family: "Roboto Regular";
@@ -362,6 +399,9 @@ select {
 }
 .secondary-text.light {
   color: #9E9E9E;
+}
+.secondary-text.dark {
+  color: black;
 }
 .secondary-text.italic {
   font-family: "Roboto Italic";

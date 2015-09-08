@@ -32,7 +32,7 @@ var users = angular.module("gears.app.users", [])
                     fio: "",
 
                     _init_: function () {
-                        this.fio = this.name.value + " " + this.fname.value + " " + this.surname.value;
+                        this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
                     }
                 },
 

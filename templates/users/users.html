@@ -51,7 +51,7 @@
                     <div class="service-message" ng-show="app.currentUserGroup !== undefined && usersList.length === 0">
                         В выбранной группе отстутствуют пользователи
                     </div>
-                    <li ng-repeat="user in usersList = users.users.items | byUserGroup:app.currentUserGroup.id.value track by $id(user)"
+                    <li ng-repeat="user in usersList = users.users.items | byUserGroup:app.currentUserGroup.id.value | orderBy:'fio' track by $id(user)"
                         ng-class="{'active': user._states_.selected() === true}"
                         ng-click="selectUser(user.id.value)">
                         <span class="primary-text">{{ user.fio }}</span><br>
