@@ -43,32 +43,30 @@
 
                                     <!-- Узлы в начале и в конце титула -->
 
-                                                        <div class="row split-30">
-                                                            <div class="width-20">&nbsp;</div>
-                                                            <div class="width-20">
-                                                                <div class="row">
-                                                                    <div class="width-100">
-                                                                        <div class="row block-title text-centered">
-                                                                            Объект в начале титула
-                                                                        </div>
+                                    <div class="row split-30">
+                                        <div class="width-20">
+                                            <div class="row">
+                                                <div class="width-100">
+                                                    <div class="row block-title text-centered">
+                                                        Объект в начале титула
+                                                    </div>
 
 
                                     <!-- Иконка узла в начале титула -->
-
-                                                                        <div class="row node-icon pylon big"></div>
+                                                    <div class="row node-icon pylon big"></div>
 
 
                                     <!-- Тип узла в начале титула -->
 
-                                                                        <div class="row split-10">
-                                                                            <label for="new-title-start-node-type">Тип объекта</label>
-                                                                            <select name=new-title-start-node-type""
-                                                                                    id="new-title-start-node-type"
-                                                                                    class="width-100"
-                                                                                    ng-model="newTitle.startNodeTypeId.value"
-                                                                                    ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
-                                                                            </select>
-                                                                        </div>
+                                                    <div class="row split-10">
+                                                        <label for="new-title-start-node-type">Тип объекта</label>
+                                                        <select name=new-title-start-node-type""
+                                                                id="new-title-start-node-type"
+                                                                class="width-100"
+                                                                ng-model="newTitle.startNodeTypeId.value"
+                                                                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyBasicNodes">
+                                                        </select>
+                                                    </div>
 
 
                                     <!-- Линия -->
