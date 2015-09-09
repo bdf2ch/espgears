@@ -165,7 +165,8 @@ var grUi = angular.module("gears.ui", [])
             };
 
             modals.close = function () {
-                modals.modal.showModal = false;
+                //modals.modal.showModal = false;
+                modals.modal.close();
             };
 
             return modals;
@@ -186,7 +187,8 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
         link: function (scope, element, attrs, ctrl) {
             var caption = scope.caption = "";
             var template = scope.template = "";
-            //var errors = scope.errors = [];
+            var showFog = scope.showFog = false;
+            var showClose = scope.showClose = true;
 
             /**
              * Вычисляет метрики элемента
@@ -237,18 +239,41 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
                     $log.log("metrics = ", metrics(angular.element(container)[0]));
                     if (parameters["left"] !== undefined)
                         angular.element(container).css("left", parameters["left"] + "px");
+
                     if (parameters["top"] !== undefined)
                         angular.element(container).css("top", parameters["top"] + "px");
+
                     if (parameters["width"] !== undefined)
                         angular.element(container).css("width", parameters["width"] + "px");
+
                     if (parameters["height"] !== undefined)
                         angular.element(container).css("height", parameters["height"] + "px");
+
                     if (parameters["caption"] !== undefined) {
                        scope.caption = parameters["caption"];
                     }
+
                     if (parameters["template"] !== undefined) {
                         scope.template = parameters["template"];
                     }
+
+                    if (parameters["showFog"] !== undefined) {
+                        if (parameters["showFog"] === true) {
+                            scope.showFog = true;
+                            var fog = document.createElement("div");
+                            fog.className = "gears-ui-modals-fog";
+                            document.body.appendChild(fog);
+                        }
+                    } else
+                        scope.showFog = false;
+
+                    if (parameters["closeButton"] !== undefined) {
+                        if (parameters["closeButton"] === false) {
+                            scope.showClose = false;
+                        }
+                    } else
+                        scope.showClose = false;
+
                     if (parameters["position"] !== undefined) {
                         switch (parameters["position"]) {
                             case "center":
@@ -265,6 +290,11 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
 
             scope.close = function () {
                 scope.showModal = false;
+                if (scope.showFog === true) {
+                    var fog = document.getElementsByClassName("gears-ui-modals-fog");
+                    document.body.removeChild(fog[0]);
+                    scope.showFog = false;
+                }
             };
         }
     }

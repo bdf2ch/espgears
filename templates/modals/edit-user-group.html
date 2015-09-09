@@ -1,0 +1,43 @@
+<div ng-controller="EditUserGroupModalController">
+    <div class="row height-100 split-20">
+        <label for="user-group-title">Наименование группы</label>
+        <input type="text"
+               name="user-group-title"
+               id="user-group-title"
+               class="width-100"
+               placeholder="Наименование группы"
+               ng-disabled="app.currentUserGroup._states_.loading() === true"
+               ng-model="app.currentUserGroup.title.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="user-group-description">Описание группы</label>
+        <textarea name="user-group-description"
+               id="user-group-description"
+               class="width-100"
+               placeholder="Описание группы"
+               ng-disabled="app.currentUserGroup._states_.loading() === true"
+               ng-model="app.currentUserGroup.description.value">
+        </textarea>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100"
+                    ng-disabled="app.currentUserGroup._states_.loading() === true"
+                    ng-click="validate()">
+                Сохранить
+            </button>
+        </div>
+        <div class="50">
+            <button class="red square width-100"
+                    ng-disabled="app.currentUserGroup._states_.loading() === true"
+                    ng-click="cancel()">
+                Отмена
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

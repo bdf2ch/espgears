@@ -30,6 +30,10 @@
                 case "addGroup":
                     add_group($postdata);
                     break;
+                /* Редактирование группы */
+                case "editGroup":
+                    edit_group($postdata);
+                    break;
                 /* Получение всех контрагентов */
                 case "getUsers":
                     get_users();
@@ -174,6 +178,65 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
+
+    /* Функция редактирования группы пользователей */
+    function edit_group ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $groupId = $postdata -> data -> groupId;
+        $title = $postdata -> data -> title;
+        $description = $postdata -> data -> description;
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_usergroups.p_edit_group(:title, :description, :group_id, :edited_group ); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":group_id", $groupId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":edited_group", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_assoc($cursor);
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
 
 
 

@@ -11,10 +11,10 @@
     </div>
     <div class="row">
         <div class="width-50">
-            <button class="green square width-100" ng-click="validate()">Добавить</button>
+            <button class="green square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="validate()">Добавить</button>
         </div>
         <div class="50">
-            <button class="red square width-100" ng-click="newGroup._model_.reset(); close()">Отмена</button>
+            <button class="red square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="newGroup._model_.reset(); close()">Отмена</button>
         </div>
     </div>
     <div class="row">

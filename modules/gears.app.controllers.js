@@ -477,7 +477,24 @@ var appControllers = angular.module("gears.app.controllers", [])
         };
 
         $scope.addGroup = function () {
-            $modals.show({ width: 400, position: "center", caption: "Новая группа пользователей", template: "templates/modals/new-user-group.html" });
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новая группа пользователей",
+                showFog: true,
+                template: "templates/modals/new-user-group.html"
+            });
+        };
+
+        $scope.editGroup = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Редактирование группы пользователей",
+                showFog: true,
+                closeButton: false,
+                template: "templates/modals/edit-user-group.html"
+            });
         };
 
         $scope.onSuccessDeleteUser = function (moment) {
@@ -509,6 +526,38 @@ var appControllers = angular.module("gears.app.controllers", [])
             $scope.newGroup._states_.loaded(true);
             $scope.newGroup._states_.loading(false);
             $scope.newGroup._model_.reset();
+            $modals.close();
+        };
+    }])
+
+
+    .controller("EditUserGroupModalController", ["$scope", "$users", "$factory", "$modals", "$application", function ($scope, $users, $factory, $modals, $application) {
+        $scope.users = $users;
+        $scope.app = $application;
+        $scope.errors = [];
+
+        $application.currentUserGroup._states_.loaded(false);
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentUserGroup._backup_.restore();
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($application.currentUserGroup.title.value === "")
+                $scope.errors.push("Вы не указали наименование группы");
+            if ($scope.errors.length === 0) {
+                $application.currentUserGroup._states_.loading(true);
+                $users.editGroup($application.currentUserGroup, $scope.onSuccessEditGroup);
+            }
+        };
+
+        $scope.onSuccessEditGroup = function (data) {
+            $application.currentUserGroup._states_.loaded(true);
+            $application.currentUserGroup._states_.loading(false);
+            $application.currentUserGroup._backup_.setup();
             $modals.close();
         };
     }])

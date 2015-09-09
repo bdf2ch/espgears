@@ -278,6 +278,9 @@ button.red {
 button.red:hover {
   background: #D64949;
 }
+button.red[disabled] {
+  background: #E3BDBC;
+}
 button.blue {
   color: white;
   background: #84A8F0;
@@ -310,6 +313,14 @@ select {
   display: block;
   padding: 8px;
   font-size: 15px;
+  box-sizing: border-box;
+  border: 1px solid lightgrey;
+}
+textarea {
+  display: block;
+  padding: 7px;
+  font-family: "Helvetica";
+  font-size: 18px;
   box-sizing: border-box;
   border: 1px solid lightgrey;
 }
@@ -725,6 +736,15 @@ select {
 /*****
 * GEARS-UI-MODALS
 *****/
+.gears-ui-modals-fog {
+  position: absolute;
+  z-index: 98;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+}
 .gears-ui-modals {
   position: absolute;
   display: block;
@@ -788,4 +808,20 @@ select {
 }
 .gears-ui-modals .content-container .content {
   border: 1px solid red;
+}
+.gears-ui-modals .modal-messages-container {
+  margin-top: 10px;
+  margin-bottom: -10px;
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  background: #FFEBEE;
+}
+.gears-ui-modals .modal-messages-container .message {
+  font-family: "Roboto Regular";
+  font-size: 15px;
+  color: #F44336;
 }

@@ -64,6 +64,7 @@ var users = angular.module("gears.app.users", [])
                                 angular.forEach(data, function (group) {
                                     var temp_group = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
                                     temp_group._model_.fromJSON(group);
+                                    temp_group._backup_.setup();
                                     users.groups.append(temp_group);
                                 });
                             }
@@ -98,6 +99,35 @@ var users = angular.module("gears.app.users", [])
                                     users.groups.append(temp_group);
                                     if (callback !== undefined)
                                         callback(temp_group);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            users.editGroup = function (group, callback) {
+                if (group !== undefined) {
+                    var params = {
+                        action: "editGroup",
+                        data: {
+                            groupId: group.id.value,
+                            title: group.title.value,
+                            description: group.description.value
+                        }
+                    };
+                    $http.post("serverside/controllers/users.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    group._backup_.setup();
+                                    if (callback !== undefined)
+                                        callback();
                                 }
                             }
                         }
