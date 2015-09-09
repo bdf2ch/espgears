@@ -1,27 +1,9 @@
 <div class="width-100 height-100" ng-controller="BuildingPlanController">
-    <table class="column width-50">
+    <table class="column no-border width-50">
         <tr class="column-content-container">
             <td>
                 <div id="title-building-plan-details" class="column-content y-scrollable padding-10">
                     <span class="column-title">План строительства</span>
-                    <span>{{ app.currentBuildingPlanItem.description.value }}</span>
-                    <!--
-                    <ul class="list hover">
-
-                        <li ng-repeat="planItem in titles.plans.items track by $id(planItem)"
-                            ng-class="{'active': planItem._states_.selected() === true}"
-                            ng-click="selectPlanItem(planItem.id.value)">
-                            <img src="resources/img/icons.pylon.png" alt=""/>
-                            <span class="primary-text">{{ planItem.title.value }}</span><br>
-                            <span class="secondary-text">
-                                {{(planItem.start.value | timestamp:'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
-                            </span><br>
-                            <span class="secondary-text light">{{ planItem.description.value }}</span><br>
-                            <span class="secondary-text">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
-                        </li>
-                    </ul>
-                    -->
-
                     <div class="service-message" ng-show="titles.plans._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
@@ -32,11 +14,14 @@
                             ng-click="selectPlanItem(planItem.id.value)">
                             <span class="primary-text">
                                 {{(planItem.start.value | timestamp:'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
-                                <span class="secondary-text right">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
+                                <span class="secondary-text building-status right" ng-class="{ 'blue': planItem.statusId.value === 1 }">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
                             </span><br>
                             <span class="secondary-text dark">{{planItem.title.value }}</span><br>
                             <span class="secondary-text light">{{ planItem.description.value }}</span><br>
-
+                            <div class="row controls">
+                                <button class="blue" ng-click="editPlanItem(planItem)" title="Редактировать этап работ">Редактировать</button>
+                                <button class="red" ng-click="deletePlanItem(planItem)" title="Удалить этап работ">Удалить</button>
+                            </div>
                         </li>
                     </ul>
                 </div>

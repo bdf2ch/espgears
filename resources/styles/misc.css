@@ -87,12 +87,10 @@
   box-sizing: border-box;
 }
 .width-40 {
-  position: relative;
   float: left;
   width: 40%;
 }
 .width-45 {
-  position: relative;
   float: left;
   width: 45%;
 }
@@ -150,6 +148,9 @@
   border-spacing: 0px;
   border-right: 1px solid #E3E3E3;
   box-sizing: border-box;
+}
+.column.no-border {
+  border-right: none;
 }
 .column.service-panel {
   background: #FAF9F7;
@@ -256,6 +257,9 @@ button[disabled] {
 button.block {
   display: block;
   width: 100%;
+}
+button.square {
+  border-radius: 0px;
 }
 button.green {
   color: white;
@@ -365,16 +369,25 @@ select {
 }
 .chronology li {
   display: block;
-  padding-bottom: 30px;
-  border-left: 4px solid #90CAF9;
+  padding-bottom: 40px;
+  border-left: 4px solid #BBDEFB;
+}
+.chronology li:hover .controls {
+  display: block;
 }
 .chronology li .primary-text {
   display: inline-block;
   width: 95%;
+  color: #0D47A1;
 }
 .chronology li .secondary-text {
   display: inline-block;
   margin-left: 20px;
+}
+.chronology li .controls {
+  display: none;
+  margin-left: 20px;
+  padding-top: 10px;
 }
 .chronology li:before {
   content: "\2022";
@@ -383,7 +396,7 @@ select {
   font-size: 80px;
   vertical-align: top;
   line-height: 20px;
-  color: #90CAF9;
+  color: #BBDEFB;
 }
 .chronology li.last {
   border-left: 4px solid transparent;
@@ -708,4 +721,71 @@ select {
   width: 100%;
   height: 100%;
   overflow: auto;
+}
+/*****
+* GEARS-UI-MODALS
+*****/
+.gears-ui-modals {
+  position: absolute;
+  display: block;
+  z-index: 99;
+  visibility: hidden;
+  width: 300px;
+  height: auto;
+  background: white;
+  border: 1px solid lightgrey;
+  -webkit-box-shadow: 0px 2px 27px -8px rgba(117, 113, 117, 0.9);
+  -moz-box-shadow: 0px 2px 27px -8px rgba(117, 113, 117, 0.9);
+  box-shadow: 0px 2px 27px -8px rgba(117, 113, 117, 0.9);
+}
+.gears-ui-modals.shown {
+  visibility: visible;
+}
+.gears-ui-modals .caption-container {
+  display: block;
+  overflow: auto;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  line-height: 20px;
+  font-family: "Roboto Bold";
+  text-transform: uppercase;
+  color: #9E9E9E;
+  background-color: #fafafa;
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  border-bottom: 1px solid lightgrey;
+}
+.gears-ui-modals .caption-container .caption {
+  display: inline-block;
+  float: left;
+  font-size: 14px;
+}
+.gears-ui-modals .caption-container .close-modal {
+  display: inline-block;
+  float: right;
+  vertical-align: middle;
+  font-family: "Roboto Bold";
+  font-size: 24px;
+  color: gray;
+  cursor: pointer;
+}
+.gears-ui-modals .caption-container .close-modal:hover {
+  color: black;
+}
+.gears-ui-modals .content-container {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  border: 1px solid black;
+}
+.gears-ui-modals .content-container .content {
+  border: 1px solid red;
 }

@@ -1,0 +1,25 @@
+<div ng-controller="AddUserGroupModalController">
+    <div class="row height-100 split-20">
+        <label for="user-group-title">Наименование группы</label>
+        <input type="text"
+               name="user-group-title"
+               id="user-group-title"
+               class="width-100"
+               placeholder="Наименование группы"
+               ng-disabled="newGroup._states_.loading() === true"
+               ng-model="newGroup.title.value"/>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="red square width-100" ng-click="newGroup._model_.reset(); close()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="messages-container modal errors">
+            <div class="message-item error" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

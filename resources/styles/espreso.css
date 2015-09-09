@@ -66,6 +66,7 @@ body {
 * TITLE-BUILDING-TEMPLATE
 *****/
 #title-building-plan-details {
+  overflow-x: hidden;
   font-family: "Roboto Regular";
 }
 /*****
@@ -83,9 +84,19 @@ body {
 .column-title {
   display: block;
   font-family: "Roboto Regular";
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   font-size: 18px;
   color: #BDBDBD;
+}
+.building-status {
+  font-family: "Roboto Regular";
+  text-transform: uppercase;
+}
+.building-status.green {
+  color: #4CAF50;
+}
+.building-status.blue {
+  color: #03A9F4;
 }
 .node-icon.pylon {
   background: url("../img/icons/pylon.png") no-repeat;
@@ -107,6 +118,12 @@ body {
 }
 .messages-container {
   box-sizing: border-box;
+}
+.messages-container.modal {
+  margin-left: -10px;
+  margin-right: -10px;
+  padding-left: 10px;
+  background: #FFCDD2;
 }
 .messages-container.errors {
   border-left: 5px solid #F0B1B1;

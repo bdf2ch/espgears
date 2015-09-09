@@ -16,7 +16,7 @@ var appControllers = angular.module("gears.app.controllers", [])
      * TitlesController
      * Ктонтроллер раздела титулов
      */
-    .controller("TitlesController", ["$log", "$scope", "$location", "$titles", "$application", "$files", "$nodes", function ($log, $scope, $location, $titles, $application, $files, $nodes) {
+    .controller("TitlesController", ["$log", "$scope", "$location", "$titles", "$application", "$files", "$nodes", "$modals", function ($log, $scope, $location, $titles, $application, $files, $nodes, $modals) {
         $scope.titles = $titles;
         $scope.files = $files;
         $scope.app = $application;
@@ -94,6 +94,9 @@ var appControllers = angular.module("gears.app.controllers", [])
                 });
             }
         };
+
+        //$modals.show({ width: 400, left: 300, top: 200, position: "center", caption: "Удаление этапа плана работ", template: "templates/modals/test.html" });
+        //$modals.show();
 
     }])
 
@@ -427,7 +430,7 @@ var appControllers = angular.module("gears.app.controllers", [])
      * UsersController
      * Контроллер раздела пользователей системы
      */
-    .controller("UsersController", ["$log", "$scope", "$location", "$users", "$application", function ($log, $scope, $location, $users, $application) {
+    .controller("UsersController", ["$log", "$scope", "$location", "$users", "$application", "$modals", function ($log, $scope, $location, $users, $application, $modals) {
         $scope.users = $users;
         $scope.app = $application;
 
@@ -473,10 +476,40 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
+        $scope.addGroup = function () {
+            $modals.show({ width: 400, position: "center", caption: "Новая группа пользователей", template: "templates/modals/new-user-group.html" });
+        };
+
         $scope.onSuccessDeleteUser = function (moment) {
             $log.log("user deleted, moment = ", moment);
             $users.users.delete("id", $application.currentUser.id.value);
             $application.currentUser = undefined;
+        };
+    }])
+
+
+    .controller("AddUserGroupModalController", ["$scope", "$users", "$factory", "$modals", function ($scope, $users, $factory, $modals) {
+        $scope.users = $users;
+        $scope.newGroup = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
+        $scope.errors = [];
+
+        $scope.newGroup._states_.loaded(false);
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newGroup.title.value === "")
+                $scope.errors.push("Вы не указали наименование группы");
+            if ($scope.errors.length === 0) {
+                $scope.newGroup._states_.loading(true);
+                $users.addGroup($scope.newGroup, $scope.onSuccessAddGroup);
+            }
+        };
+
+        $scope.onSuccessAddGroup = function (data) {
+            $scope.newGroup._states_.loaded(true);
+            $scope.newGroup._states_.loading(false);
+            $scope.newGroup._model_.reset();
+            $modals.close();
         };
     }])
 
@@ -572,11 +605,45 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
-    .controller("BuildingPlanController", ["$log", "$scope", "$application", "$titles", function ($log, $scope, $application, $titles) {
+    .controller("BuildingPlanController", ["$log", "$scope", "$application", "$titles", "$modals", function ($log, $scope, $application, $titles, $modals) {
         $scope.titles = $titles;
         $scope.app = $application;
 
+        $scope.deletePlanItem = function (planItem) {
+            if (planItem !== undefined) {
+                $application.currentBuildingPlanItem = planItem;
+                $modals.show({ width: 400, position: "center", caption: "Удаление этапа работ", template: "templates/modals/test.html" });
+            }
+        };
 
+        $scope.editPlanItem = function (planItem) {
+            if (planItem !== undefined) {
+                $application.currentBuildingPlanItem = planItem;
+                $modals.show({ width: 400, position: "center", caption: "Редактирование этапа работ", template: "templates/modals/edit-building-plan-item.html" });
+            }
+        };
+    }])
+
+
+    .controller("DeleteBuildingPlanModalController", ["$log", "$scope", "$titles", function ($log, $scope, $titles) {
+        $scope.delete = function (planItemId) {
+            if (planItemId !== undefined) {
+                angular.forEach($titles.plans.items, function (plan) {
+                    if (plan.id.value === planItemId) {
+
+                    }
+                });
+            }
+        };
+    }])
+
+
+    .controller("EditBuildingPlanModalController", ["$log", "$scope", "$titles", "$application", function ($log, $scope, $titles, $application) {
+        $scope.app = $application;
+
+        $scope.edit = function () {
+
+        };
     }])
 
 

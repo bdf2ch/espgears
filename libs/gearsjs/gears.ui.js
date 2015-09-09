@@ -142,21 +142,135 @@ var grUi = angular.module("gears.ui", [])
             return popup;
         }]);
 
+
+
+
+
         $provide.factory("$modals", ["$log", "$factory", function ($log, $factory) {
             var modals = {};
 
-            module.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            modals.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            modals.modal = undefined;
 
-            module.register = function () {
+            modals.register = function (scope) {
+                if (scope !== undefined) {
+                    modals.modal = scope;
+                    $log.log("scope = ", scope);
+                }
+            };
 
+            modals.show = function (parameters) {
+                modals.modal.show(parameters);
+                modals.modal.showModal = true;
+            };
+
+            modals.close = function () {
+                modals.modal.showModal = false;
             };
 
             return modals;
         }]);
+
+
     })
     .run(function ($modules, $popup) {
         $modules.load($popup);
     });
+
+
+grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, $modals) {
+    return {
+        restrict: "E",
+        scope: {},
+        templateUrl: "templates/ui/modals/modals.html",
+        link: function (scope, element, attrs, ctrl) {
+            var caption = scope.caption = "";
+            var template = scope.template = "";
+            //var errors = scope.errors = [];
+
+            /**
+             * Вычисляет метрики элемента
+             * @param element {HTMLElement} - Элемент, для которого производится перерасчет
+             * @returns {Object} - Возвращает митрики элемента
+             */
+            var metrics = function (element) {
+                if (element !== undefined) {
+                    var top = 0,
+                        left = 0,
+                        offsetY = 0,
+                        offsetX = 0,
+                        scrollY = 0,
+                        scrollX = 0,
+                        width = element.clientWidth,
+                        height = element.clientHeight;
+                    while (element) {
+                        top = top + parseFloat(element.offsetTop);
+                        left = left + parseFloat(element.offsetLeft);
+                        offsetX = offsetX + parseFloat(element.offsetLeft);
+                        offsetY = offsetY + parseFloat(element.offsetTop);
+                        scrollY = scrollY + parseFloat(element.scrollTop);
+                        scrollX = scrollX + parseFloat(element.scrollLeft);
+                        element = element.offsetParent;
+                    }
+                    return {
+                        width: width,
+                        height: height,
+                        top: Math.round(top),
+                        left: Math.round(left),
+                        offsetX: Math.round(offsetX),
+                        offsetY: Math.round(offsetY),
+                        scrollX: Math.round(scrollX),
+                        scrollY: Math.round(scrollY)
+                    }
+                }
+            };
+
+            $modals.register(scope);
+            $log.log("metrics = ", metrics(element[0]));
+
+
+            scope.show = function (parameters) {
+
+                if (parameters !== undefined) {
+                    var container = element.children();
+                    $log.log("container = ", container);
+                    $log.log("metrics = ", metrics(angular.element(container)[0]));
+                    if (parameters["left"] !== undefined)
+                        angular.element(container).css("left", parameters["left"] + "px");
+                    if (parameters["top"] !== undefined)
+                        angular.element(container).css("top", parameters["top"] + "px");
+                    if (parameters["width"] !== undefined)
+                        angular.element(container).css("width", parameters["width"] + "px");
+                    if (parameters["height"] !== undefined)
+                        angular.element(container).css("height", parameters["height"] + "px");
+                    if (parameters["caption"] !== undefined) {
+                       scope.caption = parameters["caption"];
+                    }
+                    if (parameters["template"] !== undefined) {
+                        scope.template = parameters["template"];
+                    }
+                    if (parameters["position"] !== undefined) {
+                        switch (parameters["position"]) {
+                            case "center":
+                                $log.log("container height = ", angular.element(container).css("height"));
+                                angular.element(container).css({
+                                        top: ($window.innerHeight / 2 - angular.element(container).prop("clientHeight") / 2) + "px",
+                                        left: ($window.innerWidth / 2 - parameters["width"] / 2) + "px"
+                                });
+                                break;
+                        }
+                    }
+                }
+            };
+
+            scope.close = function () {
+                scope.showModal = false;
+            };
+        }
+    }
+}]);
+
+
 
 grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function ($log, $window, $document, $popup) {
     return {
@@ -490,6 +604,8 @@ grUi.directive("tabs", ["$log", function ($log) {
         }
     }
 }]);
+
+
 
 
 

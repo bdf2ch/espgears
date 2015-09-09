@@ -398,7 +398,8 @@ var gears = angular.module("gears", [])
                         isActive: false,        // Флаг, сигнализирующий, активен ли объект
                         isSelected: false,      // Флаг, сигнализирующий, выбран ли объект
                         isChanged: false,       // Флаг, сигнализирующий, был ли изменен объект
-                        isLoaded: true,        // Флаг, сигнализирующий был ли объект загружен
+                        isLoaded: true,         // Флаг, сигнализирующий был ли объект загружен
+                        isLoading: false,       // Флаг, сигнализирующий, находится ли объект в режиме загрузки
                         isInEditMode: false,    // Флаг, сигнализирующий, находится ли объект в режиме редактирования
                         isInDeleteMode: false,  // Флаг, сигнализирующий, находится ли объект в режиме удаления
 
@@ -468,6 +469,17 @@ var gears = angular.module("gears", [])
                             if (flag !== undefined && flag.constructor === Boolean)
                                 this.isLoaded = flag;
                             return this.isLoaded;
+                        },
+
+                        /**
+                         * Устанавливает / отменяет режим загруженного объекта
+                         * @param flag {boolean} - Флаг, был ли объект загружен
+                         * @returns {boolean} - Возвращает флаг, был ли объект загружен
+                         */
+                        loading: function (flag) {
+                            if (flag !== undefined && flag.constructor === Boolean)
+                                this.isLoading = flag;
+                            return this.isLoading;
                         }
                     }
                 },

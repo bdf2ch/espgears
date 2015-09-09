@@ -85,6 +85,7 @@ html, body {
 #title-building-plan-details {
   //background: #F9FBE7;
   //border-right: 1px dotted lightgrey;
+  overflow-x: hidden;
   font-family: "Roboto Regular";
 }
 
@@ -107,9 +108,22 @@ html, body {
 .column-title {
   display: block;
   font-family: "Roboto Regular";
-  margin-bottom: 15px;
+  margin-bottom: 30px;
   font-size: 18px;
   color: #BDBDBD;
+}
+
+.building-status {
+  font-family: "Roboto Regular";
+  text-transform: uppercase;
+
+  &.green {
+    color: #4CAF50;
+  }
+
+  &.blue {
+    color: #03A9F4;
+  }
 }
 
 .node-icon {
@@ -141,6 +155,14 @@ html, body {
 .messages-container {
   box-sizing: border-box;
 
+  &.modal {
+    margin-left: -10px;
+    margin-right: -10px;
+    padding-left: 10px;
+    background: #FFCDD2;
+    //border: 1px solid red;
+  }
+
   &.errors {
     border-left: 5px solid #F0B1B1;
   }
@@ -155,8 +177,8 @@ html, body {
     font-family: "Roboto Regular";
     font-size: 14px;
     line-height: 14px;
-
     box-sizing: border-box;
+
 
     &.error {
       color: #D64949;

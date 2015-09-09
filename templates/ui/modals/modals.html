@@ -1,0 +1,28 @@
+
+<!--
+<div class="gears-ui-modals" ng-show="showModal === true" style="{{ style }}">
+    <div class="caption-container">
+        <span class="caption">{{ caption }}</span>
+        <span class="close-modal" ng-click="close()" title="Закрыть">&times;</span>
+    </div>
+    <div class="content-container">
+        <div class="content" ng-include="template"></div>
+    </div>
+</div>
+-->
+
+<div class="gears-ui-modals" ng-class="{ 'shown': showModal === true }">
+    <table class="column no-border width-100">
+        <tr class="caption-container">
+            <td class="width-100">
+                <span class="caption">{{ caption }}</span>
+                <span class="close-modal" ng-click="close()" title="Закрыть">&times;</span>
+            </td>
+        </tr>
+        <tr class="content-container">
+            <td>
+                <div class="column-content y-scrollable padding-10" ng-include="template"></div>
+            </td>
+        </tr>
+    </table>
+</div>

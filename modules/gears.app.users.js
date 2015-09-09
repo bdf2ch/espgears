@@ -75,6 +75,37 @@ var users = angular.module("gears.app.users", [])
             };
 
 
+            users.addGroup = function (group, callback) {
+                if (group !== undefined) {
+                    var params = {
+                        action: "addGroup",
+                        data: {
+                            title: group.title.value,
+                            description: ""
+                        }
+                    };
+                    $http.post("serverside/controllers/users.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_group = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
+                                    temp_group._model_.fromJSON(data);
+                                    temp_group._backup_.setup();
+                                    users.groups.append(temp_group);
+                                    if (callback !== undefined)
+                                        callback(temp_group);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
             users.getUsers = function () {
                 users.users._states_.loaded(false);
                 $http.post("serverside/controllers/users.php", { action: "getUsers" })

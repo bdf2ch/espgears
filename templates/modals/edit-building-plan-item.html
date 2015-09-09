@@ -1,0 +1,47 @@
+<div ng-controller="EditBuildingPlanModalController">
+    <div class="row height-100 split-20">
+        <label for="building-plan-title">Наименование этапа</label>
+        <input type="text"
+               name="building-plan-title"
+               id="building-plan-title"
+               class="width-100"
+               placeholder="Наименование этапа"
+               ng-model="app.currentBuildingPlanItem.title.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="building-plan-description">Описание этапа</label>
+        <input type="text"
+               name="building-plan-description"
+               id="building-plan-description"
+               class="width-100"
+               placeholder="Описание этапа"
+               ng-model="app.currentBuildingPlanItem.description.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="building-plan-start">Дата начала этапа</label>
+        <input type="text"
+               name="building-plan-start"
+               id="building-plan-start"
+               class="width-100"
+               placeholder="Дата начала этапа"
+               ng-model="app.currentBuildingPlanItem.start.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="building-plan-end">Дата окончания этапа</label>
+        <input type="text"
+               name="building-plan-end"
+               id="building-plan-end"
+               class="width-100"
+               placeholder="Дата окончания этапа"
+               ng-model="app.currentBuildingPlanItem.end.value"/>
+    </div>
+    <div class="row">
+        <div class="width-45">
+            <button class="green width-100">Сохранить</button>
+        </div>
+        <div class="width-10">&nbsp;</div>
+        <div class="width-45">
+            <button class="red width-100" ng-click="app.currentBuildingPlanItem._backup_.restore(); close()">Отмена</button>
+        </div>
+    </div>
+</div>
