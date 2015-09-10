@@ -1,0 +1,25 @@
+<div ng-controller="AddContractorTypeModalController">
+    <div class="row height-100 split-20">
+        <label for="new-type-title">Наименование типа</label>
+        <input type="text"
+               name="new-type-title"
+               id="new-type-title"
+               class="width-100"
+               placeholder="Наименование типа"
+               ng-disabled="newType._states_.loading() === true"
+               ng-model="newType.title.value"/>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="red square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

@@ -54,6 +54,7 @@ var contractors = angular.module("gears.app.contractors", [])
                                 angular.forEach(data, function (contractor_type) {
                                     var temp_type = $factory({ classes: ["ContractorType", "Model", "Backup", "States"], base_class: "ContractorType" });
                                     temp_type._model_.fromJSON(contractor_type);
+                                    temp_type._backup_.setup();
                                     contractors.contractorTypes.append(temp_type);
                                 });
                             }
@@ -62,6 +63,96 @@ var contractors = angular.module("gears.app.contractors", [])
                         $log.log("contractor types = ", contractors.contractorTypes.items);
                     }
                 );
+            };
+
+
+            contractors.addContractorType = function (type, callback) {
+                if (type !== undefined) {
+                    var params = {
+                        action: "addContractorType",
+                        data: {
+                            title: type.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/contractors.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_type = $factory({ classes: ["ContractorType", "Model", "Backup", "States"], base_class: "ContractorType" });
+                                    temp_type._model_.fromJSON(data);
+                                    temp_type._backup_.setup();
+                                    contractors.contractorTypes.append(temp_type);
+                                    if (callback !== undefined)
+                                        callback(temp_type);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            contractors.editContractorType = function (type, callback) {
+                if (type !== undefined) {
+                    var params = {
+                        action: "editContractorType",
+                        data: {
+                            typeId: type.id.value,
+                            title: type.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/contractors.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    type._backup_.setup();
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            contractors.deleteContractorType = function (typeId, callback) {
+                if (typeId !== undefined) {
+                    var params = {
+                        action: "deleteContractorType",
+                        data: {
+                            typeId: typeId
+                        }
+                    };
+                    $http.post("serverside/controllers/contractors.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    angular.forEach(contractors.contractors.items, function (contractor) {
+                                        if (contractor.contractorTypeId.value === typeId) {
+                                            contractor.contractorTypeId.value = 0;
+                                        }
+                                    });
+                                    contractors.contractorTypes.delete("id", typeId);
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
             };
 
 
@@ -78,6 +169,7 @@ var contractors = angular.module("gears.app.contractors", [])
                                 angular.forEach(data, function (contractor) {
                                     var temp_contractor = $factory({ classes: ["Contractor", "Model", "Backup", "States"], base_class: "Contractor" });
                                     temp_contractor._model_.fromJSON(contractor);
+                                    temp_contractor._backup_.setup();
                                     contractors.contractors.append(temp_contractor);
                                 });
                             }
@@ -89,7 +181,7 @@ var contractors = angular.module("gears.app.contractors", [])
             };
 
 
-            contractors.getContractorCountByType = function (contractorTypeId) {
+            contractors.getContractorsCountByType = function (contractorTypeId) {
                 if (contractorTypeId !== undefined) {
                     var result = 0;
                     angular.forEach(contractors.contractors.items, function (contractor) {
@@ -105,7 +197,7 @@ var contractors = angular.module("gears.app.contractors", [])
     })
     .run(function ($modules, $contractors) {
         $modules.load($contractors);
-        //$contractors.getContractorTypes();
-        //$contractors.getContractors();
+        $contractors.getContractorTypes();
+        $contractors.getContractors();
     }
 );

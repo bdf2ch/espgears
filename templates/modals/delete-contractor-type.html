@@ -1,0 +1,15 @@
+<div ng-controller="DeleteContractorTypeModalController">
+    <div class="row split-20">
+        <div class="width-100">
+            {{ "Тип контрагента '" + app.currentContractorType.title.value + "' будет удален" }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100" ng-click="delete()">Удалить</button>
+        </div>
+        <div class="50">
+            <button class="red square width-100" ng-click="close()">Отмена</button>
+        </div>
+    </div>
+</div>

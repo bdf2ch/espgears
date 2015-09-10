@@ -402,11 +402,11 @@ var appControllers = angular.module("gears.app.controllers", [])
      * ContractorsController
      * Контроллер раздела контрагентов
      */
-    .controller("ContractorsController", ["$log", "$scope", "$contractors", "$application", function ($log, $scope, $contractors, $application) {
+    .controller("ContractorsController", ["$log", "$scope", "$contractors", "$application", "$modals", function ($log, $scope, $contractors, $application, $modals) {
         $scope.contractors = $contractors;
         $scope.app = $application;
 
-        $scope.selectContractorType = function (contractorTypeId) {
+        $scope.selectType = function (contractorTypeId) {
             if (contractorTypeId !== undefined) {
                 angular.forEach($contractors.contractorTypes.items, function (contractorType) {
                     if (contractorType.id.value === contractorTypeId) {
@@ -422,6 +422,120 @@ var appControllers = angular.module("gears.app.controllers", [])
                     }
                 });
             }
+        };
+
+        $scope.addType = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новый тип контрагента",
+                showFog: true,
+                template: "templates/modals/new-contractor-type.html"
+            });
+        };
+
+        $scope.editType = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Редактирование типа контрагента",
+                showFog: true,
+                closeButton: false,
+                template: "templates/modals/edit-contractor-type.html"
+            });
+        };
+
+        $scope.deleteType = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Удаление типа контрагента",
+                showFog: true,
+                closeButton: true,
+                template: "templates/modals/delete-contractor-type.html"
+            });
+        };
+    }])
+
+
+
+    .controller("AddContractorTypeModalController", ["$scope", "$contractors", "$factory", "$modals", function ($scope, $contractors, $factory, $modals) {
+        $scope.contractors = $contractors;
+        $scope.newType = $factory({ classes: ["ContractorType", "Model", "Backup", "States"], base_class: "ContractorType" });
+        $scope.errors = [];
+
+        $scope.newType._states_.loaded(false);
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newType._model_.reset();
+            $scope.newType._states_.changed(false);
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newType.title.value === "")
+                $scope.errors.push("Вы не указали наименование типа");
+            if ($scope.errors.length === 0) {
+                $scope.newType._states_.loading(true);
+                $contractors.addContractorType($scope.newType, $scope.onSuccessAddType);
+            }
+        };
+
+        $scope.onSuccessAddType = function (data) {
+            $scope.newType._states_.loaded(true);
+            $scope.newType._states_.loading(false);
+            $scope.newType._model_.reset();
+            $modals.close();
+        };
+    }])
+
+
+    .controller("EditContractorTypeModalController", ["$scope", "$contractors", "$factory", "$modals", "$application", function ($scope, $contractors, $factory, $modals, $application) {
+        $scope.contractors = $contractors;
+        $scope.app = $application;
+        $scope.errors = [];
+
+        $application.currentContractorType._states_.loaded(false);
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentContractorType._backup_.restore();
+            $application.currentContractorType._states_.changed(false);
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($application.currentContractorType.title.value === "")
+                $scope.errors.push("Вы не указали наименование типа");
+            if ($scope.errors.length === 0) {
+                $application.currentContractorType._states_.loading(true);
+                $contractors.editContractorType($application.currentContractorType, $scope.onSuccessEditType);
+            }
+        };
+
+        $scope.onSuccessEditType = function (data) {
+            $application.currentContractorType._states_.loaded(true);
+            $application.currentContractorType._states_.loading(false);
+            $application.currentContractorType._backup_.setup();
+            $modals.close();
+        };
+    }])
+
+
+    .controller("DeleteContractorTypeModalController", ["$scope", "$contractors", "$factory", "$modals", "$application", function ($scope, $contractors, $factory, $modals, $application) {
+        $scope.contractors = $contractors;
+        $scope.app = $application;
+
+        $scope.delete = function () {
+            $contractors.deleteContractorType($application.currentContractorType.id.value, $scope.onSuccessDeleteType);
+        };
+
+        $scope.onSuccessDeleteType = function () {
+            $modals.close();
+            $application.currentContractorType = undefined;
         };
     }])
 

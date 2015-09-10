@@ -1,52 +1,89 @@
-<div class="pane-container width-100">
+<table class="column width-20">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Типы контрагентов
+            <button class="green right"
+                    ng-click="addType()"
+                    title="Добавить тип контрагента">
+                +
+            </button>
+            <span class="separator right" ng-show="app.currentContractorType !== undefined"></span>
+            <button class="blue right"
+                    ng-show="app.currentContractorType !== undefined"
+                    ng-click="editType()"
+                    title="Редактировать тип контрагента">
+            </button>
+            <button class="red right"
+                    ng-show="app.currentContractorType !== undefined"
+                    ng-click="deleteType()"
+                    title="Удалить тип контрагента">
+                -
+            </button>
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="contractors.contractorTypes._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <li ng-repeat="type in contractors.contractorTypes.items | orderBy:'title.value' track by $id(type)"
+                        ng-class="{'active': type._states_.selected() === true}"
+                        ng-click="selectType(type.id.value)">
+                        <span class="primary-text">{{ type._backup_.data.title }}</span><br>
+                        <span class="secondary-text"
+                              ng-show="contractors.getContractorsCountByType(type.id.value) !== 0"
+                              ng-class="{'light': title._states_.selected() === true }">
+                            {{ contractors.getContractorsCountByType(type.id.value) + " контрагентов" }}
+                        </span>
+                        <span class="secondary-text"
+                              ng-show="contractors.getContractorsCountByType(type.id.value) === 0"
+                              ng-class="{'light': title._states_.selected() === true }">
+                            Нет контрагентов
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
 
-    <!-- Типы контрагентов -->
-    <div class="pane width-15">
-        <div class="header">
-            <span class="caption">Типы контрагентов</span>
-            <button class="blue right" title="Редактировать тип контрагента" ng-show="app.currentTitle !== undefined" ng-click="gotoEditTitle(app.currentTitle.id.value)"></button>
-            <button class="red right" title="Удалить тип контрагента" ng-show="app.currentTitle !== undefined">-</button>
-            <span class="separator right" ng-show="app.currentTitle !== undefined"></span>
-            <button class="green right" title="Добавить тип контрагента" ng-click="gotoAddTitle()">+</button>
-        </div>
-        <div class="content y-scrollable">
-            <div class="list-item"
-                 ng-class="{'active': contractor_type._states_.selected() === true}"
-                 ng-repeat="contractor_type in contractors.contractorTypes.items track by $id(contractor_type)"
-                 ng-click="selectContractorType(contractor_type.id.value)">
-                {{ contractor_type.title.value }}<br>
-                <span class="item-description" ng-show="contractors.getContractorCountByType(contractor_type.id.value) !== 0">{{ "Всего " + contractors.getContractorCountByType(contractor_type.id.value) }}</span>
-                <span class="item-description" ng-show="contractors.getContractorCountByType(contractor_type.id.value) === 0">Отсутствуют</span>
+<table class="column width-80">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Контрагенты
+            <button class="green right" ng-click="gotoAddUser()" ng-show="app.currentUser === undefined" title="Добавить пользователя">+</button>
+            <button class="red right" ng-click="app.currentUser._states_.deleting(true)" ng-show="app.currentUser !== undefined && app.currentUser._states_.deleting() === false" title="Удалить пользователя">-</button>
+            <button class="red right" ng-click="app.currentUser._states_.deleting(false)" ng-show="app.currentUser._states_.deleting() === true" title="Отмена">&times;</button>
+            <button class="green right" ng-click="users.deleteUser(app.currentUser.id.value, onSuccessDeleteUser)" ng-show="app.currentUser._states_.deleting() === true" title="Подтвердить удаление">✓</button>
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="users.users._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <div class="service-message" ng-show="app.currentUserGroup !== undefined && usersList.length === 0">
+                        В выбранной группе отстутствуют пользователи
+                    </div>
+                    <li ng-repeat="user in usersList = users.users.items | byUserGroup:app.currentUserGroup.id.value | orderBy:'fio' track by $id(user)"
+                        ng-class="{'active': user._states_.selected() === true}"
+                        ng-click="selectUser(user.id.value)">
+                        <span class="primary-text">{{ user.fio }}</span><br>
+                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
+                            <span class="secondary-text">{{ "группа: " + users.groups.find("id", user.groupId.value)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
+                            <span class="secondary-text" ng-show="user.position.value !== ''">{{ "должность: " + user.position.value }} &nbsp; &nbsp; &nbsp;</span>
+                            <span class="secondary-text">{{ "e-mail: " + user.email.value }} &nbsp; &nbsp; &nbsp;</span>
+                            <span class="secondary-text" ng-show="user.phone.value !== 'NaN'">{{ "телефон: " + user.phone.value }} &nbsp; &nbsp; &nbsp;</span>
+                        </span>
+                    </li>
+                </ul>
             </div>
-            <div class="service-message" ng-show="contractors.contractorTypes._states_.loaded() === false">
-                <img class="loading" src="resources/img/loader.gif" alt="Звгрузка"/>
-                <span>Загрузка...</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Контрагенты -->
-    <div class="pane width-70">
-        <div class="header">
-            <span class="caption">Контрагенты</span>
-        </div>
-        <div class="content">
-            <div class="service-message" ng-show="contractors.contractors._states_.loaded() === false">
-                <img class="loading" src="resources/img/loader.gif" alt="Звгрузка"/>
-                <span>Загрузка...</span>
-            </div>
-            <div class="service-message" ng-show="app.currentContractorType !== undefined && result.length === 0">
-                Контрагенты выбранного типа отсутствуют
-            </div>
-            <div class="list-item"
-                 ng-class="{'active': contractor._states_.selected() === true}"
-                 ng-repeat="contractor in result = (contractors.contractors.items | byContractorType: app.currentContractorType.id.value) track by $id(contractor)"
-                 ng-click="selectTitle(title.id.value)">
-                {{ contractor.title.value }}<br>
-                <span class="item-description">{{ contractors.contractorTypes.find("id", contractor.contractorTypeId.value).title.value }}</span>
-
-            </div>
-        </div>
-    </div>
-
-</div>
+        </td>
+    </tr>
+</table>
