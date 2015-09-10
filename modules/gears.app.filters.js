@@ -64,6 +64,26 @@ var AppFilters = angular.module("gears.app.filters", [])
 
 
         /**
+         * byTitleId
+         * Фильтр любых элементов по идентификатору титула
+         */
+        $filterProvider.register("byTitleId", ["$log", function ($log) {
+            return function (input, titleId) {
+                if (titleId !== undefined && titleId !== 0) {
+                    var result = [];
+                    angular.forEach(input, function (item) {
+                        if (item.titleId.value === titleId)
+                            result.push(item);
+                    });
+                    return result;
+                } else
+                    return input;
+            }
+        }]);
+
+
+
+        /**
          * timestamp
          * Фильтр пользователей по группе
          */

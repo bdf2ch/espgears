@@ -95,7 +95,7 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
-        //$modals.show({ width: 400, left: 300, top: 200, position: "center", caption: "Удаление этапа плана работ", template: "templates/modals/test.html" });
+        //$modals.show({ width: 400, left: 300, top: 200, position: "center", caption: "Удаление этапа плана работ", template: "templates/modals/delete-building-plan-item.html" });
         //$modals.show();
 
     }])
@@ -497,6 +497,17 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
+        $scope.deleteGroup = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Удаление группы пользователей",
+                showFog: true,
+                closeButton: true,
+                template: "templates/modals/delete-user-group.html"
+            });
+        };
+
         $scope.onSuccessDeleteUser = function (moment) {
             $log.log("user deleted, moment = ", moment);
             $users.users.delete("id", $application.currentUser.id.value);
@@ -511,6 +522,13 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.errors = [];
 
         $scope.newGroup._states_.loaded(false);
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newGroup._model_.reset();
+            $scope.newGroup._states_.changed(false);
+        };
 
         $scope.validate = function () {
             $scope.errors.splice(0, $scope.errors.length);
@@ -542,6 +560,7 @@ var appControllers = angular.module("gears.app.controllers", [])
             $modals.close();
             $scope.errors.splice(0, $scope.errors.length);
             $application.currentUserGroup._backup_.restore();
+            $application.currentUserGroup._states_.changed(false);
         };
 
         $scope.validate = function () {
@@ -559,6 +578,21 @@ var appControllers = angular.module("gears.app.controllers", [])
             $application.currentUserGroup._states_.loading(false);
             $application.currentUserGroup._backup_.setup();
             $modals.close();
+        };
+    }])
+
+
+    .controller("DeleteUserGroupModalController", ["$scope", "$users", "$factory", "$modals", "$application", function ($scope, $users, $factory, $modals, $application) {
+        $scope.users = $users;
+        $scope.app = $application;
+
+        $scope.delete = function () {
+            $users.deleteGroup($application.currentUserGroup.id.value, $scope.onSuccessDeleteGroup);
+        };
+
+        $scope.onSuccessDeleteGroup = function () {
+            $modals.close();
+            $application.currentUserGroup = undefined;
         };
     }])
 
@@ -661,37 +695,119 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.deletePlanItem = function (planItem) {
             if (planItem !== undefined) {
                 $application.currentBuildingPlanItem = planItem;
-                $modals.show({ width: 400, position: "center", caption: "Удаление этапа работ", template: "templates/modals/test.html" });
+                $modals.show({
+                    width: 400,
+                    position: "center",
+                    caption: "Удаление этапа работ",
+                    showFog: true,
+                    template: "templates/modals/delete-building-plan-item.html"
+                });
             }
+        };
+
+        $scope.addPlanItem = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новый этап работ",
+                showFog: true,
+                template: "templates/modals/new-building-plan-item.html"
+            });
         };
 
         $scope.editPlanItem = function (planItem) {
             if (planItem !== undefined) {
                 $application.currentBuildingPlanItem = planItem;
-                $modals.show({ width: 400, position: "center", caption: "Редактирование этапа работ", template: "templates/modals/edit-building-plan-item.html" });
+                $modals.show({
+                    width: 400,
+                    position: "center",
+                    caption: "Редактирование этапа работ",
+                    showFog: true,
+                    template: "templates/modals/edit-building-plan-item.html" });
             }
         };
     }])
 
 
-    .controller("DeleteBuildingPlanModalController", ["$log", "$scope", "$titles", function ($log, $scope, $titles) {
-        $scope.delete = function (planItemId) {
-            if (planItemId !== undefined) {
-                angular.forEach($titles.plans.items, function (plan) {
-                    if (plan.id.value === planItemId) {
+    .controller("AddBuildingPlanModalController", ["$log", "$scope", "$titles", "$factory", "$application", "$modals", function ($log, $scope, $titles, $factory, $application, $modals) {
+        $scope.newBuildingPlanItem = $factory({ classes: ["TitleBuildingPlanItem", "Model", "States"], base_class: "TitleBuildingPlanItem" });
+        $scope.errors = [];
 
-                    }
-                });
+        $scope.newBuildingPlanItem.titleId.value = $application.currentTitle.id.value;
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newBuildingPlanItem.title.value === "")
+                $scope.errors.push("Вы не указали наименование этапа работ");
+            if ($scope.newBuildingPlanItem.start.value === "")
+                $scope.errors.push("Вы не указали дату начала этапа работ");
+            if ($scope.newBuildingPlanItem.end.value === "")
+                $scope.errors.push("Вы не указали дату окончания этапа работ");
+            if ($scope.errors.length === 0) {
+                $titles.addBuildingPlan($scope.newBuildingPlanItem, $scope.onSuccessAddBuildingPlan);
             }
+        };
+
+        $scope.onSuccessAddBuildingPlan = function (data) {
+            $modals.close();
+            $scope.newBuildingPlanItem._model_.reset();
+            $scope.newBuildingPlanItem.titleId.value = $application.currentTitle.id.value;
+        };
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newBuildingPlanItem._model_.reset();
+            $scope.newBuildingPlanItem._states_.changed(false);
         };
     }])
 
 
-    .controller("EditBuildingPlanModalController", ["$log", "$scope", "$titles", "$application", function ($log, $scope, $titles, $application) {
+    .controller("EditBuildingPlanModalController", ["$log", "$scope", "$titles", "$application", "$modals", function ($log, $scope, $titles, $application, $modals) {
+        $scope.app = $application;
+        $scope.titles = $titles;
+        $scope.errors = [];
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentBuildingPlanItem._backup_.restore();
+            $application.currentBuildingPlanItem._states_.changed(false);
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($application.currentBuildingPlanItem.title.value === "")
+                $scope.errors.push("Вы не указали наименование этапа работ");
+            if ($application.currentBuildingPlanItem.start.value === "")
+                $scope.errors.push("Вы не указали дату начала этапа работ");
+            if ($application.currentBuildingPlanItem.end.value === "")
+                $scope.errors.push("Вы не указали дату окончания этапа работ");
+            if ($scope.errors.length === 0) {
+                $application.currentBuildingPlanItem._states_.loading(true);
+                $titles.editBuildingPlan($application.currentBuildingPlanItem, $scope.onSuccessEditPlan);
+            }
+        };
+
+        $scope.onSuccessEditPlan = function (data) {
+            $application.currentBuildingPlanItem._states_.loaded(true);
+            $application.currentBuildingPlanItem._states_.loading(false);
+            $application.currentBuildingPlanItem._backup_.setup();
+            $modals.close();
+        };
+    }])
+
+
+    .controller("DeleteBuildingPlanModalController", ["$log", "$scope", "$titles", "$application", "$modals", function ($log, $scope, $titles, $application, $modals) {
         $scope.app = $application;
 
-        $scope.edit = function () {
+        $scope.delete = function () {
+            $titles.deleteBuildingPlan($application.currentBuildingPlanItem.id.value, $scope.onSuccessDeletePlan);
+        };
 
+        $scope.onSuccessDeletePlan = function (data) {
+            $modals.close();
+            $application.currentBuildingPlanItem = undefined;
         };
     }])
 

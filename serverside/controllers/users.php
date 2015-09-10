@@ -18,10 +18,6 @@
             echo(json_encode($result));
         } else {
             switch ($action) {
-                /* Удаление титула */
-                case "delete":
-                    delete_group($postdata);
-                    break;
                 /* Получение всех групп пользователей */
                 case "getUserGroups":
                     get_user_groups();
@@ -30,11 +26,15 @@
                 case "addGroup":
                     add_group($postdata);
                     break;
-                /* Редактирование группы */
+                /* Редактирование группы пользователей */
                 case "editGroup":
                     edit_group($postdata);
                     break;
-                /* Получение всех контрагентов */
+                /* Удаление группы пользователей */
+                case "deleteGroup":
+                    delete_group($postdata);
+                    break;
+                /* Получение всех пользователей */
                 case "getUsers":
                     get_users();
                     break;
@@ -50,39 +50,6 @@
         }
         oci_close($connection);
     //}
-
-
-
-    /* Функция удаления группы */
-    function delete_group ($postdata) {
-        global $connection;
-        $data = $postdata -> data;
-        $moment = 0;
-
-        if (!$statement = oci_parse($connection, "begin pkg_usergroups.p_delete_group(:group_id, :moment); end;")) {
-            $error = oci_error();
-            echo $error["message"];
-        } else {
-            if (!oci_bind_by_name($statement, ":group_id", $data -> id, -1, OCI_DEFAULT)) {
-                $error = oci_error();
-                echo $error["message"];
-            }
-            if (!oci_bind_by_name($statement, ":moment", $moment, -1, OCI_B_INT)) {
-                $error = oci_error();
-                echo $error["message"];
-            }
-            if (!oci_execute($statement)) {
-                $error = oci_error();
-                echo $error["message"];
-            }
-        }
-
-        // Освобождение ресурсов
-        oci_free_statement($statement);
-
-        // Возврат результата
-        echo json_encode($moment);
-    };
 
 
 
@@ -125,6 +92,8 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
 
 
 
@@ -178,6 +147,8 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
 
 
 
@@ -240,6 +211,45 @@
 
 
 
+
+    /* Функция удаления группы */
+    function delete_group ($postdata) {
+        global $connection;
+        $groupId = $postdata -> data -> groupId;
+        $moment = 0;
+
+        if (!$statement = oci_parse($connection, "begin pkg_usergroups.p_delete_group(:group_id, :moment); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":group_id", $groupId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":moment", $moment, -1, OCI_B_INT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+        }
+
+        // Освобождение ресурсов
+        oci_free_statement($statement);
+        // Возврат результата
+        echo json_encode($moment);
+    };
+
+
+
+
+
     /* Функция получения всех пользователей */
     function get_users () {
         global $connection;
@@ -279,6 +289,9 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
+
 
 
     /* Функция добавления пользователя */
@@ -366,6 +379,9 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
+
 
 
     /* Функция удаления пользователя */

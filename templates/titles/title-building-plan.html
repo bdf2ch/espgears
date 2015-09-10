@@ -3,21 +3,25 @@
         <tr class="column-content-container">
             <td>
                 <div id="title-building-plan-details" class="column-content y-scrollable padding-10">
-                    <span class="column-title">План строительства</span>
+                    <div class="row split-20">
+                        <span class="column-title">План строительства</span>
+                        <button class="green right" ng-click="addPlanItem()">Добавить этап работ</button>
+                    </div>
+
                     <div class="service-message" ng-show="titles.plans._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
                     <ul class="chronology">
-                        <li ng-repeat="planItem in titles.plans.items track by $id(planItem)"
-                            ng-class="{'active': planItem._states_.selected() === true, 'last': $last === true}"
+                        <li ng-repeat="planItem in titles.plans.items | byTitleId: app.currentTitle.id.value | orderBy:'start.value' track by $id(planItem)"
+                            ng-class="{'green': planItem._backup_.data.statusId === 2, 'last': $last === true}"
                             ng-click="selectPlanItem(planItem.id.value)">
                             <span class="primary-text">
-                                {{(planItem.start.value | timestamp:'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
-                                <span class="secondary-text building-status right" ng-class="{ 'blue': planItem.statusId.value === 1 }">{{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}</span>
+                                {{(planItem._backup_.data.start | timestamp:'DDMMMYYYY') + " - " + (planItem._backup_.data.end | timestamp:'DDMMMYYYY') }}
+                                <span class="secondary-text building-status right" ng-class="{ 'blue': planItem._backup_.data.statusId === 1, 'green': planItem._backup_.data.statusId === 2 }">{{ titles.buildingStatuses.find("id", planItem._backup_.data.statusId).title.value }}</span>
                             </span><br>
-                            <span class="secondary-text dark">{{planItem.title.value }}</span><br>
-                            <span class="secondary-text light">{{ planItem.description.value }}</span><br>
+                            <span class="secondary-text dark">{{planItem._backup_.data.title }}</span><br>
+                            <span class="secondary-text light">{{ planItem._backup_.data.description }}</span><br>
                             <div class="row controls">
                                 <button class="blue" ng-click="editPlanItem(planItem)" title="Редактировать этап работ">Редактировать</button>
                                 <button class="red" ng-click="deletePlanItem(planItem)" title="Удалить этап работ">Удалить</button>
@@ -33,7 +37,26 @@
         <tr class="column-content-container">
             <td>
                 <div id="title-building-plan-contractors" class="column-content y-scrollable padding-10">
-                    <span class="column-title">Подрядчики</span>
+                    <div class="row split-20">
+                        <span class="column-title">Подрядчики</span>
+                        <button class="green right" ng-click="addPlanItem()">Добавить подрядчика</button>
+                    </div>
+                    <div class="row">
+                        <ul class="list hover">
+                            <div class="service-message" ng-show="titles.contractors._states_.loaded() === false">
+                                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                                <span>Загрузка...</span>
+                            </div>
+                            <li ng-repeat="contractor in titles.contractors.items track by $id(contractor)"
+                                ng-class="{'active': contractor._states_.selected() === true}"
+                                ng-click="selectTitle(title.id.value)">
+                                <span class="primary-text">{{ contractor.titleId.value }}</span><br>
+                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
+                            {{ titles.statuses.find("id", title.statusId.value).title.value }}
+                        </span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </td>
         </tr>

@@ -82,7 +82,7 @@ body {
   color: #CFCCCC;
 }
 .column-title {
-  display: block;
+  display: inline-block;
   font-family: "Roboto Regular";
   margin-bottom: 30px;
   font-size: 18px;

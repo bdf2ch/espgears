@@ -68,7 +68,7 @@ var titles = angular.module("gears.app.titles",[])
                 TitleBuildingPlanItem: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0 }),
-                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
+                    statusId: new Field({ source: "STATUS_ID", value: 3, default_value: 3, backupable: true }),
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
                     description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
                     start: new Field({ source: "START_PERIOD", value: 0, default_value: 0, backupable: true, required: true }),
@@ -82,6 +82,12 @@ var titles = angular.module("gears.app.titles",[])
                 BuildingStatus: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
+                },
+
+
+                TitleContractor: {
+                    titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0 }),
+                    contractorId: new Field({ source: "CONTRACTOR_ID", value: 0, default_value: 0 })
                 },
 
                 /**
@@ -303,6 +309,7 @@ var titles = angular.module("gears.app.titles",[])
             titles.statuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.plans = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.buildingStatuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            titles.contractors = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
 
             /**
@@ -373,6 +380,7 @@ var titles = angular.module("gears.app.titles",[])
                 );
             };
 
+
             /**
              * Получает список всех этапов всех планов строительства всех титулов
              */
@@ -402,6 +410,115 @@ var titles = angular.module("gears.app.titles",[])
 
 
             /**
+             * Добавляет этап работ плана строительства титула
+             * @param plan {TitleBuildingPlanItem} - Этап плана строительства работ титула
+             * @param callback - Коллбэк
+             */
+            titles.addBuildingPlan = function (plan, callback) {
+                if (plan !== undefined) {
+                    var params = {
+                        action: "addBuildingPlan",
+                        data: {
+                            titleId: plan.titleId.value,
+                            statusId: plan.statusId.value,
+                            title: plan.title.value,
+                            description: plan.description.value,
+                            start: plan.start.value,
+                            end: plan.end.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_plan = $factory({ classes: ["TitleBuildingPlanItem", "Model", "Backup", "States"], base_class: "TitleBuildingPlanItem" });
+                                    temp_plan._model_.fromJSON(data);
+                                    temp_plan._backup_.setup();
+                                    titles.plans.append(temp_plan);
+                                    if (callback !== undefined)
+                                        callback(temp_plan);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            /**
+             * Изменяет этап работ плана строительства титула
+             * @param plan {TitleBuildingPlanItem} - Этап плана строительства работ титула
+             * @param callback - Коллбэк
+             */
+            titles.editBuildingPlan = function (plan, callback) {
+                if (plan !== undefined) {
+                    var params = {
+                        action: "editBuildingPlan",
+                        data: {
+                            planId: plan.id.value,
+                            statusId: plan.statusId.value,
+                            title: plan.title.value,
+                            description: plan.description.value,
+                            start: plan.start.value,
+                            end: plan.end.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    plan._backup_.setup();
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            /**
+             * Удаляет этап работ плана строительства титула
+             * @param planId {Number} - Идентификатор этапа работ
+             * callback - Коллбэк
+             */
+            titles.deleteBuildingPlan = function (planId, callback) {
+                if (planId !== undefined) {
+                    var params = {
+                        action: "deleteBuildingPlan",
+                        data: {
+                            planId: planId
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    titles.plans.delete("id", planId);
+                                    if (callback !== undefined)
+                                        callback();
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            /**
              * Получает список всех этапов всех планов строительства всех титулов
              */
             titles.getBuildingStatuses = function () {
@@ -424,6 +541,31 @@ var titles = angular.module("gears.app.titles",[])
                         }
                         titles.buildingStatuses._states_.loaded(true);
                         $log.log("building statuses = ", titles.buildingStatuses.items);
+                    }
+                );
+            };
+
+
+            titles.getContractors = function () {
+                titles.contractors._states_.loaded(false);
+                $http.post("serverside/controllers/titles.php", { action: "getContractors" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (contractor) {
+                                    var temp_contractor = $factory({ classes: ["TitleContractor", "Model", "Backup", "States"], base_class: "TitleContractor" });
+                                    temp_contractor._model_.fromJSON(contractor);
+                                    temp_contractor._backup_.setup();
+                                    titles.contractors.append(temp_contractor);
+                                });
+                            }
+                        }
+                        titles.contractors._states_.loaded(true);
+                        $log.log("title contractors = ", titles.contractors.items);
                     }
                 );
             };
@@ -575,6 +717,7 @@ var titles = angular.module("gears.app.titles",[])
         $titles.getStatuses();
         $titles.getBuildingPlans();
         $titles.getBuildingStatuses();
+        $titles.getContractors();
         //$log.log($titules.titules);
         //$titules.titules.display();
     });

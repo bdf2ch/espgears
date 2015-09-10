@@ -1,47 +1,82 @@
 <div ng-controller="EditBuildingPlanModalController">
     <div class="row height-100 split-20">
-        <label for="building-plan-title">Наименование этапа</label>
+        <label for="building-plan-title">Наименование этапа работ</label>
         <input type="text"
                name="building-plan-title"
                id="building-plan-title"
                class="width-100"
-               placeholder="Наименование этапа"
+               placeholder="Наименование этапа работ"
+               ng-disabled="app.currentBuildingPlanItem._states_.loading() === true"
+               ng-change="app.currentBuildingPlanItem._states_.changed(true)"
                ng-model="app.currentBuildingPlanItem.title.value"/>
     </div>
     <div class="row height-100 split-20">
-        <label for="building-plan-description">Описание этапа</label>
-        <input type="text"
-               name="building-plan-description"
-               id="building-plan-description"
-               class="width-100"
-               placeholder="Описание этапа"
-               ng-model="app.currentBuildingPlanItem.description.value"/>
+        <label for="building-plan-description">Описание этапа работ</label>
+        <textarea name="building-plan-description"
+                  id="building-plan-description"
+                  class="width-100"
+                  cols="30"
+                  rows="3"
+                  placeholder="Описание этапа работ"
+                  ng-disabled="app.currentBuildingPlanItem._states_.loading() === true"
+                  ng-change="app.currentBuildingPlanItem._states_.changed(true)"
+                  ng-model="app.currentBuildingPlanItem.description.value">
+        </textarea>
     </div>
     <div class="row height-100 split-20">
-        <label for="building-plan-start">Дата начала этапа</label>
-        <input type="text"
-               name="building-plan-start"
-               id="building-plan-start"
-               class="width-100"
-               placeholder="Дата начала этапа"
-               ng-model="app.currentBuildingPlanItem.start.value"/>
+        <div class="width-45">
+            <label for="building-plan-start">Начало этапа работ</label>
+            <input type="text"
+                   name="building-plan-start"
+                   id="building-plan-start"
+                   class="width-100"
+                   placeholder="Дата начала"
+                   ng-disabled="app.currentBuildingPlanItem._states_.loading() === true"
+                   ng-change="app.currentBuildingPlanItem._states_.changed(true)"
+                   ng-model="app.currentBuildingPlanItem.start.value"/>
+        </div>
+        <div class="width-10 text-centered">&nbsp;</div>
+        <div class="width-45">
+            <label for="building-plan-end">Окончание этапа работ</label>
+            <input type="text"
+                   name="building-plan-end"
+                   id="building-plan-end"
+                   class="width-100"
+                   placeholder="Дата окончания"
+                   ng-disabled="app.currentBuildingPlanItem._states_.loading() === true"
+                   ng-change="app.currentBuildingPlanItem._states_.changed(true)"
+                   ng-model="app.currentBuildingPlanItem.end.value"/>
+        </div>
     </div>
     <div class="row height-100 split-20">
-        <label for="building-plan-end">Дата окончания этапа</label>
-        <input type="text"
-               name="building-plan-end"
-               id="building-plan-end"
-               class="width-100"
-               placeholder="Дата окончания этапа"
-               ng-model="app.currentBuildingPlanItem.end.value"/>
+        <label for="building-plan-status">Статус этапа работ</label>
+        <select name="building-plan-status"
+                id="building-plan-status"
+                class="width-100"
+                ng-options="planStatus.id.value as planStatus.title.value for planStatus in titles.buildingStatuses.items"
+                ng-change="app.currentBuildingPlanItem._states_.changed(true)"
+                ng-model="app.currentBuildingPlanItem.statusId.value">
+        </select>
     </div>
     <div class="row">
-        <div class="width-45">
-            <button class="green width-100">Сохранить</button>
+        <div class="width-50">
+            <button class="green square width-100"
+                    ng-disabled="app.currentBuildingPlanItem._states_.loading() === true || app.currentBuildingPlanItem._states_.changed() === false"
+                    ng-click="validate()">
+                Сохранить
+            </button>
         </div>
-        <div class="width-10">&nbsp;</div>
-        <div class="width-45">
-            <button class="red width-100" ng-click="app.currentBuildingPlanItem._backup_.restore(); close()">Отмена</button>
+        <div class="50">
+            <button class="red square width-100"
+                    ng-disabled="app.currentBuildingPlanItem._states_.loading() === true"
+                    ng-click="cancel()">
+                Отмена
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
         </div>
     </div>
 </div>

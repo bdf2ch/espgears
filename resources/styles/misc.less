@@ -517,6 +517,20 @@ textarea {
     padding-bottom: 40px;
     border-left: 4px solid #BBDEFB;
     //cursor: pointer;
+
+    &.green {
+      border-left: 4px solid #C8E6C9;
+
+      &:before {
+        content: "\2022";
+        display: inline-block;
+        margin-left: -16px;
+        font-size: 80px;
+        vertical-align: top;
+        line-height: 20px;
+        color: #C8E6C9;
+      }
+    }
     
     &:hover {
       //background: #E3F2FD;

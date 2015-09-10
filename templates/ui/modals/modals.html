@@ -21,7 +21,10 @@
         </tr>
         <tr class="content-container">
             <td>
-                <div class="column-content y-scrollable padding-10" ng-include="template"></div>
+                <div class="column-content y-scrollable padding-10"
+                     ng-include="template"
+                     onload="show()">
+                </div>
             </td>
         </tr>
     </table>

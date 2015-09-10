@@ -14,12 +14,12 @@
             <button class="green square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="validate()">Добавить</button>
         </div>
         <div class="50">
-            <button class="red square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="newGroup._model_.reset(); close()">Отмена</button>
+            <button class="red square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="cancel()">Отмена</button>
         </div>
     </div>
     <div class="row">
-        <div class="messages-container modal errors">
-            <div class="message-item error" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
         </div>
     </div>
 </div>

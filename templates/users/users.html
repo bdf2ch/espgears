@@ -3,15 +3,21 @@
         <td class="caption width-100">
             Группы
             <button class="green right"
-                    ng-show="app.currentUserGroup === undefined"
                     ng-click="addGroup()"
                     title="Добавить группу">
                 +
             </button>
+            <span class="separator right" ng-show="app.currentUserGroup !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentUserGroup !== undefined"
                     ng-click="editGroup()"
                     title="Редактировать группу">
+            </button>
+            <button class="red right"
+                    ng-show="app.currentUserGroup !== undefined"
+                    ng-click="deleteGroup()"
+                    title="Удалить группу">
+                -
             </button>
         </td>
     </tr>
@@ -23,10 +29,10 @@
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
-                    <li ng-repeat="group in users.groups.items track by $id(group)"
+                    <li ng-repeat="group in users.groups.items | orderBy:'title.value' track by $id(group)"
                         ng-class="{'active': group._states_.selected() === true}"
                         ng-click="selectGroup(group.id.value)">
-                        <span class="primary-text">{{ group._backup_.data.title }}</span><br>
+                        <span class="primary-text" ng-show="user.group_id.value !== 0">{{ group._backup_.data.title }}</span><br>
                         <span class="secondary-text"
                               ng-show="users.countUsersInGroup(group.id.value) !== 0"
                               ng-class="{'light': title._states_.selected() === true }">

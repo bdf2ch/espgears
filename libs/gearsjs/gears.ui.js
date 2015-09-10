@@ -160,12 +160,10 @@ var grUi = angular.module("gears.ui", [])
             };
 
             modals.show = function (parameters) {
-                modals.modal.show(parameters);
-                modals.modal.showModal = true;
+                modals.modal.init(parameters);
             };
 
             modals.close = function () {
-                //modals.modal.showModal = false;
                 modals.modal.close();
             };
 
@@ -185,117 +183,88 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
         scope: {},
         templateUrl: "templates/ui/modals/modals.html",
         link: function (scope, element, attrs, ctrl) {
-            var caption = scope.caption = "";
-            var template = scope.template = "";
-            var showFog = scope.showFog = false;
-            var showClose = scope.showClose = true;
+            scope.showModal = false;
+            scope.caption = "";
+            scope.template = "";
+            scope.showClose = true;
+            var showFog = false;
+            var top = undefined;
+            var left = undefined;
+            var width = undefined;
+            var height = undefined;
+            var position = undefined;
 
-            /**
-             * Вычисляет метрики элемента
-             * @param element {HTMLElement} - Элемент, для которого производится перерасчет
-             * @returns {Object} - Возвращает митрики элемента
-             */
-            var metrics = function (element) {
-                if (element !== undefined) {
-                    var top = 0,
-                        left = 0,
-                        offsetY = 0,
-                        offsetX = 0,
-                        scrollY = 0,
-                        scrollX = 0,
-                        width = element.clientWidth,
-                        height = element.clientHeight;
-                    while (element) {
-                        top = top + parseFloat(element.offsetTop);
-                        left = left + parseFloat(element.offsetLeft);
-                        offsetX = offsetX + parseFloat(element.offsetLeft);
-                        offsetY = offsetY + parseFloat(element.offsetTop);
-                        scrollY = scrollY + parseFloat(element.scrollTop);
-                        scrollX = scrollX + parseFloat(element.scrollLeft);
-                        element = element.offsetParent;
+            $modals.register(scope);
+
+            var recalculatePosition = function () {
+                var container = element.children();
+                if (width !== undefined)
+                    angular.element(container).css("width", width + "px");
+                if (height !== undefined)
+                    angular.element(container).css("height", height + "px");
+
+                if (position !== undefined) {
+                    switch (position) {
+                        case "center":
+                            angular.element(container).css({
+                                top: ($window.innerHeight / 2 - angular.element(container).prop("clientHeight") / 2) + "px",
+                                left: ($window.innerWidth / 2 - width / 2) + "px"
+                            });
+                            break;
                     }
-                    return {
-                        width: width,
-                        height: height,
-                        top: Math.round(top),
-                        left: Math.round(left),
-                        offsetX: Math.round(offsetX),
-                        offsetY: Math.round(offsetY),
-                        scrollX: Math.round(scrollX),
-                        scrollY: Math.round(scrollY)
+                } else {
+                    if (left !== undefined)
+                        angular.element(container).css("left", left + "px");
+                    if (top !== undefined)
+                        angular.element(container).css("top", top + "px");
+                }
+            };
+
+            scope.init = function (parameters) {
+                scope.showModal = false;
+                if (parameters !== undefined) {
+                    top = parameters["top"] !== undefined ? parameters["top"] : undefined;
+                    left = parameters["left"] !== undefined ? parameters["left"] : undefined;
+                    width = parameters["width"] !== undefined ? parameters["width"] : undefined;
+                    height = parameters["height"] !== undefined ? parameters["height"] : undefined;
+                    scope.caption = parameters["caption"] !== undefined ? parameters["caption"] : undefined;
+                    position = parameters["position"] !== undefined ? parameters["position"] : undefined;
+                    scope.showClose = parameters["closeButton"] !== undefined ? parameters["closeButton"] : false;
+                    showFog = parameters["showFog"] !== undefined ? parameters["showFog"] : false;
+
+                    if (showFog === true) {
+                        var fog = document.createElement("div");
+                        fog.className = "gears-ui-modals-fog";
+                        document.body.appendChild(fog);
+                    }
+
+                    if (parameters["template"] !== undefined) {
+                        if (parameters["template"] === scope.template)
+                            scope.show();
+                        else
+                            scope.template = parameters["template"];
                     }
                 }
             };
 
-            $modals.register(scope);
-            $log.log("metrics = ", metrics(element[0]));
-
-
-            scope.show = function (parameters) {
-
-                if (parameters !== undefined) {
-                    var container = element.children();
-                    $log.log("container = ", container);
-                    $log.log("metrics = ", metrics(angular.element(container)[0]));
-                    if (parameters["left"] !== undefined)
-                        angular.element(container).css("left", parameters["left"] + "px");
-
-                    if (parameters["top"] !== undefined)
-                        angular.element(container).css("top", parameters["top"] + "px");
-
-                    if (parameters["width"] !== undefined)
-                        angular.element(container).css("width", parameters["width"] + "px");
-
-                    if (parameters["height"] !== undefined)
-                        angular.element(container).css("height", parameters["height"] + "px");
-
-                    if (parameters["caption"] !== undefined) {
-                       scope.caption = parameters["caption"];
-                    }
-
-                    if (parameters["template"] !== undefined) {
-                        scope.template = parameters["template"];
-                    }
-
-                    if (parameters["showFog"] !== undefined) {
-                        if (parameters["showFog"] === true) {
-                            scope.showFog = true;
-                            var fog = document.createElement("div");
-                            fog.className = "gears-ui-modals-fog";
-                            document.body.appendChild(fog);
-                        }
-                    } else
-                        scope.showFog = false;
-
-                    if (parameters["closeButton"] !== undefined) {
-                        if (parameters["closeButton"] === false) {
-                            scope.showClose = false;
-                        }
-                    } else
-                        scope.showClose = false;
-
-                    if (parameters["position"] !== undefined) {
-                        switch (parameters["position"]) {
-                            case "center":
-                                $log.log("container height = ", angular.element(container).css("height"));
-                                angular.element(container).css({
-                                        top: ($window.innerHeight / 2 - angular.element(container).prop("clientHeight") / 2) + "px",
-                                        left: ($window.innerWidth / 2 - parameters["width"] / 2) + "px"
-                                });
-                                break;
-                        }
-                    }
-                }
+            scope.show = function () {
+                recalculatePosition();
+                scope.showModal = true;
             };
 
             scope.close = function () {
                 scope.showModal = false;
-                if (scope.showFog === true) {
+                if (showFog === true) {
                     var fog = document.getElementsByClassName("gears-ui-modals-fog");
                     document.body.removeChild(fog[0]);
-                    scope.showFog = false;
+                    showFog = false;
                 }
             };
+
+            angular.element($window).bind("resize", function () {
+                if (scope.showModal === true)
+                    recalculatePosition();
+            });
         }
     }
 }]);

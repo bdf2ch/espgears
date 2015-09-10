@@ -127,7 +127,39 @@ var users = angular.module("gears.app.users", [])
                                 } else {
                                     group._backup_.setup();
                                     if (callback !== undefined)
-                                        callback();
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            users.deleteGroup = function (groupId, callback) {
+                if (groupId !== undefined) {
+                    var params = {
+                        action: "deleteGroup",
+                        data: {
+                            groupId: groupId
+                        }
+                    };
+                    $http.post("serverside/controllers/users.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    angular.forEach(users.users.items, function (user) {
+                                        if (user.groupId.value === groupId) {
+                                            user.groupId.value = 0;
+                                        }
+                                    });
+                                    users.groups.delete("id", groupId);
+                                    if (callback !== undefined)
+                                        callback(data);
                                 }
                             }
                         }

@@ -383,6 +383,18 @@ textarea {
   padding-bottom: 40px;
   border-left: 4px solid #BBDEFB;
 }
+.chronology li.green {
+  border-left: 4px solid #C8E6C9;
+}
+.chronology li.green:before {
+  content: "\2022";
+  display: inline-block;
+  margin-left: -16px;
+  font-size: 80px;
+  vertical-align: top;
+  line-height: 20px;
+  color: #C8E6C9;
+}
 .chronology li:hover .controls {
   display: block;
 }

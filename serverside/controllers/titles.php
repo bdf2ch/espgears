@@ -18,6 +18,10 @@
             echo(json_encode($result));
         } else {
             switch ($action) {
+                /* Получение всех титулов */
+                case "getTitles":
+                    get_titles();
+                    break;
                 /* Добавление титула */
                 case "addTitle":
                     add_title($postdata);
@@ -25,10 +29,6 @@
                 /* Изменение титула */
                 case "editTitle":
                     edit_title($postdata);
-                    break;
-                /* Получение всех титулов */
-                case "getTitles":
-                    get_titles();
                     break;
                 /* Получение узлов титула */
                 case "getTitleNodes":
@@ -44,8 +44,24 @@
                 case "getBuildingPlans":
                     get_building_plans();
                     break;
+                /* Добавление этапа плана работ строительства титула */
+                case "addBuildingPlan":
+                    add_building_plan_item($postdata);
+                    break;
+                /* Изменение этапа работ плана строительства титула */
+                case "editBuildingPlan":
+                    edit_building_plan($postdata);
+                    break;
+                /* Удаление этапа работ плана строительства титула */
+                case "deleteBuildingPlan":
+                    delete_building_plan($postdata);
+                    break;
+                /* Получение всех статусов этапа плана строительства титула */
                 case "getBuildingStatuses":
                     get_building_statuses();
+                    break;
+                case "getContractors":
+                    get_contractors();
                     break;
             }
         }
@@ -186,6 +202,8 @@
 
 
 
+
+
     /* Функция изменения группы */
     function edit_title ($postdata) {
         global $connection;
@@ -283,6 +301,8 @@
 
 
 
+
+
     /* Функция получения объектов титула */
     function get_title_nodes ($postdata) {
         global $connection;
@@ -354,6 +374,9 @@
     };
 
 
+
+
+
     function get_boundary_nodes ($postdata) {
         global $connection;
         $cursor = oci_new_cursor($connection);
@@ -400,6 +423,9 @@
     };
 
 
+
+
+
     function get_statuses () {
         global $connection;
         $cursor = oci_new_cursor($connection);
@@ -438,6 +464,9 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
+
 
 
     /**
@@ -483,6 +512,201 @@
     };
 
 
+
+
+
+    function add_building_plan_item ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $titleId = $postdata -> data -> titleId;
+        $statusId = $postdata -> data -> statusId;
+        $title = $postdata -> data -> title;
+        $description = $postdata -> data -> description;
+        $start = $postdata -> data -> start;
+        $end = $postdata -> data -> end;
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_building_plan(:title_id, :status_id, :title, :description, :start, :end, :new_plan); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":title_id", $titleId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":status_id", $statusId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":start", $start, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":end", $end, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":new_plan", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_object($cursor);
+            }
+
+        }
+
+        // Освобождение ресурсов
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        // Возврат результата
+        echo json_encode($result);
+    };
+
+
+
+
+
+    function edit_building_plan ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $planId = $postdata -> data -> planId;
+        $statusId = $postdata -> data -> statusId;
+        $title = $postdata -> data -> title;
+        $description = $postdata -> data -> description;
+        $start = $postdata -> data -> start;
+        $end = $postdata -> data -> end;
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_edit_building_plan(:plan_id, :status_id, :title, :description, :start, :end, :edited_plan); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":plan_id", $planId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":status_id", $statusId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":start", $start, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":end", $end, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":edited_plan", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_object($cursor);
+            }
+
+        }
+
+        // Освобождение ресурсов
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        // Возврат результата
+        echo json_encode($result);
+    };
+
+
+
+    /* Удаляет этап работ плана строительства титула */
+    function delete_building_plan ($postdata) {
+        global $connection;
+        $planId = $postdata -> data -> planId;
+        $moment = 0;
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_delete_building_plan(:plan_id, :moment); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":plan_id", $planId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":moment", $moment, -1, OCI_B_INT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+        }
+
+        // Освобождение ресурсов
+        oci_free_statement($statement);
+        // Возврат результата
+        echo json_encode($moment);
+    };
+
+
+
+
+
     /**
     * Возвращает список всех этапов планов строительства всех титулов
     **/
@@ -513,6 +737,50 @@
                 } else {
                     while ($building_status = oci_fetch_assoc($cursor))
                         array_push($result, $building_status);
+                }
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
+
+
+
+
+    /* Функция получения всех титулов */
+    function get_contractors () {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_titles_contractors(:contractors); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":contractors", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($contractor = oci_fetch_assoc($cursor))
+                        array_push($result, $contractor);
                 }
             }
         }

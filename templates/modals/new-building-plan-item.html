@@ -1,0 +1,60 @@
+<div ng-controller="AddBuildingPlanModalController">
+    <div class="row height-100 split-20">
+        <label for="building-plan-title">Наименование этапа работ</label>
+        <input type="text"
+               name="building-plan-title"
+               id="building-plan-title"
+               class="width-100"
+               placeholder="Наименование этапа работ"
+               ng-disabled="newBuildingPlanItem._states_.loading() === true"
+               ng-model="newBuildingPlanItem.title.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="building-plan-description">описание этапа работ</label>
+        <textarea name="building-plan-description"
+                  id="building-plan-description"
+                  class="width-100"
+                  cols="30"
+                  rows="3"
+                  placeholder="Описание этапа работ"
+                  ng-disabled="newBuildingPlanItem._states_.loading() === true"
+                  ng-model="newBuildingPlanItem.description.value">
+        </textarea>
+    </div>
+    <div class="row height-100 split-20">
+        <div class="width-45">
+            <label for="building-plan-start">Начало этапа работ</label>
+            <input type="text"
+                   name="building-plan-start"
+                   id="building-plan-start"
+                   class="width-100"
+                   placeholder="Дата начала"
+                   ng-disabled="newBuildingPlanItem._states_.loading() === true"
+                   ng-model="newBuildingPlanItem.start.value"/>
+        </div>
+        <div class="width-10">&nbsp;</div>
+        <div class="width-45">
+            <label for="building-plan-end">Окончание этапа работ</label>
+            <input type="text"
+                   name="building-plan-end"
+                   id="building-plan-end"
+                   class="width-100"
+                   placeholder="Дата окончания"
+                   ng-disabled="newBuildingPlanItem._states_.loading() === true"
+                   ng-model="newBuildingPlanItem.end.value"/>
+        </div>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100" ng-disabled="newBuildingPlanItem._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="red square width-100" ng-disabled="newBuildingPlanItem._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>
