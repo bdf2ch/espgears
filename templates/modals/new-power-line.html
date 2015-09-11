@@ -1,0 +1,35 @@
+<div ng-controller="AddPowerLineModalController">
+    <div class="row height-100 split-20">
+        <label for="power-line-title">Наименование линии</label>
+        <input type="text"
+               name="power-line-title"
+               id="power-line-title"
+               class="width-100"
+               placeholder="Наименование линии"
+               ng-disabled="newPowerLine._states_.loading() === true"
+               ng-model="newPowerLine.title.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="power-line-voltage">Напряжение линии</label>
+        <input type="text"
+               name="power-line-voltage"
+               id="power-line-voltage"
+               class="width-100"
+               placeholder="Напряжение линии"
+               ng-disabled="newPowerLine._states_.loading() === true"
+               ng-model="newPowerLine.voltage.value"/>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100" ng-disabled="newPowerLine._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="red square width-100" ng-disabled="newPowerLine._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

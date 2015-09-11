@@ -29,7 +29,7 @@
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
-                    <li ng-repeat="type in contractors.contractorTypes.items | orderBy:'title.value' track by $id(type)"
+                    <li ng-repeat="type in contractors.contractorTypes.items | orderBy:'_backup_.data.title' track by $id(type)"
                         ng-class="{'active': type._states_.selected() === true}"
                         ng-click="selectType(type.id.value)">
                         <span class="primary-text">{{ type._backup_.data.title }}</span><br>
@@ -54,32 +54,39 @@
     <tr class="column-header">
         <td class="caption width-100">
             Контрагенты
-            <button class="green right" ng-click="gotoAddUser()" ng-show="app.currentUser === undefined" title="Добавить пользователя">+</button>
-            <button class="red right" ng-click="app.currentUser._states_.deleting(true)" ng-show="app.currentUser !== undefined && app.currentUser._states_.deleting() === false" title="Удалить пользователя">-</button>
-            <button class="red right" ng-click="app.currentUser._states_.deleting(false)" ng-show="app.currentUser._states_.deleting() === true" title="Отмена">&times;</button>
-            <button class="green right" ng-click="users.deleteUser(app.currentUser.id.value, onSuccessDeleteUser)" ng-show="app.currentUser._states_.deleting() === true" title="Подтвердить удаление">✓</button>
+            <button class="green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
+            <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
+            <button class="blue right"
+                    ng-show="app.currentContractor !== undefined"
+                    ng-click="editContractor()"
+                    title="Редактировать контрагента">
+            </button>
+            <button class="red right"
+                    title="Удалить контрагента"
+                    ng-click="deleteContractor()"
+                    ng-show="app.currentContractor !== undefined">
+                -
+            </button>
         </td>
     </tr>
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
                 <ul class="list hover">
-                    <div class="service-message" ng-show="users.users._states_.loaded() === false">
+                    <div class="service-message" ng-show="contractors.contractors._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
-                    <div class="service-message" ng-show="app.currentUserGroup !== undefined && usersList.length === 0">
+                    <div class="service-message" ng-show="app.currentContractorType !== undefined && contractorsList.length === 0">
                         В выбранной группе отстутствуют пользователи
                     </div>
-                    <li ng-repeat="user in usersList = users.users.items | byUserGroup:app.currentUserGroup.id.value | orderBy:'fio' track by $id(user)"
-                        ng-class="{'active': user._states_.selected() === true}"
-                        ng-click="selectUser(user.id.value)">
-                        <span class="primary-text">{{ user.fio }}</span><br>
+                    <li ng-repeat="contractor in contractorsList = contractors.contractors.items | byContractorType:app.currentContractorType.id.value | orderBy:'_backup_.data.title' track by $id(contractor)"
+                        ng-class="{'active': contractor._states_.selected() === true}"
+                        ng-click="selectContractor(contractor.id.value)">
+                        <span class="primary-text">{{ contractor._backup_.data.title }}</span><br>
                         <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
-                            <span class="secondary-text">{{ "группа: " + users.groups.find("id", user.groupId.value)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
-                            <span class="secondary-text" ng-show="user.position.value !== ''">{{ "должность: " + user.position.value }} &nbsp; &nbsp; &nbsp;</span>
-                            <span class="secondary-text">{{ "e-mail: " + user.email.value }} &nbsp; &nbsp; &nbsp;</span>
-                            <span class="secondary-text" ng-show="user.phone.value !== 'NaN'">{{ "телефон: " + user.phone.value }} &nbsp; &nbsp; &nbsp;</span>
+                            <span class="secondary-text" ng-show="contractor.contractorTypeId.value !== 0">{{ "тип: " + contractors.contractorTypes.find("id", contractor._backup_.data.contractorTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
+                            <span class="secondary-text" ng-show="contractor.contractorTypeId.value === 0">Тип контрагента не указан &nbsp; &nbsp; &nbsp;</span>
                         </span>
                     </li>
                 </ul>

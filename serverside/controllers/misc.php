@@ -21,6 +21,14 @@
                 case "getPowerLines":
                     get_power_lines();
                     break;
+                /* Добавление линии */
+                case "addPowerLine":
+                    add_power_line($postdata);
+                    break;
+                /* Редактирование линии */
+                case "editPowerLine":
+                    edit_power_line($postdata);
+                    break;
                 /* Возвращает все типы кабеля */
                 case "getCableTypes":
                     get_cable_types();
@@ -70,6 +78,121 @@ function get_power_lines () {
     // Возврат результата
     echo json_encode($result);
 };
+
+
+
+
+    /* Добавление линии */
+    function add_power_line ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $title = $postdata -> data -> title;
+        $voltage = $postdata -> data -> voltage;
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_power_lines.p_insert_power_line(:title, :voltage, :new_line ); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":voltage", $voltage, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":new_line", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    $result = oci_fetch_assoc($cursor);
+                }
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
+
+
+
+/* Редактирование линии */
+function edit_power_line ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $powerLineId = $postdata -> data -> powerLineId;
+    $title = $postdata -> data -> title;
+    $voltage = $postdata -> data -> voltage;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin pkg_power_lines.p_edit_power_line(:power_line_id, :title, :voltage, :edited_power_line ); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":power_line_id", $powerLineId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":voltage", $voltage, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":edited_power_line", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else
+                $result = oci_fetch_assoc($cursor);
+            }
+    }
+
+    /* Освобождение ресурсов */
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+
+    /* Возврат результата */
+    echo json_encode($result);
+};
+
+
 
 
 

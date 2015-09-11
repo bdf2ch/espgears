@@ -1,0 +1,147 @@
+<table class="column width-15">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Линии
+            <button class="green right"
+                    ng-click="addPowerLine()"
+                    title="Добавить линию">
+                +
+            </button>
+            <span class="separator right" ng-show="app.currentPowerLine !== undefined"></span>
+            <button class="blue right"
+                    ng-show="app.currentPowerLine !== undefined"
+                    ng-click="editPowerLine()"
+                    title="Редактировать линию">
+            </button>
+            <button class="red right"
+                    ng-show="app.currentPowerLine !== undefined"
+                    ng-click="deletePowerLine()"
+                    title="Удалить линию">
+                -
+            </button>
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="misc.powerLines._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <li ng-repeat="line in misc.powerLines.items | orderBy:'_backup_.data.title' track by $id(line)"
+                        ng-class="{'active': line._states_.selected() === true}"
+                        ng-click="selectPowerLine(line.id.value)">
+                        <span class="primary-text">{{ line._backup_.data.title }}</span><br>
+                        <span class="secondary-text">{{ line._backup_.data.voltage + " кВ" }}</span>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<table class="column width-15">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Опоры
+            <button class="green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
+            <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
+            <button class="blue right"
+                    ng-show="app.currentContractor !== undefined"
+                    ng-click="editContractor()"
+                    title="Редактировать контрагента">
+            </button>
+            <button class="red right"
+                    title="Удалить контрагента"
+                    ng-click="deleteContractor()"
+                    ng-show="app.currentContractor !== undefined">
+                -
+            </button>
+        </td>
+    </tr>
+    <tr ng-show="pylons.items.length > 0">
+        <td>
+            <div class="row">
+                <div class="width-100 padding-5">
+                    <input type="text" name="" id="" class="width-100" placeholder="Быстрый поиск"/>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="pylons._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <div class="service-message" ng-show="app.currentPowerLine === undefined">
+                        Выберите линию
+                    </div>
+                    <div class="service-message" ng-show="app.currentPowerLine !== undefined && pylons.items.length === 0 && pylons._states_.loaded() === true">
+                        Для выбранной линии опоры не найдены
+                    </div>
+                    <li ng-repeat="pylon in pylons.items track by $index"
+                        ng-class="{'active': pylon._states_.selected() === true}"
+                        ng-click="selectPylon(pylon.id.value)">
+                        <div class="node-icon" ng-class="{'pylon': node.__class__ === 'Pylon', 'unknown': node.__class__ === 'UnknownNode'}"></div>
+                        <span class="primary-text">{{ "Опора #" + pylon._backup_.data.number }}</span><br>
+                        <span class="secondary-text" ng-class="{'light': pylon._states_.selected() === true }">
+                            <span class="secondary-text" ng-show="contractor.contractorTypeId.value !== 0">{{ "Тип опоры: " + misc.pylonTypes.find("id", pylon._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<table class="column width-70">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Оборудование на опоре
+            <button class="green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
+            <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
+            <button class="blue right"
+                    ng-show="app.currentContractor !== undefined"
+                    ng-click="editContractor()"
+                    title="Редактировать контрагента">
+            </button>
+            <button class="red right"
+                    title="Удалить контрагента"
+                    ng-click="deleteContractor()"
+                    ng-show="app.currentContractor !== undefined">
+                -
+            </button>
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="pylons._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <div class="service-message" ng-show="app.currentPowerLine === undefined">
+                        Выберите линию
+                    </div>
+                    <div class="service-message" ng-show="app.currentPowerLine !== undefined && pylons.items.length === 0 && pylons._states_.loaded() === true">
+                        Для выбранной линии опоры не найдены
+                    </div>
+                    <li ng-repeat="pylon in pylons.items track by $index"
+                        ng-class="{'active': pylon._states_.selected() === true}"
+                        ng-click="selectPylon(pylon.id.value)">
+                        <div class="node-icon" ng-class="{'pylon': node.__class__ === 'Pylon', 'unknown': node.__class__ === 'UnknownNode'}"></div>
+                        <span class="primary-text">{{ "Опора #" + pylon._backup_.data.number }}</span><br>
+                        <span class="secondary-text" ng-class="{'light': pylon._states_.selected() === true }">
+                            <span class="secondary-text" ng-show="contractor.contractorTypeId.value !== 0">{{ "тип опоры: " + misc.pylonTypes.find("id", pylon._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>

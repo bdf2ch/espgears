@@ -47,6 +47,13 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         ];
 
+        $scope.onTabSelect = function (tab) {
+            if (tab !== undefined) {
+                $log.log("selected tab = ", tab);
+                $application.currentTitleTabId = tab.id;
+            }
+        };
+
         $scope.gotoAddTitle = function () {
             $location.url("/new-title");
         };
@@ -95,8 +102,15 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
-        //$modals.show({ width: 400, left: 300, top: 200, position: "center", caption: "Удаление этапа плана работ", template: "templates/modals/delete-building-plan-item.html" });
-        //$modals.show();
+        $scope.addPlanItem = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новый этап работ",
+                showFog: true,
+                template: "templates/modals/new-building-plan-item.html"
+            });
+        };
 
     }])
 
@@ -424,6 +438,24 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
+        $scope.selectContractor = function (contractorId) {
+            if (contractorId !== undefined) {
+                angular.forEach($contractors.contractors.items, function (contractor) {
+                    if (contractor.id.value === contractorId) {
+                        if (contractor._states_.selected() === true) {
+                            contractor._states_.selected(false);
+                            $application.currentContractor = undefined;
+                        } else {
+                            contractor._states_.selected(true);
+                            $application.currentContractor = contractor;
+                        }
+                    } else {
+                        contractor._states_.selected(false);
+                    }
+                });
+            }
+        };
+
         $scope.addType = function () {
             $modals.show({
                 width: 400,
@@ -453,6 +485,27 @@ var appControllers = angular.module("gears.app.controllers", [])
                 showFog: true,
                 closeButton: true,
                 template: "templates/modals/delete-contractor-type.html"
+            });
+        };
+
+        $scope.addContractor = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новый контрагент",
+                showFog: true,
+                template: "templates/modals/new-contractor.html"
+            });
+        };
+
+        $scope.editContractor = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Редактирование типа контрагента",
+                showFog: true,
+                closeButton: false,
+                template: "templates/modals/edit-contractor.html"
             });
         };
     }])
@@ -536,6 +589,77 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.onSuccessDeleteType = function () {
             $modals.close();
             $application.currentContractorType = undefined;
+        };
+    }])
+
+
+    .controller("AddContractorModalController", ["$log", "$scope", "$contractors", "$factory", "$modals", "$application", function ($log, $scope, $contractors, $factory, $modals, $application) {
+        $scope.contractors = $contractors;
+        $scope.newContractor = $factory({ classes: ["Contractor", "Model", "Backup", "States"], base_class: "Contractor" });
+        $scope.errors = [];
+
+        $scope.newContractor._states_.loaded(false);
+        $log.log("cuurent type = ", $application.currentContractorType);
+        if ($application.currentContractorType !== undefined) {
+            $log.log("current contractor type id = ", $application.currentContractorType.id.value);
+            $scope.newContractor.contractorTypeId.value = $application.currentContractorType.id.value;
+        }
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newContractor._model_.reset();
+            $scope.newContractor._states_.changed(false);
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newContractor.title.value === "")
+                $scope.errors.push("Вы не указали наименование контрагента");
+            if ($scope.errors.length === 0) {
+                $scope.newContractor._states_.loading(true);
+                $contractors.addContractor($scope.newContractor, $scope.onSuccessAddContractor);
+            }
+        };
+
+        $scope.onSuccessAddContractor = function (data) {
+            $scope.newContractor._states_.loaded(true);
+            $scope.newContractor._states_.loading(false);
+            $scope.newContractor._model_.reset();
+            $modals.close();
+        };
+    }])
+
+
+    .controller("EditContractorModalController", ["$scope", "$contractors", "$factory", "$modals", "$application", function ($scope, $contractors, $factory, $modals, $application) {
+        $scope.contractors = $contractors;
+        $scope.app = $application;
+        $scope.errors = [];
+
+        $application.currentContractor._states_.loaded(false);
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentContractor._backup_.restore();
+            $application.currentContractor._states_.changed(false);
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($application.currentContractor.title.value === "")
+                $scope.errors.push("Вы не указали наименование контрагента");
+            if ($scope.errors.length === 0) {
+                $application.currentContractor._states_.loading(true);
+                $contractors.editContractor($application.currentContractor, $scope.onSuccessEditContractor);
+            }
+        };
+
+        $scope.onSuccessEditContractor = function (data) {
+            $application.currentContractor._states_.loaded(true);
+            $application.currentContractor._states_.loading(false);
+            $application.currentContractor._backup_.setup();
+            $modals.close();
         };
     }])
 
@@ -819,6 +943,8 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
+        /**
+        Перенесено в TitlesController
         $scope.addPlanItem = function () {
             $modals.show({
                 width: 400,
@@ -828,6 +954,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                 template: "templates/modals/new-building-plan-item.html"
             });
         };
+        **/
 
         $scope.editPlanItem = function (planItem) {
             if (planItem !== undefined) {
@@ -963,5 +1090,114 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.onSuccessScanFolder = function () {
             $log.log("ONSUCCESSSCANFOLDER");
+        };
+    }])
+
+
+    .controller("PowerLinesController", ["$log", "$scope", "$misc", "$application", "$factory", "$nodes", "$modals", function ($log, $scope, $misc, $application, $factory, $nodes, $modals) {
+        $scope.misc = $misc;
+        $scope.app = $application;
+        $scope.pylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+
+        $scope.selectPowerLine = function (powerLineId) {
+            if (powerLineId !== undefined) {
+                angular.forEach($misc.powerLines.items, function (line) {
+                    if (line.id.value === powerLineId) {
+                        if (line._states_.selected() === true) {
+                            line._states_.selected(false);
+                            $application.currentPowerLine = undefined;
+                        } else {
+                            line._states_.selected(true);
+                            $application.currentPowerLine = line;
+                            $scope.pylons._states_.loaded(false);
+                            $scope.pylons.clear();
+                            $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetPylons)
+                        }
+                    } else {
+                        line._states_.selected(false);
+                    }
+                });
+            }
+        };
+
+        $scope.onSuccessGetPylons = function (data) {
+            if (data !== undefined) {
+                angular.forEach(data, function (pylon) {
+                    var temp_pylon = $nodes.parseNode(pylon);
+                    $scope.pylons.append(temp_pylon);
+                });
+                $scope.pylons._states_.loaded(true);
+            }
+        };
+
+        $scope.selectPylon = function (pylonId) {
+            if (pylonId !== undefined) {
+                angular.forEach($scope.pylons.items, function (pylon) {
+                    if (pylon.id.value === pylonId) {
+                        if (pylon._states_.selected() === true) {
+                            pylon._states_.selected(false);
+                            $application.currentPylon = undefined;
+                        } else {
+                            pylon._states_.selected(true);
+                            $application.currentPylon = pylon;
+                        }
+                    } else {
+                        pylon._states_.selected(false);
+                    }
+                });
+            }
+        };
+
+        $scope.addPowerLine = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новая линия",
+                showFog: true,
+                template: "templates/modals/new-power-line.html"
+            });
+        };
+
+        $scope.editPowerLine = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Редактирование линии",
+                showFog: true,
+                closeButton: false,
+                template: "templates/modals/edit-power-line.html"
+            });
+        };
+
+        $scope.deleteType = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Удаление типа контрагента",
+                showFog: true,
+                closeButton: true,
+                template: "templates/modals/delete-contractor-type.html"
+            });
+        };
+
+        $scope.addContractor = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новый контрагент",
+                showFog: true,
+                template: "templates/modals/new-contractor.html"
+            });
+        };
+
+        $scope.editContractor = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Редактирование типа контрагента",
+                showFog: true,
+                closeButton: false,
+                template: "templates/modals/edit-contractor.html"
+            });
         };
     }]);

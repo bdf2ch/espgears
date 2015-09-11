@@ -1,31 +1,80 @@
 <div class="width-100 height-100" ng-controller="BuildingPlanController">
-    <table class="column no-border width-50">
+    <table class="column no-border width-100">
         <tr class="column-content-container">
             <td>
                 <div id="title-building-plan-details" class="column-content y-scrollable padding-10">
+                    <!--
                     <div class="row split-20">
                         <span class="column-title">План строительства</span>
                         <button class="green right" ng-click="addPlanItem()">Добавить этап работ</button>
                     </div>
-
+                    -->
                     <div class="service-message" ng-show="titles.plans._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
                     <ul class="chronology">
                         <li ng-repeat="planItem in titles.plans.items | byTitleId: app.currentTitle.id.value | orderBy:'start.value' track by $id(planItem)"
-                            ng-class="{'green': planItem._backup_.data.statusId === 2, 'last': $last === true}"
-                            ng-click="selectPlanItem(planItem.id.value)">
-                            <span class="primary-text">
-                                {{(planItem._backup_.data.start | timestamp:'DDMMMYYYY') + " - " + (planItem._backup_.data.end | timestamp:'DDMMMYYYY') }}
-                                <span class="secondary-text building-status right" ng-class="{ 'blue': planItem._backup_.data.statusId === 1, 'green': planItem._backup_.data.statusId === 2 }">{{ titles.buildingStatuses.find("id", planItem._backup_.data.statusId).title.value }}</span>
-                            </span><br>
-                            <span class="secondary-text dark">{{planItem._backup_.data.title }}</span><br>
-                            <span class="secondary-text light">{{ planItem._backup_.data.description }}</span><br>
+                            ng-click="selectPlanItem(planItem.id.value)"
+                            class="width-100">
+
+                            <div class="row">
+                                <img src="resources/img/icons/calendar.png" alt=""/>
+                            </div>
+
+
+                                <div class="chronology-content" ng-class="{ 'blue': planItem._backup_.data.statusId === 1, 'green': planItem._backup_.data.statusId === 2 }">
+                                    <span class="chronology-date">
+                                        <img src="resources/img/icons/calendar.png" alt=""/>
+                                    </span>
+                                    <span class="left">{{(planItem._backup_.data.start | timestamp:'DDMMMYYYY') + " &mdash; " + (planItem._backup_.data.end | timestamp:'DDMMMYYYY') }}</span>
+                                    <span class="building-status right"
+                                          ng-class="{ 'blue': planItem._backup_.data.statusId === 1, 'green': planItem._backup_.data.statusId === 2 }">
+                                          {{ titles.buildingStatuses.find("id", planItem._backup_.data.statusId).title.value }}
+                                    </span>
+                                </div>
+
+
+                            <div class="row">
+                                <div class="width-50 padding-10">
+                                    <span class="primary-text">
+                                        {{ planItem._backup_.data.title }}
+                                    </span>
+                                    <span class="secondary-text-text" ng-show="planItem._backup_.data.description !== ''">
+                                        <br><br>
+                                        {{ planItem._backup_.data.description }}
+                                    </span><br>
+                                </div>
+                            </div>
+                            <!--
+                            <div class="row">
+                                <div class="width-50">
+                                     <span class="primary-text">
+                                        {{(planItem._backup_.data.start | timestamp:'DDMMMYYYY') + " - " + (planItem._backup_.data.end | timestamp:'DDMMMYYYY') }}
+                                    </span><br>
+                                    <span class="secondary-text dark">{{planItem._backup_.data.title }}</span><br>
+                                    <span class="secondary-text light">{{ planItem._backup_.data.description }}</span><br>
+                                </div>
+                                <div class="width-50">
+                                    <div class="row">
+                                        <span class="secondary-text building-status right" ng-class="{ 'blue': planItem._backup_.data.statusId === 1, 'green': planItem._backup_.data.statusId === 2 }">{{ titles.buildingStatuses.find("id", planItem._backup_.data.statusId).title.value }}</span>
+                                    </div>
+                                    <div class="row">
+                                        <table>
+                                            <caption>Подрядчики</caption>
+                                            <tdody>
+                                                <tr ng-repeat=""></tr>
+                                            </tdody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="row controls">
                                 <button class="blue" ng-click="editPlanItem(planItem)" title="Редактировать этап работ">Редактировать</button>
                                 <button class="red" ng-click="deletePlanItem(planItem)" title="Удалить этап работ">Удалить</button>
                             </div>
+                            -->
                         </li>
                     </ul>
                 </div>
@@ -33,6 +82,7 @@
         </tr>
     </table>
 
+    <!--
     <table class="column width-50">
         <tr class="column-content-container">
             <td>
@@ -61,4 +111,5 @@
             </td>
         </tr>
     </table>
+    -->
 </div>

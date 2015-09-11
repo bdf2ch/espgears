@@ -41,6 +41,7 @@ var contractors = angular.module("gears.app.contractors", [])
             contractors.contractors = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             contractors.contractorTypes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
+
             contractors.getContractorTypes = function () {
                 contractors.contractorTypes._states_.loaded(false);
                 $http.post("serverside/controllers/contractors.php", { action: "getContractorTypes" })
@@ -178,6 +179,67 @@ var contractors = angular.module("gears.app.contractors", [])
                         contractors.contractors._states_.loaded(true);
                     }
                 );
+            };
+
+
+            contractors.addContractor = function (contractor, callback) {
+                if (contractor !== undefined) {
+                    var params = {
+                        action: "addContractor",
+                        data: {
+                            contractorTypeId: contractor.contractorTypeId.value,
+                            title: contractor.title.value,
+                            fullTitle: contractor.fullTitle.value
+                        }
+                    };
+                    $http.post("serverside/controllers/contractors.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_contractor = $factory({ classes: ["Contractor", "Model", "Backup", "States"], base_class: "Contractor" });
+                                    temp_contractor._model_.fromJSON(data);
+                                    temp_contractor._backup_.setup();
+                                    contractors.contractors.append(temp_contractor);
+                                    if (callback !== undefined)
+                                        callback(temp_contractor);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+            contractors.editContractor = function (contractor, callback) {
+                if (contractor !== undefined) {
+                    var params = {
+                        action: "editContractor",
+                        data: {
+                            contractorId: contractor.id.value,
+                            contractorTypeId: contractor.id.value,
+                            title: contractor.title.value,
+                            fullTitle: contractor.fullTitle.value
+                        }
+                    };
+                    $http.post("serverside/controllers/contractors.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    contractor._backup_.setup();
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
             };
 
 

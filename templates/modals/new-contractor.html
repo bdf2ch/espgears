@@ -1,0 +1,44 @@
+<div ng-controller="AddContractorModalController">
+    <div class="row height-100 split-20">
+        <label for="contractor-type">Тип контрагента</label>
+        <select name="contractor-type"
+                id="contractor-type"
+                class="width-100"
+                ng-model="newContractor.contractorTypeId.value"
+                ng-options="type.id.value as type.title.value for type in contractors.contractorTypes.items">
+        </select>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="contractor-title">Краткое наименование</label>
+        <input type="text"
+               name="contractor-title"
+               id="contractor-title"
+               class="width-100"
+               placeholder="Краткое наименование"
+               ng-disabled="newContractor._states_.loading() === true"
+               ng-model="newContractor.title.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="contractor-full-title">Полное наименование</label>
+        <input type="text"
+               name="contractor-full-title"
+               id="contractor-full-title"
+               class="width-100"
+               placeholder="Полное наименование"
+               ng-disabled="newContractor._states_.loading() === true"
+               ng-model="newContractor.fullTitle.value"/>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100" ng-disabled="newContractor._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="red square width-100" ng-disabled="newContractor._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

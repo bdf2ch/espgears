@@ -38,12 +38,13 @@
                 case "getContractors":
                     get_contractors();
                     break;
-                /* Получение титула по идентификатору */
-                case "getTituleById":
-                    get_path($postdata);
+                /* Добавление контрагента */
+                case "addContractor":
+                    add_contractor($postdata);
                     break;
-                case "getBoundaryNodes":
-                    get_boundary_nodes($postdata);
+                /* Редактирование контрагента */
+                case "editContractor":
+                    edit_contractor($postdata);
                     break;
             }
         }
@@ -276,6 +277,129 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
+
+
+    /* Функция добавления контрагента */
+    function add_contractor ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $contractorTypeId = $postdata -> data -> contractorTypeId;
+        $title = $postdata -> data -> title;
+        $fullTitle = $postdata -> data -> fullTitle;
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_contractors.p_insert_contractor(:type_id, :title, :full_title, :new_contractor); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":type_id", $contractorTypeId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":full_title", $fullTitle, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":new_contractor", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_assoc($cursor);
+                }
+            }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
+
+
+
+    /* Функция редактирования типа контрагента  */
+    function edit_contractor ($postdata) {
+        global $connection;
+        $cursor = oci_new_cursor($connection);
+        $contractorId = $postdata -> data -> contractorId;
+        $contractorTypeId = $postdata -> data -> contractorTypeId;
+        $title = $postdata -> data -> title;
+        $fullTitle = $postdata -> data -> fullTitle;
+        $result = array();
+
+        if (!$statement = oci_parse($connection, "begin pkg_contractors.p_edit_contractor(:contractor_id, :type_id, :title, :full_title, :edited_contractor); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":contractor_id", $contractorId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":type_id", $contractorTypeId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":full_title", $fullTitle, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":edited_contractor", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_assoc($cursor);
+            }
+        }
+
+        /* Освобождение ресурсов */
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+        /* Возврат результата */
+        echo json_encode($result);
+    };
+
 
 
 

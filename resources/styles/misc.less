@@ -506,21 +506,65 @@ textarea {
 
 
 .chronology {
-  margin-top: 0px;
+  //margin-top: 25px;
   margin-bottom: 0px;
+  //margin-left: 20px;
   padding-left: 10px;
   list-style-type: none;
 
+  .chronology-content {
+    display: block;
+    float: left;
+    height: auto;
+    overflow: auto;
+    margin-left: 35px;
+    margin-top: 35px;
+    border: 1px solid black;
+
+    &.green {
+      border-left: 4px solid #C8E6C9;
+    }
+  }
+
+  img {
+    display: inline-block;
+    float: left;
+    width: 32px;
+    //margin-right: 10px;
+  }
+
+  .chronology-date {
+    display: inline-block;
+    float: left;
+    margin-left: -27px;
+    //margin-top: -23px;
+    padding: 10px;
+    line-height: 32px;
+    background: #BBDEFB;
+    border-top-right-radius: 2px;
+    border-bottom-right-radius: 2px;
+    border-radius: 32px;
+    //border: 1px solid red;
+  }
+
   li {
     display: block;
-    //margin-left: -25px;
     padding-bottom: 40px;
     border-left: 4px solid #BBDEFB;
     //cursor: pointer;
 
-    &.green {
-      border-left: 4px solid #C8E6C9;
+    .primary-text {
+      display: inline-block;
+      //width: 98%;
+      //margin-left: 40px;
+      //margin-top: -20px;
+      //font-size: 30px;
+      //color: #0D47A1;
+    }
 
+    &.green {
+      //border-left: 4px solid #C8E6C9;
+      /**
       &:before {
         content: "\2022";
         display: inline-block;
@@ -530,21 +574,21 @@ textarea {
         line-height: 20px;
         color: #C8E6C9;
       }
+      **/
+      .chronology-date {
+        background: #C8E6C9;
+      }
     }
     
     &:hover {
-      //background: #E3F2FD;
+      background: #E3F2FD;
       .controls {
         display: block;
       }
+
     }
 
-    .primary-text {
-      display: inline-block;
-      width: 95%;
-      //margin-left: 40px;
-      color: #0D47A1;
-    }
+
 
     .secondary-text {
       display: inline-block;
@@ -556,7 +600,7 @@ textarea {
       margin-left: 20px;
       padding-top: 10px;
     }
-
+    /**
     &:before {
       content: "\2022";
       display: inline-block;
@@ -566,11 +610,13 @@ textarea {
       line-height: 20px;
       color: #BBDEFB;
     }
+    **/
 
     &.last {
       border-left: 4px solid transparent;
     }
   }
+
 }
 
 
@@ -613,6 +659,10 @@ textarea {
 
 .padding-10 {
   padding: 10px;
+}
+
+.padding-20 {
+  padding: 20px;
 }
 
 .padding-50 {

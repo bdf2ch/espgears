@@ -11,6 +11,7 @@ var application = angular.module("gears.app", [
         "gears.files",
         //"gears.auth",                   // Подключаем модуль с сервисами авторизации
         "gears.app.controllers",        // Подключаем модуль с контроллерами приложения
+        "gears.app.modal.controllers",
         "gears.app.filters",             // Подключаем модуль с фильтрами приложения
         "gears.app.titles",
         "gears.app.nodes",
@@ -39,13 +40,13 @@ var application = angular.module("gears.app", [
                 templateUrl: "templates/titles/edit-title.html",
                 controller: "EditTitleController"
             })
-            .when("/building", {
-                templateUrl: "templates/building/building.html",
-                controller: "BuildingController"
-            })
             .when("/contractors", {
                 templateUrl: "templates/contractors/contractors.html",
                 controller: "ContractorsController"
+            })
+            .when("/powerlines", {
+                templateUrl: "templates/powerlines/powerlines.html",
+                controller: "PowerLinesController"
             })
             .when("/users", {
                 templateUrl: "templates/users/users.html",
@@ -68,12 +69,15 @@ var application = angular.module("gears.app", [
             application.title = "ЭСпРЭСО";
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
+            application.currentTitleTabId = 0;
             application.currentNode = undefined;
             application.currentContractorType = undefined;
             application.currentContractor = undefined;
             application.currentUserGroup = undefined;
             application.currentUser = undefined;
             application.currentBuildingPlanItem = undefined;
+            application.currentPowerLine = undefined;
+            application.currentPylon = undefined;
 
             return application;
         }]);

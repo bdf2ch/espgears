@@ -21,9 +21,9 @@ var misc = angular.module("gears.app.misc", [])
                  * Набор свойств, описывающих линию
                  */
                 PowerLine: {
-                    id: new Field({ source: "ID", value: 0 }),
-                    title: new Field({ source: "TITLE", value: "" }),
-                    voltage: new Field({ source: "VOLTAGE", value: 0 }),
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true }),
+                    voltage: new Field({ source: "VOLTAGE", value: 0, default_value: 0, backupable: true }),
                     display: "",
 
                     _init_: function () {
@@ -55,6 +55,7 @@ var misc = angular.module("gears.app.misc", [])
 
 
             misc.getPowerLines = function () {
+                misc.powerLines._states_.loaded(false);
                 $http.post("serverside/controllers/misc.php", { action: "getPowerLines" })
                     .success(function (data) {
                         if (data !== undefined) {
@@ -66,13 +67,75 @@ var misc = angular.module("gears.app.misc", [])
                                 angular.forEach(data, function (powerline) {
                                     var temp_powerline = $factory({ classes: ["PowerLine", "Model", "Backup", "States"], base_class: "PowerLine" });
                                     temp_powerline._model_.fromJSON(powerline);
+                                    temp_powerline._backup_.setup();
                                     misc.powerLines.append(temp_powerline);
                                 });
                             }
                         }
+                        misc.powerLines._states_.loaded(true);
                         $log.log("powerlines = ", misc.powerLines.items);
                     }
                 );
+            };
+
+
+            misc.addPowerLine = function (powerLine, callback) {
+                if (powerLine !== undefined) {
+                    var params = {
+                        action: "addPowerLine",
+                        data: {
+                            title: powerLine.title.value,
+                            voltage: powerLine.voltage.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_power_line = $factory({ classes: ["PowerLine", "Model", "Backup", "States"], base_class: "PowerLine" });
+                                    temp_power_line._model_.fromJSON(data);
+                                    temp_power_line._backup_.setup();
+                                    misc.powerLines.append(temp_power_line);
+                                    if (callback !== undefined)
+                                        callback(temp_power_line);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            misc.editPowerLine = function (powerLine, callback) {
+                if (powerLine !== undefined) {
+                    var params = {
+                        action: "editPowerLine",
+                        data: {
+                            powerLineId: powerLine.id.value,
+                            title: powerLine.title.value,
+                            voltage: powerLine.voltage.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    powerLine._backup_.setup();
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
             };
 
 
@@ -102,7 +165,7 @@ var misc = angular.module("gears.app.misc", [])
     })
     .run(function ($modules, $misc) {
         $modules.load($misc);
-        //$misc.getPowerLines();
+        $misc.getPowerLines();
         //$misc.getCableTypes();
     }
 );

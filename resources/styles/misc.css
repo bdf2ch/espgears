@@ -373,35 +373,78 @@ textarea {
     ;
 }
 .chronology {
-  margin-top: 0px;
   margin-bottom: 0px;
   padding-left: 10px;
   list-style-type: none;
+}
+.chronology .chronology-content {
+  display: block;
+  float: left;
+  height: auto;
+  overflow: auto;
+  margin-left: 35px;
+  margin-top: 35px;
+  border: 1px solid black;
+}
+.chronology .chronology-content.green {
+  border-left: 4px solid #C8E6C9;
+}
+.chronology img {
+  display: inline-block;
+  float: left;
+  width: 32px;
+}
+.chronology .chronology-date {
+  display: inline-block;
+  float: left;
+  margin-left: -27px;
+  padding: 10px;
+  line-height: 32px;
+  background: #BBDEFB;
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+  border-radius: 32px;
 }
 .chronology li {
   display: block;
   padding-bottom: 40px;
   border-left: 4px solid #BBDEFB;
-}
-.chronology li.green {
-  border-left: 4px solid #C8E6C9;
-}
-.chronology li.green:before {
-  content: "\2022";
-  display: inline-block;
-  margin-left: -16px;
-  font-size: 80px;
-  vertical-align: top;
-  line-height: 20px;
-  color: #C8E6C9;
-}
-.chronology li:hover .controls {
-  display: block;
+  /**
+    &:before {
+      content: "\2022";
+      display: inline-block;
+      margin-left: -16px;
+      font-size: 80px;
+      vertical-align: top;
+      line-height: 20px;
+      color: #BBDEFB;
+    }
+    **/
 }
 .chronology li .primary-text {
   display: inline-block;
-  width: 95%;
-  color: #0D47A1;
+}
+.chronology li.green {
+  /**
+      &:before {
+        content: "\2022";
+        display: inline-block;
+        margin-left: -16px;
+        font-size: 80px;
+        vertical-align: top;
+        line-height: 20px;
+        color: #C8E6C9;
+      }
+      **/
+}
+.chronology li.green .chronology-date {
+  background: #C8E6C9;
+}
+.chronology li:hover {
+  background: #E3F2FD;
+}
+.chronology li:hover .controls {
+  display: block;
 }
 .chronology li .secondary-text {
   display: inline-block;
@@ -411,15 +454,6 @@ textarea {
   display: none;
   margin-left: 20px;
   padding-top: 10px;
-}
-.chronology li:before {
-  content: "\2022";
-  display: inline-block;
-  margin-left: -16px;
-  font-size: 80px;
-  vertical-align: top;
-  line-height: 20px;
-  color: #BBDEFB;
 }
 .chronology li.last {
   border-left: 4px solid transparent;
@@ -453,6 +487,9 @@ textarea {
 }
 .padding-10 {
   padding: 10px;
+}
+.padding-20 {
+  padding: 20px;
 }
 .padding-50 {
   padding: 50px;

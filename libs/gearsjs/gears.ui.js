@@ -574,13 +574,12 @@ grUi.directive("tabs", ["$log", function ($log) {
         restrict: "E",
         scope: {
             tabsSource: "=",
+            onTabSelect: "=",
             class: "@",
             tabsPosition: "@"
         },
         templateUrl: "templates/ui/tabs/tabs.html",
         link: function (scope, element, attr, ctrl) {
-            $log.log("this is tabs, bitches!");
-
             var currentTab = scope.currentTab = "";
 
             angular.forEach(scope.tabsSource, function (tab) {
@@ -595,6 +594,8 @@ grUi.directive("tabs", ["$log", function ($log) {
                         if (tab.id === tabId) {
                             tab.isActive = true;
                             scope.currentTab = tab;
+                            if (scope.onTabSelect !== undefined)
+                                scope.onTabSelect(scope.currentTab);
                         } else
                             tab.isActive = false;
                     });
