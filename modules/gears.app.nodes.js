@@ -57,9 +57,11 @@ var nodes = angular.module("gears.app.nodes", [])
                     number: new Field({ source: "PYLON_NUMBER", value: 0, default_value: 0, backupable: true, required: true }),
                     branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 }),
                     display: "",
+                    search: "",
 
                     _init_: function () {
                         this.display = "#" + this.number.value;
+                        this.search = "#" + this.number.value.toString();
                     }
                 },
 
@@ -196,6 +198,6 @@ var nodes = angular.module("gears.app.nodes", [])
     })
     .run(function ($modules, $nodes) {
         $modules.load($nodes);
-        $nodes.getNodeTypes();
+        //$nodes.getNodeTypes();
     }
 );

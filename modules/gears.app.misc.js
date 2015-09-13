@@ -43,6 +43,15 @@ var misc = angular.module("gears.app.misc", [])
                     fullTitle: new Field({ source: "FULL_NAME", value: "", default_value: "", backupable: true, required: true }),
                     capacity: new Field({ source: "CAPACITY", value: 0, default_value: 0, backupable: true, required: true }),
                     colorCode: new Field({ source: "COLOR_CODE", value: 0, default_value: 0, backupable: true, required: true })
+                },
+
+                /**
+                 * PylonType
+                 * Набор свойств, описывающих тип опоры
+                 */
+                PylonType: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "NAME", value: "", default_value: "", backupable: true, required: true })
                 }
             };
 
@@ -160,12 +169,34 @@ var misc = angular.module("gears.app.misc", [])
                 );
             };
 
+
+            misc.getPylonTypes = function () {
+                $http.post("serverside/controllers/misc.php", { action: "getPylonTypes" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (pylon_type) {
+                                    var temp_pylon_type = $factory({ classes: ["PylonType", "Model", "Backup", "States"], base_class: "PylonType" });
+                                    temp_pylon_type._model_.fromJSON(pylon_type);
+                                    misc.pylonTypes.append(temp_pylon_type);
+                                });
+                            }
+                            $log.log("pylon types = ", misc.pylonTypes.items);
+                        }
+                    }
+                );
+            };
+
             return misc;
         }]);
     })
     .run(function ($modules, $misc) {
         $modules.load($misc);
-        $misc.getPowerLines();
+        //$misc.getPowerLines();
         //$misc.getCableTypes();
     }
 );

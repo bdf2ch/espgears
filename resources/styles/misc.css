@@ -160,6 +160,14 @@
   position: relative;
   box-sizing: border-box;
 }
+.column td.search {
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  border-bottom: 1px solid lightgrey;
+}
 .column .column-header {
   float: left;
   width: 100%;
@@ -177,6 +185,7 @@
 }
 .column .column-header .caption {
   display: inline-block;
+  float: left;
   text-transform: uppercase;
   font-family: "Roboto Bold";
   font-size: 14px;

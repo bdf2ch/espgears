@@ -33,6 +33,10 @@
                 case "getCableTypes":
                     get_cable_types();
                     break;
+                /* Получение списка всех типов опор */
+                case "getPylonTypes":
+                    get_pylon_types();
+                    break;
             }
             oci_close($connection);
         }
@@ -233,6 +237,47 @@ function get_cable_types () {
 
         // Возврат результата
         echo json_encode($result);
+};
+
+
+
+
+function get_pylon_types () {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_PYLON_TYPES.P_GET_PYLON_TYPES(:pylon_types); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":pylon_types", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                while ($pylon_type = oci_fetch_assoc($cursor))
+                    array_push($result, $pylon_type);
+            }
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
 };
 
 ?>

@@ -8,7 +8,7 @@ var titles = angular.module("gears.app.titles",[])
          * $titles
          * Сервис, одержащий функционал для работы с титулами
          */
-        $provide.factory("$titles", ["$log", "$http", "$factory", "$application", function ($log, $http, $factory, $application) {
+        $provide.factory("$titles", ["$log", "$http", "$factory", function ($log, $http, $factory) {
             var titles = {};
 
 
@@ -220,11 +220,15 @@ var titles = angular.module("gears.app.titles",[])
                                     if (this.nodes[i].id.value === parameters["nodeId"]) {
                                         if (this.nodes[i].parentId === parameters["parentId"]) {
                                             if (this.nodes[i]._states_.selected() === false) {
-                                                this.nodes[i]._states_.selected(true);
-                                                $application.currentNode = this.nodes[i];
+                                                this.nodes[i]._states_.selected(true)
+                                                if (parameters["callback"] !== undefined)
+                                                    parameters.callback(this.nodes[i]);
+                                                //$application.currentNode = this.nodes[i];
                                             } else {
                                                 this.nodes[i]._states_.selected(false);
-                                                $application.currentNode = undefined;
+                                                if (parameters["callback"] !== undefined)
+                                                    parameters.callback(undefined);
+                                                //$application.currentNode = undefined;
                                             }
                                         }
                                     } else {
@@ -232,10 +236,10 @@ var titles = angular.module("gears.app.titles",[])
                                             this.nodes[i]._states_.selected(false);
                                     }
                                 }
-                                if ($application.currentNode !== undefined) {
-                                    $log.log("node id = " + $application.currentNode.id.value + ", prev node id = " + $application.currentNode.prevNodeId + ", next node id = " + $application.currentNode.nextNodeId);
-                                    $log.log("selected node = ", $application.currentNode);
-                                }
+                                //if ($application.currentNode !== undefined) {
+                                //    $log.log("node id = " + $application.currentNode.id.value + ", prev node id = " + $application.currentNode.prevNodeId + ", next node id = " + $application.currentNode.nextNodeId);
+                                //    $log.log("selected node = ", $application.currentNode);
+                                //}
                             } else {
                                 $log.error("TitleNodes: Не задан идентификатор выбираемого узла");
                                 return false;
@@ -688,7 +692,7 @@ var titles = angular.module("gears.app.titles",[])
                             sessionId: "test"
                         }
                     };
-                    $application.currentTitleNodes._states_.loaded(false);
+                    //$application.currentTitleNodes._states_.loaded(false);
                     $http.post("serverside/controllers/titles.php", params)
                         .success(function (data) {
                             if (data !== undefined) {
@@ -701,7 +705,7 @@ var titles = angular.module("gears.app.titles",[])
                                         callback(data);
                                 }
                             }
-                            $application.currentTitleNodes._states_.loaded(true);
+                            //$application.currentTitleNodes._states_.loaded(true);
                         }
                     );
                 }
@@ -713,11 +717,11 @@ var titles = angular.module("gears.app.titles",[])
     })
     .run(function ($modules, $titles, $log) {
         $modules.load($titles);
-        $titles.getTitles();
-        $titles.getStatuses();
-        $titles.getBuildingPlans();
-        $titles.getBuildingStatuses();
-        $titles.getContractors();
+        //$titles.getTitles();
+        //$titles.getStatuses();
+        //$titles.getBuildingPlans();
+        //$titles.getBuildingStatuses();
+        //$titles.getContractors();
         //$log.log($titules.titules);
         //$titules.titules.display();
     });

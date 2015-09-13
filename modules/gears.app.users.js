@@ -270,7 +270,7 @@ var users = angular.module("gears.app.users", [])
     })
     .run(function ($modules, $users) {
         $modules.load($users);
-        $users.getUserGroups();
-        $users.getUsers();
+        //$users.getUserGroups();
+        //$users.getUsers();
     }
 );

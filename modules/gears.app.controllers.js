@@ -75,6 +75,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                             $scope.app.currentTitle = title;
                             if ($scope.app.currentTitleNodes.titleId !== 0) {
                                 if ($scope.app.currentTitleNodes.titleId !== titleId) {
+                                    $application.currentTitleNodes._states_.loaded(false);
                                     $scope.app.currentTitleNodes.clear();
                                     $titles.getTitleNodes(titleId, -1, -1, -1, $scope.onSuccessGetTitleNodes);
                                     $scope.app.currentTitleNodes.titleId = titleId;
@@ -92,6 +93,11 @@ var appControllers = angular.module("gears.app.controllers", [])
         };
 
 
+        $scope.selectNode = function (node) {
+            $application.currentNode = node;
+        };
+
+
         $scope.onSuccessGetTitleNodes = function (data) {
             if (data !== undefined) {
                 angular.forEach(data, function (node) {
@@ -99,6 +105,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                     $log.log("appended node = ", temp_node);
                     $application.currentTitleNodes.appendNode({ node: temp_node });
                 });
+                $application.currentTitleNodes._states_.loaded(true);
             }
         };
 
@@ -1098,6 +1105,7 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.misc = $misc;
         $scope.app = $application;
         $scope.pylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+        $scope.search = "";
 
         $scope.selectPowerLine = function (powerLineId) {
             if (powerLineId !== undefined) {
