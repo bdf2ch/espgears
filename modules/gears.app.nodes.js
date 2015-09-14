@@ -49,7 +49,7 @@ var nodes = angular.module("gears.app.nodes", [])
                  */
                 Pylon: {
                     id: new Field({ source: "NODE_ID", value: 0, default_value: 0 }),
-                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
                     pointId: new Field({ source: "POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     pylonTypeId: new Field({ source: "PYLON_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     pylonSchemeTypeId: new Field({ source: "PYLON_SCHEME_TYPE_ID", value: 0, default_value: 0, backupable: true }),
@@ -71,6 +71,7 @@ var nodes = angular.module("gears.app.nodes", [])
                  */
                 PowerStation: {
                     id: new Field({ source: "OBJECT_ID", value: 0, default_value: 0 }),
+                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
                     voltage: new Field({ source: "VOLTAGE", value: 0, default_value: 0, backupable: true, required: true })
                 }
@@ -185,6 +186,65 @@ var nodes = angular.module("gears.app.nodes", [])
                                 } else {
                                     if (callback !== undefined)
                                         callback(nodeId, data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            nodes.addNode = function (node, callback) {
+                if (node !== undefined) {
+                    var params = {
+                        action: "addNode",
+                        data: {
+                            nodeTypeId: node.nodeTypeId.value,
+                            number: node.number.value,
+                            powerLineId: node.powerLineId.value,
+                            pylonTypeId: node.pylonTypeId.value
+                        }
+                    };
+                    $http.post("serverside/controllers/nodes.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            nodes.editNode = function (node, callback) {
+                if (node !== undefined) {
+                    var params = {
+                        action: "editNode",
+                        data: {
+                            nodeId: node.id.value,
+                            nodeTypeId: node.nodeTypeId.value,
+                            number: node.__class__ === "Pylon" ? node.number.value : undefined,
+                            powerLineId: node.__class__ === "Pylon" ? node.powerLineId.value : undefined,
+                            pylonTypeId: node.__class__ === "Pylon" ? node.pylonTypeId.value : undefined
+                        }
+                    };
+                    $http.post("serverside/controllers/nodes.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
                                 }
                             }
                         }

@@ -84,8 +84,8 @@ body {
 .column-title {
   display: inline-block;
   font-family: "Roboto Regular";
-  margin-bottom: 30px;
-  font-size: 18px;
+  font-size: 24px;
+  line-height: 40px;
   color: #BDBDBD;
 }
 .building-status {
@@ -97,6 +97,12 @@ body {
 }
 .building-status.blue {
   color: #03A9F4;
+}
+.node-icon {
+  display: block;
+  float: left;
+  width: 48px;
+  height: 48px;
 }
 .node-icon.pylon {
   background: url("../img/icons/pylon.png") no-repeat;

@@ -2,6 +2,12 @@
 
 
 var modalControllers = angular.module("gears.app.modal.controllers", [])
+
+
+    /**
+     * AddPowerLineModalController
+     * Контроллер модального окна добавления линии
+     */
     .controller("AddPowerLineModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", function ($log, $scope, $misc, $factory, $application, $modals) {
         $scope.newPowerLine = $factory({ classes: ["PowerLine", "Model", "Backup", "States"], base_class: "PowerLine" });
         $scope.errors = [];
@@ -31,6 +37,10 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     }])
 
 
+    /**
+     * EditPowerLineModalController
+     * Контроллер модального окна редактирования линии
+     */
     .controller("EditPowerLineModalController", ["$log", "$scope", "$misc", "$application", "$modals", function ($log, $scope, $misc, $application, $modals) {
         $scope.app = $application;
         $scope.misc = $misc;
@@ -60,5 +70,137 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $application.currentPowerLine._states_.loading(false);
             $application.currentPowerLine._backup_.setup();
             $modals.close();
+        };
+    }])
+
+
+    /**
+     * AddPowerLineNodeModalController
+     * Контроллер модального окна добавления опоры в линию
+     */
+    .controller("AddPowerLineNodeModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$nodes", function ($log, $scope, $misc, $factory, $application, $modals, $nodes) {
+        $scope.misc = $misc;
+        $scope.app = $application;
+        $scope.nodes = $nodes;
+        $scope.newNode = undefined;
+        $scope.newNodeTypeId = 0;
+        $scope.errors = [];
+
+
+        $scope.onChangeNodeType = function (typeId) {
+            if (typeId !== undefined) {
+                switch (typeId) {
+                    case 1:
+                        $scope.newNode = $factory({ classes: ["Pylon", "Model", "Backup", "States"], base_class: "Pylon" });
+                        break;
+                    case 4:
+                        $scope.newNode = $factory({ classes: ["PowerStation", "Model", "Backup", "States"], base_class: "PowerStation" });
+                        break;
+                }
+                $log.log("newNode = ", $scope.newNode);
+            }
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newNodeTypeId === 1) {
+                $scope.newNode.powerLineId.value = $application.currentPowerLine.id.value;
+                if ($scope.newNode.number.value === "" || $scope.newNode.number.value === 0)
+                    $scope.errors.push("Вы не указали номер опоры");
+                if ($scope.newNode.powerLineId.value === 0)
+                    $scope.errors.push("Вы не указали линию");
+            }
+            if ($scope.errors.length === 0) {
+                $nodes.addNode($scope.newNode, $scope.onSuccessAddNode);
+            }
+        };
+
+
+        $scope.onSuccessAddNode = function (data) {
+            $modals.close();
+            $scope.newNode._model_.reset();
+            var temp_node = $nodes.parseNode(data);
+            $application.currentPowerLineNodes.append(temp_node);
+        };
+
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newNode._model_.reset();
+            $scope.newNode._states_.changed(false);
+        };
+    }])
+
+
+    /**
+     * EditPowerLineNodeModalController
+     * Контроллер модального окна редактирования опоры
+     */
+    .controller("EditPowerLineNodeModalController", ["$log", "$scope", "$misc", "$application", "$modals", "$nodes", function ($log, $scope, $misc, $application, $modals, $nodes) {
+        $scope.app = $application;
+        $scope.misc = $misc;
+        $scope.errors = [];
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentPowerLineNode._backup_.restore();
+            $application.currentPowerLineNode._states_.changed(false);
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($application.currentPowerLineNode.number.value === "")
+                $scope.errors.push("Вы не указали номер опоры");
+            if ($application.currentPowerLineNode.powerLineId.value === "")
+                $scope.errors.push("Вы не указали линию");
+            if ($scope.errors.length === 0) {
+                $application.currentPowerLineNode._states_.loading(true);
+                $nodes.editNode($application.currentPowerLineNode, $scope.onSuccessEditNode);
+            }
+        };
+
+        $scope.onSuccessEditNode = function (data) {
+            $application.currentPowerLineNode._states_.loaded(true);
+            $application.currentPowerLineNode._states_.loading(false);
+            $application.currentPowerLineNode._backup_.setup();
+            $modals.close();
+        };
+    }])
+
+
+    /**
+     * AddRequestModalController
+     * Контроллер модального окна добавления заявки
+     */
+    .controller("AddRequestModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$contractors", "$titles", function ($log, $scope, $misc, $factory, $application, $modals, $contractors, $titles) {
+        $scope.contractors = $contractors;
+        $scope.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+        $scope.errors = [];
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newRequest.title.value === "")
+                $scope.errors.push("Вы не указали наименование проекта");
+            if ($scope.newRequest.start.value === "")
+                $scope.errors.push("Вы не указали точку начала проекта");
+            if ($scope.newRequest.end.value === "")
+                $scope.errors.push("Вы не указали точку конеца проекта");
+            if ($scope.errors.length === 0) {
+                $titles.addRequest($scope.newRequest, $scope.onSuccessAddRequest);
+            }
+        };
+
+        $scope.onSuccessAddRequest = function (data) {
+            $modals.close();
+            $scope.newRequest._model_.reset();
+        };
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newRequest._model_.reset();
+            $scope.newRequest._states_.changed(false);
         };
     }]);

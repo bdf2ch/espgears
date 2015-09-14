@@ -1,0 +1,64 @@
+<div ng-controller="AddPowerLineNodeModalController">
+    <div class="row height-100 split-20">
+        <label for="node-type">Тип объекта</label>
+        <select name="node-type"
+                id="node-type"
+                class="width-100"
+                ng-model="newNodeTypeId"
+                ng-change="onChangeNodeType(newNodeTypeId)"
+                ng-options="type.id.value as type.title.value for type in nodes.types.items | exceptUnknown | onlyBasicNodes">
+        </select>
+    </div>
+
+
+
+    <div class="row height-100 split-20" ng-show="newNodeTypeId === 1">
+        <label for="pylon-number"># Опоры</label>
+        <input type="text"
+               name="pylon-number"
+               id="pylon-number"
+               class="width-100"
+               placeholder="# Опоры"
+               ng-disabled="newNode._states_.loading() === true"
+               ng-model="newNode.number.value"/>
+    </div>
+    <div class="row height-100 split-20" ng-show="newNodeTypeId === 1">
+        <label for="pylon-power-line">Линия</label>
+        <select name="pylon-power-line"
+                id="pylon-power-line"
+                class="width-100"
+                ng-model="app.currentPowerLine.id.value"
+                ng-options="line.id.value as line.title.value for line in misc.powerLines.items">
+        </select>
+    </div>
+    <div class="row height-100 split-20" ng-show="newNodeTypeId === 1">
+        <label for="pylon-type">Тип опоры</label>
+        <select name="pylon-type"
+                id="pylon-type"
+                class="width-100"
+                ng-model="newNode.pylonTypeId.value"
+                ng-options="type.id.value as type.title.value for type in misc.pylonTypes.items">
+        </select>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100"
+                    ng-disabled="newNode._states_.loading() === true"
+                    ng-click="validate()">
+                Добавить
+            </button>
+        </div>
+        <div class="50">
+            <button class="red square width-100"
+                    ng-disabled="newNode._states_.loading() === true"
+                    ng-click="cancel()">
+                Отмена
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

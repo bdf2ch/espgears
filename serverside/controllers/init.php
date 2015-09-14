@@ -3,19 +3,20 @@
     include "../core.php";
 
     $result = new stdClass;
-    $titles = [];
-    $titleStatuses = [];
-    $buildingPlans = [];
-    $buildingStatuses = [];
-    $titleContractors = [];
-    $powerLines = [];
-    $nodeTypes = [];
-    $userGroups = [];
-    $users = [];
-    $contractorTypes = [];
-    $contractors = [];
-    $pylonTypes = [];
-    $cableTypes = [];
+    $titles = array();
+    $titleStatuses = array();
+    $buildingPlans = array();
+    $buildingStatuses = array();
+    $titleContractors = array();
+    $powerLines = array();
+    $nodeTypes = array();
+    $userGroups = array();
+    $users = array();
+    $contractorTypes = array();
+    $contractors = array();
+    $pylonTypes = array();
+    $cableTypes = array();
+    $requests = array();
 
     /* Подключение к БД */
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
@@ -390,6 +391,34 @@
             }
         }
         $result -> cableTypes = $cableTypes;
+
+        /* Получение списка всех заявок */
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_requests(:data); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($request = oci_fetch_assoc($cursor))
+                        array_push($requests, $request);
+                }
+            }
+        }
+        $result -> requests = $requests;
 
 
 

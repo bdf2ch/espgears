@@ -187,6 +187,7 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
             scope.caption = "";
             scope.template = "";
             scope.showClose = true;
+            scope.element = element;
             var showFog = false;
             var top = undefined;
             var left = undefined;
@@ -262,6 +263,12 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
             };
 
             angular.element($window).bind("resize", function () {
+                if (scope.showModal === true)
+                    recalculatePosition();
+            });
+
+            angular.element(element).bind("resize", function () {
+                $log.log("resized");
                 if (scope.showModal === true)
                     recalculatePosition();
             });

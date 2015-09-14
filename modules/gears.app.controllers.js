@@ -7,9 +7,32 @@ var appControllers = angular.module("gears.app.controllers", [])
      * DashboardController
      * Контроллер стартовой страницы
      */
-    .controller("DashboardController", ["$log", "$scope", "$location", "$application", "$users", function ($log, $scope, $location, $application, $users) {
+    .controller("DashboardController", ["$log", "$scope", "$location", "$application", "$users", "$modals", "$titles", function ($log, $scope, $location, $application, $users, $modals, $titles) {
         $scope.app = $application;
         $scope.users = $users;
+        $scope.titles = $titles;
+
+        $scope.addRequest = function () {
+            $modals.show({
+                width: 500,
+                position: "center",
+                caption: "Новая заявка",
+                showFog: true,
+                template: "templates/modals/new-request.html"
+            });
+        };
+
+
+        $scope.editRequest = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Редактирование заявки",
+                showFog: true,
+                closeButton: false,
+                template: "templates/modals/edit-request.html"
+            });
+        };
     }])
 
      /**
@@ -1117,8 +1140,9 @@ var appControllers = angular.module("gears.app.controllers", [])
                         } else {
                             line._states_.selected(true);
                             $application.currentPowerLine = line;
-                            $scope.pylons._states_.loaded(false);
-                            $scope.pylons.clear();
+                            $log.log("currentPowerLineId = ", $application.currentPowerLine.id.value);
+                            $application.currentPowerLineNodes._states_.loaded(false);
+                            $application.currentPowerLineNodes.clear();
                             $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetPylons)
                         }
                     } else {
@@ -1128,33 +1152,36 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
-        $scope.onSuccessGetPylons = function (data) {
-            if (data !== undefined) {
-                angular.forEach(data, function (pylon) {
-                    var temp_pylon = $nodes.parseNode(pylon);
-                    $scope.pylons.append(temp_pylon);
-                });
-                $scope.pylons._states_.loaded(true);
-            }
-        };
 
-        $scope.selectPylon = function (pylonId) {
-            if (pylonId !== undefined) {
-                angular.forEach($scope.pylons.items, function (pylon) {
-                    if (pylon.id.value === pylonId) {
-                        if (pylon._states_.selected() === true) {
-                            pylon._states_.selected(false);
-                            $application.currentPylon = undefined;
+        $scope.selectNode = function (nodeId) {
+            if (nodeId !== undefined) {
+                angular.forEach($application.currentPowerLineNodes.items, function (node) {
+                    if (node.id.value === nodeId) {
+                        if (node._states_.selected() === true) {
+                            node._states_.selected(false);
+                            $application.currentPowerLineNode = undefined;
                         } else {
-                            pylon._states_.selected(true);
-                            $application.currentPylon = pylon;
+                            node._states_.selected(true);
+                            $application.currentPowerLineNode = node;
                         }
                     } else {
-                        pylon._states_.selected(false);
+                        node._states_.selected(false);
                     }
                 });
             }
         };
+
+
+        $scope.onSuccessGetPylons = function (data) {
+            if (data !== undefined) {
+                angular.forEach(data, function (pylon) {
+                    var temp_pylon = $nodes.parseNode(pylon);
+                    $application.currentPowerLineNodes.append(temp_pylon);
+                });
+                $application.currentPowerLineNodes._states_.loaded(true);
+            }
+        };
+
 
         $scope.addPowerLine = function () {
             $modals.show({
@@ -1165,6 +1192,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                 template: "templates/modals/new-power-line.html"
             });
         };
+
 
         $scope.editPowerLine = function () {
             $modals.show({
@@ -1177,6 +1205,7 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
+
         $scope.deleteType = function () {
             $modals.show({
                 width: 400,
@@ -1188,24 +1217,24 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-        $scope.addContractor = function () {
+        $scope.addNode = function () {
             $modals.show({
                 width: 400,
                 position: "center",
-                caption: "Новый контрагент",
+                caption: "Новый объект на линии",
                 showFog: true,
-                template: "templates/modals/new-contractor.html"
+                template: "templates/modals/new-power-line-node.html"
             });
         };
 
-        $scope.editContractor = function () {
+        $scope.editNode = function () {
             $modals.show({
                 width: 400,
                 position: "center",
-                caption: "Редактирование типа контрагента",
+                caption: "Редактирование объекта на линии",
                 showFog: true,
                 closeButton: false,
-                template: "templates/modals/edit-contractor.html"
+                template: "templates/modals/edit-power-line-node.html"
             });
         };
     }]);

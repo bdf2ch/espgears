@@ -77,7 +77,8 @@ var application = angular.module("gears.app", [
             application.currentUser = undefined;
             application.currentBuildingPlanItem = undefined;
             application.currentPowerLine = undefined;
-            application.currentPylon = undefined;
+            application.currentPowerLineNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            application.currentPowerLineNode = undefined;
 
 
             application.init = function () {
@@ -229,6 +230,17 @@ var application = angular.module("gears.app", [
                                     $misc.cableTypes.append(temp_cable_type);
                                 });
                                 $misc.cableTypes._states_.loaded(true);
+                            }
+
+                            if (data["requests"] !== undefined) {
+                                $titles.requests._states_.loaded(false);
+                                angular.forEach(data["requests"], function (request) {
+                                    var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+                                    temp_request._model_.fromJSON(request);
+                                    temp_request._backup_.setup();
+                                    $titles.requests.append(temp_request);
+                                });
+                                $titles.requests._states_.loaded(true);
                             }
                         }
                     }

@@ -7,7 +7,53 @@
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
-                <button class="blue centered">Оформить новую заявку</button>
+                <table class="column width-33">
+                    <tr class="column-content-container">
+                        <td>
+                            <div class="column-content y-scrollable padding-5">
+                                <div class="row split-20">
+                                    <div class="row split-20">
+                                        <span class="column-title">Заявки</span>
+                                        <button class="blue right" ng-click="addRequest()">Подать заявку</button>
+                                    </div>
+
+                                    <ul class="list hover">
+                                        <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
+                                            <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                                            <span>Загрузка...</span>
+                                        </div>
+                                        <li ng-repeat="request in titles.requests.items"
+                                            ng-class="{'active': group._states_.selected() === true}"
+                                            ng-click="selectRequest(request.id.value)">
+                                            <span class="primary-text">{{ request._backup_.data.title }}</span><br>
+                                            <span class="secondary-text"
+                                                  ng-show="users.countUsersInGroup(group.id.value) !== 0"
+                                                  ng-class="{'light': title._states_.selected() === true }">
+                                              {{ " Создана: " + (request.added.value | timestamp:'DDMMMYYYYHHmm') }}
+                                        </span><br>
+                                            <span class="secondary-text"
+                                                  ng-show="users.countUsersInGroup(group.id.value) !== 0"
+                                                  ng-class="{'light': title._states_.selected() === true }">
+                                              {{ "Добавил: " + users.users.find("id", request.userId.value).fio  }}
+                                        </span>
+                                            <!--
+                                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
+                                            Нет пользователей
+                                        </span>
+                                        -->
+                                        </li>
+                                    </ul>
+                                </div>
+
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+
+
+
             </div>
         </td>
     </tr>

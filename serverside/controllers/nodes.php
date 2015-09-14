@@ -16,42 +16,25 @@
             die('Не удалось подключиться к БД');
         } else {
             switch ($action) {
-                /* Получение пути между двумя заданными узлами */
-                //case "getNodesByTituleId":
-                //    get_nodes_by_titule_id($postdata);
-                //    break;
-
                 /* Возвращает все типы узлов */
                 case "getNodeTypes":
                     get_node_types();
                     break;
-
-
                 case "getPylonsByPowerLineId":
                     get_pylons_by_power_line_id ($postdata);
                     break;
-
-                /* Получение дочерних узлов по id узла */
-                //case "getChildNodes":
-                //    get_child_nodes($postdata);
-                //    break;
-
                 /* Получает узлы, вхоядящие в состав путей, исходящих из заданного узла */
                 case "getBranches":
                     get_branches($postdata);
                     break;
-
-                //case "change":
-                //    change_node($postdata);
-                //    break;
-
-                //case "add":
-                //    add_node($postdata);
-                //    break;
-
-                //case "delete":
-                //    delete_node($postdata);
-                //    break;
+                /* Добавление узла в сеть */
+                case "addNode":
+                    add_node($postdata);
+                    break;
+                /* Редактирование опоры */
+                case "editNode":
+                    edit_node($postdata);
+                    break;
             }
             oci_close($connection);
         }
@@ -202,5 +185,159 @@
         // Возврат результата
         echo json_encode($result);
     };
+
+
+
+
+
+/* Добавление узла в сеть*/
+function add_node ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $nodeTypeId = $postdata -> data -> nodeTypeId;
+    $pointId = 0;
+    $number = $postdata -> data -> number;
+    $powerLineId = $postdata -> data -> powerLineId;
+    $pylonTypeId = $postdata -> data -> pylonTypeId;
+    $pylonSchemeTypeId = 0;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_ADD_NODE(:n_node_type_id, :n_point_id, :n_pylon_type_id, :n_pylon_scheme_type_id, :n_power_line_id, :n_pylon_number, :n_node); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":n_node_type_id", $nodeTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_point_id", $pointId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_pylon_type_id", $pylonTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_pylon_scheme_type_id", $pylonSchemeTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_power_line_id", $powerLineId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_pylon_number", $number, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_node", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
+
+
+
+/* Редактирование опоры */
+function edit_node ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $nodeId = $postdata -> data -> nodeId;
+    $nodeTypeId = $postdata -> data -> nodeTypeId;
+    $number = $postdata -> data -> number;
+    $powerLineId = $postdata -> data -> powerLineId;
+    $pylonTypeId = $postdata -> data -> pylonTypeId;
+    $pylonSchemeTypeId = 0;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_EDIT_NODE(:node_id, :node_type_id, :pylon_number, :power_line_id, :pylon_type_id, :pylon_scheme_type_id, :edited_node); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":node_id", $nodeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":node_type_id", $nodeTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":pylon_number", $number, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":power_line_id", $powerLineId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":pylon_type_id", $pylonTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":pylon_scheme_type_id", $pylonSchemeTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":edited_node", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
 
 ?>

@@ -91,6 +91,21 @@ var titles = angular.module("gears.app.titles",[])
                 },
 
                 /**
+                 * Request
+                 * Набор свойств, описывающих заявку
+                 */
+                Request: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    investorId: new Field({ source: "INVESTOR_ID", value: 0, default_value:0, backupable: true, required: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
+                    description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
+                    start: new Field({ source: "START_POINT", value: "", default_value: "", backupable: true, required: true }),
+                    end: new Field({ source: "END_POINT", value: "", default_value: "", backupable: true, required: true }),
+                    added: new Field({ source: "ADDED", value: 0, default_value: 0 })
+                },
+
+                /**
                  * TitleNodes
                  * Набор свойст и методов, описывающих иерархию узлов, входящих в титул
                  */
@@ -308,6 +323,7 @@ var titles = angular.module("gears.app.titles",[])
             /**
              * Переменные сервиса
              */
+            titles.requests = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.titles = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.parts = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.statuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
@@ -317,7 +333,7 @@ var titles = angular.module("gears.app.titles",[])
 
 
             /**
-             * Получает список всех титулов и помещает их в коллекцию
+             * Получает список всех титулов
              */
             titles.getTitles = function () {
                 titles.titles._states_.loaded(false);
@@ -706,6 +722,41 @@ var titles = angular.module("gears.app.titles",[])
                                 }
                             }
                             //$application.currentTitleNodes._states_.loaded(true);
+                        }
+                    );
+                }
+            };
+
+
+            titles.addRequest = function (request, callback) {
+                if (request !== undefined) {
+                    var params = {
+                        action: "addRequest",
+                        data: {
+                            title: request.title.value,
+                            description: request.description.value,
+                            start: request.start.value,
+                            end: request.end.value,
+                            investorId: request.investorId.value,
+                            userId: request.userId.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+                                    temp_request._model_.fromJSON(data);
+                                    temp_request._backup_.setup();
+                                    titles.requests.append(temp_request);
+                                    if (callback !== undefined)
+                                        callback(temp_request);
+                                }
+                            }
                         }
                     );
                 }

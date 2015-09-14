@@ -26,6 +26,23 @@ var AppFilters = angular.module("gears.app.filters", [])
 
 
         /**
+         * exceptUnknown
+         * Фильтр типов узлов, возвращает все типы узлов, кроме неформализованного объекта
+         */
+        $filterProvider.register("exceptUnknown", ["$log", function ($log) {
+            return function (input) {
+                var result = [];
+                angular.forEach(input, function (type) {
+                    if (type.id.value !== 0) {
+                        result.push(type);
+                    }
+                });
+                return result;
+            }
+        }]);
+
+
+        /**
          * byContractorType
          * Фильтр контрагентов по типу контрагента
          */
@@ -97,6 +114,10 @@ var AppFilters = angular.module("gears.app.filters", [])
                             break;
                         case "DDMMMYYYY":
                             result = moment.unix(input).format("DD MMM YYYY");
+                            break;
+                        case "DDMMMYYYYHHmm":
+                            result = moment.unix(input).format("DD MMM YYYY, в HH:mm");
+                            break;
                     }
                     return result;
                 } else

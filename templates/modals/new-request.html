@@ -1,0 +1,73 @@
+<div ng-controller="AddRequestModalController">
+    <div class="row height-100 split-20">
+        <label for="request-title">Наименование проекта</label>
+        <input type="text"
+               name="request-title"
+               id="request-title"
+               class="width-100"
+               placeholder="Наименование проекта"
+               ng-disabled="newRequest._states_.loading() === true"
+               ng-model="newRequest.title.value"/>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="request-description">Описание проекта</label>
+        <textarea name="request-description"
+                  id="request-description"
+                  class="width-100"
+                  cols="30"
+                  rows="3"
+                  placeholder="Описание проекта"
+                  ng-disabled="newRequest._states_.loading() === true"
+                  ng-change="newRequest._states_.changed(true)"
+                  ng-model="newRequest.description.value">
+        </textarea>
+    </div>
+    <div class="row split-20">
+        <div class="width-45">
+            <label for="request-start">Точка начала проекта</label>
+            <input type="text"
+                   name="request-start"
+                   id="request-start"
+                   class="width-100"
+                   placeholder="Точка начала"
+                   ng-disabled="newRequest._states_.loading() === true"
+                   ng-model="newRequest.start.value"/>
+        </div>
+        <div class="width-10">&nbsp;</div>
+        <div class="width-45">
+            <label for="request-end">Точка конца проекта</label>
+            <input type="text"
+                   name="request-end"
+                   id="request-end"
+                   class="width-100"
+                   placeholder="Точка конца"
+                   ng-disabled="newRequest._states_.loading() === true"
+                   ng-model="newRequest.end.value"/>
+        </div>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="request-investor">Инвестор</label>
+        <select name="request-investor"
+                id="request-investor"
+                class="width-100"
+                ng-model="newRequest.investorId.value"
+                ng-options="contractor.id.value as contractor.title.value for contractor in contractors.contractors.items">
+        </select>
+    </div>
+    <div class="row height-100 split-20">
+
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100" ng-disabled="newPowerLine._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="red square width-100" ng-disabled="newPowerLine._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

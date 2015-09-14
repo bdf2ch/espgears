@@ -63,6 +63,10 @@
                 case "getContractors":
                     get_contractors();
                     break;
+                /* Добавление заявки */
+                case "addRequest":
+                    add_request($postdata);
+                    break;
             }
         }
         oci_close($connection);
@@ -792,5 +796,82 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
+
+
+
+function add_request ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $userId = $postdata -> data -> userId;
+    $investorId = $postdata -> data -> investorId;
+    $title = $postdata -> data -> title;
+    $description = $postdata -> data -> description;
+    $start = $postdata -> data -> start;
+    $end = $postdata -> data -> end;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request(:user_id, :investor_id, :title, :description, :start, :end, :new_request); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":investor_id", $investorId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":start", $start, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":end", $end, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":new_request", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_object($cursor);
+            }
+
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
 
 ?>
