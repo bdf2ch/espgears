@@ -67,6 +67,7 @@ var application = angular.module("gears.app", [
             var application = {};
 
             application.title = "ЭСпРЭСО";
+            application.currentRequest = undefined;
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
             application.currentTitleTabId = 0;

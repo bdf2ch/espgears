@@ -1,60 +1,100 @@
-<table class="column width-100">
+<table class="column width-33">
     <tr class="column-header">
         <td class="caption width-100">
-            Панель управления
+            Заявки
+            <button class="green right"
+                    ng-click="addRequest()"
+                    title="Добавить заявку">
+                +
+            </button>
+            <span class="separator right" ng-show="app.currentRequest !== undefined"></span>
+            <button class="blue right"
+                    ng-show="app.currentRequest !== undefined"
+                    ng-click="editRequest()"
+                    title="Редактировать заявку">
+            </button>
+            <button class="red right"
+                    ng-show="app.currentRequest !== undefined"
+                    ng-click="deleteRequest()"
+                    title="Удалить заявку">
+                -
+            </button>
         </td>
     </tr>
     <tr class="column-content-container">
         <td>
-            <div class="column-content y-scrollable padding-5">
-                <table class="column width-33">
-                    <tr class="column-content-container">
-                        <td>
-                            <div class="column-content y-scrollable padding-5">
-                                <div class="row split-20">
-                                    <div class="row split-20">
-                                        <span class="column-title">Заявки</span>
-                                        <button class="blue right" ng-click="addRequest()">Подать заявку</button>
-                                    </div>
+            <div class="column-content y-scrollable padding-10">
 
-                                    <ul class="list hover">
-                                        <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
-                                            <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                                            <span>Загрузка...</span>
-                                        </div>
-                                        <li ng-repeat="request in titles.requests.items"
-                                            ng-class="{'active': group._states_.selected() === true}"
-                                            ng-click="selectRequest(request.id.value)">
-                                            <span class="primary-text">{{ request._backup_.data.title }}</span><br>
-                                            <span class="secondary-text"
-                                                  ng-show="users.countUsersInGroup(group.id.value) !== 0"
-                                                  ng-class="{'light': title._states_.selected() === true }">
-                                              {{ " Создана: " + (request.added.value | timestamp:'DDMMMYYYYHHmm') }}
-                                        </span><br>
-                                            <span class="secondary-text"
-                                                  ng-show="users.countUsersInGroup(group.id.value) !== 0"
-                                                  ng-class="{'light': title._states_.selected() === true }">
-                                              {{ "Добавил: " + users.users.find("id", request.userId.value).fio  }}
-                                        </span>
-                                            <!--
-                                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
-                                            Нет пользователей
-                                        </span>
-                                        -->
-                                        </li>
-                                    </ul>
+                <div class="row split-20">
+                    <ul class="list hover">
+                        <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
+                            <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                            <span>Загрузка...</span>
+                        </div>
+                        <li ng-repeat="request in titles.requests.items"
+                            ng-class="{'active': request._states_.selected() === true}"
+                            ng-click="selectRequest(request.id.value)">
+
+                            <div class="row split-10">
+                                <div class="row split-5">
+                                    <span class="primary-text uppercase">{{ "Заявка #" + request.id.value }}</span>
+                                    <span class="secondary-text right">{{ request.added.value | timestamp:'DDMMMYYYYHHmm' }}</span>
                                 </div>
 
+                                <div class="row">
+                                    <span class="secondary-text"
+                                          ng-class="{'light': title._states_.selected() === true }">
+                                        {{ request._backup_.data.description }}
+                                    </span>
+                                </div>
+
+                                <!--
+                                <div class="row split-5">
+                                    <span class="secondary-text">Инвестор: </span>
+                                    <span class="secondary-text dark">
+                                        {{ contractors.contractors.find("id", request.investorId.value).title.value }}
+                                    </span>
+                                </div>
+                                -->
+                                <!--
+                                <div class="row split-5">
+                                    <span class="secondary-text">Протяженность ВОЛС: </span>
+                                    <span class="secondary-text dark">{{ request.start.value + " - " + request.end.value }}</span>
+                                </div>
+                                -->
+
+                                <!--
+                                <div class="row split-5">
+                                    <span class="secondary-text">Протяженность ВОЛС: </span>
+                                    <span class="secondary-text dark">{{ request.start.value + " - " + request.end.value }}</span>
+                                </div>
+                                -->
 
                             </div>
-                        </td>
-                    </tr>
-                </table>
 
-
+                        </li>
+                    </ul>
+                </div>
 
 
             </div>
         </td>
     </tr>
 </table>
+
+
+<table class="column width-33">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Проекты с вашим участием
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-10">
+
+            </div>
+        </td>
+    </tr>
+</table>
+

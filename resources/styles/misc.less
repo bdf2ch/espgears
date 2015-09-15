@@ -57,6 +57,10 @@
     box-sizing: border-box;
   }
 
+  &.split-5 {
+    margin-bottom: 5px;
+  }
+
   &.split-10 {
     margin-bottom: 10px;
   }
@@ -212,6 +216,12 @@
     background: #FAF9F7;
     border-right: none;
   }
+  
+  .block-header {
+    padding: 5px;
+    background: #FAFAFA;
+    border-bottom: 1px solid lightgrey;
+  }
 
   td {
     position: relative;
@@ -225,6 +235,10 @@
       background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
       border-bottom: 1px solid lightgrey;
     }
+  }
+
+  .button-container {
+    float: right;
   }
 
   .column-header {
@@ -314,8 +328,16 @@
       font-size: 15px;
       cursor: pointer;
 
+      .hover-visible {
+        display: none;
+      }
+
       &:hover {
         background: #F5E7D3;
+
+        .hover-visible {
+          display: inline-block;
+        }
       }
 
       &.active {
@@ -326,6 +348,27 @@
 }
 
 
+
+
+/*****
+* TEXT
+*****/
+.uppercase {
+  text-transform: uppercase;
+}
+
+
+
+
+/*****
+* COLORS
+*****/
+.gray {
+  color: gray;
+}
+.lightgray {
+  color: lightgray;
+}
 
 
 
@@ -479,8 +522,11 @@ textarea {
 
   li {
     list-style-type: none;
-    margin-bottom: 2px;
+    margin-bottom: 5px;
     padding: 10px;
+    border: 1px solid transparent;
+    //border-bottom: 1px solid #EEEEEE;
+    //border-radius: 2px;
     //border-bottom: 1px solid #F5F5F5;
 
     img {
@@ -489,25 +535,47 @@ textarea {
       height: 48px;
       margin-right: 10px;
     }
+
+    .hover-visible {
+      display: none !important;
+    }
+
+    &:hover {
+      .hover-visible {
+        display: inline-block !important;
+      }
+    }
+
+    &:nth-last-of-type {
+      border-bottom: none;
+    }
+
+
   }
 
   &.hover {
     cursor: pointer;
     //border: 1px solid lightgrey;
 
+
     li.active {
       //color: white;
-      background: #BBDEFB;
+      //background: #BBDEFB;
+      border: 1px solid #EEEEEE;
+      border-radius: 2px;
+      background: #F5F5F5;
 
       &:hover {
-        background: #BBDEFB;
+        background: #F5F5F5;
       }
     }
 
     li:hover {
-      background: #E3F2FD
-    ;
+      background: #E3F2FD;
       //border: 1px solid #E0E0E0;
+      .hover-visible {
+        display: inline-block;
+      }
     }
   }
 }
@@ -515,117 +583,118 @@ textarea {
 
 
 .chronology {
-  //margin-top: 25px;
+  overflow: visible;
+  margin-top: 0px;
   margin-bottom: 0px;
-  //margin-left: 20px;
-  padding-left: 10px;
-  list-style-type: none;
+  padding-left: 0px;
+  //border: 1px solid black;
 
-  .chronology-content {
-    display: block;
-    float: left;
-    height: auto;
-    overflow: auto;
-    margin-left: 35px;
-    margin-top: 35px;
-    border: 1px solid black;
+   li {
+     display: block;
+     width: 50%;
+     padding-top: 5px;
+     padding-bottom: 80px;
+     //box-sizing: border-box;
+     //border: 1px solid red;
+     
+     &:hover {
+       cursor: pointer;
+       background: #E1F5FE;
+     }
+     
+     &.active {
+       background: #E1F5FE;
+     }
 
-    &.green {
-      border-left: 4px solid #C8E6C9;
-    }
-  }
+     &.left {
+       float: left;
+       margin-left: -3px;
+       //padding-right: 10px;
+       text-align: right;
+       border-right: 5px solid #B3E5FC;
 
-  img {
-    display: inline-block;
-    float: left;
-    width: 32px;
-    //margin-right: 10px;
-  }
+       &:before{
+         content: "\2022";
+         display: inline-block;
+         float: right;
+         margin-right: -20px;
+         margin-top: -5px;
+         font-size: 100px;
+         line-height: 25px;
+         color: #B3E5FC;
+         //border: 1px solid green;
+       }
 
-  .chronology-date {
-    display: inline-block;
-    float: left;
-    margin-left: -27px;
-    //margin-top: -23px;
-    padding: 10px;
-    line-height: 32px;
-    background: #BBDEFB;
-    border-top-right-radius: 2px;
-    border-bottom-right-radius: 2px;
-    border-radius: 32px;
-    //border: 1px solid red;
-  }
+       .chronology-date {
+         float: right;
+         margin-right: 10px;
+         margin-bottom: 20px;
+       }
 
-  li {
-    display: block;
-    padding-bottom: 40px;
-    border-left: 4px solid #BBDEFB;
-    //cursor: pointer;
+       .chronology-content {
+         float: right;
+         margin-right: 25px;
+       }
 
-    .primary-text {
-      display: inline-block;
-      //width: 98%;
-      //margin-left: 40px;
-      //margin-top: -20px;
-      //font-size: 30px;
-      //color: #0D47A1;
-    }
+       .building-status {
+         float: left;
+       }
 
-    &.green {
-      //border-left: 4px solid #C8E6C9;
-      /**
-      &:before {
-        content: "\2022";
-        display: inline-block;
-        margin-left: -16px;
-        font-size: 80px;
-        vertical-align: top;
-        line-height: 20px;
-        color: #C8E6C9;
-      }
-      **/
-      .chronology-date {
-        background: #C8E6C9;
-      }
-    }
-    
-    &:hover {
-      background: #E3F2FD;
-      .controls {
-        display: block;
-      }
+       &.last {
+         border-right: 5px solid transparent;
+       }
+       
+       &.green {
+         border-right: 5px solid #C8E6C9;
 
-    }
+         &:before{
+           color: #C8E6C9;
+         }
+       }
+     }
 
+     &.right {
+       float: right;
+       margin-right: -2px;
+       //padding-left: 10px;
+       border-left: 5px solid #B3E5FC;
 
+       &:before{
+         content: "\2022";
+         display: inline-block;
+         float: left;
+         margin-left: -20px;
+         margin-top: -5px;
+         font-size: 100px;
+         line-height: 25px;
+         color: #B3E5FC;
+         //border: 1px solid green;
+       }
 
-    .secondary-text {
-      display: inline-block;
-      margin-left: 20px;
-    }
+       .chronology-date {
+         float: left;
+         margin-left: 10px;
+         margin-bottom: 20px;
+       }
 
-    .controls {
-      display: none;
-      margin-left: 20px;
-      padding-top: 10px;
-    }
-    /**
-    &:before {
-      content: "\2022";
-      display: inline-block;
-      margin-left: -16px;
-      font-size: 80px;
-      vertical-align: top;
-      line-height: 20px;
-      color: #BBDEFB;
-    }
-    **/
+       .chronology-content {
+         float: left;
+         margin-left: 25px;
+       }
 
-    &.last {
-      border-left: 4px solid transparent;
-    }
-  }
+       &.last {
+         border-left: 5px solid transparent;
+       }
 
+       &.green {
+         border-left: 5px solid #C8E6C9;
+
+         &:before{
+           color: #C8E6C9;
+         }
+       }
+     }
+   }
 }
 
 

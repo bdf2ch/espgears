@@ -74,6 +74,7 @@
                     <li ng-repeat="user in usersList = users.users.items | byUserGroup:app.currentUserGroup.id.value | orderBy:'fio' track by $id(user)"
                         ng-class="{'active': user._states_.selected() === true}"
                         ng-click="selectUser(user.id.value)">
+                        <div class="user-icon"></div>
                         <span class="primary-text">{{ user.fio }}</span><br>
                         <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
                             <span class="secondary-text">{{ "группа: " + users.groups.find("id", user.groupId.value)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>

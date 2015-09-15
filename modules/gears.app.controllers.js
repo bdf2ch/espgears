@@ -7,10 +7,28 @@ var appControllers = angular.module("gears.app.controllers", [])
      * DashboardController
      * Контроллер стартовой страницы
      */
-    .controller("DashboardController", ["$log", "$scope", "$location", "$application", "$users", "$modals", "$titles", function ($log, $scope, $location, $application, $users, $modals, $titles) {
+    .controller("DashboardController", ["$log", "$scope", "$location", "$application", "$users", "$modals", "$titles", "$contractors", function ($log, $scope, $location, $application, $users, $modals, $titles, $contractors) {
         $scope.app = $application;
         $scope.users = $users;
         $scope.titles = $titles;
+        $scope.contractors = $contractors;
+
+        $scope.selectRequest = function (requestId) {
+            if (requestId !== undefined) {
+                angular.forEach($titles.requests.items, function (request) {
+                    if (request.id.value === requestId) {
+                        if (request._states_.selected() === true) {
+                            request._states_.selected(false);
+                            $application.currentRequest = undefined;
+                        } else {
+                            request._states_.selected(true);
+                            $application.currentRequest = request;
+                        }
+                    } else
+                        request._states_.selected(false);
+                });
+            }
+        };
 
         $scope.addRequest = function () {
             $modals.show({
@@ -32,6 +50,18 @@ var appControllers = angular.module("gears.app.controllers", [])
                 closeButton: false,
                 template: "templates/modals/edit-request.html"
             });
+        };
+
+        $scope.editPlanItem = function (planItem) {
+            if (planItem !== undefined) {
+                $log.log("EDIT PLAN ITEM");
+                $modals.show({
+                    width: 400,
+                    position: "center",
+                    caption: "Редактирование этапа работ",
+                    showFog: true,
+                    template: "templates/modals/edit-building-plan-item.html" });
+            }
         };
     }])
 
@@ -150,9 +180,11 @@ var appControllers = angular.module("gears.app.controllers", [])
      * AddTitleController
      * Контроллер добавления титула
      */
-    .controller("AddTitleController", ["$log", "$scope", "$location", "$factory", "$titles", "$nodes", "$misc", function ($log, $scope, $location, $factory, $titles, $nodes, $misc) {
+    .controller("AddTitleController", ["$log", "$scope", "$location", "$factory", "$titles", "$nodes", "$misc", "$application", "$users", function ($log, $scope, $location, $factory, $titles, $nodes, $misc, $application, $users) {
         $scope.nodes = $nodes;
         $scope.misc = $misc;
+        $scope.app = $application;
+        $scope.users = $users;
         $scope.newTitle = $factory({ classes: ["Title", "Model", "States"], base_class: "Title" });
         $scope.startNodePowerLineId = 0;
         $scope.startNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
@@ -163,6 +195,10 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.newTitle._states_.loaded(false);
 
+
+        $scope.gotoAddTitle = function () {
+            preventDefault();
+        };
 
         $scope.gotoTitles = function () {
             $location.url("/titles");
@@ -936,6 +972,7 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.selectPlanItem = function (itemId) {
             if (itemId !== undefined) {
+                $log.log("SELECT CALLED");
                 angular.forEach($scope.titles.plans.items, function (plan) {
                     if (plan.id.value === itemId) {
                         if (plan._states_.selected() === true) {
@@ -985,10 +1022,29 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
         **/
+        $scope.selectPlanItem = function (itemId) {
+            if (itemId !== undefined) {
+                $log.log("SELECT CALLED");
+                angular.forEach($scope.titles.plans.items, function (plan) {
+                    if (plan.id.value === itemId) {
+                        if (plan._states_.selected() === true) {
+                            plan._states_.selected(false);
+                            $application.currentBuildingPlanItem = undefined;
+                        } else {
+                            plan._states_.selected(true);
+                            $application.currentBuildingPlanItem = plan;
+                            //$log.log("plan " + $users.users.find("id", userId).fio + " selected");
+                        }
+                    } else {
+                        plan._states_.selected(false);
+                    }
+                });
+            }
+        };
 
         $scope.editPlanItem = function (planItem) {
             if (planItem !== undefined) {
-                $application.currentBuildingPlanItem = planItem;
+                $log.log("EDIT PLAN ITEM");
                 $modals.show({
                     width: 400,
                     position: "center",

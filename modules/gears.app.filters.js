@@ -116,7 +116,7 @@ var AppFilters = angular.module("gears.app.filters", [])
                             result = moment.unix(input).format("DD MMM YYYY");
                             break;
                         case "DDMMMYYYYHHmm":
-                            result = moment.unix(input).format("DD MMM YYYY, в HH:mm");
+                            result = moment.unix(input).format("DD MMM YYYY в HH:mm");
                             break;
                     }
                     return result;

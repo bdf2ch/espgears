@@ -42,6 +42,9 @@
   overflow: auto;
   box-sizing: border-box;
 }
+.row.split-5 {
+  margin-bottom: 5px;
+}
 .row.split-10 {
   margin-bottom: 10px;
 }
@@ -156,6 +159,11 @@
   background: #FAF9F7;
   border-right: none;
 }
+.column .block-header {
+  padding: 5px;
+  background: #FAFAFA;
+  border-bottom: 1px solid lightgrey;
+}
 .column td {
   position: relative;
   box-sizing: border-box;
@@ -167,6 +175,9 @@
   background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
   background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
   border-bottom: 1px solid lightgrey;
+}
+.column .button-container {
+  float: right;
 }
 .column .column-header {
   float: left;
@@ -237,11 +248,32 @@
   font-size: 15px;
   cursor: pointer;
 }
+.column .column-content-container .list-item .hover-visible {
+  display: none;
+}
 .column .column-content-container .list-item:hover {
   background: #F5E7D3;
 }
+.column .column-content-container .list-item:hover .hover-visible {
+  display: inline-block;
+}
 .column .column-content-container .list-item.active {
   background: #EDD6B4;
+}
+/*****
+* TEXT
+*****/
+.uppercase {
+  text-transform: uppercase;
+}
+/*****
+* COLORS
+*****/
+.gray {
+  color: gray;
+}
+.lightgray {
+  color: lightgray;
 }
 /*****
 * BUTTONS
@@ -359,8 +391,9 @@ textarea {
 }
 .list li {
   list-style-type: none;
-  margin-bottom: 2px;
+  margin-bottom: 5px;
   padding: 10px;
+  border: 1px solid transparent;
 }
 .list li img {
   display: inline-block;
@@ -368,104 +401,120 @@ textarea {
   height: 48px;
   margin-right: 10px;
 }
+.list li .hover-visible {
+  display: none !important;
+}
+.list li:hover .hover-visible {
+  display: inline-block !important;
+}
+.list li:nth-last-of-type {
+  border-bottom: none;
+}
 .list.hover {
   cursor: pointer;
 }
 .list.hover li.active {
-  background: #BBDEFB;
+  border: 1px solid #EEEEEE;
+  border-radius: 2px;
+  background: #F5F5F5;
 }
 .list.hover li.active:hover {
-  background: #BBDEFB;
+  background: #F5F5F5;
 }
 .list.hover li:hover {
-  background: #E3F2FD
-    ;
+  background: #E3F2FD;
+}
+.list.hover li:hover .hover-visible {
+  display: inline-block;
 }
 .chronology {
+  overflow: visible;
+  margin-top: 0px;
   margin-bottom: 0px;
-  padding-left: 10px;
-  list-style-type: none;
-}
-.chronology .chronology-content {
-  display: block;
-  float: left;
-  height: auto;
-  overflow: auto;
-  margin-left: 35px;
-  margin-top: 35px;
-  border: 1px solid black;
-}
-.chronology .chronology-content.green {
-  border-left: 4px solid #C8E6C9;
-}
-.chronology img {
-  display: inline-block;
-  float: left;
-  width: 32px;
-}
-.chronology .chronology-date {
-  display: inline-block;
-  float: left;
-  margin-left: -27px;
-  padding: 10px;
-  line-height: 32px;
-  background: #BBDEFB;
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px;
-  border-radius: 32px;
+  padding-left: 0px;
 }
 .chronology li {
   display: block;
-  padding-bottom: 40px;
-  border-left: 4px solid #BBDEFB;
-  /**
-    &:before {
-      content: "\2022";
-      display: inline-block;
-      margin-left: -16px;
-      font-size: 80px;
-      vertical-align: top;
-      line-height: 20px;
-      color: #BBDEFB;
-    }
-    **/
-}
-.chronology li .primary-text {
-  display: inline-block;
-}
-.chronology li.green {
-  /**
-      &:before {
-        content: "\2022";
-        display: inline-block;
-        margin-left: -16px;
-        font-size: 80px;
-        vertical-align: top;
-        line-height: 20px;
-        color: #C8E6C9;
-      }
-      **/
-}
-.chronology li.green .chronology-date {
-  background: #C8E6C9;
+  width: 50%;
+  padding-top: 5px;
+  padding-bottom: 80px;
 }
 .chronology li:hover {
-  background: #E3F2FD;
+  cursor: pointer;
+  background: #E1F5FE;
 }
-.chronology li:hover .controls {
-  display: block;
+.chronology li.active {
+  background: #E1F5FE;
 }
-.chronology li .secondary-text {
+.chronology li.left {
+  float: left;
+  margin-left: -3px;
+  text-align: right;
+  border-right: 5px solid #B3E5FC;
+}
+.chronology li.left:before {
+  content: "\2022";
   display: inline-block;
-  margin-left: 20px;
+  float: right;
+  margin-right: -20px;
+  margin-top: -5px;
+  font-size: 100px;
+  line-height: 25px;
+  color: #B3E5FC;
 }
-.chronology li .controls {
-  display: none;
-  margin-left: 20px;
-  padding-top: 10px;
+.chronology li.left .chronology-date {
+  float: right;
+  margin-right: 10px;
+  margin-bottom: 20px;
 }
-.chronology li.last {
-  border-left: 4px solid transparent;
+.chronology li.left .chronology-content {
+  float: right;
+  margin-right: 25px;
+}
+.chronology li.left .building-status {
+  float: left;
+}
+.chronology li.left.last {
+  border-right: 5px solid transparent;
+}
+.chronology li.left.green {
+  border-right: 5px solid #C8E6C9;
+}
+.chronology li.left.green:before {
+  color: #C8E6C9;
+}
+.chronology li.right {
+  float: right;
+  margin-right: -2px;
+  border-left: 5px solid #B3E5FC;
+}
+.chronology li.right:before {
+  content: "\2022";
+  display: inline-block;
+  float: left;
+  margin-left: -20px;
+  margin-top: -5px;
+  font-size: 100px;
+  line-height: 25px;
+  color: #B3E5FC;
+}
+.chronology li.right .chronology-date {
+  float: left;
+  margin-left: 10px;
+  margin-bottom: 20px;
+}
+.chronology li.right .chronology-content {
+  float: left;
+  margin-left: 25px;
+}
+.chronology li.right.last {
+  border-left: 5px solid transparent;
+}
+.chronology li.right.green {
+  border-left: 5px solid #C8E6C9;
+}
+.chronology li.right.green:before {
+  color: #C8E6C9;
 }
 .primary-text {
   font-family: "Roboto Regular";

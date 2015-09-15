@@ -98,7 +98,6 @@ var titles = angular.module("gears.app.titles",[])
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     investorId: new Field({ source: "INVESTOR_ID", value: 0, default_value:0, backupable: true, required: true }),
-                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
                     description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
                     start: new Field({ source: "START_POINT", value: "", default_value: "", backupable: true, required: true }),
                     end: new Field({ source: "END_POINT", value: "", default_value: "", backupable: true, required: true }),
@@ -733,7 +732,6 @@ var titles = angular.module("gears.app.titles",[])
                     var params = {
                         action: "addRequest",
                         data: {
-                            title: request.title.value,
                             description: request.description.value,
                             start: request.start.value,
                             end: request.end.value,

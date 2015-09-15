@@ -806,13 +806,12 @@ function add_request ($postdata) {
     $cursor = oci_new_cursor($connection);
     $userId = $postdata -> data -> userId;
     $investorId = $postdata -> data -> investorId;
-    $title = $postdata -> data -> title;
     $description = $postdata -> data -> description;
     $start = $postdata -> data -> start;
     $end = $postdata -> data -> end;
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request(:user_id, :investor_id, :title, :description, :start, :end, :new_request); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request(:user_id, :investor_id, :description, :start, :end, :new_request); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -823,11 +822,6 @@ function add_request ($postdata) {
             echo(json_encode($result));
         }
         if (!oci_bind_by_name($statement, ":investor_id", $investorId, -1, OCI_DEFAULT)) {
-            $error = oci_error();
-            $result = new DBError($error["code"], $error["message"]);
-            echo(json_encode($result));
-        }
-        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));

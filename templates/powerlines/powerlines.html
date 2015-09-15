@@ -82,17 +82,17 @@
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
-                <ul class="list hover">
-                    <div class="service-message" ng-show="app.currentPowerLineNodes._states_.loaded() === false">
-                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                        <span>Загрузка...</span>
-                    </div>
-                    <div class="service-message" ng-show="app.currentPowerLine === undefined">
-                        Выберите линию
-                    </div>
-                    <div class="service-message" ng-show="app.currentPowerLine !== undefined && app.currentPowerLineNodes.items.length === 0 && app.currentPowerLineNodes._states_.loaded() === true">
-                        Для выбранной линии объекты не найдены
-                    </div>
+                <div class="service-message" ng-show="app.currentPowerLineNodes._states_.loaded() === false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
+                <div class="service-message" ng-show="app.currentPowerLine === undefined">
+                    Выберите линию
+                </div>
+                <div class="service-message" ng-show="app.currentPowerLine !== undefined && app.currentPowerLineNodes.items.length === 0 && app.currentPowerLineNodes._states_.loaded() === true">
+                    Для выбранной линии объекты не найдены
+                </div>
+                <ul class="list hover" ng-show="app.currentPowerLine !== undefined">
                     <li ng-repeat="node in app.currentPowerLineNodes.items | filter: {search: search} track by $index"
                         ng-class="{'active': node._states_.selected() === true}"
                         ng-click="selectNode(node.id.value)">

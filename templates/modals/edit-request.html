@@ -1,0 +1,54 @@
+<div ng-controller="EditRequestModalController">
+    <div class="row height-100 split-20">
+        <label for="request-description">Описание проекта</label>
+        <textarea name="request-description"
+                  id="request-description"
+                  class="width-100"
+                  placeholder="Описание проекта"
+                  ng-disabled="app.currentRequest._states_.loading() === true"
+                  ng-change="app.currentRequest._states_.changed(true)"
+                  ng-model="app.currentRequest.description.value">
+        </textarea>
+    </div>
+    <div class="row height-100 split-20">
+        <label for="request-description">Инвестор</label>
+        <select name="request-investor"
+                id="request-investor"
+                class="width-100"
+                ng-model="app.currentRequest.investorId.value"
+                ng-change="app.currentRequest._states_.changed(true)"
+                ng-options="contractor.id.value as contractor.title.value for contractor in contractors.contractors.items">
+        </select>
+    </div>
+    <div class="row split-5">
+        <div class="width-100">
+            <button class="blue square width-100"
+                    ng-disabled="app.currentUserGroup._states_.loading() === true"
+                    ng-click="gotoNewTitle()">
+                Сформировать титул
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="width-50">
+            <button class="green square width-100"
+                    ng-disabled="app.currentRequest._states_.loading() === true || app.currentRequest._states_.changed() === false"
+                    ng-click="validate()">
+                Сохранить
+            </button>
+        </div>
+        <div class="50">
+            <button class="red square width-100"
+                    ng-disabled="app.currentRequest._states_.loading() === true"
+                    ng-click="cancel()">
+                Отмена
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

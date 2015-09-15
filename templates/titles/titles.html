@@ -51,12 +51,24 @@
     <tr class="column-header">
         <td class="caption width-100">
             Подробности
-            <button class="green right"
-                    title="Добавить этап работ"
-                    ng-click="addPlanItem()"
-                    ng-show="app.currentTitleTabId === 2">
-                +
-            </button>
+            <div class="button-container" ng-show="app.currentTitleTabId === 2">
+                <button class="green right"
+                        title="Добавить этап работ"
+                        ng-click="addPlanItem()">
+                    +
+                </button>
+                <span class="separator right" ng-show="app.currentBuildingPlanItem !== undefined"></span>
+                <button class="blue right"
+                        title="Редактировать этап работ"
+                        ng-show="app.currentBuildingPlanItem !== undefined"
+                        ng-click="editPlanItem(app.currentBuildingPlanItem)">
+                </button>
+                <button class="red right"
+                        ng-show="app.currentBuildingPlanItem !== undefined"
+                        title="Удалить этап работ"
+                        ng-click="deletePlanItem()">
+                </button>
+            </div>
         </td>
     </tr>
     <tr class="column-content-container">

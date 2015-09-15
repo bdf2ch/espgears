@@ -181,8 +181,8 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
 
         $scope.validate = function () {
             $scope.errors.splice(0, $scope.errors.length);
-            if ($scope.newRequest.title.value === "")
-                $scope.errors.push("Вы не указали наименование проекта");
+            if ($scope.newRequest.description.value === "")
+                $scope.errors.push("Вы не указали описание проекта");
             if ($scope.newRequest.start.value === "")
                 $scope.errors.push("Вы не указали точку начала проекта");
             if ($scope.newRequest.end.value === "")
@@ -202,5 +202,48 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $scope.errors.splice(0, $scope.errors.length);
             $scope.newRequest._model_.reset();
             $scope.newRequest._states_.changed(false);
+        };
+    }])
+
+
+    /**
+     * EditRequestModalController
+     * Контроллер модального окна редактирования заявки
+     */
+    .controller("EditRequestModalController", ["$log", "$scope", "$misc", "$application", "$modals", "$nodes", "$contractors", "$location", function ($log, $scope, $misc, $application, $modals, $nodes, $contractors, $location) {
+        $scope.app = $application;
+        $scope.misc = $misc;
+        $scope.contractors = $contractors;
+        $scope.errors = [];
+
+        $scope.gotoNewTitle = function () {
+            $modals.close();
+            $location.url("/new-title");
+        };
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentRequest._backup_.restore();
+            $application.currentRequest._states_.changed(false);
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($application.currentPowerLineNode.number.value === "")
+                $scope.errors.push("Вы не указали номер опоры");
+            if ($application.currentPowerLineNode.powerLineId.value === "")
+                $scope.errors.push("Вы не указали линию");
+            if ($scope.errors.length === 0) {
+                $application.currentPowerLineNode._states_.loading(true);
+                $nodes.editNode($application.currentPowerLineNode, $scope.onSuccessEditNode);
+            }
+        };
+
+        $scope.onSuccessEditNode = function (data) {
+            $application.currentRequest._states_.loaded(true);
+            $application.currentRequest._states_.loading(false);
+            $application.currentRequest._backup_.setup();
+            $modals.close();
         };
     }]);
