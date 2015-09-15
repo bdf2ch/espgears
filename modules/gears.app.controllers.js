@@ -52,17 +52,7 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-        $scope.editPlanItem = function (planItem) {
-            if (planItem !== undefined) {
-                $log.log("EDIT PLAN ITEM");
-                $modals.show({
-                    width: 400,
-                    position: "center",
-                    caption: "Редактирование этапа работ",
-                    showFog: true,
-                    template: "templates/modals/edit-building-plan-item.html" });
-            }
-        };
+
     }])
 
      /**
@@ -170,6 +160,20 @@ var appControllers = angular.module("gears.app.controllers", [])
                 showFog: true,
                 template: "templates/modals/new-building-plan-item.html"
             });
+        };
+
+        $scope.editPlanItem = function (planItem) {
+            $log.log("edit");
+            if (planItem !== undefined) {
+                $log.log("EDIT PLAN ITEM");
+                $modals.show({
+                    width: 400,
+                    position: "center",
+                    caption: "Редактирование этапа работ",
+                    showFog: true,
+                    template: "templates/modals/edit-building-plan-item.html"
+                });
+            }
         };
 
     }])
@@ -1042,6 +1046,7 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
         };
 
+        /*
         $scope.editPlanItem = function (planItem) {
             if (planItem !== undefined) {
                 $log.log("EDIT PLAN ITEM");
@@ -1053,6 +1058,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                     template: "templates/modals/edit-building-plan-item.html" });
             }
         };
+        */
     }])
 
 

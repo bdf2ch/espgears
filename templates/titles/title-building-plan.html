@@ -16,20 +16,20 @@
                     <ul class="chronology">
                         <li class="hover"
                             ng-repeat="planItem in titles.plans.items | byTitleId: app.currentTitle.id.value | orderBy:'start.value' track by $id(planItem)"
-                            ng-class="{ 'active': planItem._states_.selected() === true, 'left': $odd === true, 'right': $even === true, 'last': $last === true, 'green': planItem.statusId.value === 2 }"
+                            ng-class="{ 'active': planItem._states_.selected() === true, 'left': $odd === true, 'right': $even === true, 'last': $last === true, 'green': planItem._backup_.data.statusId === 2 }"
                             ng-click="selectPlanItem(planItem.id.value)">
                             <span class="chronology-date width-90 split-20">
-                                {{ (planItem.start.value | timestamp: 'DDMMMYYYY') + " - " + (planItem.end.value | timestamp:'DDMMMYYYY') }}
+                                {{ (planItem._backup_.data.start | timestamp: 'DDMMMYYYY') + " - " + (planItem._backup_.data.end | timestamp:'DDMMMYYYY') }}
                                 <span class="building-status"
-                                      ng-class="{ 'green': planItem.statusId.value === 2, 'blue': planItem.statusId.value === 1, 'left': $odd === true, 'right': $even === true }">
-                                    {{ titles.buildingStatuses.find("id", planItem.statusId.value).title.value }}
+                                      ng-class="{ 'green': planItem._backup_.data.statusId === 2, 'blue': planItem._backup_.data.statusId === 1, 'left': $odd === true, 'right': $even === true }">
+                                    {{ titles.buildingStatuses.find("id", planItem._backup_.data.statusId).title.value }}
                                 </span>
                             </span>
                             <div class="row chronology-content split-5">
-                                {{ planItem.title.value }}
+                                {{ planItem._backup_.data.title }}
                             </div>
                             <div class="row chronology-content gray">
-                                {{ planItem.description.value }}
+                                {{ planItem._backup_.data.description }}
                             </div>
                         </li>
                     </ul>
