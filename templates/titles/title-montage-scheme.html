@@ -25,7 +25,7 @@
                     <div ng-show="node.__class__ === 'Pylon'">
                         <span class="primary-text">{{ "Опора #" + node.number.value }}</span><br>
                         <span class="secondary-text">{{ "ВЛ: " + misc.powerLines.find("id", node.powerLineId.value).title.value }}</span> &nbsp; &nbsp; &nbsp;
-                        <span class="secondary-text">{{ "Тип опоры: " }}</span>
+                        <span class="secondary-text">{{ "Тип опоры: " + misc.pylonTypes.find("id", node.pylonTypeId.value).title.value }}</span>
                     </div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                     <div ng-show="rootNode.__class__ === 'Pylon'">
                         <span class="primary-text">{{ "Опора #" + rootNode.number.value }}</span><br>
                         <span class="secondary-text">{{ "ВЛ: " + misc.powerLines.find("id", rootNode.powerLineId.value).title.value }}</span> &nbsp; &nbsp; &nbsp;
-                        <span class="secondary-text">{{ "Тип опоры: " }}</span>
+                        <span class="secondary-text">{{ "Тип опоры: " + misc.pylonTypes.find("id", rootNode.pylonTypeId.value).title.value }}</span>
                     </div>
 
                 </div>

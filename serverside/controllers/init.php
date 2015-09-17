@@ -17,6 +17,7 @@
     $pylonTypes = array();
     $cableTypes = array();
     $requests = array();
+    $workingCommissions = array();
 
     /* Подключение к БД */
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
@@ -419,6 +420,34 @@
             }
         }
         $result -> requests = $requests;
+
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_working_commissions(:data); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($commission = oci_fetch_assoc($cursor))
+                        array_push($workingCommissions, $commission);
+                }
+            }
+        }
+        $result -> workingCommissions = $workingCommissions;
 
 
 

@@ -105,6 +105,17 @@ var titles = angular.module("gears.app.titles",[])
                 },
 
                 /**
+                 * WorkingCommission
+                 * Набор свойств, описывающих рабочую коммиссию
+                 */
+                WorkingCommission: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    date: new Field({ source: "TIMESTAMP", value: 0, default_value: 0, backupable: true, required: true }),
+                    remarks: []
+                },
+
+                /**
                  * TitleNodes
                  * Набор свойст и методов, описывающих иерархию узлов, входящих в титул
                  */
@@ -329,6 +340,7 @@ var titles = angular.module("gears.app.titles",[])
             titles.plans = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.buildingStatuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.contractors = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            titles.workingCommissions = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
 
             /**
@@ -753,6 +765,62 @@ var titles = angular.module("gears.app.titles",[])
                                     titles.requests.append(temp_request);
                                     if (callback !== undefined)
                                         callback(temp_request);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.getWorkingCommissions = function () {
+                titles.workingCommissions._states_.loaded(false);
+                $http.post("serverside/controllers/titles.php", { action: "getWorkingCommissions" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (commission) {
+                                    var temp_working_commission = $factory({ classes: ["WorkingCommission", "Model", "Backup", "States"], base_class: "WorkingCommission" });
+                                    temp_working_commission._model_.fromJSON(commission);
+                                    temp_working_commission._backup_.setup();
+                                    titles.workingCommissions.append(temp_working_commission);
+                                });
+                            }
+                        }
+                        titles.workingCommissions._states_.loaded(true);
+                        $log.log("working commissions = ", titles.workingCommissions.items);
+                    }
+                );
+            };
+
+
+            titles.addWorkingCommission = function (workingCommission, callback) {
+                if (workingCommission !== undefined) {
+                    var params = {
+                        action: "addWorkingCommission",
+                        data: {
+                            titleId: workingCommission.titleId.value,
+                            date: workingCommission.date.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    var temp_working_commission = $factory({ classes: ["WorkingCommission", "Model", "Backup", "States"], base_class: "WorkingCommission" });
+                                    temp_working_commission._model_.fromJSON(data);
+                                    temp_working_commission._backup_.setup();
+                                    titles.workingCommissions.append(temp_working_commission);
+                                    if (callback !== undefined)
+                                        callback(temp_working_commission);
                                 }
                             }
                         }

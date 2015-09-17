@@ -38,7 +38,7 @@
                 <div class="service-message" ng-show="app.currentTitle === undefined">
                     Выберите титул
                 </div>
-                <div class="service-message">
+                <div class="service-message" ng-show="app.currentTitle !== undefined">
                     В выбранном титуле отсутствуют участки
                 </div>
             </div>
@@ -67,6 +67,24 @@
                         ng-show="app.currentBuildingPlanItem !== undefined"
                         title="Удалить этап работ"
                         ng-click="deletePlanItem()">
+                </button>
+            </div>
+            <div class="button-container" ng-show="app.currentTitleTabId === 4">
+                <button class="green right"
+                        title="Добавить рабочую коммиссию"
+                        ng-click="addWorkingCommission()">
+                    +
+                </button>
+                <span class="separator right" ng-show="app.currentWorkingCommission !== undefined"></span>
+                <button class="blue right"
+                        title="Редактировать рабочую коммиссию"
+                        ng-show="app.currentWorkingCommission !== undefined"
+                        ng-click="editWorkingCommission(app.currentWorkingCommission)">
+                </button>
+                <button class="red right"
+                        ng-show="app.currentWorkingCommission !== undefined"
+                        title="Удалить рабочую коммиссию"
+                        ng-click="deleteWorkingCommission()">
                 </button>
             </div>
         </td>

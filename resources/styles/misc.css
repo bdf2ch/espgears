@@ -57,6 +57,10 @@
 .row.split-50 {
   margin-bottom: 50px;
 }
+.width-5 {
+  float: left;
+  width: 5%;
+}
 .width-10 {
   float: left;
   width: 10%;
@@ -116,8 +120,12 @@
   float: left;
   width: 80%;
 }
+.width-85 {
+  float: left;
+  width: 85%;
+}
 .width-90 {
-  position: relative;
+  float: left;
   width: 90%;
 }
 .width-100 {
@@ -302,6 +310,12 @@ button.block {
 button.square {
   border-radius: 0px;
 }
+button.round {
+  width: 20px;
+  height: 20px;
+  border-radius: 20px;
+  vertical-align: top;
+}
 button.green {
   color: white;
   background: #54C478;
@@ -350,6 +364,12 @@ input {
   box-sizing: border-box;
   border: 1px solid lightgrey;
 }
+input[type="checkbox"] {
+  display: inline-block;
+  padding: 10px;
+  border: 1px solid lightgrey;
+  background: white;
+}
 select {
   display: block;
   padding: 8px;
@@ -389,11 +409,17 @@ textarea {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+.list hr {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border: none;
+  border-bottom: 1px solid lightgrey;
+}
 .list li {
   list-style-type: none;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   padding: 10px;
-  border: 1px solid transparent;
+  border: 1px solid #EEEEEE;
 }
 .list li img {
   display: inline-block;
@@ -414,15 +440,12 @@ textarea {
   cursor: pointer;
 }
 .list.hover li.active {
-  border: 1px solid #EEEEEE;
+  border: 1px solid #E0E0E0;
   border-radius: 2px;
   background: #F5F5F5;
 }
-.list.hover li.active:hover {
-  background: #F5F5F5;
-}
 .list.hover li:hover {
-  background: #E3F2FD;
+  border: 1px solid #E0E0E0;
 }
 .list.hover li:hover .hover-visible {
   display: inline-block;
@@ -931,4 +954,33 @@ textarea {
   font-family: "Roboto Regular";
   font-size: 15px;
   color: #F44336;
+}
+/*****
+* CARDS
+*****/
+.card {
+  box-sizing: border-box;
+}
+.card:hover .hover-visible {
+  display: inline-block;
+}
+.card hr {
+  border: none;
+  border-bottom: 1px solid lightgrey;
+}
+.card .caption {
+  font-family: "Roboto Bold";
+  font-size: 16px;
+  color: #757575;
+  text-transform: uppercase;
+}
+.card .sub-caption {
+  font-family: "Roboto Bold";
+  font-size: 14px;
+  color: #BDBDBD;
+  text-transform: uppercase;
+  border-bottom: 1px dotted #BDBDBD;
+}
+.card .hover-visible {
+  display: none;
 }

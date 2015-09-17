@@ -27,19 +27,23 @@
 
                 <div class="row split-20">
                     <ul class="list hover">
+                        <!--
                         <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
                             <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                             <span>Загрузка...</span>
                         </div>
+                        -->
                         <li ng-repeat="request in titles.requests.items"
                             ng-class="{'active': request._states_.selected() === true}"
                             ng-click="selectRequest(request.id.value)">
 
                             <div class="row split-10">
-                                <div class="row split-5">
+                                <div class="row">
                                     <span class="primary-text uppercase">{{ "Заявка #" + request.id.value }}</span>
                                     <span class="secondary-text right">{{ request.added.value | timestamp:'DDMMMYYYYHHmm' }}</span>
                                 </div>
+
+                                <hr/>
 
                                 <div class="row">
                                     <span class="secondary-text"

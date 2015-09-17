@@ -59,10 +59,11 @@ var appControllers = angular.module("gears.app.controllers", [])
      * TitlesController
      * Ктонтроллер раздела титулов
      */
-    .controller("TitlesController", ["$log", "$scope", "$location", "$titles", "$application", "$files", "$nodes", "$modals", function ($log, $scope, $location, $titles, $application, $files, $nodes, $modals) {
+    .controller("TitlesController", ["$log", "$scope", "$location", "$titles", "$application", "$files", "$nodes", "$modals", "$misc", function ($log, $scope, $location, $titles, $application, $files, $nodes, $modals, $misc) {
         $scope.titles = $titles;
         $scope.files = $files;
         $scope.app = $application;
+        $scope.misc = $misc;
         $scope.tabs = [
             {
                 id: 1,
@@ -72,7 +73,7 @@ var appControllers = angular.module("gears.app.controllers", [])
             },
             {
                 id: 2,
-                title: "Строительство",
+                title: "План строительства",
                 template: "templates/titles/title-building-plan.html",
                 isActive: false
             },
@@ -84,8 +85,14 @@ var appControllers = angular.module("gears.app.controllers", [])
             },
             {
                 id: 4,
-                title: "Документы",
-                template: "templates/titles/title-files.html",
+                title: "Рабочие коммиссии",
+                template: "templates/titles/working-commissions.html",
+                isActive: false
+            },
+            {
+                id: 5,
+                title: "Приемочные коммиссии",
+                template: "templates/titles/acceptance-commissions.html",
                 isActive: false
             }
         ];
@@ -174,6 +181,16 @@ var appControllers = angular.module("gears.app.controllers", [])
                     template: "templates/modals/edit-building-plan-item.html"
                 });
             }
+        };
+
+        $scope.addWorkingCommission = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новая рабочая коммиссия",
+                showFog: true,
+                template: "templates/modals/new-working-commission.html"
+            });
         };
 
     }])
@@ -291,7 +308,7 @@ var appControllers = angular.module("gears.app.controllers", [])
             }
 
             if ($scope.errors.length === 0) {
-                $titles.add($scope.newTitle, $scope.onSuccessAddTitle);
+                $titles.addTitle($scope.newTitle, $scope.onSuccessAddTitle);
             }
         };
     }])
@@ -1145,10 +1162,11 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
-    .controller("MontageSchemeController", ["$log", "$scope", "$application", "$titles", "$nodes", function ($log, $scope, $application, $titles, $nodes) {
+    .controller("MontageSchemeController", ["$log", "$scope", "$application", "$titles", "$nodes", "$misc", function ($log, $scope, $application, $titles, $nodes,$misc) {
         $scope.titles = $titles;
         $scope.app = $application;
         $scope.nodes = $nodes;
+        $scope.misc = $misc;
 
 
         $scope.getBranches = function (nodeId, parentId) {
@@ -1175,6 +1193,17 @@ var appControllers = angular.module("gears.app.controllers", [])
                 //$application.currentTitleNodes.expand({ nodeId: nodeId, parentId:  });
             }
         };
+    }])
+
+
+    .controller("WorkingCommissionsController", ["$log", "$scope", "$application", "$titles", "$nodes", "$misc", function ($log, $scope, $application, $titles, $nodes,$misc) {
+        $scope.titles = $titles;
+        $scope.app = $application;
+        $scope.nodes = $nodes;
+        $scope.misc = $misc;
+
+
+
     }])
 
     .controller("DocumentsController", ["$scope", "$files", function ($scope, $files) {

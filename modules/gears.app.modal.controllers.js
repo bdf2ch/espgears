@@ -246,4 +246,37 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $application.currentRequest._backup_.setup();
             $modals.close();
         };
+    }])
+
+
+    /**
+     * AddWorkingCommissionModalController
+     * Контроллер модального окна добавления рабочей группы
+     */
+    .controller("AddWorkingCommissionModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$contractors", "$titles", function ($log, $scope, $misc, $factory, $application, $modals, $contractors, $titles) {
+        $scope.contractors = $contractors;
+        $scope.newWorkingCommission = $factory({ classes: ["WorkingCommission", "Model", "Backup", "States"], base_class: "WorkingCommission" });
+        $scope.errors = [];
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newWorkingCommission.titleId.value = $application.currentTitle.id.value;
+            if ($scope.newWorkingCommission.date.value === "" || $scope.newWorkingCommission.date.value === 0)
+                $scope.errors.push("Вы не указали дату рабочей коммиссии");
+            if ($scope.errors.length === 0) {
+                $titles.addWorkingCommission($scope.newWorkingCommission, $scope.onSuccessAddWorkingCommission);
+            }
+        };
+
+        $scope.onSuccessAddWorkingCommission = function (data) {
+            $modals.close();
+            $scope.newWorkingCommission._model_.reset();
+        };
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newWorkingCommission._model_.reset();
+            $scope.newWorkingCommission._states_.changed(false);
+        };
     }]);

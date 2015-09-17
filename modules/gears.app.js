@@ -80,6 +80,7 @@ var application = angular.module("gears.app", [
             application.currentPowerLine = undefined;
             application.currentPowerLineNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentPowerLineNode = undefined;
+            application.currentWorkingCommission = undefined;
 
 
             application.init = function () {
@@ -242,6 +243,17 @@ var application = angular.module("gears.app", [
                                     $titles.requests.append(temp_request);
                                 });
                                 $titles.requests._states_.loaded(true);
+                            }
+
+                            if (data["workingCommissions"] !== undefined) {
+                                $titles.requests._states_.loaded(false);
+                                angular.forEach(data["workingCommissions"], function (commission) {
+                                    var temp_working_commission = $factory({ classes: ["WorkingCommission", "Model", "Backup", "States"], base_class: "WorkingCommission" });
+                                    temp_working_commission._model_.fromJSON(commission);
+                                    temp_working_commission._backup_.setup();
+                                    $titles.workingCommissions.append(temp_working_commission);
+                                });
+                                $titles.workingCommissions._states_.loaded(true);
                             }
                         }
                     }

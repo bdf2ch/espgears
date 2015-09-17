@@ -13,9 +13,12 @@
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
+                    <div class="service-message" ng-show="plans.length === 0">
+                        Для выбранного титула этапы строительства отсутсвтуют
+                    </div>
                     <ul class="chronology">
                         <li class="hover"
-                            ng-repeat="planItem in titles.plans.items | byTitleId: app.currentTitle.id.value | orderBy:'start.value' track by $id(planItem)"
+                            ng-repeat="planItem in plans = (titles.plans.items | byTitleId: app.currentTitle.id.value | orderBy:'start.value') track by $id(planItem)"
                             ng-class="{ 'active': planItem._states_.selected() === true, 'left': $odd === true, 'right': $even === true, 'last': $last === true, 'green': planItem._backup_.data.statusId === 2 }"
                             ng-click="selectPlanItem(planItem.id.value)">
                             <span class="chronology-date width-90 split-20">
