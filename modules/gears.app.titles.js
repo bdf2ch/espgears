@@ -91,6 +91,24 @@ var titles = angular.module("gears.app.titles",[])
                 },
 
                 /**
+                 * RequestType
+                 * Набор свойств, описывающих тип заяви
+                 */
+                RequestType: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "" })
+                },
+
+                /**
+                 * RequestStatus
+                 * Набор свойств, описывающих статус заявки
+                 */
+                RequestStatus: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
+                },
+
+                /**
                  * Request
                  * Набор свойств, описывающих заявку
                  */
@@ -333,6 +351,8 @@ var titles = angular.module("gears.app.titles",[])
             /**
              * Переменные сервиса
              */
+            titles.requestTypes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            titles.requestStatuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.requests = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.titles = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.parts = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
@@ -341,6 +361,61 @@ var titles = angular.module("gears.app.titles",[])
             titles.buildingStatuses = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.contractors = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             titles.workingCommissions = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+
+
+            /**
+             * Получает список всех типов заявки
+             */
+            titles.getRequestTypes = function () {
+                titles.requestTypes._states_.loaded(false);
+                $http.post("serverside/controllers/titles.php", { action: "getRequestTypes" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (requestType) {
+                                    var temp_type = $factory({ classes: ["RequestType", "Model", "Backup", "States"], base_class: "RequestType" });
+                                    temp_type._model_.fromJSON(requestType);
+                                    temp_type._backup_.setup();
+                                    titles.requestTypes.append(temp_type);
+                                });
+                            }
+                        }
+                        titles.requestTypes._states_.loaded(true);
+                        $log.log("request types = ", titles.requestTypes.items);
+                    }
+                );
+            };
+
+            /**
+             * Получает список всех статусов заявки
+             */
+            titles.getRequestStatuses = function () {
+                titles.requestStatuses._states_.loaded(false);
+                $http.post("serverside/controllers/titles.php", { action: "getRequestStatuses" })
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            if (data["error_code"] !== undefined) {
+                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                db_error.init(data);
+                                db_error.display();
+                            } else {
+                                angular.forEach(data, function (requestStatus) {
+                                    var temp_status = $factory({ classes: ["RequestStatus", "Model", "Backup", "States"], base_class: "RequestStatus" });
+                                    temp_status._model_.fromJSON(requestStatus);
+                                    temp_status._backup_.setup();
+                                    titles.requestStatuses.append(temp_status);
+                                });
+                            }
+                        }
+                        titles.requestStatuses._states_.loaded(true);
+                        $log.log("request statuses = ", titles.requestStatuses.items);
+                    }
+                );
+            };
 
 
             /**

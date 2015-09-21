@@ -11,6 +11,9 @@
             else
                 scan_folder();
             break;
+        case "upload":
+            upload_file($postdata);
+            break;
     }
 
 
@@ -46,6 +49,12 @@
 
         //global $root_dir;
         //echo(json_encode($root_dir));
+    };
+
+
+
+    function upload_file ($postdata) {
+        echo(json_encode("pizda"));
     };
 
 ?>

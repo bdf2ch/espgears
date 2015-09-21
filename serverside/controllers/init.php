@@ -16,7 +16,11 @@
     $contractors = array();
     $pylonTypes = array();
     $cableTypes = array();
+
+    $requestTypes = array();
+    $requestStatuses = array();
     $requests = array();
+
     $workingCommissions = array();
 
     /* Подключение к БД */
@@ -392,6 +396,65 @@
             }
         }
         $result -> cableTypes = $cableTypes;
+
+        /* Получение списка всех заявок */
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_types(:data); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($requestType = oci_fetch_assoc($cursor))
+                        array_push($requestTypes, $requestType);
+                }
+            }
+        }
+        $result -> requestTypes = $requestTypes;
+
+
+
+        /* Получение списка всех заявок */
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_statuses(:data); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($requestStatus = oci_fetch_assoc($cursor))
+                        array_push($requestStatuses, $requestStatus);
+                }
+            }
+        }
+        $result -> requestStatuses = $requestStatuses;
+
 
         /* Получение списка всех заявок */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_requests(:data); end;")) {

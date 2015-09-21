@@ -197,6 +197,37 @@ var grFiles = angular.module("gears.files", [])
         }]);
 
     })
+
+    .directive("upload", ["$log", "$http", function ($log, $http) {
+        return {
+            restrict: "A",
+            scope: {
+                uploadAction: "@"
+            },
+            link: function (scope, element, attrs) {
+                var files = scope.files = [];
+
+                $log.log("attrs = ", attrs);
+
+                element.bind("change", function () {
+                    scope.files = element[0].files;
+
+                    scope.$apply();
+                    $log.log("upload files = ", scope.files);
+                    $log.log("action = ", scope.uploadAction);
+                    upload();
+                });
+
+                var upload = function () {
+                    $http.post(scope.uploadAction, {files: scope.files})
+                        .success(function (data) {
+                            $log.log(data);
+                        }
+                    );
+                };
+            }
+        }
+    }])
     .run(function ($modules, $files, $factory, $log) {
         $modules.load($files);
         $files.items = $factory({ classes: ["FileTree", "States"], base_class: "FileTree" });

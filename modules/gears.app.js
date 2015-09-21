@@ -234,6 +234,28 @@ var application = angular.module("gears.app", [
                                 $misc.cableTypes._states_.loaded(true);
                             }
 
+                            if (data["requestTypes"] !== undefined) {
+                                $titles.requestTypes._states_.loaded(false);
+                                angular.forEach(data["requestTypes"], function (requestType) {
+                                    var temp_request_type = $factory({ classes: ["RequestType", "Model", "Backup", "States"], base_class: "RequestType" });
+                                    temp_request_type._model_.fromJSON(requestType);
+                                    temp_request_type._backup_.setup();
+                                    $titles.requestTypes.append(temp_request_type);
+                                });
+                                $titles.requestTypes._states_.loaded(true);
+                            }
+
+                            if (data["requestStatuses"] !== undefined) {
+                                $titles.requestStatuses._states_.loaded(false);
+                                angular.forEach(data["requestStatuses"], function (requestStatus) {
+                                    var temp_request_status = $factory({ classes: ["RequestStatus", "Model", "Backup", "States"], base_class: "RequestStatus" });
+                                    temp_request_status._model_.fromJSON(requestStatus);
+                                    temp_request_status._backup_.setup();
+                                    $titles.requestStatuses.append(temp_request_status);
+                                });
+                                $titles.requestStatuses._states_.loaded(true);
+                            }
+
                             if (data["requests"] !== undefined) {
                                 $titles.requests._states_.loaded(false);
                                 angular.forEach(data["requests"], function (request) {
