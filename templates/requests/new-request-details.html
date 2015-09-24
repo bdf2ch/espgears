@@ -1,0 +1,56 @@
+<div class="row height-100" ng-controller="AddRequestModalController">
+    <div class="row split-20">
+        <label for="request-title">Вид строительства</label>
+        <select name="request-type"
+                id="request-type"
+                class="width-100"
+                ng-model="newRequest.requestTypeId.value"
+                ng-options="type.id.value as type.title.value for type in titles.requestTypes.items"></select>
+    </div>
+    <div class="row split-20">
+        <label for="request-title">Наименование объекта</label>
+        <input type="text"
+               name="request-title"
+               id="request-title"
+               class="width-100"
+               placeholder="Наименование объекта"
+               ng-disabled="newRequest._states_.loading() === true"
+               ng-model="newRequest.title.value"/>
+    </div>
+    <div class="row split-20">
+        <label for="request-date">Планируемые срок ввода в эксплуатацию</label>
+        <input type="text"
+               name="request-date"
+               id="request-date"
+               class="width-100"
+               placeholder="Планируемый срок ввода в эксплуатацию"
+               ng-disabled="newRequest._states_.loading() === true"
+               ng-model="newRequest.date.value"/>
+    </div>
+    <div class="row split-20">
+        <label for="request-description">Общая информация об объекте</label>
+        <textarea name="request-description"
+                  id="request-description"
+                  class="width-100"
+                  cols="30"
+                  rows="3"
+                  placeholder="Информация об объекте"
+                  ng-disabled="newRequest._states_.loading() === true"
+                  ng-change="newRequest._states_.changed(true)"
+                  ng-model="newRequest.description.value">
+        </textarea>
+    </div>
+    <div class="row">
+        <label for="request-resources">Необходимые виды ресурсов объектов электроэнергетики</label>
+        <textarea name="request-resources"
+                  id="request-resources"
+                  class="width-100"
+                  cols="30"
+                  rows="3"
+                  placeholder="Необходимые виды ресурсов"
+                  ng-disabled="newRequest._states_.loading() === true"
+                  ng-change="newRequest._states_.changed(true)"
+                  ng-model="newRequest.resources.value">
+        </textarea>
+    </div>
+</div>

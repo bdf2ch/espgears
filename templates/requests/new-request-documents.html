@@ -1,0 +1,10 @@
+<div class="row width-100" ng-controller="AddRequestModalController">
+    <div class="service-message" ng-show="newRequest.documents.length === 0">
+        <span>К заявке не прикреплено ни одного приложения</span>
+    </div>
+</div>
+<div class="row width-100 text-centered">
+    <button class="blue">Добавить файл</button>
+    <label for="request-files">Добавить файл</label>
+    <input type="file" name="request-files" id="request-files" multiple/>
+</div>

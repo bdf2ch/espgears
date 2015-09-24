@@ -33,6 +33,7 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.addRequest = function () {
             $modals.show({
                 width: 500,
+                height: 500,
                 position: "center",
                 caption: "Новая заявка",
                 showFog: true,
@@ -52,6 +53,34 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
+
+    }])
+
+
+    /**
+     * RequestsController
+     * Контроллер раздела журнала заявок
+     */
+    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", function ($log, $scope, $titles, $application, $modals) {
+        $scope.app = $application;
+        $scope.titles = $titles;
+
+        $scope.addRequest = function () {
+            $modals.show({
+                width: 500,
+                position: "center",
+                caption: "Новая заявка",
+                showFog: true,
+                closeButton: true,
+                template: "templates/modals/new-request_.html",
+                onClose: function () {
+                    $log.log("MODAL CLOSED");
+                },
+                scope: function (scope) {
+                    $log.log("experimental scope");
+                }
+            });
+        };
 
     }])
 

@@ -1,5 +1,43 @@
 "use strict";
 
+/**
+ * Вычисляет метрики элемента
+ * @param element {HTMLElement} - Элемент, для которого производится перерасчет
+ * @returns {Object} - Возвращает митрики элемента
+ */
+var metrics = function (element) {
+    if (element !== undefined) {
+        var top = 0,
+            left = 0,
+            offsetY = 0,
+            offsetX = 0,
+            scrollY = 0,
+            scrollX = 0,
+            width = element.clientWidth,
+            height = element.clientHeight;
+        while (element) {
+            top = top + parseFloat(element.offsetTop);
+            left = left + parseFloat(element.offsetLeft);
+            offsetX = offsetX + parseFloat(element.offsetLeft);
+            offsetY = offsetY + parseFloat(element.offsetTop);
+            scrollY = scrollY + parseFloat(element.scrollTop);
+            scrollX = scrollX + parseFloat(element.scrollLeft);
+            element = element.offsetParent;
+        }
+        return {
+            width: width,
+            height: height,
+            top: Math.round(top),
+            left: Math.round(left),
+            offsetX: Math.round(offsetX),
+            offsetY: Math.round(offsetY),
+            scrollX: Math.round(scrollX),
+            scrollY: Math.round(scrollY)
+        }
+    }
+};
+
+
 
 var grUi = angular.module("gears.ui", [])
     .config(function ($provide) {
@@ -152,6 +190,10 @@ var grUi = angular.module("gears.ui", [])
             modals.items = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             modals.modal = undefined;
 
+            /**
+             * Регистрирует модальное окно
+             * @param scope
+             */
             modals.register = function (scope) {
                 if (scope !== undefined) {
                     modals.modal = scope;
@@ -159,10 +201,17 @@ var grUi = angular.module("gears.ui", [])
                 }
             };
 
+            /**
+             * Показывает модальное окно
+             * @param parameters {Object} - Параметры модального окна
+             */
             modals.show = function (parameters) {
                 modals.modal.init(parameters);
             };
 
+            /**
+             * Закрывает модальное окно
+             */
             modals.close = function () {
                 modals.modal.close();
             };
@@ -180,7 +229,7 @@ var grUi = angular.module("gears.ui", [])
 grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, $modals) {
     return {
         restrict: "E",
-        scope: {},
+        //scope: {},
         templateUrl: "templates/ui/modals/modals.html",
         link: function (scope, element, attrs, ctrl) {
             scope.showModal = false;
@@ -188,6 +237,7 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
             scope.template = "";
             scope.showClose = true;
             scope.element = element;
+            scope.onClose = undefined;
             var showFog = false;
             var top = undefined;
             var left = undefined;
@@ -224,6 +274,7 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
             scope.init = function (parameters) {
                 scope.showModal = false;
                 if (parameters !== undefined) {
+                    //scope = parameters["scope"] !== undefined ? parameters["scope"] : {};
                     top = parameters["top"] !== undefined ? parameters["top"] : undefined;
                     left = parameters["left"] !== undefined ? parameters["left"] : undefined;
                     width = parameters["width"] !== undefined ? parameters["width"] : undefined;
@@ -232,6 +283,8 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
                     position = parameters["position"] !== undefined ? parameters["position"] : undefined;
                     scope.showClose = parameters["closeButton"] !== undefined ? parameters["closeButton"] : false;
                     showFog = parameters["showFog"] !== undefined ? parameters["showFog"] : false;
+                    scope.onClose = parameters["onClose"] !== undefined ? parameters["onClose"] : undefined;
+
 
                     if (showFog === true) {
                         var fog = document.createElement("div");
@@ -260,6 +313,8 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
                     document.body.removeChild(fog[0]);
                     showFog = false;
                 }
+                if (scope.onClose !== undefined)
+                    scope.onClose();
             };
 
             angular.element($window).bind("resize", function () {
@@ -272,6 +327,11 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
                 if (scope.showModal === true)
                     recalculatePosition();
             });
+
+            element[0].addEventListener("DOMSubtreeModified", function (ev) {
+                $log.log("MODIFIED");
+                recalculatePosition();
+            }, false);
         }
     }
 }]);
@@ -368,42 +428,6 @@ grUi.directive("typeahead", ["$log", "$window", "$document", "$popup", function 
             });
 
 
-            /**
-             * Вычисляет метрики элемента
-             * @param element {HTMLElement} - Элемент, для которого производится перерасчет
-             * @returns {Object} - Возвращает митрики элемента
-             */
-            var metrics = function (element) {
-                if (element !== undefined) {
-                    var top = 0,
-                        left = 0,
-                        offsetY = 0,
-                        offsetX = 0,
-                        scrollY = 0,
-                        scrollX = 0,
-                        width = element.clientWidth,
-                        height = element.clientHeight;
-                    while (element) {
-                        top = top + parseFloat(element.offsetTop);
-                        left = left + parseFloat(element.offsetLeft);
-                        offsetX = offsetX + parseFloat(element.offsetLeft);
-                        offsetY = offsetY + parseFloat(element.offsetTop);
-                        scrollY = scrollY + parseFloat(element.scrollTop);
-                        scrollX = scrollX + parseFloat(element.scrollLeft);
-                        element = element.offsetParent;
-                    }
-                    return {
-                        width: width,
-                        height: height,
-                        top: Math.round(top),
-                        left: Math.round(left),
-                        offsetX: Math.round(offsetX),
-                        offsetY: Math.round(offsetY),
-                        scrollX: Math.round(scrollX),
-                        scrollY: Math.round(scrollY)
-                    }
-                }
-            };
 
 
             var recalculate_position = function () {
@@ -588,6 +612,18 @@ grUi.directive("tabs", ["$log", function ($log) {
         templateUrl: "templates/ui/tabs/tabs.html",
         link: function (scope, element, attr, ctrl) {
             var currentTab = scope.currentTab = "";
+            var height = 0;
+
+            scope.onLoadTemplate = function () {
+                var container = element.children();
+                $log.log("tabs container = ", container);
+                var tabs_metrics = metrics(container[0]);
+                $log.log("tabs metrics = ", tabs_metrics);
+                if (tabs_metrics.height > height) {
+                    height = tabs_metrics.height;
+                    angular.element(container).css("height", height + "px");
+                }
+            };
 
             angular.forEach(scope.tabsSource, function (tab) {
                 if (tab.isActive === true)

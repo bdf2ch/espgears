@@ -28,6 +28,10 @@ var application = angular.module("gears.app", [
                 controller: "DashboardController"
                 //redirectTo: "/titles"
             })
+            .when("/requests", {
+                templateUrl: "templates/requests/requests.html",
+                controller: "RequestsController"
+            })
             .when("/titles", {
                 templateUrl: "templates/titles/titles.html",
                 controller: "TitlesController"

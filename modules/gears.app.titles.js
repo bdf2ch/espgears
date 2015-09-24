@@ -114,12 +114,14 @@ var titles = angular.module("gears.app.titles",[])
                  */
                 Request: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    requestTypeId: new Field({ source: "REQUEST_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     investorId: new Field({ source: "INVESTOR_ID", value: 0, default_value:0, backupable: true, required: true }),
                     description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
                     start: new Field({ source: "START_POINT", value: "", default_value: "", backupable: true, required: true }),
                     end: new Field({ source: "END_POINT", value: "", default_value: "", backupable: true, required: true }),
-                    added: new Field({ source: "ADDED", value: 0, default_value: 0 })
+                    added: new Field({ source: "ADDED", value: 0, default_value: 0 }),
+                    documents: []
                 },
 
                 /**

@@ -1,0 +1,48 @@
+<table class="column width-20">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Заявки
+            <button class="green right" ng-click="addRequest()">+</button>
+        </td>
+
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+                <ul class="list hover">
+                    <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <li ng-repeat="request in titles.requests.items track by $id(request)"
+                        ng-class="{'active': request._states_.selected() === true}"
+                        ng-click="selectTitle(title.id.value)">
+                        <span class="primary-text">{{ title.title.value }}</span><br>
+                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
+                            {{ titles.statuses.find("id", title.statusId.value).title.value }}
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+</table>
+
+<table class="column width-80">
+    <tr class="column-header">
+        <td class="caption width-100">
+            Подробности
+        </td>
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+
+                <div class="row">
+
+                </div>
+
+            </div>
+        </td>
+    </tr>
+</table>

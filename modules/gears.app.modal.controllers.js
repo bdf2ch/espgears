@@ -176,8 +176,23 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
      */
     .controller("AddRequestModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$contractors", "$titles", function ($log, $scope, $misc, $factory, $application, $modals, $contractors, $titles) {
         $scope.contractors = $contractors;
+        $scope.titles = $titles;
         $scope.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
         $scope.errors = [];
+        $scope.tabs = [
+            {
+                id: 1,
+                title: "Подробности",
+                template: "templates/requests/new-request-details.html",
+                isActive: true
+            },
+            {
+                id: 2,
+                title: "Приложения",
+                template: "templates/requests/new-request-documents.html",
+                isActive: false
+            }
+        ];
 
         $scope.validate = function () {
             $scope.errors.splice(0, $scope.errors.length);

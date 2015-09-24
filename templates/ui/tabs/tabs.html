@@ -36,7 +36,7 @@
     <tr>
         <td class="tab-content-container"
             ng-class="{'top': tabsPosition === 'top', 'bottom': tabsPosition === 'bottom'}">
-            <div class="tab-content" ng-include="currentTab.template"></div>
+            <div class="tab-content" ng-include="currentTab.template" onload="onLoadTemplate()"></div>
         </td>
     </tr>
     <tr ng-if="tabsPosition === 'bottom'">
