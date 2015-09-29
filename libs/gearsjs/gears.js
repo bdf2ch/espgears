@@ -153,77 +153,17 @@ var gears = angular.module("gears", [])
             menu.activeMenuItem = undefined;
 
 
-            /**
-             * Загружает раздел меню в систему
-             * @param menuItem
-             */
-            menu.load = function (menuItem) {
+            menu.register = function (menuItem) {
                 if (menuItem !== undefined) {
-                    if (menuItem.__class__ !== undefined && menuItem.__class__ === "MenuItem") {
-                        menu.items.append(menuItem);
-                        $log.info("Раздел меню " + menuItem.title + " добавлен в стек разделов меню.");
-                    }
-                }
-            };
-
-
-            /**
-             * Устанавливает раздел меню
-             * @param parameters
-             * @returns {boolean}
-             */
-            menu.set = function (parameters) {
-                var result = false;
-                if (parameters !== undefined) {
-                    var menu_tem = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
-                    menu_item.init(parameters);
-                    menu.items.append(menu_item);
-                    result = menuItem;
-                }
-                return result;
-            };
-
-
-            menu.register = function () {
-                angular.forEach(menu.items.items, function (menu_item) {
-                    $routeProvider
-                        .when(menu_item.url, {
-                            templateUrl: menu_item.template,
-                            controller: menu_item.controller
-                        }
-                    );
-                });
-            };
-
-
-            /**
-             * Возвращает активный раздел меню
-             * @returns {MenuItem} - Возвращает активный раздел меню
-             */
-            menu.getActive = function () {
-                var result = menu.items.find("active", true);
-                return result;
-            };
-
-
-            /**
-             * Делает раздел меню с идентификатором menuItemId активным
-             * @param menuItemId - Идентификатор раздела меню
-             * @returns {MenuItem} - Возвращает активный раздел меню
-             */
-            menu.select = function (menuItemId) {
-                var result = false;
-                if (menuItemId !== undefined) {
-                    angular.forEach(menu.items.items, function (menuItem) {
-                        if (menuItem.id === menuItemId) {
-                            menuItem.active = true;
-                            menu.activeMenuItem = menuItem;
-                            result = menuItem;
-                        } else
-                            menuItem.active = false;
+                    $routeProvider.when(menuItem.url, {
+                        templateIrl: menuItem.url,
+                        controller: menuItem.controller
                     });
-                } else  $log.error("$menu: Не указан идентификатор раздела меню");
-                return result;
+                    menu.append(menuItem);
+                } else {
+                    $log.error("$menu: Не указан параметр при регистрации раздела меню");
+                    return false;
+                }
             };
 
 
