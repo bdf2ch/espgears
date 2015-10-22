@@ -1299,38 +1299,47 @@ textarea {
 /*****
 * CARDS
 *****/
-.card {
-  box-sizing: border-box;
-  //border: 1px solid #E0E0E0;
-  //box-shadow: 0 1px 2px #aaa;
-
-  &:hover {
-    .hover-visible {
-      display: inline-block;
+.cards {
+  padding-left: 0px;
+  
+  .card {
+    display: block;
+    overflow: auto;
+    margin-bottom: 7px;
+    border: 1px solid #EEEEEE;
+    cursor: pointer;
+    &:hover {
+      background: #FAFAFA;
+      border: 1px solid #E0E0E0;
+      .hover-visible {
+        display: block;
+      }
     }
-  }
 
-  hr {
-    border: none;
-    border-bottom: 1px solid lightgrey;
-  }
+    .hover-visible {
+      display: none;
+    }
 
-  .caption {
-    font-family: "Roboto Bold";
-    font-size: 16px;
-    color: #757575;
-    text-transform: uppercase;
-  }
+    .card-img {
+      display: block;
+      float: left;
+      width: 64px;
+      height: 64px;
+    }
 
-  .sub-caption {
-    font-family: "Roboto Bold";
-    font-size: 14px;
-    color: #BDBDBD;
-    text-transform: uppercase;
-    border-bottom: 1px dotted #BDBDBD;
-  }
+    .card-header {
+      margin-left: 70px;
+      margin-right: 5px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #EEEEEE;
+    }
 
-  .hover-visible {
-    display: none;
+    .card-content {
+      margin-left: 70px;
+      padding-top: 5px;
+    }
+
   }
+  
 }

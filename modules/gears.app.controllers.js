@@ -1280,14 +1280,29 @@ var appControllers = angular.module("gears.app.controllers", [])
                         if (node._states_.selected() === true) {
                             node._states_.selected(false);
                             $application.currentPowerLineNode = undefined;
+                            $application.currentPowerLineNodeConnectionNodes.clear();
                         } else {
                             node._states_.selected(true);
                             $application.currentPowerLineNode = node;
+                            $application.currentPowerLineNodeConnectionNodes.clear();
+                            $application.currentPowerLineNodeConnectionNodes._states_.loaded(false);
+                            $nodes.getConnectionNodesByBaseNodeId(nodeId, $scope.onSuccessGetConnectionNodes);
                         }
                     } else {
                         node._states_.selected(false);
                     }
                 });
+            }
+        };
+
+
+        $scope.onSuccessGetConnectionNodes = function (data) {
+            if (data !== undefined) {
+                angular.forEach(data, function (connector) {
+                    var temp_connector = $nodes.parseNode(connector);
+                    $application.currentPowerLineNodeConnectionNodes.append(temp_connector);
+                });
+                $application.currentPowerLineNodeConnectionNodes._states_.loaded(true);
             }
         };
 
@@ -1325,7 +1340,6 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-
         $scope.deleteType = function () {
             $modals.show({
                 width: 400,
@@ -1355,6 +1369,16 @@ var appControllers = angular.module("gears.app.controllers", [])
                 showFog: true,
                 closeButton: false,
                 template: "templates/modals/edit-power-line-node.html"
+            });
+        };
+
+        $scope.addConnectionNode = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Новое оборудование на объекте",
+                showFog: true,
+                template: "templates/modals/new-connection-node.html"
             });
         };
     }]);

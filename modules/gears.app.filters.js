@@ -26,6 +26,23 @@ var AppFilters = angular.module("gears.app.filters", [])
 
 
         /**
+         * onlyNonBaseNodes
+         * Фильтр типов узлов, возвращает типы узлов базового типа
+         */
+        $filterProvider.register("onlyNonBasicNodes", ["$log", function ($log) {
+            return function (input) {
+                var result = [];
+                angular.forEach(input, function (type) {
+                    if (type.isBasicNode.value === false) {
+                        result.push(type);
+                    }
+                });
+                return result;
+            }
+        }]);
+
+
+        /**
          * exceptUnknown
          * Фильтр типов узлов, возвращает все типы узлов, кроме неформализованного объекта
          */

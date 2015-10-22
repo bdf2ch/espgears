@@ -16,6 +16,7 @@
     $contractors = array();
     $pylonTypes = array();
     $cableTypes = array();
+    $anchorTypes = array();
 
     $requestTypes = array();
     $requestStatuses = array();
@@ -370,6 +371,7 @@
         $result -> pylonTypes = $pylonTypes;
 
 
+        /* Получение списка типов кабеля */
         if (!$statement = oci_parse($connection, "begin PKG_CABLE_TYPES.P_GET_CABLE_TYPES(:cable_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -396,6 +398,34 @@
             }
         }
         $result -> cableTypes = $cableTypes;
+
+        /* Получение списка типов креплений */
+        if (!$statement = oci_parse($connection, "begin PKG_ANCHOR_TYPES.P_GET_ANCHOR_TYPES(:anchor_types); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":anchor_types", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($anchor_type = oci_fetch_assoc($cursor))
+                        array_push($anchorTypes, $anchor_type);
+                }
+            }
+        }
+        $result -> anchorTypes = $anchorTypes;
 
         /* Получение списка всех заявок */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_types(:data); end;")) {

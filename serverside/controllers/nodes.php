@@ -20,8 +20,9 @@
                 case "getNodeTypes":
                     get_node_types();
                     break;
+                /* Возвращает опоры по идентификатору линии */
                 case "getPylonsByPowerLineId":
-                    get_pylons_by_power_line_id ($postdata);
+                    get_pylons_by_power_line_id($postdata);
                     break;
                 /* Получает узлы, вхоядящие в состав путей, исходящих из заданного узла */
                 case "getBranches":
@@ -34,6 +35,14 @@
                 /* Редактирование опоры */
                 case "editNode":
                     edit_node($postdata);
+                    break;
+                /* Возвращает узлы коннекторы, расположенные на базовом узле */
+                case "getConnectionNodesByBaseNodeId":
+                    get_connection_nodes_by_base_node_id($postdata);
+                    break;
+                /* добавляет узел-коннектор к базовому узлу */
+                case "addConnectionNode":
+                    add_connection_node($postdata);
                     break;
             }
             oci_close($connection);
@@ -314,6 +323,111 @@ function edit_node ($postdata) {
             echo(json_encode($result));
         }
         if (!oci_bind_by_name($statement, ":edited_node", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
+
+
+/* Возвращает узлы-коннекторы, расположенные на базовом узле */
+function get_connection_nodes_by_base_node_id ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $result = array();
+    $baseNodeId = $postdata -> data -> baseNodeId;
+
+    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_GET_CONNECTION_NODES(:node_id, :connectors); end;")) {
+        $error = oci_error();
+        echo $error["message"];
+    } else {
+        if (!oci_bind_by_name($statement, ":node_id", $baseNodeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            echo $error["message"];
+        }
+        if (!oci_bind_by_name($statement, ":connectors", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            echo $error["message"];
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            echo $error["message"];
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                echo $error["message"];
+            } else {
+                while ($connector = oci_fetch_assoc($cursor))
+                    array_push($result, $connector);
+            }
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+
+    // Возврат результата
+    echo json_encode($result);
+};
+
+
+/* Добавление узла-коннектора к базовому узлу */
+function add_connection_node ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $baseNodeId = $postdata -> data -> baseNodeId;
+    $nodeTypeId = $postdata -> data -> nodeTypeId;
+    $anchorTypeId = $postdata -> data -> anchorTypeId;
+    $unionTypeId = $postdata -> data -> unionTypeId;
+    $result = new stdClass;
+
+    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_ADD_CONNECTION_NODE(:n_node_type_id, :n_base_node_id, :n_anchor_type_id, :n_union_type_id, :connector); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":n_node_type_id", $nodeTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_base_node_id", $baseNodeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_anchor_type_id", $anchorTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_union_type_id", $unionTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":connector", $cursor, -1, OCI_B_CURSOR)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));

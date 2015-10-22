@@ -126,6 +126,7 @@ var gears = angular.module("gears", [])
                     template: "",
                     controller: "",
                     active: false,
+                    default: false,
                     submenu: [],
 
                     /**
@@ -153,15 +154,21 @@ var gears = angular.module("gears", [])
             menu.activeMenuItem = undefined;
 
 
-            menu.register = function (menuItem) {
-                if (menuItem !== undefined) {
-                    $routeProvider.when(menuItem.url, {
-                        templateIrl: menuItem.url,
-                        controller: menuItem.controller
+            menu.register = function (parameters) {
+                if (parameters !== undefined) {
+                    var temp_menu_item = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
+                    $routeProvider.when(temp_menu_item.url, {
+                        templateUrl: temp_menu_item.url,
+                        controller: temp_menu_item.controller
                     });
-                    menu.append(menuItem);
+                    if (temp_menu_item.default === true)
+                        $routeProvider.when("/", {
+                            templateUrl: temp_menu_item.url,
+                            controller: temp_menu_item.controller
+                        });
+                    menu.append(temp_menu_item);
                 } else {
-                    $log.error("$menu: Не указан параметр при регистрации раздела меню");
+                    $log.error("$menu: Не указан параметры при регистрации раздела меню");
                     return false;
                 }
             };
@@ -858,81 +865,6 @@ var gears = angular.module("gears", [])
 
 
 
-        $provide.factory("$f", ["$log", "$classes", function ($log, $classes) {
-
-            var factory = {};
-
-            /**
-             * Собирает объект на основе заданных наборов свойств и методов
-             * @param parameters {Object} - Параметры сборки объекта
-             * @returns {Object} - Возвращает собранный объект
-             */
-            factory.make = function (parameters) {
-                var result = undefined;
-
-                if (parameters !== undefined) {
-                    result = parameters["destination"] !== undefined ? parameters["destination"] : {};
-
-                    if (parameters["base_class"] !== undefined) {
-                        if ($classes.classes.hasOwnProperty(parameters["base_class"]))
-                            result.__class__ = parameters["base_class"];
-                    }
-
-                    if (parameters["classes"] !== undefined && parameters["classes"].constructor === Array) {
-                        var classes = parameters["classes"];
-
-                        for (var parent_class in classes) {
-                            var target_class = undefined;
-
-                            if ($classes.classes.hasOwnProperty(classes[parent_class]))
-                                target_class = $classes.classes[classes[parent_class]];
-
-                            if (target_class !== undefined) {
-                                if (target_class.hasOwnProperty("__dependencies__") && target_class.__dependencies__.length > 0) {
-                                    //TODO: add dependencies injection
-                                } //else
-                                    //console.log(classes[parent_class] + " have no dependencies");
-
-                                for (var member in target_class) {
-                                    if (target_class[member] !== undefined && target_class[member].constructor === Function) {
-                                        if (result.prototype !== undefined) {
-                                            if (result.prototype.constructor !== Object)
-                                                result.prototype[member] = angular.copy(target_class[member]);
-                                            else
-                                                result[member] = angular.copy(target_class[member]);
-                                        } else if (result.__proto__ !== undefined) {
-                                            if (result.__proto__.constructor !== Object)
-                                                result.__proto__[member] = angular.copy(target_class[member]);
-                                            else
-                                                result[member] = target_class[member];
-                                        }
-                                    } else if (target_class[member] !== undefined && target_class[member].constructor !== Function) {
-                                        if (member !== "__dependencies__") {
-                                            result[member] = angular.copy(target_class[member]);
-                                            if (result[member]["__instance__"] !== undefined)
-                                                result[member]["__instance__"] = result;
-                                        }
-                                    }
-                                }
-                            } else {
-                                $log.error("$factory: Класс " + classes[parent_class] + " не найден.");
-                            }
-                        }
-                    } else
-                        $log.error("$factory: Вы не указали массив, содержащий классы, свойства и методы которых требуется наследовать.");
-                }
-
-                console.log("result object: ", result);
-                return result;
-            };
-
-            return factory;
-        }]);
-
-
-
-
-
         /********************
          * $pagination
          * Сервис пагинации
@@ -967,7 +899,7 @@ var gears = angular.module("gears", [])
 
             /**
              * Пееходит на указанную страницу
-             * @param pageNumber {umber} - номер страницы
+             * @param pageNumber {pageNumber} - номер страницы
              */
             pagination.set = function (pageNumber) {
                 if (pageNumber !== undefined) {
@@ -983,7 +915,10 @@ var gears = angular.module("gears", [])
                     $log.error("$pagination: Не указан номер страницы, на которую требуется перейти");
             };
 
-
+            /**
+             *
+             * @param parameters
+             */
             pagination.init = function (parameters) {
                 if (parameters !== undefined) {
                     //pagination.set(1);
@@ -1001,6 +936,7 @@ var gears = angular.module("gears", [])
                     //pagination.currentPage = 1;
                 }
             };
+
 
 
             /**

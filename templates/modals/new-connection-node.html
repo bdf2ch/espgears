@@ -1,13 +1,22 @@
-<div ng-controller="AddPowerLineModalController">
+<div ng-controller="AddConnectionNodeModalController">
     <div class="row height-100 padding-10">
-        <label for="power-line-title">Наименование линии</label>
-        <input type="text"
-               name="power-line-title"
-               id="power-line-title"
-               class="width-100"
-               placeholder="Наименование линии"
-               ng-disabled="newPowerLine._states_.loading() === true"
-               ng-model="newPowerLine.title.value"/>
+        <label for="connection-node-type">Тип оборудования</label>
+        <select name="connection-node-type"
+                id="connection-node-type"
+                class="width-100"
+                ng-model="newConnectionNodeTypeId"
+                ng-change="onChangeNodeType(newConnectionNodeTypeId)"
+                ng-options="type.id.value as type.title.value for type in nodes.types.items | onlyNonBasicNodes">
+        </select>
+    </div>
+    <div class="row height-100 padding-10" ng-show="newConnectionNodeTypeId === 2">
+        <label for="anchor-type">Тип крепления</label>
+        <select name="anchor-type"
+                id="anchor-type"
+                class="width-100"
+                ng-model="newConnectionNode.anchorTypeId.value"
+                ng-options="anchorType.id.value as anchorType.title.value for anchorType in misc.anchorTypes.items">
+        </select>
     </div>
     <div class="row height-100 padding-10">
         <label for="power-line-voltage">Напряжение линии</label>

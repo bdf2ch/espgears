@@ -6,33 +6,35 @@ var nodes = angular.module("gears.app.nodes", [])
 
         /**
          * $nodes
-         * ������, ���������� ���������� ��� ������ � ������
+         * Сервис, содержащий функционал для работы с узлами
          */
         $provide.factory("$nodes", ["$log", "$http", "$factory", "$menu", function ($log, $http, $factory, $menu) {
             var nodes = {};
 
 
             /**
-             * ������ ������ � �������, ����������� ������ ������
+             * Наборы свойст и методов, описывающих модели данных
              */
             nodes.classes = {
                 /**
                  * NodeType
-                 * ����� �������, ����������� ��� ����
+                 * Набор свойств, описывающих тип узла
                  */
                 NodeType: {
                     id: new Field({ source: "ID", value: 0 }),
                     title: new Field({ source: "TITLE", value: "" }),
                     isBasicNode: new Field({ source: "IS_BASE_OBJECT", value: false }),
+                    isAllowConnection: new Field({ source: "IS_ALLOW_CONNECTION", value: false }),
 
                     _init_: function () {
                         this.isBasicNode.value = this.isBasicNode.value === 1 ? true : false;
+                        this.isAllowConnection.value = this.isAllowConnection.value === 1 ? true : false;
                     }
                 },
 
                 /**
                  * UnknownNode
-                 * ����� ������, ����������� ����������������� ����
+                 * Набор свойст, описывающих неформализованный узел
                  */
                 UnknownNode: {
                     id: new Field({ source: "NODE_ID", value: 0, default_value: 0 }),
@@ -45,7 +47,7 @@ var nodes = angular.module("gears.app.nodes", [])
 
                 /**
                  * Pylon
-                 * ����� ������, ����������� �����
+                 * Набор свойст, описывающих опору
                  */
                 Pylon: {
                     id: new Field({ source: "NODE_ID", value: 0, default_value: 0 }),
@@ -67,19 +69,29 @@ var nodes = angular.module("gears.app.nodes", [])
 
                 /**
                  * PowerStation
-                 * ����� �������, ����������� ��������������
+                 * Набор свойств, описывающих электростанцию
                  */
                 PowerStation: {
                     id: new Field({ source: "OBJECT_ID", value: 0, default_value: 0 }),
                     nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
                     voltage: new Field({ source: "VOLTAGE", value: 0, default_value: 0, backupable: true, required: true })
+                },
+
+                /**
+                 * Anchor
+                 * набор свойств и методов, описывающих крепление
+                 */
+                Anchor: {
+                    id: new Field({ source: "ANCHOR_ID", value: 0, default_value: 0 }),
+                    anchorTypeId: new Field({ source: "ANCHOR_TYPE_ID", value: 0, default_value: 0, backupable: true }),
+                    nodeId: new Field({ source: "BASE_NODE_ID", value: 0, default_value: 0, backupable: true })
                 }
             };
 
 
             /**
-             * �������� ������� ����
+             * Описание раздела меню
              */
             //nodes.menu = $menu.set({
             //    id: 1,
@@ -90,6 +102,9 @@ var nodes = angular.module("gears.app.nodes", [])
             nodes.types = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
 
+            /**
+             * Получает сеписок всех типов узлов
+             */
             nodes.getNodeTypes = function () {
                 $http.post("serverside/controllers/nodes.php", { action: "getNodeTypes" })
                     .success(function (data) {
@@ -112,6 +127,11 @@ var nodes = angular.module("gears.app.nodes", [])
             };
 
 
+            /**
+             * Получает список опор по идентификатору линии
+             * @param powerLineId {number} - Идентификатор линии
+             * @param callback {Function} - Коллбэк
+             */
             nodes.getPylonsByPowerLineId = function (powerLineId, callback) {
                 if (powerLineId !== undefined) {
                     var params = {
@@ -154,10 +174,15 @@ var nodes = angular.module("gears.app.nodes", [])
                                 result._model_.fromJSON(node);
                                 result._backup_.setup();
                                 break;
+                            case 2:
+                                result = $factory({ classes: ["Anchor", "Model", "Backup", "States"], base_class: "Anchor" });
+                                result._model_.fromJSON(node);
+                                result._backup_.setup();
+
                         }
                         if (node["PATH_ID"] !== undefined && node["PATH_ID"] !== null)
                             result.branchId = parseInt(node["PATH_ID"]);
-                         else
+                        else
                             result.branchId = -1;
                     }
                 }
@@ -252,6 +277,71 @@ var nodes = angular.module("gears.app.nodes", [])
                 }
             };
 
+
+            /**
+             * Получает список узлов-коннекторов по идентификатору базового узла
+             * @param baseNodeId {number} - Идентификатор базового узла
+             * @param callback {function} - Коллбэк
+             */
+            nodes.getConnectionNodesByBaseNodeId = function (baseNodeId, callback) {
+                if (baseNodeId !== undefined) {
+                    var params = {
+                        action: "getConnectionNodesByBaseNodeId",
+                        data: {
+                            baseNodeId: baseNodeId
+                        }
+                    };
+                    $http.post("serverside/controllers/nodes.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            /**
+             * Добавляет узел-коннектор к базовому узлу
+             * @param connectionNode {object} - Узел-коннектор, который требуется добавить
+             * @param basenodeId {number} - Идентификатор базового узла
+             * @param callback {function} - Коллбэк
+             */
+            nodes.addConnectionNode = function (connectionNode, nodeTypeId, baseNodeId, callback) {
+                if (connectionNode !== undefined && nodeTypeId !== undefined && baseNodeId !== undefined) {
+                    var params = {
+                        action: "addConnectionNode",
+                        data: {
+                            baseNodeId: baseNodeId,
+                            nodeTypeId: nodeTypeId,
+                            anchorTypeId: nodeTypeId === 2 ? connectionNode.anchorTypeId.value : -1,
+                            unionTypeId: nodeTypeId === 3 ? connectionNode.unionTypeId.value : -1
+                        }
+                    };
+                    $http.post("serverside/controllers/nodes.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
 
             return nodes;
         }]);

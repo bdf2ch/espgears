@@ -84,6 +84,7 @@ var application = angular.module("gears.app", [
             application.currentPowerLine = undefined;
             application.currentPowerLineNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentPowerLineNode = undefined;
+            application.currentPowerLineNodeConnectionNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentWorkingCommission = undefined;
 
 
@@ -236,6 +237,17 @@ var application = angular.module("gears.app", [
                                     $misc.cableTypes.append(temp_cable_type);
                                 });
                                 $misc.cableTypes._states_.loaded(true);
+                            }
+
+                            if (data["anchorTypes"] !== undefined) {
+                                $misc.anchorTypes._states_.loaded(false);
+                                angular.forEach(data["anchorTypes"], function (anchor_type) {
+                                    var temp_anchor_type = $factory({ classes: ["AnchorType", "Model", "Backup", "States"], base_class: "AnchorType" });
+                                    temp_anchor_type._model_.fromJSON(anchor_type);
+                                    temp_anchor_type._backup_.setup();
+                                    $misc.anchorTypes.append(temp_anchor_type);
+                                });
+                                $misc.anchorTypes._states_.loaded(true);
                             }
 
                             if (data["requestTypes"] !== undefined) {

@@ -964,29 +964,40 @@ textarea {
 /*****
 * CARDS
 *****/
-.card {
-  box-sizing: border-box;
+.cards {
+  padding-left: 0px;
 }
-.card:hover .hover-visible {
-  display: inline-block;
+.cards .card {
+  display: block;
+  overflow: auto;
+  margin-bottom: 7px;
+  border: 1px solid #EEEEEE;
+  cursor: pointer;
 }
-.card hr {
-  border: none;
-  border-bottom: 1px solid lightgrey;
+.cards .card:hover {
+  background: #FAFAFA;
+  border: 1px solid #E0E0E0;
 }
-.card .caption {
-  font-family: "Roboto Bold";
-  font-size: 16px;
-  color: #757575;
-  text-transform: uppercase;
+.cards .card:hover .hover-visible {
+  display: block;
 }
-.card .sub-caption {
-  font-family: "Roboto Bold";
-  font-size: 14px;
-  color: #BDBDBD;
-  text-transform: uppercase;
-  border-bottom: 1px dotted #BDBDBD;
-}
-.card .hover-visible {
+.cards .card .hover-visible {
   display: none;
+}
+.cards .card .card-img {
+  display: block;
+  float: left;
+  width: 64px;
+  height: 64px;
+}
+.cards .card .card-header {
+  margin-left: 70px;
+  margin-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #EEEEEE;
+}
+.cards .card .card-content {
+  margin-left: 70px;
+  padding-top: 5px;
 }

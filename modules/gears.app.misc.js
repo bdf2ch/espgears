@@ -52,6 +52,15 @@ var misc = angular.module("gears.app.misc", [])
                 PylonType: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     title: new Field({ source: "NAME", value: "", default_value: "", backupable: true, required: true })
+                },
+
+                /**
+                 * AnchorType
+                 * Набор свойств, описывающих тип крепления
+                 */
+                AnchorType: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
                 }
             };
 

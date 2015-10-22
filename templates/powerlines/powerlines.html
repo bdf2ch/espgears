@@ -36,6 +36,22 @@
                         <span class="secondary-text">{{ line._backup_.data.voltage + " кВ" }}</span>
                     </li>
                 </ul>
+
+                <ul class="cards">
+                    <li class="card" ng-repeat="line in misc.powerLines.items | orderBy:'_backup_.data.title' track by $id(line)">
+                        <img src="../resources/img/icons/powerline.png" alt="" class="card-img"/>
+                        <div class="card-header">
+                            {{ line._backup_.data.title }}
+                            <div class="hover-visible right">
+                                <button class="round blue"></button>
+                                <button class="round red"></button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span class="secondary-text">{{ line._backup_.data.voltage + " кВ" }}</span>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </td>
     </tr>
@@ -112,7 +128,7 @@
     <tr class="column-header">
         <td class="caption width-100">
             Оборудование на объекте
-            <button class="green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
+            <button class="green right" ng-show="app.currentPowerLineNode !== undefined" ng-click="addConnectionNode()" title="Добавить оборудование">+</button>
             <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentContractor !== undefined"
@@ -131,20 +147,20 @@
         <td>
             <div class="column-content y-scrollable padding-5">
                 <ul class="list hover">
-                    <div class="service-message" ng-show="pylons._states_.loaded() === false">
+                    <div class="service-message" ng-show="app.currentPowerLineNodeConnectionNodes._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
-                    <div class="service-message" ng-show="app.currentPowerLine === undefined">
-                        Выберите линию
+                    <div class="service-message" ng-show="app.currentPowerLineNode === undefined">
+                        Выберите объект
                     </div>
-                    <div class="service-message" ng-show="app.currentPowerLine !== undefined && pylons.items.length === 0 && pylons._states_.loaded() === true">
-                        Для выбранной линии опоры не найдены
+                    <div class="service-message" ng-show="app.currentPowerLineNode !== undefined && app.currentPowerLineNodeConnectionNodes.items.length === 0 && app.currentPowerLineNodeConnectionNodes._states_.loaded() === true">
+                        Оборудование для выбранного объекта не найдено
                     </div>
-                    <li ng-repeat="pylon in pylons.items track by $index"
-                        ng-class="{'active': pylon._states_.selected() === true}"
-                        ng-click="selectPylon(pylon.id.value)">
-                        <div class="node-icon" ng-class="{'pylon': node.__class__ === 'Pylon', 'unknown': node.__class__ === 'UnknownNode'}"></div>
+                    <li ng-repeat="connector in app.currentPowerLineNodeConnectionNodes.items track by $index"
+                        ng-class="{'active': connector._states_.selected() === true}"
+                        ng-click="selectConnectionNode(connector.id.value)">
+                        <div class="node-icon" ng-class="{'pylon': connector.__class__ === 'Pylon', 'unknown': connector.__class__ === 'UnknownNode'}"></div>
                         <span class="primary-text">{{ "Опора #" + pylon._backup_.data.number }}</span><br>
                         <span class="secondary-text" ng-class="{'light': pylon._states_.selected() === true }">
                             <span class="secondary-text" ng-show="contractor.contractorTypeId.value !== 0">{{ "тип опоры: " + misc.pylonTypes.find("id", pylon._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>

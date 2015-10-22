@@ -170,6 +170,69 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     }])
 
 
+/**
+ * AddPowerLineModalController
+ * Контроллер модального окна добавления линии
+ */
+    .controller("AddConnectionNodeModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$nodes", function ($log, $scope, $misc, $factory, $application, $modals, $nodes) {
+        $scope.nodes = $nodes;
+        $scope.misc = $misc;
+        $scope.newConnectionNode = undefined;
+        $scope.newConnectionNodeTypeId = 0;
+        $scope.errors = [];
+
+        $scope.onChangeNodeType = function (typeId) {
+            if (typeId !== undefined) {
+                switch (typeId) {
+                    case 2:
+                        $scope.newConnectionNode = $factory({ classes: ["Anchor", "Model", "Backup", "States"], base_class: "Anchor" });
+                        break;
+                    case 3:
+                        $scope.newConnectionNode = $factory({ classes: ["Union", "Model", "Backup", "States"], base_class: "Union" });
+                        break;
+                }
+                $log.log("newConnectionNode = ", $scope.newConnectionNode);
+            }
+        };
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newConnectionNodeTypeId === 0) {
+                $scope.errors.push("Вы не выбрали тип оборудования");
+            }
+            if ($scope.newConnectionNodeTypeId === 2) {
+                if ($scope.newConnectionNode.anchorTypeId.value === 0)
+                    $scope.errors.push("Вы не выбрали тип крепления");
+            }
+            if ($scope.errors.length === 0) {
+                $nodes.addConnectionNode(
+                    $scope.newConnectionNode,
+                    $scope.newConnectionNodeTypeId,
+                    $application.currentPowerLineNode.id.value,
+                    $scope.onSuccessAddConnectionNode
+                );
+            }
+        };
+
+
+        $scope.onSuccessAddConnectionNode = function (data) {
+            $modals.close();
+            $scope.newConnectionNode = undefined;
+            $scope.newConnectionNodeTypeId = 0;
+            var temp_connection_node = $nodes.parseNode(data);
+            $application.currentPowerLineNodeConnectionNodes.append(temp_connection_node);
+        };
+
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newConnectionNodeTypeId = 0;
+            $scope.newConnectionNode = undefined;
+        };
+    }])
+
+
     /**
      * AddRequestModalController
      * Контроллер модального окна добавления заявки

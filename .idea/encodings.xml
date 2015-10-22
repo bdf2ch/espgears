@@ -9,6 +9,7 @@
     <file url="file://$PROJECT_DIR$/modules/gears.app.filters.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/gears.app.misc.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/gears.app.modal.controllers.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/modules/gears.app.nodes.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/gears.app.titles.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/modules/gears.app.users.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/resources/styles/espreso.less" charset="UTF-8" />
