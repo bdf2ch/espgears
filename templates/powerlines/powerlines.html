@@ -43,8 +43,8 @@
                         <div class="card-header">
                             {{ line._backup_.data.title }}
                             <div class="hover-visible right">
-                                <button class="round blue"></button>
-                                <button class="round red"></button>
+                                <button class="round blue" title="Редактировать"></button>
+                                <button class="round red" title="Удалить"></button>
                             </div>
                         </div>
                         <div class="card-content">
@@ -117,6 +117,24 @@
                         <span class="secondary-text" ng-class="{'light': node._states_.selected() === true }">
                             <span class="secondary-text">{{ "Тип опоры: " + misc.pylonTypes.find("id", node._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
                         </span>
+                    </li>
+                </ul>
+
+                <ul class="cards">
+                    <li class="card"
+                        ng-repeat="node in app.currentPowerLineNodes.items | filter: {search: search} track by $index"
+                        ng-click="selectNode(node.id.value)">
+                        <img src="../resources/img/icons/pylon_.png" alt="" class="card-img"/>
+                        <div class="card-header">
+                            {{ "Опора #" + node._backup_.data.number }}
+                            <div class="hover-visible right">
+                                <button class="round blue" title="Редактировать"></button>
+                                <button class="round red" title="Удалить"></button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span class="secondary-text">{{ "Тип опоры: " + misc.pylonTypes.find("id", node._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
+                        </div>
                     </li>
                 </ul>
             </div>
