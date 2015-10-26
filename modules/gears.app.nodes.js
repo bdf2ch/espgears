@@ -83,7 +83,8 @@ var nodes = angular.module("gears.app.nodes", [])
                  * набор свойств и методов, описывающих крепление
                  */
                 Anchor: {
-                    id: new Field({ source: "ANCHOR_ID", value: 0, default_value: 0 }),
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     anchorTypeId: new Field({ source: "ANCHOR_TYPE_ID", value: 0, default_value: 0, backupable: true }),
                     nodeId: new Field({ source: "BASE_NODE_ID", value: 0, default_value: 0, backupable: true })
                 }
@@ -324,6 +325,32 @@ var nodes = angular.module("gears.app.nodes", [])
                             nodeTypeId: nodeTypeId,
                             anchorTypeId: nodeTypeId === 2 ? connectionNode.anchorTypeId.value : -1,
                             unionTypeId: nodeTypeId === 3 ? connectionNode.unionTypeId.value : -1
+                        }
+                    };
+                    $http.post("serverside/controllers/nodes.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            nodes.deleteConnectionNode = function (connectionNode, callback) {
+                if (connectionNode !== undefined) {
+                    var params = {
+                        action: "deleteConnectionNode",
+                        data: {
+                            connectionNodeId: connectionNode.id.value
                         }
                     };
                     $http.post("serverside/controllers/nodes.php", params)

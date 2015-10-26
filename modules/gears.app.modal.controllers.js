@@ -233,6 +233,22 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     }])
 
 
+    .controller("DeleteConnectionNodeModalController", ["$log", "$scope", "$titles", "$application", "$modals", "$nodes", function ($log, $scope, $titles, $application, $modals, $nodes) {
+        $scope.app = $application;
+        $scope.nodes = $nodes;
+
+        $scope.delete = function () {
+            $nodes.deleteConnectionNode($application.currentPowerLineConnectionNode.id.value, $scope.onSuccessDeleteConnectionNode);
+        };
+
+        $scope.onSuccessDeleteConnectionNode = function (data) {
+            $modals.close();
+            $application.currentPowerLineNodeConnectionNodes.delete("id", $application.currentPowerLineConnectionNode.id.value);
+            $application.currentPowerLineConnectionNode = undefined;
+        };
+    }])
+
+
     /**
      * AddRequestModalController
      * Контроллер модального окна добавления заявки

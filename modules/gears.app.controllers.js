@@ -1257,12 +1257,14 @@ var appControllers = angular.module("gears.app.controllers", [])
                         if (line._states_.selected() === true) {
                             line._states_.selected(false);
                             $application.currentPowerLine = undefined;
+                            $application.currentPowerLineNodes.clear();
                         } else {
                             line._states_.selected(true);
                             $application.currentPowerLine = line;
                             $log.log("currentPowerLineId = ", $application.currentPowerLine.id.value);
                             $application.currentPowerLineNodes._states_.loaded(false);
                             $application.currentPowerLineNodes.clear();
+                            $application.currentPowerLineNodeConnectionNodes.clear();
                             $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetPylons)
                         }
                     } else {
@@ -1296,6 +1298,30 @@ var appControllers = angular.module("gears.app.controllers", [])
         };
 
 
+        $scope.selectConnectionNode = function (connectionNodeId) {
+            if (connectionNodeId !== undefined) {
+                angular.forEach($application.currentPowerLineNodeConnectionNodes.items, function (node) {
+                    if (node.id.value === connectionNodeId) {
+                        if (node._states_.selected() === true) {
+                            node._states_.selected(false);
+                            $application.currentPowerLineConnectionNode = undefined;
+                            //$application.currentPowerLineNodeConnectionNodes.clear();
+                        } else {
+                            node._states_.selected(true);
+                            $application.currentPowerLineConnectionNode = node;
+                            //$application.currentPowerLineNodeConnectionNodes.clear();
+                            //$application.currentPowerLineNodeConnectionNodes._states_.loaded(false);
+                            //$nodes.getConnectionNodesByBaseNodeId(nodeId, $scope.onSuccessGetConnectionNodes);
+                        }
+                    } else {
+                        node._states_.selected(false);
+                    }
+                    $log.log($application.currentPowerLineConnectionNode);
+                });
+            }
+        };
+
+
         $scope.onSuccessGetConnectionNodes = function (data) {
             if (data !== undefined) {
                 angular.forEach(data, function (connector) {
@@ -1303,6 +1329,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                     $application.currentPowerLineNodeConnectionNodes.append(temp_connector);
                 });
                 $application.currentPowerLineNodeConnectionNodes._states_.loaded(true);
+                $log.log($scope.app.currentPowerLineNodeConnectionNodes.items);
             }
         };
 
@@ -1380,5 +1407,29 @@ var appControllers = angular.module("gears.app.controllers", [])
                 showFog: true,
                 template: "templates/modals/new-connection-node.html"
             });
+        };
+
+
+        $scope.editConnectionNode = function (event) {
+            $log.log(event);
+            event.stopPropagation();
+        };
+
+
+        $scope.deleteConnectionNode = function (connectionNodeId, event) {
+            event.stopPropagation();
+            if (connectionNodeId !== undefined) {
+                $modals.show({
+                    width: 400,
+                    position: "center",
+                    caption: "Удаление оборудования на объекте",
+                    showFog: true,
+                    closeButton: true,
+                    template: "templates/modals/delete-connection-node.html",
+                    data: {
+                        connectionNodeId: connectionNodeId
+                    }
+                });
+            }
         };
     }]);

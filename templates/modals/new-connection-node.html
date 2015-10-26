@@ -18,6 +18,8 @@
                 ng-options="anchorType.id.value as anchorType.title.value for anchorType in misc.anchorTypes.items">
         </select>
     </div>
+
+    <!--
     <div class="row height-100 padding-10">
         <label for="power-line-voltage">Напряжение линии</label>
         <input type="text"
@@ -28,6 +30,8 @@
                ng-disabled="newPowerLine._states_.loading() === true"
                ng-model="newPowerLine.voltage.value"/>
     </div>
+    -->
+
     <div class="row padding-10">
         <div class="width-50">
             <button class="green square width-100" ng-disabled="newPowerLine._states_.loading() === true" ng-click="validate()">Добавить</button>

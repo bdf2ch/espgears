@@ -284,6 +284,7 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
                     scope.showClose = parameters["closeButton"] !== undefined ? parameters["closeButton"] : false;
                     showFog = parameters["showFog"] !== undefined ? parameters["showFog"] : false;
                     scope.onClose = parameters["onClose"] !== undefined ? parameters["onClose"] : undefined;
+                    scope.data = parameters["data"] !== undefined ? parameters["data"] : {};
 
 
                     if (showFog === true) {

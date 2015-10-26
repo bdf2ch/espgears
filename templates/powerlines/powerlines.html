@@ -149,6 +149,7 @@
                         </div>
                     </li>
                 </ul>
+
             </div>
         </td>
     </tr>
@@ -160,6 +161,7 @@
             Оборудование на объекте
             <button class="green right" ng-show="app.currentPowerLineNode !== undefined" ng-click="addConnectionNode()" title="Добавить оборудование">+</button>
             <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
+            <!--
             <button class="blue right"
                     ng-show="app.currentContractor !== undefined"
                     ng-click="editContractor()"
@@ -171,6 +173,7 @@
                     ng-show="app.currentContractor !== undefined">
                 -
             </button>
+            -->
         </td>
     </tr>
     <tr class="column-content-container">
@@ -187,6 +190,8 @@
                     <div class="service-message" ng-show="app.currentPowerLineNode !== undefined && app.currentPowerLineNodeConnectionNodes.items.length === 0 && app.currentPowerLineNodeConnectionNodes._states_.loaded() === true">
                         Оборудование для выбранного объекта не найдено
                     </div>
+
+                    <!--
                     <li ng-repeat="connector in app.currentPowerLineNodeConnectionNodes.items track by $index"
                         ng-class="{'active': connector._states_.selected() === true}"
                         ng-click="selectConnectionNode(connector.id.value)">
@@ -196,7 +201,29 @@
                             <span class="secondary-text" ng-show="contractor.contractorTypeId.value !== 0">{{ "тип опоры: " + misc.pylonTypes.find("id", pylon._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
                         </span>
                     </li>
-                </ul>
+                    -->
+                    </ul>
+
+                    <ul class="cards">
+                        <li class="card"
+                            ng-class="{'active': connector._states_.selected() === true}"
+                            ng-repeat="connector in app.currentPowerLineNodeConnectionNodes.items track by $index"
+                            ng-click="selectConnectionNode(connector.id.value)">
+                            <img src="../resources/img/icons/pylon_.png" alt="" class="card-img" ng-show="connector.nodeTypeId.value === 2"/>
+                            <div class="card-header">
+                                <span ng-show="connector.nodeTypeId.value === 2">Крепление</span>
+                                <div class="hover-visible right">
+                                    <button class="round blue" title="Редактировать" ng-click="editConnectionNode($event)"></button>
+                                    <button class="round red" title="Удалить" ng-click="deleteConnectionNode(connector.id.value, $event)"></button>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <span class="secondary-text" ng-show="connector.nodeTypeId.value === 2">
+                                    {{ "Тип крепления: " + misc.anchorTypes.find("id", connector.anchorTypeId.value)._backup_.data.title }} &nbsp; &nbsp; &nbsp;
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
             </div>
         </td>
     </tr>

@@ -85,6 +85,7 @@ var application = angular.module("gears.app", [
             application.currentPowerLineNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentPowerLineNode = undefined;
             application.currentPowerLineNodeConnectionNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            application.currentPowerLineConnectionNode = undefined;
             application.currentWorkingCommission = undefined;
 
 
