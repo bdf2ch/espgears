@@ -212,7 +212,7 @@
                             <img src="../resources/img/icons/pylon_.png" alt="" class="card-img" ng-show="connector.nodeTypeId.value === 2"/>
                             <div class="card-header">
                                 <span ng-show="connector.nodeTypeId.value === 2">Крепление</span>
-                                <div class="hover-visible right">
+                                <div class="right" ng-show="app.currentPowerLineConnectionNode.id.value === connector.id.value">
                                     <button class="round blue" title="Редактировать" ng-click="editConnectionNode($event)"></button>
                                     <button class="round red" title="Удалить" ng-click="deleteConnectionNode(connector.id.value, $event)"></button>
                                 </div>

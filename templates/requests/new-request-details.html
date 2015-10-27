@@ -18,14 +18,14 @@
                ng-model="newRequest.title.value"/>
     </div>
     <div class="row split-20">
-        <label for="request-date">Планируемые срок ввода в эксплуатацию</label>
+        <label for="request-date">Планируемый срок ввода в эксплуатацию</label>
         <input type="text"
                name="request-date"
                id="request-date"
                class="width-100"
                placeholder="Планируемый срок ввода в эксплуатацию"
                ng-disabled="newRequest._states_.loading() === true"
-               ng-model="newRequest.date.value"/>
+               ng-model="newRequest.buildingPlanDate.value"/>
     </div>
     <div class="row split-20">
         <label for="request-description">Общая информация об объекте</label>

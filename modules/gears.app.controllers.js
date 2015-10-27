@@ -61,9 +61,10 @@ var appControllers = angular.module("gears.app.controllers", [])
      * RequestsController
      * Контроллер раздела журнала заявок
      */
-    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", function ($log, $scope, $titles, $application, $modals) {
+    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", "$contractors", function ($log, $scope, $titles, $application, $modals, $contractors) {
         $scope.app = $application;
         $scope.titles = $titles;
+        $scope.contractors = $contractors;
 
         $scope.addRequest = function () {
             $modals.show({
@@ -83,6 +84,7 @@ var appControllers = angular.module("gears.app.controllers", [])
         };
 
     }])
+
 
      /**
      * TitlesController

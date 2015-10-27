@@ -463,37 +463,41 @@ function add_connection_node ($postdata) {
 /* Удаление узла-коннектора */
 function delete_connection_node ($postdata) {
     global $connection;
-    $connectionNodeId = $postdata -> data -> connectionNodeid;
+    $connectionNodeId = $postdata -> data -> connectionNodeId;
     $result = "fail";
+
 
     if (!$statement = oci_parse($connection, "begin PKG_NODES.P_DELETE_CONNECTION_NODE(:n_node_id, :answer); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
+
         if (!oci_bind_by_name($statement, ":n_node_id", $connectionNodeId, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        if (!oci_bind_by_name($statement, ":answer", $result, -1, OCI_DEFAULT)) {
+
+        if (!oci_bind_by_name($statement, ":answer", $result, 50, SQLT_CHR)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
+
         if (!oci_execute($statement)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        echo(json_encode($result));
+
     }
 
     // Освобождение ресурсов
     oci_free_statement($statement);
-    oci_free_statement($cursor);
     // Возврат результата
     echo json_encode($result);
+
 };
 
 ?>

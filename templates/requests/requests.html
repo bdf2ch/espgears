@@ -9,6 +9,7 @@
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
+                <!--
                 <ul class="list hover">
                     <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
@@ -21,6 +22,29 @@
                         <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
                             {{ titles.statuses.find("id", title.statusId.value).title.value }}
                         </span>
+                    </li>
+                </ul>
+                -->
+
+                <ul class="cards">
+                    <li class="card"
+                        ng-class="{'active': connector._states_.selected() === true}"
+                        ng-repeat="request in titles.requests.items track by $index"
+                        ng-click="selectRequest(request.id.value)">
+                        <img src="../resources/img/icons/pylon_.png" alt="" class="card-img"/>
+                        <div class="card-header">
+                            <span>{{ "Заявка #" + request.id.value }}</span>
+                            <div class="right" ng-show="app.currentRequest.id.value === request.id.value">
+                                <button class="round blue" title="Редактировать" ng-click="editRequest($event)"></button>
+                                <button class="round red" title="Удалить" ng-click="deleteRequest(request.id.value, $event)"></button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span class="secondary-text">
+                                {{ contractors.contractors.find("id", request.investorId.value).title.value }}<br>
+                                <span>{{ titles.requestStatuses.find("id", request.statusid.value).title.value }}</span>
+                            </span>
+                        </div>
                     </li>
                 </ul>
             </div>

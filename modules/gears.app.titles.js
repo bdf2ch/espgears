@@ -114,12 +114,15 @@ var titles = angular.module("gears.app.titles",[])
                  */
                 Request: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
-                    requestTypeId: new Field({ source: "REQUEST_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    requestTypeId: new Field({ source: "REQUEST_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    curatorId: new Field({ source: "CURATOR_ID", value: 0, default_value: 0, backupable: true }),
                     investorId: new Field({ source: "INVESTOR_ID", value: 0, default_value:0, backupable: true, required: true }),
+                    titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0, backupable: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
                     description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
-                    start: new Field({ source: "START_POINT", value: "", default_value: "", backupable: true, required: true }),
-                    end: new Field({ source: "END_POINT", value: "", default_value: "", backupable: true, required: true }),
+                    buildingPlanDate: new Field({ source: "BUILDING_PLAN_DATE", value: 0, default_value: 0 }),
+                    resources: new Field({ source: "RESOURCES", value: "", default_value: "", backupable: true}),
                     added: new Field({ source: "ADDED", value: 0, default_value: 0 }),
                     documents: []
                 },
@@ -821,11 +824,14 @@ var titles = angular.module("gears.app.titles",[])
                     var params = {
                         action: "addRequest",
                         data: {
+                            requestTypeId: request.requestTypeId.value,
+                            title: request.title.value,
                             description: request.description.value,
-                            start: request.start.value,
-                            end: request.end.value,
+                            buildingPlanDate: request.buildingPlanDate.value,
+                            resources: request.resources.value,
                             investorId: request.investorId.value,
-                            userId: request.userId.value
+                            userId: request.userId.value,
+                            curatorId: request.curatorId.value
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)

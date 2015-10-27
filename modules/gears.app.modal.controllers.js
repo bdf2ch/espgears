@@ -237,14 +237,19 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.app = $application;
         $scope.nodes = $nodes;
 
+        $log.log($scope);
+
         $scope.delete = function () {
-            $nodes.deleteConnectionNode($application.currentPowerLineConnectionNode.id.value, $scope.onSuccessDeleteConnectionNode);
+            $nodes.deleteConnectionNode($application.currentPowerLineConnectionNode, $scope.onSuccessDeleteConnectionNode);
         };
 
         $scope.onSuccessDeleteConnectionNode = function (data) {
-            $modals.close();
-            $application.currentPowerLineNodeConnectionNodes.delete("id", $application.currentPowerLineConnectionNode.id.value);
-            $application.currentPowerLineConnectionNode = undefined;
+            $log.log(JSON.parse(data));
+            if (JSON.parse(data) === "success") {
+                $modals.close();
+                $application.currentPowerLineNodeConnectionNodes.delete("id", $application.currentPowerLineConnectionNode.id.value);
+                $application.currentPowerLineConnectionNode = undefined;
+            }
         };
     }])
 
@@ -275,18 +280,23 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
 
         $scope.validate = function () {
             $scope.errors.splice(0, $scope.errors.length);
+            $log.log($scope.newRequest);
+            if ($scope.newRequest.title.value === "")
+                $scope.errors.push("Вы не указали наименование объекта");
             if ($scope.newRequest.description.value === "")
-                $scope.errors.push("Вы не указали описание проекта");
-            if ($scope.newRequest.start.value === "")
-                $scope.errors.push("Вы не указали точку начала проекта");
-            if ($scope.newRequest.end.value === "")
-                $scope.errors.push("Вы не указали точку конеца проекта");
+                $scope.errors.push("Вы не указали общую информацию об объекте");
+            if ($scope.newRequest.buildingPlanDate.value === "" || $scope.newRequest.buildingPlanDate.value === 0)
+                $scope.errors.push("Вы не указали планируемую дату строительства и ввода в эксплуатацию объекта");
             if ($scope.errors.length === 0) {
                 $titles.addRequest($scope.newRequest, $scope.onSuccessAddRequest);
             }
         };
 
         $scope.onSuccessAddRequest = function (data) {
+            var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+            temp_request._model_.fromJSON(data);
+            temp_request._backup_.setup();
+            $scope.titles.requests.add(temp_request);
             $modals.close();
             $scope.newRequest._model_.reset();
         };

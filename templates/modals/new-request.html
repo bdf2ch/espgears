@@ -1,5 +1,25 @@
 <div ng-controller="AddRequestModalController">
-    <div class="row height-100 split-20">
+    <div class="row height-100 padding-10">
+        <label for="request-type">Вид строительства</label>
+        <select name="request-type"
+                id="request-type"
+                class="width-100"
+                ng-model="newRequest.requestTypeId.value"
+                ng-options="type.id.value as type.title.value for type in titles.requestTypes.items">
+        </select>
+    </div>
+    <div class="row padding-10">
+        <label for="request-title">Наименование объекта</label>
+        <input type="text"
+               name="request-title"
+               id="request-title"
+               class="width-100"
+               placeholder="Наименование объекта"
+               ng-disabled="newRequest._states_.loading() === true"
+               ng-model="newRequest.title.value"/>
+    </div>
+
+    <div class="row height-100 padding-10">
         <label for="request-description">Описание проекта</label>
         <textarea name="request-description"
                   id="request-description"
@@ -12,27 +32,8 @@
                   ng-model="newRequest.description.value">
         </textarea>
     </div>
-    <div class="row split-20">
-            <label for="request-start">Точка начала проекта</label>
-            <input type="text"
-                   name="request-start"
-                   id="request-start"
-                   class="width-100"
-                   placeholder="Точка начала"
-                   ng-disabled="newRequest._states_.loading() === true"
-                   ng-model="newRequest.start.value"/>
-    </div>
-    <div class="row split-20">
-        <label for="request-end">Точка конца проекта</label>
-        <input type="text"
-               name="request-end"
-               id="request-end"
-               class="width-100"
-               placeholder="Точка конца"
-               ng-disabled="newRequest._states_.loading() === true"
-               ng-model="newRequest.end.value"/>
-    </div>
-    <div class="row height-100">
+
+    <div class="row height-100 padding-10">
         <label for="request-investor">Инвестор</label>
         <select name="request-investor"
                 id="request-investor"
@@ -41,10 +42,8 @@
                 ng-options="contractor.id.value as contractor.title.value for contractor in contractors.contractors.items">
         </select>
     </div>
-    <div class="row height-100 split-20">
 
-    </div>
-    <div class="row">
+    <div class="row padding-10">
         <div class="width-50">
             <button class="green square width-100" ng-disabled="newPowerLine._states_.loading() === true" ng-click="validate()">Добавить</button>
         </div>
