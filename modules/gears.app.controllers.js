@@ -66,6 +66,39 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.titles = $titles;
         $scope.contractors = $contractors;
 
+
+        $scope.selectRequest = function (requestId) {
+            if (requestId !== undefined) {
+                angular.forEach($titles.requests.items, function (request) {
+                    if (request.id.value === requestId) {
+                        if (request._states_.selected() === true) {
+                            request._states_.selected(false);
+                            $application.currentRequest = undefined;
+                        } else {
+                            request._states_.selected(true);
+                            $application.currentRequest = request;
+                            $application.currentRequestHistory.clear();
+                            $titles.getRequestHistory($application.currentRequest, $scope.onSuccessGetRequestHistory);
+                        }
+                    } else {
+                        request._states_.selected(false);
+                    }
+                });
+            }
+        };
+
+
+        $scope.onSuccessGetRequestHistory = function (data) {
+            if (data !== undefined) {
+                angular.forEach(data, function (history) {
+                    var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+                    temp_history._model_.fromJSON(history);
+                    temp_history._backup_.setup();
+                    $application.currentRequestHistory.append(temp_history);
+                });
+            }
+        };
+
         $scope.addRequest = function () {
             $modals.show({
                 width: 500,

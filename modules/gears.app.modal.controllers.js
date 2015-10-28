@@ -261,7 +261,8 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     .controller("AddRequestModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$contractors", "$titles", function ($log, $scope, $misc, $factory, $application, $modals, $contractors, $titles) {
         $scope.contractors = $contractors;
         $scope.titles = $titles;
-        $scope.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+        $scope.app = $application;
+        //$scope.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
         $scope.errors = [];
         $scope.tabs = [
             {
@@ -278,17 +279,18 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             }
         ];
 
+
         $scope.validate = function () {
             $scope.errors.splice(0, $scope.errors.length);
-            $log.log($scope.newRequest);
-            if ($scope.newRequest.title.value === "")
+            $log.log($application.newRequest);
+            if ($application.newRequest.title.value === "")
                 $scope.errors.push("Вы не указали наименование объекта");
-            if ($scope.newRequest.description.value === "")
+            if ($application.newRequest.description.value === "")
                 $scope.errors.push("Вы не указали общую информацию об объекте");
-            if ($scope.newRequest.buildingPlanDate.value === "" || $scope.newRequest.buildingPlanDate.value === 0)
+            if ($application.newRequest.buildingPlanDate.value === "" || $application.newRequest.buildingPlanDate.value === 0)
                 $scope.errors.push("Вы не указали планируемую дату строительства и ввода в эксплуатацию объекта");
             if ($scope.errors.length === 0) {
-                $titles.addRequest($scope.newRequest, $scope.onSuccessAddRequest);
+                $titles.addRequest($application.newRequest, $scope.onSuccessAddRequest);
             }
         };
 
@@ -296,9 +298,9 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
             temp_request._model_.fromJSON(data);
             temp_request._backup_.setup();
-            $scope.titles.requests.add(temp_request);
+            $scope.titles.requests.append(temp_request);
             $modals.close();
-            $scope.newRequest._model_.reset();
+            $application.newRequest._model_.reset();
         };
 
         $scope.cancel = function () {
@@ -306,6 +308,49 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $scope.errors.splice(0, $scope.errors.length);
             $scope.newRequest._model_.reset();
             $scope.newRequest._states_.changed(false);
+        };
+    }])
+
+    .controller("NewRequestDetailsController", ["$log", "$scope", "$application", "$titles", "$contractors", function ($log, $scope, $application, $titles, $contractors) {
+        $scope.app = $application;
+        $scope.titles = $titles;
+        $scope.contractors = $contractors;
+    }])
+
+    .controller("NewRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "FileUploader", function ($log, $scope, $application, $titles, FileUploader) {
+        $scope.app = $application;
+        $scope.titles = $titles;
+
+        var uploader = $scope.uploader = new FileUploader({
+            url: "serverside/uploader.php"
+            //formData: [
+            //    { documentType: "requestInputDocument"}
+            //]
+        });
+
+        uploader.onCompleteItem = function (item, response, status, headers) {
+            console.log("response = ", response[0]);
+            //var temp_file = new FileItem();
+            //temp_file.fromSOURCE(response[0]);
+            //$scope.titules.currentTituleFiles.push(temp_file);
+        };
+
+        uploader.onCompleteAll = function () {
+            console.info('onCompleteAll');
+            uploader.clearQueue();
+        };
+
+        uploader.onBeforeUploadItem = function (item) {
+            var formData = [{
+                tituleId: $scope.titules.currentTituleId,
+                userId: $scope.user.id.value
+            }];
+            Array.prototype.push.apply(item.formData, formData);
+        };
+
+        uploader.onAfterAddingFile = function (fileItem) {
+            console.info('onAfterAddingFile', fileItem);
+            uploader.uploadAll();
         };
     }])
 

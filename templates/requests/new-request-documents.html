@@ -1,8 +1,8 @@
-<div class="row width-100" ng-controller="AddRequestModalController">
-    <div class="service-message" ng-show="newRequest.documents.length === 0">
+<div class="row width-100" ng-controller="NewRequestDocumentsController">
+    <div class="service-message" ng-show="app.newRequest.inputDocuments.length === 0">
         <span>К заявке не прикреплено ни одного приложения</span>
     </div>
 </div>
 <div class="row width-100 text-centered">
-    <input type="file" name="request-files" id="request-files" class="blue centered" multiple/>
+    <input type="file" name="request-files" id="request-files" class="blue centered" nv-file-select uploader="uploader"/>
 </div>

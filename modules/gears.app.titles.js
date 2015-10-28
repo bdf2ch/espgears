@@ -124,7 +124,19 @@ var titles = angular.module("gears.app.titles",[])
                     buildingPlanDate: new Field({ source: "BUILDING_PLAN_DATE", value: 0, default_value: 0 }),
                     resources: new Field({ source: "RESOURCES", value: "", default_value: "", backupable: true}),
                     added: new Field({ source: "ADDED", value: 0, default_value: 0 }),
-                    documents: []
+                    inputDocuments: []
+                },
+
+                /**
+                 * RequestHistory
+                 * набор свойст, описывающих изменение истории статусов заявки
+                 */
+                RequestHistory: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    requestId: new Field({ source: "REQUEST_ID", value:0, default_value: 0, backupable: true }),
+                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
+                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
+                    description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true })
                 },
 
                 /**
@@ -848,6 +860,32 @@ var titles = angular.module("gears.app.titles",[])
                                     titles.requests.append(temp_request);
                                     if (callback !== undefined)
                                         callback(temp_request);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.getRequestHistory = function (request, callback) {
+                if (request !== undefined) {
+                    var params = {
+                        action: "getRequestHistory",
+                        data: {
+                            requestId: request.id.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
                                 }
                             }
                         }

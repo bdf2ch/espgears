@@ -1,11 +1,19 @@
-<div class="row height-100" ng-controller="AddRequestModalController">
+<div class="row height-100" ng-controller="NewRequestDetailsController">
     <div class="row split-20">
         <label for="request-title">Вид строительства</label>
         <select name="request-type"
                 id="request-type"
                 class="width-100"
-                ng-model="newRequest.requestTypeId.value"
+                ng-model="app.newRequest.requestTypeId.value"
                 ng-options="type.id.value as type.title.value for type in titles.requestTypes.items"></select>
+    </div>
+    <div class="row split-20">
+        <label for="request-investor">Инвестор</label>
+        <select name="request-investor"
+                id="request-investor"
+                class="width-100"
+                ng-model="app.newRequest.investorId.value"
+                ng-options="investor.id.value as investor.title.value for investor in contractors.contractors.items"></select>
     </div>
     <div class="row split-20">
         <label for="request-title">Наименование объекта</label>
@@ -14,8 +22,8 @@
                id="request-title"
                class="width-100"
                placeholder="Наименование объекта"
-               ng-disabled="newRequest._states_.loading() === true"
-               ng-model="newRequest.title.value"/>
+               ng-disabled="app.newRequest._states_.loading() === true"
+               ng-model="app.newRequest.title.value"/>
     </div>
     <div class="row split-20">
         <label for="request-date">Планируемый срок ввода в эксплуатацию</label>
@@ -24,8 +32,8 @@
                id="request-date"
                class="width-100"
                placeholder="Планируемый срок ввода в эксплуатацию"
-               ng-disabled="newRequest._states_.loading() === true"
-               ng-model="newRequest.buildingPlanDate.value"/>
+               ng-disabled="app.newRequest._states_.loading() === true"
+               ng-model="app.newRequest.buildingPlanDate.value"/>
     </div>
     <div class="row split-20">
         <label for="request-description">Общая информация об объекте</label>
@@ -36,8 +44,8 @@
                   rows="3"
                   placeholder="Информация об объекте"
                   ng-disabled="newRequest._states_.loading() === true"
-                  ng-change="newRequest._states_.changed(true)"
-                  ng-model="newRequest.description.value">
+                  ng-change="app.newRequest._states_.changed(true)"
+                  ng-model="app.newRequest.description.value">
         </textarea>
     </div>
     <div class="row">
@@ -48,9 +56,9 @@
                   cols="30"
                   rows="3"
                   placeholder="Необходимые виды ресурсов"
-                  ng-disabled="newRequest._states_.loading() === true"
-                  ng-change="newRequest._states_.changed(true)"
-                  ng-model="newRequest.resources.value">
+                  ng-disabled="app.newRequest._states_.loading() === true"
+                  ng-change="app.newRequest._states_.changed(true)"
+                  ng-model="app.newRequest.resources.value">
         </textarea>
     </div>
 </div>

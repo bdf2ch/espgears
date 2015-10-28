@@ -9,6 +9,7 @@ var application = angular.module("gears.app", [
         "gears.ui",
         "gears.data",
         "gears.files",
+        "angularFileUpload",
         //"gears.auth",                   // Подключаем модуль с сервисами авторизации
         "gears.app.controllers",        // Подключаем модуль с контроллерами приложения
         "gears.app.modal.controllers",
@@ -72,6 +73,8 @@ var application = angular.module("gears.app", [
 
             application.title = "ЭСпРЭСО";
             application.currentRequest = undefined;
+            application.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+            application.currentRequestHistory = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
             application.currentTitleTabId = 0;
