@@ -62,8 +62,8 @@
         <td>
             <div class="column-content y-scrollable padding-5">
 
-                <div class="row">
-
+                <div class="row" ng-repeat="history in app.currentRequestHistory.items track by $index">
+                    {{ history }}<hr>
                 </div>
 
             </div>
