@@ -1,0 +1,33 @@
+<div ng-controller="EditRequestStatusModalController">
+    <div class="row height-100 padding-10 split-20">
+        <label for="request-status">Текущий статус заявки</label>
+        <select name="request-status"
+                id="request-status"
+                class="width-100"
+                ng-model="app.currentRequest.statusId.value"
+                ng-change="onChangeStatus(app.currentRequest._backup_.data.statusId)"
+                ng-options="status.id.value as status.title.value for status in titles.requestStatuses.items | onlySelectableStatuses | orderBy: 'id.value'">
+        </select>
+    </div>
+    <div class="row padding-10">
+        <div class="width-50">
+            <button class="green square width-100"
+                    ng-disabled="app.currentRequest._states_.loading() === true || app.currentRequest._states_.changed() === false"
+                    ng-click="save()">
+                Сохранить
+            </button>
+        </div>
+        <div class="50">
+            <button class="red square width-100"
+                    ng-disabled="app.currentRequest._states_.loading() === true"
+                    ng-click="cancel()">
+                Отмена
+            </button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

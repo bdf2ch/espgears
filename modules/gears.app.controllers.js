@@ -75,10 +75,12 @@ var appControllers = angular.module("gears.app.controllers", [])
                         if (request._states_.selected() === true) {
                             request._states_.selected(false);
                             $application.currentRequest = undefined;
+                            $application.currentRequestHistory.clear();
                         } else {
                             request._states_.selected(true);
                             $application.currentRequest = request;
                             $application.currentRequestHistory.clear();
+                            $application.currentRequestHistory._states_.loaded(false);
                             $titles.getRequestHistory($application.currentRequest, $scope.onSuccessGetRequestHistory);
                         }
                     } else {
@@ -98,6 +100,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                     temp_history._backup_.setup();
                     $application.currentRequestHistory.append(temp_history);
                 });
+                $application.currentRequestHistory._states_.loaded(true);
             }
         };
 
@@ -135,6 +138,18 @@ var appControllers = angular.module("gears.app.controllers", [])
                     template: "templates/modals/edit-request.html"
                 });
             }
+        };
+
+
+        $scope.changeStatus = function () {
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Изменение статуса заявки",
+                showFog: true,
+                closeButton: false,
+                template: "templates/modals/edit-request-status.html"
+            });
         };
 
     }])

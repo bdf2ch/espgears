@@ -31,7 +31,7 @@
                         ng-class="{'active': request._states_.selected() === true}"
                         ng-repeat="request in titles.requests.items | orderBy:'id.value' track by $index"
                         ng-click="selectRequest(request.id.value)">
-                        <img src="../resources/img/icons/pylon_.png" alt="" class="card-img"/>
+                        <img src="../resources/img/icons/request.jpg" alt="" class="card-img"/>
                         <div class="card-header">
                             <span>{{ "Заявка #" + request.id.value }}</span>
                             <div class="right" ng-show="app.currentRequest.id.value === request.id.value">
@@ -51,7 +51,7 @@
     </tr>
 </table>
 
-<table class="column width-80">
+<table class="column width-40">
     <tr class="column-header">
         <td class="caption width-100">
             Подробности
@@ -61,59 +61,106 @@
         <td>
             <div class="column-content height-100 y-scrollable padding-5">
 
-                <div class="row height-100">
-                    <div class="width-50 height-100 padding-10">
-                        <div class="row split-20">
+                <div class="service-message" ng-show="app.currentRequest === undefined">
+                    Выберите заявку
+                </div>
+
+                <div class="row height-100" ng-show="app.currentRequest !== undefined">
+                    <div class="width-100 height-100 padding-10">
+                        <div class="row split-10">
                             <span class="left">{{ "Заявка #" + app.currentRequest.id.value }}</span>
                             <span class="right secondary-text">{{ "от " + (app.currentRequest.added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
                         </div>
                         <hr>
-                        <div class="row split-20">
-                            <div class="row padding-5 secondary-text">Автор заявки</div>
-                            <div class="row padding-5">Иванов Иван Иванович</div>
-                        </div>
-                        <div class="row split-20">
+                        <div class="row split-10">
                             <div class="row padding-5 secondary-text">Наименование объекта</div>
                             <div class="row padding-5">{{ app.currentRequest.title.value }}</div>
                         </div>
-                        <div class="row split-20">
+                        <div class="row split-10">
                             <div class="row padding-5 secondary-text">Вид строительства</div>
                             <div class="row padding-5">{{ titles.requestTypes.find("id", app.currentRequest.requestTypeId.value).title.value }}</div>
                         </div>
-                        <div class="row split-20">
+                        <div class="row split-10">
                             <div class="row padding-5 secondary-text">Общая информация об объекте</div>
                             <div class="row padding-5">{{ app.currentRequest.description.value }}</div>
                         </div>
-                        <div class="row split-20">
-                            <div class="row padding-5 secondary-text">Необходимые виды ресурсов электроэнергетиков</div>
+                        <div class="row split-10">
+                            <div class="row padding-5 secondary-text">Необходимые виды ресурсов электроэнергетики</div>
                             <div class="row padding-5">{{ app.currentRequest.resources.value }}</div>
                         </div>
-                        <div class="row split-20">
+                        <div class="row split-10">
                             <div class="row padding-5 secondary-text">Инвестор</div>
                             <div class="row padding-5">{{ contractors.contractors.find("id", app.currentRequest.investorId.value).title.value }}</div>
                         </div>
-                    </div>
-
-
-                    <div class="width-50 height-100 padding-10 service-panel">
-                        <div class="request-item padding-10" ng-repeat="history in app.currentRequestHistory.items track by $index | orderBy:'timestamp.value'">
+                        <div class="row split-10">
+                            <div class="row padding-5 secondary-text">Технические условия</div>
                             <div class="row">
-                                <span class="left" ng-show="history.statusId.value === 1">Заявка зарегистрирована</span>
-                                <span class="right secondary-text">{{ history.timestamp.value | timestamp:'DDMMMYYYYHHmm' }}</span>
+                                <input type="file"/>
                             </div>
-                            <div class="row secondary-text split-10">
-                                Заявку принял: Иванов Иван Иванович
-                            </div>
+                        </div>
+                        <div class="row split-10">
+                            <div class="row padding-5 secondary-text">Генеральное соглашение</div>
                             <div class="row">
-                                Приложения:<br>
-                                <a href="">Устав предприятия <span class="secondary-text">(140 кб)</span></a>
-                                <a href="">Лицензия на право предоставления телематических услуг</a>
+                                <input type="file"/>
+                            </div>
+                        </div>
+                        <div class="row split-10">
+                            <div class="row padding-5 secondary-text">Договор по оказанию услуг доступа</div>
+                            <div class="row">
+                                <input type="file"/>
                             </div>
                         </div>
                     </div>
+
                 </div>
 
 
+            </div>
+        </td>
+    </tr>
+</table>
+
+
+<table class="column width-40">
+    <tr class="column-header">
+        <td class="caption width-100">
+            История
+            <button class="green right"
+                    ng-show="app.currentRequest !== undefined"
+                    ng-click="changeStatus()">
+                +
+            </button>
+        </td>
+
+    </tr>
+    <tr class="column-content-container">
+        <td>
+            <div class="column-content y-scrollable padding-5">
+
+                <div class="service-message" ng-show="app.currentRequestHistory._states_.loaded() === false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
+                <div class="service-message" ng-show="app.currentRequest === undefined">
+                    Выберите заявку
+                </div>
+
+                <ul class="cards">
+                    <li class="card"
+                        ng-repeat="history in app.currentRequestHistory.items | orderBy:'timestamp.value' track by $index">
+                        <div class="row padding-5">
+                            <span class="left">{{ titles.requestStatuses.find("id", history.statusId.value).title.value }}</span>
+                            <span class="right secondary-text">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
+                        </div>
+                        <div class="row padding-5">
+                            <a href="">Документ во вложении</a><br>
+                            <a href="">Документ во вложении</a>
+                        </div>
+                        <div class="row padding-5">
+                            <span class="secondary-text">{{ "Статус изменил " + users.users.find("id", history.userId.value).fio }}</span>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </td>
     </tr>

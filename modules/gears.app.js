@@ -298,6 +298,7 @@ var application = angular.module("gears.app", [
                                 });
                                 $titles.workingCommissions._states_.loaded(true);
                             }
+
                         }
                     }
                 );

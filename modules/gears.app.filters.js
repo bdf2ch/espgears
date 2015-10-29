@@ -143,6 +143,23 @@ var AppFilters = angular.module("gears.app.filters", [])
         }]);
 
 
+        /**
+         * onlySelectableStatuses
+         * Фильтр статусов заявки, возвращает статусы, доступнея для выбора
+         */
+        $filterProvider.register("onlySelectableStatuses", ["$log", "$application", function ($log, $application) {
+            return function (input) {
+                var result = [];
+                angular.forEach(input, function (type) {
+                    if (type.id.value !== 1) {
+                        result.push(type);
+                    }
+                });
+                return result;
+            }
+        }]);
+
+
     })
     .run(function () {
 

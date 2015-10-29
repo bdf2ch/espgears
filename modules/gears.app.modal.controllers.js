@@ -455,6 +455,48 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     }])
 
 
+    .controller("EditRequestStatusModalController", ["$log", "$scope", "$application", "$titles", "$contractors", "$modals", "$factory", function ($log, $scope, $application, $titles, $contractors, $modals, $factory) {
+        $scope.app = $application;
+        $scope.titles = $titles;
+        $scope.contractors = $contractors;
+        $scope.errors = [];
+
+        $scope.onChangeStatus = function (statusId) {
+            if (statusId !== undefined) {
+                if (statusId !== $application.currentRequest.statusId.value)
+                    $application.currentRequest._states_.changed(true);
+                else
+                    $application.currentRequest._states_.changed(false);
+            }
+        };
+
+        $scope.save = function () {
+            $titles.changeRequestStatus(
+                $application.currentRequest.id.value,
+                $application.currentRequest.statusId.value,
+                $scope.onSuccessChangeRequestStatus
+            );
+            $modals.close();
+        };
+
+        $scope.onSuccessChangeRequestStatus = function (data) {
+            if (data !== undefined) {
+                var temp_history = $factory({ classes: ["RequestHistory", "Model"], base_class: "RequestHistory" });
+                temp_history._model_.fromJSON(data);
+                $application.currentRequestHistory.append(temp_history);
+            }
+        };
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentRequest._backup_.restore();
+            $application.currentRequest._states_.changed(false);
+        };
+
+    }])
+
+
     /**
      * AddWorkingCommissionModalController
      * Контроллер модального окна добавления рабочей группы

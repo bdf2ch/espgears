@@ -71,6 +71,10 @@
                 case "getRequestHistory":
                     get_request_history($postdata);
                     break;
+                /* Меняет статус заявки */
+                case "changeRequestStatus":
+                    change_request_status($postdata);
+                    break;
                 /* Получение списка всех рабочих коммиссий */
                 case "getWorkingCommissions":
                     get_working_commissions();
@@ -897,6 +901,60 @@ function add_request ($postdata) {
 };
 
 
+
+function change_request_status ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $requestId = $postdata -> data -> requestId;
+    $statusId = $postdata -> data -> statusId;
+    $userId = $postdata -> data -> userId;
+    $result = stdClass;
+
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_change_request_status(:request_id, :status_id, :user_id, :history); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":request_id", $requestId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":status_id", $statusId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":history", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else
+                $result = oci_fetch_object($cursor);
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
 
 
   /* Функция получения всех титулов */
