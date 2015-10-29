@@ -136,7 +136,8 @@ var titles = angular.module("gears.app.titles",[])
                     requestId: new Field({ source: "REQUEST_ID", value:0, default_value: 0, backupable: true }),
                     statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
-                    description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true })
+                    description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
+                    timestamp: new Field({ source: "TIMESTAMP", value: 0, default_value: 0 })
                 },
 
                 /**

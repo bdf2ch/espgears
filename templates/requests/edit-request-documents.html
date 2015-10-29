@@ -1,0 +1,8 @@
+<div class="row width-100" ng-controller="EditRequestDocumentsController">
+    <div class="service-message" ng-show="app.editableRequest.inputDocuments.length === 0">
+        <span>К заявке не прикреплено ни одного приложения</span>
+    </div>
+</div>
+<div class="row width-100 text-centered">
+    <input type="file" name="request-files" id="request-files" class="blue centered" nv-file-select uploader="uploader"/>
+</div>

@@ -464,3 +464,18 @@ body {
 .node-tree.branch .node-icon.unknown {
   background: url("../img/icons/unknown.png");
 }
+.request-item {
+  background: white;
+}
+.request-item .document {
+  display: block;
+  float: left;
+  width: 100px;
+  height: 150px;
+  margin-right: 10px;
+  background: white;
+  border: 1px solid black;
+}
+.request-item a {
+  display: block;
+}

@@ -306,8 +306,8 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.cancel = function () {
             $modals.close();
             $scope.errors.splice(0, $scope.errors.length);
-            $scope.newRequest._model_.reset();
-            $scope.newRequest._states_.changed(false);
+            $application.newRequest._model_.reset();
+            $application.newRequest._states_.changed(false);
         };
     }])
 
@@ -364,6 +364,20 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.misc = $misc;
         $scope.contractors = $contractors;
         $scope.errors = [];
+        $scope.tabs = [
+            {
+                id: 1,
+                title: "Подробности",
+                template: "templates/requests/edit-request-details.html",
+                isActive: true
+            },
+            {
+                id: 2,
+                title: "Приложения",
+                template: "templates/requests/edit-request-documents.html",
+                isActive: false
+            }
+        ];
 
         $scope.gotoNewTitle = function () {
             $modals.close();
@@ -394,6 +408,49 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $application.currentRequest._states_.loading(false);
             $application.currentRequest._backup_.setup();
             $modals.close();
+        };
+    }])
+
+    .controller("EditRequestDetailsController", ["$log", "$scope", "$application", "$titles", "$contractors", function ($log, $scope, $application, $titles, $contractors) {
+        $scope.app = $application;
+        $scope.titles = $titles;
+        $scope.contractors = $contractors;
+    }])
+
+    .controller("EditRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "FileUploader", function ($log, $scope, $application, $titles, FileUploader) {
+        $scope.app = $application;
+        $scope.titles = $titles;
+
+        var uploader = $scope.uploader = new FileUploader({
+            url: "serverside/uploader.php"
+            //formData: [
+            //    { documentType: "requestInputDocument"}
+            //]
+        });
+
+        uploader.onCompleteItem = function (item, response, status, headers) {
+            console.log("response = ", response[0]);
+            //var temp_file = new FileItem();
+            //temp_file.fromSOURCE(response[0]);
+            //$scope.titules.currentTituleFiles.push(temp_file);
+        };
+
+        uploader.onCompleteAll = function () {
+            console.info('onCompleteAll');
+            uploader.clearQueue();
+        };
+
+        uploader.onBeforeUploadItem = function (item) {
+            var formData = [{
+                tituleId: $scope.titules.currentTituleId,
+                userId: $scope.user.id.value
+            }];
+            Array.prototype.push.apply(item.formData, formData);
+        };
+
+        uploader.onAfterAddingFile = function (fileItem) {
+            console.info('onAfterAddingFile', fileItem);
+            uploader.uploadAll();
         };
     }])
 

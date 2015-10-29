@@ -61,10 +61,11 @@ var appControllers = angular.module("gears.app.controllers", [])
      * RequestsController
      * Контроллер раздела журнала заявок
      */
-    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", "$contractors", function ($log, $scope, $titles, $application, $modals, $contractors) {
+    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", "$contractors", "$factory", "$users", function ($log, $scope, $titles, $application, $modals, $contractors, $factory, $users) {
         $scope.app = $application;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
+        $scope.users = $users;
 
 
         $scope.selectRequest = function (requestId) {
@@ -84,6 +85,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                         request._states_.selected(false);
                     }
                 });
+                $log.log("currentRequest = ", $application.currentRequest);
             }
         };
 
@@ -114,6 +116,25 @@ var appControllers = angular.module("gears.app.controllers", [])
                     $log.log("experimental scope");
                 }
             });
+        };
+
+        $scope.editRequest = function (requestId, event) {
+            event.stopPropagation();
+            if (requestId !== undefined) {
+                angular.forEach($titles.requests.items, function (request) {
+                    if (request.id.value === requestId) {
+                        $application.editableRequest = request;
+                    }
+                });
+                $modals.show({
+                    width: 500,
+                    position: "center",
+                    caption: "Редактирование заявки",
+                    showFog: true,
+                    closeButton: false,
+                    template: "templates/modals/edit-request.html"
+                });
+            }
         };
 
     }])

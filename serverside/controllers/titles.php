@@ -67,6 +67,7 @@
                 case "addRequest":
                     add_request($postdata);
                     break;
+                /* Получение истории изменения статуса заявки */
                 case "getRequestHistory":
                     get_request_history($postdata);
                     break;
@@ -899,7 +900,7 @@ function add_request ($postdata) {
 
 
   /* Функция получения всех титулов */
-function get_request_history() {
+function get_request_history($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
     $requestId = $postdata -> data -> requestId;
