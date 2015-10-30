@@ -228,6 +228,26 @@ var grFiles = angular.module("gears.files", [])
             }
         }
     }])
+
+    .directive('attachable', ["FileUploader", function(FileUploader) {
+        return {
+            restrict: 'E',
+            replace: true,
+            template: '<div><input type="file" class="centered" nv-file-select uploader="uploader"/><ul><li ng-repeat="item in uploader.queue">{{ item.file.name }}</li></ul></div>',
+            compile: function() {
+                return {
+                    pre: function(scope, element, attrs) {
+                        scope.uploader = new FileUploader();
+                        console.log(1);
+                    },
+                    // link
+                    post: function(scope, element, attrs) {
+                        console.log(2);
+                    }
+                };
+            }
+        }
+    }])
     .run(function ($modules, $files, $factory, $log) {
         $modules.load($files);
         $files.items = $factory({ classes: ["FileTree", "States"], base_class: "FileTree" });

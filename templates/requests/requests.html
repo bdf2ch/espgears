@@ -59,14 +59,14 @@
     </tr>
     <tr class="column-content-container">
         <td>
-            <div class="column-content height-100 y-scrollable padding-5">
+            <div class="column-content y-scrollable padding-5">
 
                 <div class="service-message" ng-show="app.currentRequest === undefined">
                     Выберите заявку
                 </div>
 
-                <div class="row height-100" ng-show="app.currentRequest !== undefined">
-                    <div class="width-100 height-100 padding-10">
+                <div class="row" ng-show="app.currentRequest !== undefined">
+                    <div class="width-100 padding-10">
                         <div class="row split-10">
                             <span class="left">{{ "Заявка #" + app.currentRequest.id.value }}</span>
                             <span class="right secondary-text">{{ "от " + (app.currentRequest.added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
@@ -108,6 +108,12 @@
                             <div class="row padding-5 secondary-text">Договор по оказанию услуг доступа</div>
                             <div class="row">
                                 <input type="file"/>
+                            </div>
+                        </div>
+                        <div class="row split-10">
+                            <div class="row padding-5 secondary-text">Титул</div>
+                            <div class="row">
+                                <button class="blue big">Перейти к титулу</button>
                             </div>
                         </div>
                     </div>
@@ -157,10 +163,12 @@
                             <a href="">Документ во вложении</a>
                         </div>
                         <div class="row padding-5">
-                            <span class="secondary-text">{{ "Статус изменил " + users.users.find("id", history.userId.value).fio }}</span>
+                            <span class="secondary-text" ng-show="history.statusId.value === 1">{{ "Заявку добавил " + users.users.find("id", history.userId.value).fio }}</span>
+                            <span class="secondary-text" ng-show="history.statusId.value !== 1">{{ "Статус изменил " + users.users.find("id", history.userId.value).fio }}</span>
                         </div>
                     </li>
                 </ul>
+
             </div>
         </td>
     </tr>

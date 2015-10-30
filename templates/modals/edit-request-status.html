@@ -1,5 +1,5 @@
 <div ng-controller="EditRequestStatusModalController">
-    <div class="row height-100 padding-10 split-20">
+    <div class="row height-100 padding-10">
         <label for="request-status">Текущий статус заявки</label>
         <select name="request-status"
                 id="request-status"
@@ -8,6 +8,10 @@
                 ng-change="onChangeStatus(app.currentRequest._backup_.data.statusId)"
                 ng-options="status.id.value as status.title.value for status in titles.requestStatuses.items | onlySelectableStatuses | orderBy: 'id.value'">
         </select>
+    </div>
+    <div class="row padding-10" ng-show="app.currentRequest._states_.changed() === true">
+        <label for="status-document">Приложить документ</label>
+        <input type="file" name="status-document" id="status-document"/>
     </div>
     <div class="row padding-10">
         <div class="width-50">
