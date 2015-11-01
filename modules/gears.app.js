@@ -92,7 +92,6 @@ var application = angular.module("gears.app", [
             application.currentPowerLineConnectionNode = undefined;
             application.currentWorkingCommission = undefined;
 
-
             application.init = function () {
                 $http.post("serverside/controllers/init.php")
                     .success(function (data) {
@@ -278,14 +277,12 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["requests"] !== undefined) {
-                                $titles.requests._states_.loaded(false);
                                 angular.forEach(data["requests"], function (request) {
                                     var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
                                     temp_request._model_.fromJSON(request);
                                     temp_request._backup_.setup();
                                     $titles.requests.append(temp_request);
                                 });
-                                $titles.requests._states_.loaded(true);
                             }
 
                             if (data["workingCommissions"] !== undefined) {
@@ -299,6 +296,8 @@ var application = angular.module("gears.app", [
                                 $titles.workingCommissions._states_.loaded(true);
                             }
 
+                            $titles.requests._states_.loaded(true);
+
                         }
                     }
                 );
@@ -307,14 +306,15 @@ var application = angular.module("gears.app", [
             return application;
         }]);
     })
-    .run(function ($log, $application, $menu, $rootScope, $modules, $factory) {
+    .run(function ($log, $application, $menu, $rootScope, $modules, $factory, $titles) {
         $modules.load($application);
         $menu.register();
         $rootScope.application = $application;
         $rootScope.menu = $menu;
         moment.locale("ru");
 
-        $application.currentTitleNodes = $factory({ classes: ["TitleNodes", "States"], base_class: "TitleNodes" });
+        $application.currentTitleNodes = $factory({ classes: ["TitleNodes", "States"], base_class: "TitleNodes" })
+        $titles.requests._states_.loaded(false);
         $application.init();
     }
 );

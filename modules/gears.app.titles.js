@@ -986,6 +986,8 @@ var titles = angular.module("gears.app.titles",[])
     })
     .run(function ($modules, $titles, $log) {
         $modules.load($titles);
+        $titles.requests._states_.loaded(false);
+        $log.log("requests loaded = ", $titles.requests._states_.loaded());
         //$titles.getTitles();
         //$titles.getStatuses();
         //$titles.getBuildingPlans();

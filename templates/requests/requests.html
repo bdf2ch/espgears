@@ -26,6 +26,11 @@
                 </ul>
                 -->
 
+                <div class="service-message" ng-show="titles.requests._states_.loaded() == false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
+
                 <ul class="cards">
                     <li class="card"
                         ng-class="{'active': request._states_.selected() === true}"
@@ -92,6 +97,20 @@
                             <div class="row padding-5 secondary-text">Инвестор</div>
                             <div class="row padding-5">{{ contractors.contractors.find("id", app.currentRequest.investorId.value).title.value }}</div>
                         </div>
+
+                        <div class="row split-10">
+                            <div class="row padding-5 secondary-text">Титул</div>
+                            <div class="row">
+                                <button class="blue big">Перейти к титулу</button>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="width-33">fdsf</div>
+                            <div class="width-33">bvcb</div>
+                            <div class="width-33">mbnm</div>
+                        </div>
+
                         <div class="row split-10">
                             <div class="row padding-5 secondary-text">Технические условия</div>
                             <div class="row">
@@ -110,12 +129,14 @@
                                 <input type="file"/>
                             </div>
                         </div>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Титул</div>
+
+                        <div class="row">
+                            <div class="row padding-5 secondary-text">Все документы</div>
                             <div class="row">
-                                <button class="blue big">Перейти к титулу</button>
+
                             </div>
                         </div>
+
                     </div>
 
                 </div>

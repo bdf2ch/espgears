@@ -174,6 +174,23 @@ var gears = angular.module("gears", [])
             };
 
 
+            menu.add = function (parameters) {
+                if (parameters !== undefined) {
+                    var new_menu_item = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
+                    $routeProvider.when(new_menu_item.url, {
+                        templateUrl: new_menu_item.url,
+                        controller: new_menu_item.controller
+                    });
+                    if (new_menu_item.default === true)
+                        $routeProvider.when("/", {
+                            templateUrl: new_menu_item.url,
+                            controller: new_menu_item.controller
+                        });
+                    menu.items.append(new_menu_item);
+                }
+            };
+
+
             return menu;
         }]);
 
