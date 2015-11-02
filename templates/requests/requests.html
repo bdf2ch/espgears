@@ -64,84 +64,13 @@
     </tr>
     <tr class="column-content-container">
         <td>
-            <div class="column-content y-scrollable padding-5">
-
+            <div class="column-content no-padding">
                 <div class="service-message" ng-show="app.currentRequest === undefined">
                     Выберите заявку
                 </div>
-
-                <div class="row" ng-show="app.currentRequest !== undefined">
-                    <div class="width-100 padding-10">
-                        <div class="row split-10">
-                            <span class="left">{{ "Заявка #" + app.currentRequest.id.value }}</span>
-                            <span class="right secondary-text">{{ "от " + (app.currentRequest.added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
-                        </div>
-                        <hr>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Наименование объекта</div>
-                            <div class="row padding-5">{{ app.currentRequest.title.value }}</div>
-                        </div>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Вид строительства</div>
-                            <div class="row padding-5">{{ titles.requestTypes.find("id", app.currentRequest.requestTypeId.value).title.value }}</div>
-                        </div>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Общая информация об объекте</div>
-                            <div class="row padding-5">{{ app.currentRequest.description.value }}</div>
-                        </div>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Необходимые виды ресурсов электроэнергетики</div>
-                            <div class="row padding-5">{{ app.currentRequest.resources.value }}</div>
-                        </div>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Инвестор</div>
-                            <div class="row padding-5">{{ contractors.contractors.find("id", app.currentRequest.investorId.value).title.value }}</div>
-                        </div>
-
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Титул</div>
-                            <div class="row">
-                                <button class="blue big">Перейти к титулу</button>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="width-33">fdsf</div>
-                            <div class="width-33">bvcb</div>
-                            <div class="width-33">mbnm</div>
-                        </div>
-
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Технические условия</div>
-                            <div class="row">
-                                <input type="file"/>
-                            </div>
-                        </div>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Генеральное соглашение</div>
-                            <div class="row">
-                                <input type="file"/>
-                            </div>
-                        </div>
-                        <div class="row split-10">
-                            <div class="row padding-5 secondary-text">Договор по оказанию услуг доступа</div>
-                            <div class="row">
-                                <input type="file"/>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="row padding-5 secondary-text">Все документы</div>
-                            <div class="row">
-
-                            </div>
-                        </div>
-
-                    </div>
-
+                <div class="width-100 height-100">
+                    <tabs tabs-source="tabs" tabs-position="top" ng-show="app.currentRequest !== undefined"></tabs>
                 </div>
-
-
             </div>
         </td>
     </tr>
@@ -163,6 +92,7 @@
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
+
 
                 <div class="service-message" ng-show="app.currentRequestHistory._states_.loaded() === false">
                     <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>

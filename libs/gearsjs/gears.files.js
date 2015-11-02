@@ -233,15 +233,32 @@ var grFiles = angular.module("gears.files", [])
         return {
             restrict: 'E',
             replace: true,
-            template: '<div><input type="file" class="centered" nv-file-select uploader="uploader"/><ul><li ng-repeat="item in uploader.queue">{{ item.file.name }}</li></ul></div>',
+            scope: {
+                url: "@",
+                postData: "=",
+                title: "@",
+                init: "="
+            },
+            template: '<div><label for="upload" class="label-button">{{title}}</label><input type="file" name="upload" id="upload" class="centered" nv-file-select uploader="uploader"/></div>',
             compile: function() {
                 return {
                     pre: function(scope, element, attrs) {
-                        scope.uploader = new FileUploader();
+                        scope.uploader = new FileUploader({
+                            url: scope.url,
+                            formData: scope.postData
+                        });
                         console.log(1);
+
+                        scope.uploader.onAfterAddingFile = function (fileItem) {
+                            console.info('onAfterAddingFile', fileItem);
+                            scope.uploader.uploadAll();
+                        };
+
                     },
                     // link
                     post: function(scope, element, attrs) {
+                        if (scope.init !== undefined)
+                            scope.init();
                         console.log(2);
                     }
                 };

@@ -479,3 +479,36 @@ body {
 .request-item a {
   display: block;
 }
+.request-title {
+  font-family: "Roboto Bold";
+  font-size: 18px;
+  color: gray;
+}
+.label-button {
+  position: relative;
+  display: inline-block;
+  padding: 10px;
+  font-family: "Roboto Regular";
+  text-align: center;
+  color: white;
+  background: #84A8F0;
+  border-radius: 2px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+.label-button:hover {
+  background: #4B8CD1;
+}
+#request-gensogl-upload {
+  display: none;
+}
+#request-tu-upload {
+  display: none;
+}
+#request-doud-upload {
+  display: none;
+}
+#upload {
+  display: none;
+}

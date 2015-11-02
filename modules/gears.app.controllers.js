@@ -66,6 +66,20 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.titles = $titles;
         $scope.contractors = $contractors;
         $scope.users = $users;
+        $scope.tabs = [
+            {
+                id: 1,
+                title: "Информация о заявке",
+                template: "templates/requests/request-details.html",
+                isActive: true
+            },
+            {
+                id: 2,
+                title: "Документы",
+                template: "templates/requests/request-documents.html",
+                isActive: false
+            }
+        ];
 
 
         $scope.selectRequest = function (requestId) {
@@ -79,6 +93,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                         } else {
                             request._states_.selected(true);
                             $application.currentRequest = request;
+                            $application.currentUploaderData[0]["requestId"] = requestId;
                             $application.currentRequestHistory.clear();
                             $application.currentRequestHistory._states_.loaded(false);
                             $titles.getRequestHistory($application.currentRequest, $scope.onSuccessGetRequestHistory);
@@ -152,6 +167,27 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
+    }])
+
+
+    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", function ($log, $scope, $titles, $application, $contractors) {
+        $scope.titles = $titles;
+        $scope.app = $application;
+        $scope.contractors = $contractors;
+        //$scope.tuData = [{
+        //    doc_type: "tu",
+        //    requestId: $application.currentRequest !== undefined ? $application.currentRequest.id.value : 0
+        //}];
+
+        $scope.tuInit = function () {
+            $application.currentUploaderData[0]["doc_type"] = "tu";
+        };
+    }])
+
+
+    .controller("RequestDocumentsController", ["$log", "$scope", "$titles", "$application", function ($log, $scope, $titles, $application) {
+        $scope.titles = $titles;
+        $scope.app = $application;
     }])
 
 

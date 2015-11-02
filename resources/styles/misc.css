@@ -851,7 +851,6 @@ textarea {
 .gears-ui-tabs_ .tab-content-container {
   position: relative;
   height: 100%;
-  padding: 10px;
   vertical-align: top;
   background: white;
   box-sizing: content-box;

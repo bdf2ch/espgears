@@ -91,6 +91,7 @@ var application = angular.module("gears.app", [
             application.currentPowerLineNodeConnectionNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentPowerLineConnectionNode = undefined;
             application.currentWorkingCommission = undefined;
+            application.currentUploaderData = [{}];
 
             application.init = function () {
                 $http.post("serverside/controllers/init.php")

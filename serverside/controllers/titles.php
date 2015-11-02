@@ -67,6 +67,10 @@
                 case "addRequest":
                     add_request($postdata);
                     break;
+                /* Добавляет файл технических условий к заявке */
+                case "addRequestTUDoc":
+                    add_request_tu_doc($postdata);
+                    break;
                 /* Получение истории изменения статуса заявки */
                 case "getRequestHistory":
                     get_request_history($postdata);
@@ -896,6 +900,57 @@ function add_request ($postdata) {
     // Освобождение ресурсов
     oci_free_statement($statement);
     oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
+
+
+
+function add_request_tu_doc($postdata) {
+    global $connection;
+    $requestId = $postdata -> data -> requestId;
+    $result = stdClass;
+
+    if (isset($_FILES["request_tu_upload"]["tmp_name"])) {
+        $result -> title = $_FILES["request_tu_upload"]["name"];
+        $result -> type = $_FILES["request_tu_upload"]["type"];
+        $result -> size = $_FILES["request_tu_upload"]["size"];
+
+
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_tu_doc(:request_id, :blob); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            $blob = oci_new_descriptor($connection, OCI_D_LOB);
+            if (!oci_bind_by_name($statement, ":request_id", $requestId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":blob", $blob, -1, OCI_B_BLOB)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if(!$blob -> savefile($_FILES["request_tu_upload"]["tmp_name"])) {
+                    oci_rollback($connection);
+                } else {
+                    oci_commit($connection);
+                }
+            }
+
+            // Освобождение ресурсов
+            oci_free_statement($statement);
+            $blob -> free();
+        }
+    }
+
     // Возврат результата
     echo json_encode($result);
 };
