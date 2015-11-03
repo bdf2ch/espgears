@@ -170,17 +170,21 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
-    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", function ($log, $scope, $titles, $application, $contractors) {
+    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", function ($log, $scope, $titles, $application, $contractors, $factory) {
         $scope.titles = $titles;
         $scope.app = $application;
         $scope.contractors = $contractors;
-        //$scope.tuData = [{
-        //    doc_type: "tu",
-        //    requestId: $application.currentRequest !== undefined ? $application.currentRequest.id.value : 0
-        //}];
 
         $scope.tuInit = function () {
             $application.currentUploaderData[0]["doc_type"] = "tu";
+        };
+
+        $scope.onSuccessUploadTU = function (data) {
+            $log.log("response = ", data);
+            if (data !== undefined) {
+                var temp_tu = $factory({ classes: ["FileItem_"], base_class: "FileItem_" });
+                $application.currentRequest.tu = temp_tu;
+            }
         };
     }])
 

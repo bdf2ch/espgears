@@ -427,7 +427,7 @@
         }
         $result -> anchorTypes = $anchorTypes;
 
-        /* Получение списка всех заявок */
+        /* Получение списка всех типов заявок */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_types(:data); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -507,8 +507,44 @@
                     $result = new DBError($error["code"], $error["message"]);
                     echo(json_encode($result));
                 } else {
-                    while ($request = oci_fetch_assoc($cursor))
+                    while ($request = oci_fetch_assoc($cursor)) {
+                        $cursor2 = oci_new_cursor($connection);
+                        if (!$statement2 = oci_parse($connection, "begin pkg_titules.p_get_tu_doc(:r_id, :tu); end;")) {
+                            $error = oci_error();
+                            $result = new DBError($error["code"], $error["message"]);
+                            echo(json_encode($result));
+                        } else {
+                            if (!oci_bind_by_name($statement2, ":r_id", $request["ID"], -1, OCI_DEFAULT)) {
+                                $error = oci_error();
+                                $result = new DBError($error["code"], $error["message"]);
+                                echo(json_encode($result));
+                            }
+                            if (!oci_bind_by_name($statement2, ":tu", $cursor2, -1, OCI_B_CURSOR)) {
+                                $error = oci_error();
+                                $result = new DBError($error["code"], $error["message"]);
+                                echo(json_encode($result));
+                            }
+                            if (!oci_execute($statement2)) {
+                                $error = oci_error();
+                                $result = new DBError($error["code"], $error["message"]);
+                                echo(json_encode($result));
+                            } else {
+                                if (!oci_execute($cursor2)) {
+                                    $error = oci_error();
+                                    $result = new DBError($error["code"], $error["message"]);
+                                    echo(json_encode($result));
+                                } else {
+                                    while ($tu = oci_fetch_assoc($cursor2))
+                                        $request["tu"] = $tu;
+                                }
+                            }
+
+                        }
+                        oci_free_statement($statement2);
+                        oci_free_statement($cursor2);
+
                         array_push($requests, $request);
+                    }
                 }
             }
         }

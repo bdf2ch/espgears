@@ -40,13 +40,21 @@
                     <div class="row">
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">Технические условия</div>
-                            <div class="row">
-                                <!--<label for="request-tu-upload" class="label-button">Загрузить</label>-->
-                                <!--<input type="file" id="request-tu-upload" name="request-tu-upload" enctype="multipart/form-data"/>-->
-                                <attachable title="Загрузить" post-data="app.currentUploaderData" url="serverside/controllers/uploader.php" init="tuInit"></attachable>
+                            <div class="row" ng-show="app.currentRequest.tu === undefined">
+                                <attachable
+                                        title="Загрузить"
+                                        post-data="app.currentUploaderData"
+                                        url="serverside/controllers/uploader.php"
+                                        init="tuInit"
+                                        on-complete="onSuccessUploadTU">
+                                </attachable>
                             </div>
-                            <div class="row text-centered split-5"><button class="blue width-100">Скачать</button></div>
-                            <div class="row text-centered split-5"><button class="blue width-100">Заменить</button></div>
+                            <div class="row text-centered split-5">
+                                <button class="blue width-100" ng-show="app.currentRequest.tu !== undefined" ng-click="titles.downloadTU(app.currentRequest)">Скачать</button>
+                            </div>
+                            <div class="row text-centered split-5" ng-show="app.currentRequest.tu !== undefined">
+                                <button class="blue width-100">Заменить</button>
+                            </div>
                         </div>
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">Генеральное соглашение</div>

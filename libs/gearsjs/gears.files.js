@@ -237,21 +237,36 @@ var grFiles = angular.module("gears.files", [])
                 url: "@",
                 postData: "=",
                 title: "@",
-                init: "="
+                init: "=",
+                onComplete: "="
             },
             template: '<div><label for="upload" class="label-button">{{title}}</label><input type="file" name="upload" id="upload" class="centered" nv-file-select uploader="uploader"/></div>',
             compile: function() {
                 return {
                     pre: function(scope, element, attrs) {
+
                         scope.uploader = new FileUploader({
                             url: scope.url,
                             formData: scope.postData
                         });
                         console.log(1);
+                        console.log("show = ", scope.ngShow);
 
                         scope.uploader.onAfterAddingFile = function (fileItem) {
                             console.info('onAfterAddingFile', fileItem);
                             scope.uploader.uploadAll();
+                        };
+
+                        //scope.uploader.onCompleteAll = function () {
+                        //    console.info('onCompleteAll');
+                        //    uploader.clearQueue();
+                        //    if (scope.onComplete !== undefined)
+                        //        scope.onComplete();
+                        //};
+
+                        scope.uploader.onCompleteItem = function(item, response, status, headers) {
+                            if (scope.onComplete !== undefined)
+                                scope.onComplete(response);
                         };
 
                     },
@@ -259,6 +274,7 @@ var grFiles = angular.module("gears.files", [])
                     post: function(scope, element, attrs) {
                         if (scope.init !== undefined)
                             scope.init();
+
                         console.log(2);
                     }
                 };
@@ -269,6 +285,6 @@ var grFiles = angular.module("gears.files", [])
         $modules.load($files);
         $files.items = $factory({ classes: ["FileTree", "States"], base_class: "FileTree" });
         $log.log("items = ", $files.items);
-        $files.scan();
+        //$files.scan();
     }
 );

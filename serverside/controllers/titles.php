@@ -71,6 +71,10 @@
                 case "addRequestTUDoc":
                     add_request_tu_doc($postdata);
                     break;
+                /* Скачивает файл технических условий */
+                case "downloadRequestTU":
+                    download_tu_doc($postdata);
+                    break;
                 /* Получение истории изменения статуса заявки */
                 case "getRequestHistory":
                     get_request_history($postdata);
@@ -928,7 +932,7 @@ function add_request_tu_doc($postdata) {
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":blob", $blob, -1, OCI_B_BLOB)) {
+            if (!oci_bind_by_name($statement, ":blob", $cursor, -1, OCI_B_CURSOR)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
@@ -938,11 +942,7 @@ function add_request_tu_doc($postdata) {
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             } else {
-                if(!$blob -> savefile($_FILES["request_tu_upload"]["tmp_name"])) {
-                    oci_rollback($connection);
-                } else {
-                    oci_commit($connection);
-                }
+
             }
 
             // Освобождение ресурсов
@@ -954,6 +954,57 @@ function add_request_tu_doc($postdata) {
     // Возврат результата
     echo json_encode($result);
 };
+
+
+
+
+function download_tu_doc ($postdata) {
+    global $connection;
+    $requestId = $postdata -> data -> requestId;
+    $cursor = oci_new_cursor($connection);
+
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_download_tu_doc(:request_id, :file_content); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":request_id", $requestId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":file_content", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                while ($tu = oci_fetch_assoc($cursor)) {
+                    header('Content-Description: File Transfer');
+                    header('Content-Type: application/octet-stream');
+                    header('Content-Disposition: attachment; filename="'.$tu["FILE_TITLE"].'"');
+                    header('Cache-Control: must-revalidate');
+                    header('Pragma: public');
+                    header('Content-Length: ' .$tu["FILE_SIZE"]);
+                    echo $tu["FILE_CONTENT"]->load();
+                }
+            }
+        }
+        // Освобождение ресурсов
+        oci_free_statement($statement);
+        oci_free_statement($cursor);
+    }
+};
+
 
 
 

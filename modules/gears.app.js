@@ -282,6 +282,12 @@ var application = angular.module("gears.app", [
                                     var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
                                     temp_request._model_.fromJSON(request);
                                     temp_request._backup_.setup();
+                                    if (request["tu"] !== undefined) {
+                                        var tu = $factory({ classes: ["FileItem_", "Model", "States"], base_class: "FileItem_" });
+                                        tu._model_.fromJSON(request["tu"]);
+                                        temp_request.tu = tu;
+                                    } else
+                                        temp_request.tu = undefined;
                                     $titles.requests.append(temp_request);
                                 });
                             }

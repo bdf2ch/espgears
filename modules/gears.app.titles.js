@@ -108,6 +108,14 @@ var titles = angular.module("gears.app.titles",[])
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
                 },
 
+
+                FileItem_: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "FILE_TITLE", value: "", default_value: "", backupable: true }),
+                    size: new Field({ source: "FILE_SIZE", value: 0, default_value: 0 }),
+                    type: new Field({ source: "FILE_TYPE", value: "", default_value: "" })
+                },
+
                 /**
                  * Request
                  * Набор свойств, описывающих заявку
@@ -125,7 +133,7 @@ var titles = angular.module("gears.app.titles",[])
                     buildingPlanDate: new Field({ source: "BUILDING_PLAN_DATE", value: 0, default_value: 0 }),
                     resources: new Field({ source: "RESOURCES", value: "", default_value: "", backupable: true}),
                     added: new Field({ source: "ADDED", value: 0, default_value: 0 }),
-                    inputDocuments: []
+                    tu: -1
                 },
 
                 /**
@@ -891,6 +899,29 @@ var titles = angular.module("gears.app.titles",[])
 
                                     if (callback !== undefined)
                                         callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.downloadTU = function (request) {
+                if (request !== undefined) {
+                    var params = {
+                        action: "downloadRequestTU",
+                        data: {
+                            requestId: request.id.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
                                 }
                             }
                         }
