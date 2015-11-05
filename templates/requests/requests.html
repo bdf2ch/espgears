@@ -68,6 +68,10 @@
                 <div class="service-message" ng-show="app.currentRequest === undefined">
                     Выберите заявку
                 </div>
+                <div class="row padding-10" ng-show="app.currentRequest !== undefined">
+                    <span class="request-title left">{{ "Заявка #" + app.currentRequest.id.value }}</span>
+                    <span class="right secondary-text">{{ "от " + (app.currentRequest.added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
+                </div>
                 <div class="width-100 height-100">
                     <tabs tabs-source="tabs" tabs-position="top" ng-show="app.currentRequest !== undefined"></tabs>
                 </div>
