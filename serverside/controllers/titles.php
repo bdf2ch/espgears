@@ -1022,7 +1022,7 @@ function download_tu_doc ($postdata) {
 
 
 
-        if (!$statement = oci_parse($connection, "SELECT * FROM tu_docs WHERE request_id =:r_id")) {
+        if (!$statement = oci_parse($connection, "SELECT * FROM tu_docs WHERE request_id = :r_id")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -1038,14 +1038,11 @@ function download_tu_doc ($postdata) {
                 echo(json_encode($result));
             } else {
                  $tu = oci_fetch_assoc($statement);
-                 print_r($tu);
-                 header('Content-Description: File Transfer');
-                 //header('Content-Type: application/octet-stream');
+                 header('Pragma: public');
+                 //header('Content-Description: File Transfer');
                  header('Content-Type: '.$tu["FILE_TYPE"]);
                  header('Content-Disposition: attachment; filename="'.$tu["FILE_TITLE"].'"');
-                 header('Pragma: public');
-                 //header('Content-Length: '.$fileSize);
-                 echo $tu["FILE_CONTENT"]->load();
+                 echo $tu["FILE_CONTENT"] -> load();
             }
         }
 

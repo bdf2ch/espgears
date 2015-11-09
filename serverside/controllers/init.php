@@ -586,6 +586,7 @@
 
         /* Возврат результата */
         echo json_encode($result);
+        //echo $result;
     }
 
 ?>

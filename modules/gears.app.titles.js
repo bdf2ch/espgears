@@ -910,12 +910,11 @@ var titles = angular.module("gears.app.titles",[])
             titles.downloadTU = function (request) {
                 if (request !== undefined) {
                     var params = {
-                        action: "downloadRequestTU",
                         data: {
                             requestId: request.id.value
                         }
                     };
-                    $http.post("serverside/controllers/titles.php", params)
+                    $http.post("serverside/controllers/downloader.php", params)
                         .success(function (data) {
                             if (data !== undefined) {
                                 if (data["error_code"] !== undefined) {
