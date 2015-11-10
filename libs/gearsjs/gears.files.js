@@ -229,7 +229,7 @@ var grFiles = angular.module("gears.files", [])
         }
     }])
 
-    .directive('attachable', ["FileUploader", function(FileUploader) {
+    .directive('attachable', ["FileUploader", "$log", function(FileUploader, $log) {
         return {
             restrict: 'E',
             replace: true,
@@ -246,36 +246,32 @@ var grFiles = angular.module("gears.files", [])
                     pre: function(scope, element, attrs) {
 
                         scope.uploader = new FileUploader({
-                            url: scope.url,
-                            formData: scope.postData
+                            url: scope.url
                         });
-                        console.log(1);
-                        console.log("show = ", scope.ngShow);
+                    },
+                    // link
+                    post: function(scope, element, attrs) {
+                        $log.log(scope.init);
+
 
                         scope.uploader.onAfterAddingFile = function (fileItem) {
-                            console.info('onAfterAddingFile', fileItem);
-                            scope.uploader.uploadAll();
-                        };
+                            if (scope.init !== undefined)
+                                scope.init();
+                            $log.log("init ", scope.init());
+                            fileItem.formData = scope.init();
 
-                        //scope.uploader.onCompleteAll = function () {
-                        //    console.info('onCompleteAll');
-                        //    uploader.clearQueue();
-                        //    if (scope.onComplete !== undefined)
-                        //        scope.onComplete();
-                        //};
+                            //scope.$apply("scope.postData");
+                            $log.log("postData = ", scope.init);
+                            console.info('onAfterAddingFile', fileItem.formData);
+                            //scope.uploader.uploadAll();
+
+                        };
 
                         scope.uploader.onCompleteItem = function(item, response, status, headers) {
                             if (scope.onComplete !== undefined)
                                 scope.onComplete(response);
+                            $log.log();
                         };
-
-                    },
-                    // link
-                    post: function(scope, element, attrs) {
-                        if (scope.init !== undefined)
-                            scope.init();
-
-                        console.log(2);
                     }
                 };
             }

@@ -321,6 +321,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.app = $application;
         $scope.titles = $titles;
 
+        /*
         var uploader = $scope.uploader = new FileUploader({
             url: "serverside/uploader.php"
             //formData: [
@@ -352,6 +353,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             console.info('onAfterAddingFile', fileItem);
             uploader.uploadAll();
         };
+        */
     }])
 
 

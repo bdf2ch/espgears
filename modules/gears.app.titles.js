@@ -133,7 +133,15 @@ var titles = angular.module("gears.app.titles",[])
                     buildingPlanDate: new Field({ source: "BUILDING_PLAN_DATE", value: 0, default_value: 0 }),
                     resources: new Field({ source: "RESOURCES", value: "", default_value: "", backupable: true}),
                     added: new Field({ source: "ADDED", value: 0, default_value: 0 }),
-                    tu: -1
+                    tu: new Field({ source: "TU_DOC", value: 0, default_value: 0 }),
+                    genSogl: new Field({ source: "GEN_SOGL_DOC", value: 0, default_value: 0 }),
+                    doud: new Field({ source: "DOUD_DOC", value: 0, default_value: 0 }),
+
+                    _init_: function () {
+                        this.tu.value = this.tu.value === 1 ? true : false;
+                        this.genSogl.value = this.genSogl.value === 1 ? true : false;
+                        this.doud.value = this.doud.value === 1 ? true : false;
+                    }
                 },
 
                 /**
@@ -914,7 +922,7 @@ var titles = angular.module("gears.app.titles",[])
                             requestId: request.id.value
                         }
                     };
-                    $http.post("serverside/controllers/downloader.php", params)
+                    $http.get("serverside/controllers/downloader.php?requestId=" + request.id.value, params)
                         .success(function (data) {
                             if (data !== undefined) {
                                 if (data["error_code"] !== undefined) {

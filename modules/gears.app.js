@@ -282,12 +282,18 @@ var application = angular.module("gears.app", [
                                     var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
                                     temp_request._model_.fromJSON(request);
                                     temp_request._backup_.setup();
-                                    if (request["tu"] !== undefined) {
-                                        var tu = $factory({ classes: ["FileItem_", "Model", "States"], base_class: "FileItem_" });
-                                        tu._model_.fromJSON(request["tu"]);
-                                        temp_request.tu = tu;
-                                    } else
-                                        temp_request.tu = undefined;
+                                    //if (request["tu"] !== undefined) {
+                                    //    var tu = $factory({ classes: ["FileItem_", "Model", "States"], base_class: "FileItem_" });
+                                    //    tu._model_.fromJSON(request["tu"]);
+                                    //    temp_request.tu = tu;
+                                    //} else
+                                    //    temp_request.tu = undefined;
+                                    //if (request["genSogl"] !== undefined) {
+                                    //    var genSogl = $factory({ classes: ["FileItem_", "Model", "States"], base_class: "FileItem_" });
+                                    //    tu._model_.fromJSON(request["genSogl"]);
+                                    //    temp_request.genSogl = genSogl;
+                                    //} else
+                                    //    temp_request.genSogl = undefined;
                                     $titles.requests.append(temp_request);
                                 });
                             }

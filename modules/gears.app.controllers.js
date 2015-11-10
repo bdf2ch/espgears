@@ -177,14 +177,26 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.tuInit = function () {
             $application.currentUploaderData[0]["doc_type"] = "tu";
+            $log.log("doc_type = " + $application.currentUploaderData[0]["doc_type"]);
+
         };
 
         $scope.onSuccessUploadTU = function (data) {
-            $log.log("response = ", data);
-            if (data !== undefined) {
-                var temp_tu = $factory({ classes: ["FileItem_"], base_class: "FileItem_" });
-                $application.currentRequest.tu = temp_tu;
-            }
+            $log.log("tu = ", data);
+            if (data !== undefined)
+                $application.currentRequest.tu.value = true;
+        };
+
+        $scope.gsInit = function () {
+            $application.currentUploaderData[0]["doc_type"] = "gs";
+            $log.log("doc_type = " + $application.currentUploaderData[0]["doc_type"]);
+            return $application.currentUploaderData;
+        };
+
+        $scope.onSuccessUploadGS = function (data) {
+            $log.log("gs = ", data);
+            if (data !== undefined)
+                $application.currentRequest.genSogl.value = true;
         };
     }])
 
