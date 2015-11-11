@@ -155,6 +155,7 @@ var titles = angular.module("gears.app.titles",[])
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
                     description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
                     timestamp: new Field({ source: "TIMESTAMP", value: 0, default_value: 0 })
+                    //docs: $factory({ classes: ["Collection", "Model", "Backup", "States"], base_class: "Collection" })
                 },
 
                 /**

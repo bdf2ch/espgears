@@ -461,6 +461,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.app = $application;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
+        $scope.uploadedDocs = [];
         $scope.errors = [];
 
         $scope.onChangeStatus = function (statusId) {
@@ -470,6 +471,22 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
                 else
                     $application.currentRequest._states_.changed(false);
             }
+        };
+
+        $scope.onBeforeUploadRSD = function () {
+            $application.currentUploaderData["doc_type"] = "rsd";
+            $application.currentUploaderData["statusId"] = $application.currentRequest.statusId.value;
+            $log.log("doc_type = ", $application.currentUploaderData["doc_type"]);
+        };
+
+
+        $scope.onCompleteUploadRSD = function (data) {
+            var temp_file = $factory({ classes: ["FileItem_", "Model"], base_class: "FileItem_" });
+            temp_file._model_.fromJSON(data);
+            $log.log("uploaded doc = ", temp_file);
+            $scope.uploadedDocs.push(temp_file);
+            if ($application.currentUploaderData.statusId !== undefined)
+                delete $application.currentUploaderData.statusId;
         };
 
         $scope.save = function () {
@@ -494,6 +511,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $scope.errors.splice(0, $scope.errors.length);
             $application.currentRequest._backup_.restore();
             $application.currentRequest._states_.changed(false);
+            $scope.uploadedDocs.splice(0, $scope.uploadedDocs.length);
         };
 
     }])

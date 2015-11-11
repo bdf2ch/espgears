@@ -501,6 +501,9 @@ body {
 .label-button:hover {
   background: #4B8CD1;
 }
+.label-button input[type="file"] {
+  display: none;
+}
 #request-gensogl-upload {
   display: none;
 }
@@ -512,4 +515,10 @@ body {
 }
 #upload {
   display: none;
+}
+.upload-success {
+  background: #C5E1A5;
+}
+.upload-success img {
+  width: 20px;
 }

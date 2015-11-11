@@ -228,7 +228,7 @@ var grFiles = angular.module("gears.files", [])
             }
         }
     }])
-
+    /*
     .directive('attachable', ["FileUploader", "$log", function(FileUploader, $log) {
         return {
             restrict: 'E',
@@ -244,39 +244,109 @@ var grFiles = angular.module("gears.files", [])
             compile: function() {
                 return {
                     pre: function(scope, element, attrs) {
-
-                        scope.uploader = new FileUploader({
+                        var uploader = scope.uploader = new FileUploader({
                             url: scope.url
                         });
-                    },
-                    // link
-                    post: function(scope, element, attrs) {
-                        $log.log(scope.init);
 
+                        $log.log(uploader);
 
-                        scope.uploader.onAfterAddingFile = function (fileItem) {
-                            if (scope.init !== undefined)
-                                scope.init();
-                            $log.log("init ", scope.init());
-                            fileItem.formData = scope.init();
-
-                            //scope.$apply("scope.postData");
-                            $log.log("postData = ", scope.init);
+                        uploader.onAfterAddingFile = function (fileItem) {
+                            fileItem.formData = scope.postData;
                             console.info('onAfterAddingFile', fileItem.formData);
-                            //scope.uploader.uploadAll();
-
+                            uploader.url = scope.url;
+                            $log.log("url = ", uploader.url);
+                            uploader.uploadAll();
                         };
 
-                        scope.uploader.onCompleteItem = function(item, response, status, headers) {
+                        uploader.onCompleteItem = function(item, response, status, headers) {
                             if (scope.onComplete !== undefined)
                                 scope.onComplete(response);
                             $log.log();
                         };
+                    },
+                    post: function(scope, element, attrs) {
+                        var uploader = scope.uploader = new FileUploader({
+                            url: scope.url
+                        });
+
                     }
                 };
             }
         }
     }])
+    */
+
+    .directive("uploader", ["$log", "$http", "$parse", function ($log, $http, $parse) {
+        return {
+            restrict: "A",
+            scope: {
+                uploaderUrl: "@",
+                uploaderData: "=",
+                uploaderOnCompleteUpload: "=",
+                uploaderOnBeforeUpload: "="
+            },
+            link: function (scope, element, attrs) {
+                var fd = new FormData();
+
+                /**
+                 * Отслеживаем выбор файла для загрузки
+                 */
+                element.bind("change", function () {
+                    //var fd = new FormData();
+                    angular.forEach(element[0].files, function (file) {
+                        $log.log(file);
+                        fd.append('file', file);
+                    });
+
+                    /* Если задан коллбэк onBeforeUpload - выполняем его */
+                    $log.log(scope.uploaderOnBeforeUpload);
+                    if (scope.uploaderOnBeforeUpload !== undefined) {
+                        scope.$apply(scope.uploaderOnBeforeUpload);
+                        //$log.log(scope.onBeforeUpload);
+                        //scope.onBeforeUpload();
+                        //scope.$apply(function () {
+                        //    scope.onBeforeUpload();
+                        //});
+                        scope.upload();
+                    } else
+                        scope.upload();
+
+                    /* Если заданы данные для отправки на сервер - добавляем их в данные формы для отправки */
+                    if (scope.uploaderData !== undefined) {
+                        $log.log(scope.uploaderData);
+                        for (var param in scope.uploaderData) {
+                            fd.append(param, scope.uploaderData[param]);
+                        }
+                    }
+
+                });
+
+                /**
+                 * Отправляет данные на сервер
+                 */
+                scope.upload = function () {
+                    element.prop("disabled", "disabled");
+                    $http.post(scope.uploaderUrl, fd,
+                        {
+                            transformRequest: angular.identity,
+                            headers: {
+                                "Content-Type": undefined
+                            }
+                        }
+                    ).success(function (data) {
+                            $log.log(data);
+                            element.prop("disabled", "");
+                            if (scope.uploaderOnCompleteUpload !== undefined)
+                                scope.uploaderOnCompleteUpload(data);
+                        }
+                    );
+                };
+
+            }
+        }
+    }])
+
+
     .run(function ($modules, $files, $factory, $log) {
         $modules.load($files);
         $files.items = $factory({ classes: ["FileTree", "States"], base_class: "FileTree" });

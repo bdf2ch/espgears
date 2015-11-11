@@ -43,41 +43,56 @@
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">Технические условия</div>
                             <div class="row" ng-show="app.currentRequest.tu.value === false">
-                                <attachable
-                                        title="Загрузить"
-                                        post-data="app.currentUploaderData"
-                                        url="serverside/controllers/uploader.php"
-                                        init="tuInit"
-                                        on-complete="onSuccessUploadTU">
-                                </attachable>
+                                <label for="tu-uploader" class="label-button">
+                                    Загрузить
+                                    <input
+                                            type="file"
+                                            name="tu-uploader"
+                                            id="tu-uploader"
+                                            uploader
+                                            uploader-url="serverside/controllers/uploader.php"
+                                            uploader-data="app.currentUploaderData"
+                                            uploader-on-before-upload="onBeforeUploadTU"
+                                            uploader-on-complete-upload="onSuccessUploadTU"/>
+                                </label>
                             </div>
                             <div class="row text-centered split-5" ng-show="app.currentRequest.tu.value === true">
                                 <a class="button blue width-100"
-                                   href="{{ 'serverside/controllers/downloader.php?docType=tu&requestId=' + app.currentRequest.id.value}}">
+                                   href="{{ 'serverside/controllers/downloader.php?docType=doud&requestId=' + app.currentRequest.id.value}}">
                                     Скачать
                                 </a>
                             </div>
                             <div class="row text-centered split-5" ng-show="app.currentRequest.tu.value === true">
-                                <attachable
-                                        title="Заменить"
-                                        post-data="app.currentUploaderData"
-                                        url="serverside/controllers/uploader.php"
-                                        init="tuInit"
-                                        on-complete="onSuccessUploadTU">
-                                </attachable>
+                                <label for="tu-reuploader" class="label-button">
+                                    Заменить
+                                    <input
+                                            type="file"
+                                            name="tu-reuploader"
+                                            id="tu-reuploader"
+                                            uploader
+                                            uploader-url="serverside/controllers/uploader.php"
+                                            uploader-data="app.currentUploaderData"
+                                            uploader-on-before-upload="onBeforeUploadTU"
+                                            uploader-on-complete-upload="onSuccessUploadTU"/>
+                                </label>
                             </div>
                         </div>
 
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">Генеральное соглашение</div>
                             <div class="row" ng-show="app.currentRequest.genSogl.value === false">
-                                <attachable
-                                        title="Загрузить"
-                                        post-data="app.currentUploaderData"
-                                        url="serverside/controllers/uploader.php"
-                                        init="gsInit"
-                                        on-complete="onSuccessUploadGS">
-                                </attachable>
+                                <label for="gs-uploader" class="label-button">
+                                    Загрузить
+                                    <input
+                                            type="file"
+                                            name="gs-uploader"
+                                            id="gs-uploader"
+                                            uploader
+                                            uploader-url="serverside/controllers/uploader.php"
+                                            uploader-data="app.currentUploaderData"
+                                            uploader-on-before-upload="onBeforeUploadGS"
+                                            uploader-on-complete-upload="onSuccessUploadGS"/>
+                                </label>
                             </div>
                             <div class="row text-centered split-5" ng-show="app.currentRequest.genSogl.value === true">
                                 <a class="button blue width-100"
@@ -86,23 +101,56 @@
                                 </a>
                             </div>
                             <div class="row text-centered split-5" ng-show="app.currentRequest.genSogl.value === true">
-                                <attachable
-                                        title="Заменить"
-                                        post-data="app.currentUploaderData"
-                                        url="serverside/controllers/uploader.php"
-                                        init="gsInit"
-                                        on-complete="onSuccessUploadGS">
-                                </attachable>
+                                <label for="gs-reuploader" class="label-button">
+                                    Заменить
+                                    <input
+                                            type="file"
+                                            name="gs-reuploader"
+                                            id="gs-reuploader"
+                                            uploader
+                                            uploader-url="serverside/controllers/uploader.php"
+                                            uploader-data="app.currentUploaderData"
+                                            uploader-on-before-upload="onBeforeUploadGS"
+                                            uploader-on-complete-upload="onSuccessUploadGS"/>
+                                </label>
                             </div>
                         </div>
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">ДОУД</div>
-                            <div class="row">
-                                <label for="request-doud-upload" class="label-button">Загрузить</label>
-                                <input type="file" id="request-doud-upload" name="request-doud-upload"/>
+                            <div class="row" ng-show="app.currentRequest.doud.value === false">
+                                <label for="doud-uploader" class="label-button">
+                                    Загрузить
+                                    <input
+                                            type="file"
+                                            name="doud-uploader"
+                                            id="doud-uploader"
+                                            uploader
+                                            uploader-url="serverside/controllers/uploader.php"
+                                            uploader-data="app.currentUploaderData"
+                                            uploader-on-before-upload="onBeforeUploadDOUD"
+                                            uploader-on-complete-upload="onSuccessUploadDOUD"/>
+                                </label>
                             </div>
-                            <div class="row text-centered split-5"><button class="button blue width-100">Скачать</button></div>
-                            <div class="row text-centered split-5"><button class="button blue width-100">Заменить</button></div>
+                            <div class="row text-centered split-5" ng-show="app.currentRequest.doud.value === true">
+                                <a class="button blue width-100"
+                                   href="{{ 'serverside/controllers/downloader.php?docType=doud&requestId=' + app.currentRequest.id.value}}">
+                                    Скачать
+                                </a>
+                            </div>
+                            <div class="row text-centered split-5" ng-show="app.currentRequest.doud.value === true">
+                                <label for="doud-reuploader" class="label-button">
+                                    Заменить
+                                    <input
+                                            type="file"
+                                            name="doud-reuploader"
+                                            id="doud-reuploader"
+                                            uploader
+                                            uploader-url="serverside/controllers/uploader.php"
+                                            uploader-data="app.currentUploaderData"
+                                            uploader-on-before-upload="onBeforeUploadDOUD"
+                                            uploader-on-complete-upload="onSuccessUploadDOUD"/>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
