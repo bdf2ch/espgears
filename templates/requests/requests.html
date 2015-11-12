@@ -68,10 +68,6 @@
                 <div class="service-message" ng-show="app.currentRequest === undefined">
                     Выберите заявку
                 </div>
-                <div class="row padding-10" ng-show="app.currentRequest !== undefined">
-                    <span class="request-title left">{{ "Заявка #" + app.currentRequest.id.value }}</span>
-                    <span class="right secondary-text">{{ "от " + (app.currentRequest.added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
-                </div>
                 <div class="width-100 height-100">
                     <tabs tabs-source="tabs" tabs-position="top" ng-show="app.currentRequest !== undefined"></tabs>
                 </div>
@@ -114,8 +110,9 @@
                             <span class="right secondary-text">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
                         </div>
                         <div class="row padding-5">
-                            <a href="">Документ во вложении</a><br>
-                            <a href="">Документ во вложении</a>
+                            <div class="row split-5" ng-repeat="doc in app.currentRequestStatusDocs.items | byRequestId:app.currentRequest.id.value:history.id.value track by $id(doc)">
+                                <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&requestId=' + app.currentRequest.id.value }}">{{ doc.title.value }}</a>&nbsp;<span class="secondary-text">{{ doc.size.value }}</span>
+                            </div>
                         </div>
                         <div class="row padding-5">
                             <span class="secondary-text" ng-show="history.statusId.value === 1">{{ "Заявку добавил " + users.users.find("id", history.userId.value).fio }}</span>

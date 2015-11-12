@@ -116,6 +116,25 @@ var AppFilters = angular.module("gears.app.filters", [])
         }]);
 
 
+        /**
+         * byRequestId
+         * Фильтр документов статусов заявки по идентификатору заявки и идентификатору статуса заявки
+         */
+        $filterProvider.register("byRequestId", ["$log", function ($log) {
+            return function (input, requestId, statusId) {
+                if (requestId !== undefined && requestId !== 0 && statusId !== undefined && statusId !== 0) {
+                    var result = [];
+                    angular.forEach(input, function (item) {
+                        if (item.requestId.value === requestId && item.statusId.value == statusId)
+                            result.push(item);
+                    });
+                    return result;
+                } else
+                    return input;
+            }
+        }]);
+
+
 
         /**
          * timestamp

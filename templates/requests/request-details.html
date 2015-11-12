@@ -3,14 +3,11 @@
         <tr class="column-content-container">
             <td>
                 <div class="column-content y-scrollable padding-10">
-                    <!--
-                    <div class="row">
-                        <span class="request-title left">{{ "Заявка #" + app.currentRequest.id.value }}</span>
+
+                    <div class="row split-10 padding-5">
+                        <span class="request-title left">{{ "Заявка #" + app.currentRequest.id.value + " (" + titles.requestStatuses.find("id", app.currentRequest.statusId.value).title.value + ")" }}</span>
                         <span class="right secondary-text">{{ "от " + (app.currentRequest.added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
                     </div>
-                    <hr>
-                    -->
-
                     <div class="row split-10">
                         <div class="row padding-5 secondary-text">Наименование объекта</div>
                         <div class="row padding-5">{{ app.currentRequest.title.value }}</div>
@@ -58,7 +55,7 @@
                             </div>
                             <div class="row text-centered split-5" ng-show="app.currentRequest.tu.value === true">
                                 <a class="button blue width-100"
-                                   href="{{ 'serverside/controllers/downloader.php?docType=doud&requestId=' + app.currentRequest.id.value}}">
+                                   href="{{ 'serverside/controllers/downloader.php?docType=tu&requestId=' + app.currentRequest.id.value}}">
                                     Скачать
                                 </a>
                             </div>

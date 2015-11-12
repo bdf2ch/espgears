@@ -117,6 +117,15 @@ var titles = angular.module("gears.app.titles",[])
                 },
 
                 /**
+                 * RequestStatusAttachment
+                 * Набор свойств, описывающих приложение к статусу заяки
+                 */
+                RequestStatusAttachment: {
+                    requestId: new Field({ source: "REQUEST_ID", value: 0, default_value: 0 }),
+                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0 })
+                },
+
+                /**
                  * Request
                  * Набор свойств, описывающих заявку
                  */
@@ -944,6 +953,61 @@ var titles = angular.module("gears.app.titles",[])
                         action: "getRequestHistory",
                         data: {
                             requestId: request.id.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.addRequestHistory = function (history, callback) {
+                if (history !== undefined) {
+                    var params = {
+                        action: "addRequestHistory",
+                        data: {
+                            requestId: history.requestId.value,
+                            statusId: history.statusId.value,
+                            userId: 46,
+                            description: history.description.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.deleteRequestHistory = function (history, callback) {
+                if (history !== undefined) {
+                    var params = {
+                        action: "deleteRequestHistory",
+                        data: {
+                            historyId: history.id.value
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)

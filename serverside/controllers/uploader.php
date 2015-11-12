@@ -11,6 +11,7 @@ if (isset($_FILES["file"]["tmp_name"]) && isset($_POST["requestId"])) {
     $result -> size = $_FILES["file"]["size"];
     $requestId = $_POST["requestId"];
     $statusId = $_POST["statusId"];
+    $userId = $_POST["userId"];
 
     switch ($_POST["doc_type"]) {
         case "tu":
@@ -248,7 +249,9 @@ function upload_rsd () {
     global $db_host;
     global $requestId;
     global $statusId;
+    global $userId;
     global $result;
+    $answer = new stdClass;
 
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
     if (!$connection) {
@@ -257,13 +260,14 @@ function upload_rsd () {
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
-        if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request_status_doc(:r_id, :r_status_id, :r_file_title, :r_file_size, :r_file_type, :r_file_content, :rsd); end;")) {
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request_status_doc(:r_id, :r_status_id, :r_user_id, :r_file_title, :r_file_size, :r_file_type, :r_file_content, :rsd, :status); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         } else {
             $blob = oci_new_descriptor($connection, OCI_D_LOB);
-            $cursor = oci_new_cursor($connection);
+            $status_cursor = oci_new_cursor($connection);
+            $rsd_cursor = oci_new_cursor($connection);
 
             if (!oci_bind_by_name($statement, ":r_id", $requestId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
@@ -271,6 +275,11 @@ function upload_rsd () {
                 echo(json_encode($result));
             }
             if (!oci_bind_by_name($statement, ":r_status_id", $statusId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_user_id", $userId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
@@ -295,7 +304,12 @@ function upload_rsd () {
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":rsd", $cursor, -1, OCI_B_CURSOR)) {
+            if (!oci_bind_by_name($statement, ":rsd", $rsd_cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":status", $status_cursor, -1, OCI_B_CURSOR)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
@@ -311,13 +325,23 @@ function upload_rsd () {
                     print_r(oci_error());
                 } else {
                     oci_commit($connection);
-                    if (!oci_execute($cursor)) {
+                    if (!oci_execute($rsd_cursor)) {
                         $error = oci_error();
                         $result = new DBError($error["code"], $error["message"]);
                         echo(json_encode($result));
                     } else {
-                        $rsd = oci_fetch_assoc($cursor);
-                        echo(json_encode($rsd));
+                        $rsd = oci_fetch_assoc($rsd_cursor);
+                        //echo(json_encode($rsd));
+                        $answer -> rsd = $rsd;
+                    }
+                    if (!oci_execute($status_cursor)) {
+                        $error = oci_error();
+                        $result = new DBError($error["code"], $error["message"]);
+                        echo(json_encode($result));
+                    } else {
+                        $status = oci_fetch_assoc($status_cursor);
+                        $answer -> status = $status;
+                        //echo(json_encode($status));
                     }
                 }
             }
@@ -327,7 +351,7 @@ function upload_rsd () {
             oci_free_statement($statement);
         }
         oci_close($connection);
-        //echo(json_encode($result));
+        echo(json_encode($answer));
     }
 };
 

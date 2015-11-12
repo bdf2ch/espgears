@@ -79,6 +79,14 @@
                 case "getRequestHistory":
                     get_request_history($postdata);
                     break;
+                /* Добавление истории изменения статуса заявки */
+                case "addRequestHistory":
+                    add_request_history($postdata);
+                    break;
+                /* Удаляет историю изменения заявки и приложения к ней */
+                case "deleteRequestHistory":
+                    delete_request_history($postdata);
+                    break;
                 /* Меняет статус заявки */
                 case "changeRequestStatus":
                     change_request_status($postdata);
@@ -1062,9 +1070,9 @@ function change_request_status ($postdata) {
     $requestId = $postdata -> data -> requestId;
     $statusId = $postdata -> data -> statusId;
     $userId = $postdata -> data -> userId;
-    $result = stdClass;
+    $result = new stdClass;
 
-    if (!$statement = oci_parse($connection, "begin pkg_titules.p_change_request_status(:request_id, :status_id, :user_id, :history); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_change_request_status(:request_id, :status_id, :user_id, :status); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -1084,7 +1092,7 @@ function change_request_status ($postdata) {
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        if (!oci_bind_by_name($statement, ":history", $cursor, -1, OCI_B_CURSOR)) {
+        if (!oci_bind_by_name($statement, ":status", $cursor, -1, OCI_B_CURSOR)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -1112,23 +1120,156 @@ function change_request_status ($postdata) {
 
 
   /* Функция получения всех титулов */
-function get_request_history($postdata) {
+  function get_request_history($postdata) {
+      global $connection;
+      $history_cursor = oci_new_cursor($connection);
+      $docs_cursor = oci_new_cursor($connection);
+      $requestId = $postdata -> data -> requestId;
+      $result = new stdClass;
+      $history = array();
+      $docs = array();
+
+      if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_history(:r_id, :history, :docs); end;")) {
+          $error = oci_error();
+          $result = new DBError($error["code"], $error["message"]);
+          echo(json_encode($result));
+      } else {
+          if (!oci_bind_by_name($statement, ":r_id", $requestId, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":history", $history_cursor, -1, OCI_B_CURSOR)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":docs", $docs_cursor, -1, OCI_B_CURSOR)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_execute($statement)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          } else {
+              if (!oci_execute($history_cursor)) {
+                  $error = oci_error();
+                  $result = new DBError($error["code"], $error["message"]);
+                  echo(json_encode($result));
+              } else {
+                  while ($history_item = oci_fetch_assoc($history_cursor))
+                      array_push($history, $history_item);
+              }
+              $result -> history = $history;
+
+              if (!oci_execute($docs_cursor)) {
+                  $error = oci_error();
+                  $result = new DBError($error["code"], $error["message"]);
+                  echo(json_encode($result));
+              } else {
+                  while ($docs_item = oci_fetch_assoc($docs_cursor))
+                     array_push($docs, $docs_item);
+              }
+              $result -> docs = $docs;
+          }
+      }
+
+      /* Освобождение ресурсов */
+      oci_free_statement($statement);
+      oci_free_statement($history_cursor);
+      oci_free_statement($docs_cursor);
+
+      /* Возврат результата */
+      echo json_encode($result);
+  };
+
+
+
+
+
+function add_request_history ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
     $requestId = $postdata -> data -> requestId;
-    $result = array();
+    $statusId = $postdata -> data -> statusId;
+    $userId = $postdata -> data -> userId;
+    $description = $postdata -> data -> description;
+    $result = stdClass;
 
-    if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_history(:r_id, :data); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_insert_history(:request_id, :status_id, :user_id, :description, :history); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
-        if (!oci_bind_by_name($statement, ":r_id", $requestId, -1, OCI_DEFAULT)) {
+        if (!oci_bind_by_name($statement, ":request_id", $requestId, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        if (!oci_bind_by_name($statement, ":data", $cursor, -1, OCI_B_CURSOR)) {
+        if (!oci_bind_by_name($statement, ":status_id", $statusId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":history", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_object($cursor);
+            }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
+
+
+
+
+
+/* Удаляет этап работ плана строительства титула */
+function delete_request_history ($postdata) {
+    global $connection;
+    $historyId = $postdata -> data -> historyId;
+    $moment = 0;
+
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_delete_history(:history_id, :moment); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":history_id", $historyId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":moment", $moment, -1, OCI_B_INT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -1136,25 +1277,14 @@ function get_request_history($postdata) {
         if (!oci_execute($statement)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
-            echo(json_encode($result));
-        } else {
-            if (!oci_execute($cursor)) {
-                $error = oci_error();
-                $result = new DBError($error["code"], $error["message"]);
-                echo(json_encode($result));
-            } else {
-                while ($history = oci_fetch_assoc($cursor))
-                    array_push($result, $history);
-            }
+            echo(json_encode($moment));
         }
     }
 
-    /* Освобождение ресурсов */
+    // Освобождение ресурсов
     oci_free_statement($statement);
-    oci_free_statement($cursor);
-
-    /* Возврат результата */
-    echo json_encode($result);
+    // Возврат результата
+    echo json_encode($moment);
 };
 
 

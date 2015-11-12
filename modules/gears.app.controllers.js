@@ -96,6 +96,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                             $application.currentUploaderData["requestId"] = requestId;
                             $application.currentRequestHistory.clear();
                             $application.currentRequestHistory._states_.loaded(false);
+                            $application.currentRequestStatusDocs._states_.loaded(false);
                             $titles.getRequestHistory($application.currentRequest, $scope.onSuccessGetRequestHistory);
                         }
                     } else {
@@ -109,15 +110,26 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.onSuccessGetRequestHistory = function (data) {
             if (data !== undefined) {
-                angular.forEach(data, function (history) {
-                    var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
-                    temp_history._model_.fromJSON(history);
-                    temp_history._backup_.setup();
-                    $application.currentRequestHistory.append(temp_history);
-                });
-                $application.currentRequestHistory._states_.loaded(true);
+                if (data["history"] !== undefined) {
+                    angular.forEach(data["history"], function (history) {
+                        var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+                        temp_history._model_.fromJSON(history);
+                        temp_history._backup_.setup();
+                        $application.currentRequestHistory.append(temp_history);
+                    });
+                    $application.currentRequestHistory._states_.loaded(true);
+                }
+                if (data["docs"] !== undefined) {
+                    angular.forEach(data["docs"], function (history) {
+                        var temp_doc = $factory({ classes: ["RequestStatusAttachment", "FileItem_", "Model"], base_class: "RequestStatusAttachment" });
+                        temp_doc._model_.fromJSON(history);
+                        $application.currentRequestStatusDocs.append(temp_doc);
+                    });
+                    $application.currentRequestStatusDocs._states_.loaded(true);
+                }
             }
         };
+
 
         $scope.addRequest = function () {
             $modals.show({
@@ -135,6 +147,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                 }
             });
         };
+
 
         $scope.editRequest = function (requestId, event) {
             event.stopPropagation();
@@ -210,9 +223,10 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
-    .controller("RequestDocumentsController", ["$log", "$scope", "$titles", "$application", function ($log, $scope, $titles, $application) {
+    .controller("RequestDocumentsController", ["$log", "$scope", "$titles", "$application", "$users", function ($log, $scope, $titles, $application, $users) {
         $scope.titles = $titles;
         $scope.app = $application;
+        $scope.users = $users;
     }])
 
 

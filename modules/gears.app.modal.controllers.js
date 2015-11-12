@@ -462,7 +462,9 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.titles = $titles;
         $scope.contractors = $contractors;
         $scope.uploadedDocs = [];
+        $scope.temp_file = $factory({ classes: ["RequestStatusAttachment", "FileItem_", "Model"], base_class: "RequestStatusAttachment" });
         $scope.errors = [];
+
 
         $scope.onChangeStatus = function (statusId) {
             if (statusId !== undefined) {
@@ -473,45 +475,88 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             }
         };
 
+
         $scope.onBeforeUploadRSD = function () {
             $application.currentUploaderData["doc_type"] = "rsd";
             $application.currentUploaderData["statusId"] = $application.currentRequest.statusId.value;
+            $application.currentUploaderData["userId"] = 76;
             $log.log("doc_type = ", $application.currentUploaderData["doc_type"]);
         };
 
 
         $scope.onCompleteUploadRSD = function (data) {
-            var temp_file = $factory({ classes: ["FileItem_", "Model"], base_class: "FileItem_" });
-            temp_file._model_.fromJSON(data);
-            $log.log("uploaded doc = ", temp_file);
-            $scope.uploadedDocs.push(temp_file);
+            $scope.temp_file._model_.fromJSON(data["rsd"]);
+            $log.log("uploaded doc = ", $scope.temp_file);
+            $application.newRequestHistory._model_.fromJSON(data["status"]);
+            $scope.uploadedDocs.push($scope.temp_file);
+            $application.currentRequestStatusDocs.append($scope.temp_file);
+
+            var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+            temp_history._model_.fromJSON(data["status"]);
+            $application.currentRequestHistory.append(temp_history);
+
             if ($application.currentUploaderData.statusId !== undefined)
                 delete $application.currentUploaderData.statusId;
+            if ($application.currentUploaderData.userId !== undefined)
+                delete $application.currentUploaderData.userId;
         };
 
+
         $scope.save = function () {
-            $titles.changeRequestStatus(
-                $application.currentRequest.id.value,
-                $application.currentRequest.statusId.value,
-                $scope.onSuccessChangeRequestStatus
-            );
+            if ($scope.uploadedDocs.length === 0) {
+                $titles.changeRequestStatus(
+                    $application.currentRequest.id.value,
+                    $application.currentRequest.statusId.value,
+                    $scope.onSuccessChangeRequestStatus
+                );
+            }
             $modals.close();
         };
 
+
         $scope.onSuccessChangeRequestStatus = function (data) {
             if (data !== undefined) {
-                var temp_history = $factory({ classes: ["RequestHistory", "Model"], base_class: "RequestHistory" });
+                //var temp_history = $factory({ classes: ["RequestHistory", "Model"], base_class: "RequestHistory" });
+                //temp_history._model_.fromJSON(data);
+
+                //if ($scope.uploadedDocs.length > 0) {
+                    //$application.currentRequestHistory.append($application.newRequestHistory);
+                //    $scope.errors.splice(0, $scope.errors.length);
+                //    $application.currentRequest._states_.changed(false);
+                //    $scope.uploadedDocs.splice(0, $scope.uploadedDocs.length);
+                //    $application.newRequestHistory._model_.reset();
+                //} else {
+                    //$titles.addRequestHistory($application.newRequestHistory, $scope.onSuccessAddRequestHistory);
+                //var temp_status = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+                //temp_status._model_.fromJSON(data);
+                //$application.currentRequestHistory.append(temp_status);
+                $modals.close();
+                //}
+            }
+        };
+
+
+        $scope.onSuccessAddRequestHistory = function (data) {
+            if (data !== undefined) {
+                var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
                 temp_history._model_.fromJSON(data);
                 $application.currentRequestHistory.append(temp_history);
             }
         };
+
 
         $scope.cancel = function () {
             $modals.close();
             $scope.errors.splice(0, $scope.errors.length);
             $application.currentRequest._backup_.restore();
             $application.currentRequest._states_.changed(false);
+            if ($scope.uploadedDocs.length > 0) {
+                $titles.deleteRequestHistory($application.newRequestHistory);
+                $application.currentRequestStatusDocs.delete("id", $scope.temp_file.id.value);
+                $scope.temp_file._model_.reset();
+            }
             $scope.uploadedDocs.splice(0, $scope.uploadedDocs.length);
+            $application.newRequestHistory._model_.reset();
         };
 
     }])

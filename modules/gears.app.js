@@ -73,8 +73,10 @@ var application = angular.module("gears.app", [
 
             application.title = "ЭСпРЭСО";
             application.currentRequest = undefined;
+            application.currentRequestStatusDocs = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
             application.currentRequestHistory = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            application.newRequestHistory = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
             application.editableRequest = undefined;
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
