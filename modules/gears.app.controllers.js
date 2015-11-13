@@ -90,12 +90,14 @@ var appControllers = angular.module("gears.app.controllers", [])
                             request._states_.selected(false);
                             $application.currentRequest = undefined;
                             $application.currentRequestHistory.clear();
+                            $application.currentRequestStatusDocs.clear();
                         } else {
                             request._states_.selected(true);
                             $application.currentRequest = request;
                             $application.currentUploaderData["requestId"] = requestId;
                             $application.currentRequestHistory.clear();
                             $application.currentRequestHistory._states_.loaded(false);
+                            $application.currentRequestStatusDocs.clear();
                             $application.currentRequestStatusDocs._states_.loaded(false);
                             $titles.getRequestHistory($application.currentRequest, $scope.onSuccessGetRequestHistory);
                         }

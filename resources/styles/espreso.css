@@ -522,3 +522,17 @@ body {
 .upload-success img {
   width: 20px;
 }
+a {
+  text-decoration: none;
+  color: #03A9F4;
+}
+a:hover {
+  color: #01579B;
+}
+.paragraph {
+  padding-left: 15px;
+  color: gray;
+}
+.italic {
+  font-family: "Roboto Italic";
+}

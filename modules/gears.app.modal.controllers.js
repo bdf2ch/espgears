@@ -320,40 +320,15 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     .controller("NewRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "FileUploader", function ($log, $scope, $application, $titles, FileUploader) {
         $scope.app = $application;
         $scope.titles = $titles;
+        $scope.uploadedDocs = [];
 
-        /*
-        var uploader = $scope.uploader = new FileUploader({
-            url: "serverside/uploader.php"
-            //formData: [
-            //    { documentType: "requestInputDocument"}
-            //]
-        });
+        $scope.onBeforeUploadRID = function () {
 
-        uploader.onCompleteItem = function (item, response, status, headers) {
-            console.log("response = ", response[0]);
-            //var temp_file = new FileItem();
-            //temp_file.fromSOURCE(response[0]);
-            //$scope.titules.currentTituleFiles.push(temp_file);
         };
 
-        uploader.onCompleteAll = function () {
-            console.info('onCompleteAll');
-            uploader.clearQueue();
-        };
+        $scope.onCompleteUploadRID = function (data) {
 
-        uploader.onBeforeUploadItem = function (item) {
-            var formData = [{
-                tituleId: $scope.titules.currentTituleId,
-                userId: $scope.user.id.value
-            }];
-            Array.prototype.push.apply(item.formData, formData);
         };
-
-        uploader.onAfterAddingFile = function (fileItem) {
-            console.info('onAfterAddingFile', fileItem);
-            uploader.uploadAll();
-        };
-        */
     }])
 
 
@@ -463,6 +438,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.contractors = $contractors;
         $scope.uploadedDocs = [];
         $scope.temp_file = $factory({ classes: ["RequestStatusAttachment", "FileItem_", "Model"], base_class: "RequestStatusAttachment" });
+        $scope.temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
         $scope.errors = [];
 
 
@@ -480,58 +456,68 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $application.currentUploaderData["doc_type"] = "rsd";
             $application.currentUploaderData["statusId"] = $application.currentRequest.statusId.value;
             $application.currentUploaderData["userId"] = 76;
-            $log.log("doc_type = ", $application.currentUploaderData["doc_type"]);
+            $application.currentUploaderData["description"] = $application.newRequestHistory.description.value;
+            $application.currentUploaderData["historyId"] = $scope.temp_history.id.value;
+            $application.currentRequest._states_.loaded(false);
         };
 
 
         $scope.onCompleteUploadRSD = function (data) {
+            /* Если новая история изменения заявки не создана */
+            if ($scope.temp_history.id.value === 0) {
+                $scope.temp_history._model_.fromJSON(data["status"]);
+                var history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+                history._model_.fromAnother($scope.temp_history);
+                $application.currentRequestHistory.append(history);
+            }
+            $application.currentRequestHistory.find("id", $scope.temp_history.id.value).description.value = data["status"]["DESCRIPTION"];
             $scope.temp_file._model_.fromJSON(data["rsd"]);
-            $log.log("uploaded doc = ", $scope.temp_file);
-            $application.newRequestHistory._model_.fromJSON(data["status"]);
-            $scope.uploadedDocs.push($scope.temp_file);
-            $application.currentRequestStatusDocs.append($scope.temp_file);
+            var file = $factory({ classes: ["RequestStatusAttachment", "FileItem_", "Model"], base_class: "RequestStatusAttachment" });
+            file._model_.fromJSON(data["rsd"]);
+            $scope.uploadedDocs.push(file);
+            $application.currentRequestStatusDocs.append(file);
 
-            var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
-            temp_history._model_.fromJSON(data["status"]);
-            $application.currentRequestHistory.append(temp_history);
 
+            if ($application.currentUploaderData.historyId !== undefined)
+                delete $application.currentUploaderData.historyId;
             if ($application.currentUploaderData.statusId !== undefined)
                 delete $application.currentUploaderData.statusId;
             if ($application.currentUploaderData.userId !== undefined)
                 delete $application.currentUploaderData.userId;
+            if ($application.currentUploaderData.description !== undefined)
+                delete $application.currentUploaderData.description;
+            if ($application.currentUploaderData.historyId !== undefined)
+                delete $application.currentUploaderData.historyId;
+            $application.currentRequest._states_.loaded(true);
         };
 
 
         $scope.save = function () {
-            if ($scope.uploadedDocs.length === 0) {
+            if ($scope.temp_history.id.value === 0) {
                 $titles.changeRequestStatus(
                     $application.currentRequest.id.value,
                     $application.currentRequest.statusId.value,
+                    $application.newRequestHistory.description.value,
                     $scope.onSuccessChangeRequestStatus
                 );
             }
+            $scope.uploadedDocs.splice(0, $scope.uploadedDocs.length);
+            $scope.temp_history._model_.reset();
+            $scope.temp_file._model_.reset();
+            $application.newRequestHistory._model_.reset();
+            $application.currentRequest._states_.changed(false);
             $modals.close();
         };
 
 
         $scope.onSuccessChangeRequestStatus = function (data) {
             if (data !== undefined) {
-                //var temp_history = $factory({ classes: ["RequestHistory", "Model"], base_class: "RequestHistory" });
-                //temp_history._model_.fromJSON(data);
-
-                //if ($scope.uploadedDocs.length > 0) {
-                    //$application.currentRequestHistory.append($application.newRequestHistory);
-                //    $scope.errors.splice(0, $scope.errors.length);
-                //    $application.currentRequest._states_.changed(false);
-                //    $scope.uploadedDocs.splice(0, $scope.uploadedDocs.length);
-                //    $application.newRequestHistory._model_.reset();
-                //} else {
-                    //$titles.addRequestHistory($application.newRequestHistory, $scope.onSuccessAddRequestHistory);
-                //var temp_status = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
-                //temp_status._model_.fromJSON(data);
-                //$application.currentRequestHistory.append(temp_status);
+                var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+                temp_history._model_.fromJSON(data);
+                $application.currentRequestHistory.append(temp_history);
+                $application.currentRequest._backup_.setup();
+                $application.newRequestHistory._model_.reset();
                 $modals.close();
-                //}
             }
         };
 
@@ -550,13 +536,15 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $scope.errors.splice(0, $scope.errors.length);
             $application.currentRequest._backup_.restore();
             $application.currentRequest._states_.changed(false);
-            if ($scope.uploadedDocs.length > 0) {
-                $titles.deleteRequestHistory($application.newRequestHistory);
+            if ($scope.temp_history.id.value !== 0) {
+                $titles.deleteRequestHistory($scope.temp_history, $application.currentRequest._backup_.data.statusId);
                 $application.currentRequestStatusDocs.delete("id", $scope.temp_file.id.value);
-                $scope.temp_file._model_.reset();
+                $application.currentRequestHistory.delete("id", $scope.temp_history.id.value);
             }
             $scope.uploadedDocs.splice(0, $scope.uploadedDocs.length);
             $application.newRequestHistory._model_.reset();
+            $scope.temp_file._model_.reset();
+            $scope.temp_history._model_.reset();
         };
 
     }])

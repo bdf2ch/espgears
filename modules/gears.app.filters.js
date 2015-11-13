@@ -179,6 +179,21 @@ var AppFilters = angular.module("gears.app.filters", [])
         }]);
 
 
+
+        /**
+         * fileSize
+         * Фильтр статусов заявки, возвращает статусы, доступнея для выбора
+         */
+        $filterProvider.register("fileSize", ["$log", function ($log) {
+            return function (input, precision) {
+                if (typeof precision === 'undefined') precision = 1;
+                var units = ['байт', 'кб', 'мб', 'гб', 'тв', 'пб'];
+                var number = Math.floor(Math.log(input) / Math.log(1024));
+                return (input / Math.pow(1024, Math.floor(number))).toFixed(precision) +  ' ' + units[number];
+            }
+        }]);
+
+
     })
     .run(function () {
 

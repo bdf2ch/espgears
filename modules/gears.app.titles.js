@@ -121,6 +121,7 @@ var titles = angular.module("gears.app.titles",[])
                  * Набор свойств, описывающих приложение к статусу заяки
                  */
                 RequestStatusAttachment: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     requestId: new Field({ source: "REQUEST_ID", value: 0, default_value: 0 }),
                     statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0 })
                 },
@@ -882,12 +883,12 @@ var titles = angular.module("gears.app.titles",[])
                                     db_error.init(data);
                                     db_error.display();
                                 } else {
-                                    var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
-                                    temp_request._model_.fromJSON(data);
-                                    temp_request._backup_.setup();
-                                    titles.requests.append(temp_request);
+                                    //var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+                                    //temp_request._model_.fromJSON(data);
+                                    //temp_request._backup_.setup();
+                                    //titles.requests.append(temp_request);
                                     if (callback !== undefined)
-                                        callback(temp_request);
+                                        callback(data);
                                 }
                             }
                         }
@@ -896,14 +897,15 @@ var titles = angular.module("gears.app.titles",[])
             };
 
 
-            titles.changeRequestStatus = function (requestId, statusId, callback) {
+            titles.changeRequestStatus = function (requestId, statusId, description, callback) {
                 if (requestId !== undefined && statusId !== undefined) {
                     var params = {
                         action: "changeRequestStatus",
                         data: {
                             requestId: requestId,
                             statusId: statusId,
-                            userId: 76
+                            userId: 76,
+                            description: description
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)
@@ -925,26 +927,6 @@ var titles = angular.module("gears.app.titles",[])
             };
 
 
-            titles.downloadTU = function (request) {
-                if (request !== undefined) {
-                    var params = {
-                        data: {
-                            requestId: request.id.value
-                        }
-                    };
-                    $http.get("serverside/controllers/downloader.php?requestId=" + request.id.value, params)
-                        .success(function (data) {
-                            if (data !== undefined) {
-                                if (data["error_code"] !== undefined) {
-                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
-                                    db_error.init(data);
-                                    db_error.display();
-                                }
-                            }
-                        }
-                    );
-                }
-            };
 
 
             titles.getRequestHistory = function (request, callback) {
@@ -1002,12 +984,13 @@ var titles = angular.module("gears.app.titles",[])
             };
 
 
-            titles.deleteRequestHistory = function (history, callback) {
-                if (history !== undefined) {
+            titles.deleteRequestHistory = function (history, oldStatusId, callback) {
+                if (history !== undefined && oldStatusId !== undefined) {
                     var params = {
                         action: "deleteRequestHistory",
                         data: {
-                            historyId: history.id.value
+                            historyId: history.id.value,
+                            oldStatusId: oldStatusId
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)

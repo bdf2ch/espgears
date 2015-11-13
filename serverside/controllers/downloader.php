@@ -5,9 +5,10 @@ include "../core.php";
 
 $result = array();
 
-if (isset($_GET["requestId"]) && isset($_GET["docType"])) {
+if (isset($_GET["docType"])) {
     $requestId = $_GET["requestId"];
     $docType = $_GET["docType"];
+    $rsdId = $_GET["rsdId"];
     switch ($docType) {
         case "tu":
             download_tu($requestId);
@@ -17,6 +18,9 @@ if (isset($_GET["requestId"]) && isset($_GET["docType"])) {
             break;
         case "doud":
             download_doud($requestId);
+            break;
+        case "rsd":
+            download_rsd($rsdId);
             break;
     }
 }
@@ -189,6 +193,67 @@ function download_doud ($requestId) {
                     header('Content-Length: '. $doud["FILE_SIZE"]);
                     header('Content-Type: '.$doud["FILE_TYPE"]);
                     echo $doud["FILE_CONTENT"] -> load();
+                }
+            }
+        }
+    }
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    oci_close($connection);
+};
+
+
+
+function download_rsd ($rsdId) {
+    global $db_host;
+    global $db_name;
+    global $db_user;
+    global $db_password;
+
+    echo($rsdId);
+
+    /* Подключение к БД */
+    $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
+    if (!$connection){
+        oci_close($connection);
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        $cursor = oci_new_cursor($connection);
+        if (!$statement = oci_parse($connection, "begin PKG_TITULES.P_GET_REQUEST_STATUS_DOC(:rsd_id, :rsd); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":rsd_id", $rsdId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":rsd", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    $rsd = oci_fetch_assoc($cursor);
+                    header('Content-Description: File Transfer');
+                    header('Content-Disposition: attachment; filename="'.$rsd["FILE_TITLE"].'"');
+                    header('Cache-Control: max-age=0');
+                    header('Pragma: public');
+                    header('Content-Length: '. $rsd["FILE_SIZE"]);
+                    header('Content-Type: '.$rsd["FILE_TYPE"]);
+                    echo $rsd["FILE_CONTENT"] -> load();
                 }
             }
         }

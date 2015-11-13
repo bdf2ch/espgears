@@ -1070,9 +1070,10 @@ function change_request_status ($postdata) {
     $requestId = $postdata -> data -> requestId;
     $statusId = $postdata -> data -> statusId;
     $userId = $postdata -> data -> userId;
+    $description = $postdata -> data -> description;
     $result = new stdClass;
 
-    if (!$statement = oci_parse($connection, "begin pkg_titules.p_change_request_status(:request_id, :status_id, :user_id, :status); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_change_request_status(:request_id, :status_id, :user_id, :description, :status); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -1088,6 +1089,11 @@ function change_request_status ($postdata) {
             echo(json_encode($result));
         }
         if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -1257,14 +1263,20 @@ function add_request_history ($postdata) {
 function delete_request_history ($postdata) {
     global $connection;
     $historyId = $postdata -> data -> historyId;
+    $oldStatusId = $postdata -> data -> oldStatusId;
     $moment = 0;
 
-    if (!$statement = oci_parse($connection, "begin pkg_titules.p_delete_history(:history_id, :moment); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_delete_history(:history_id, :old_status_id, :moment); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
         if (!oci_bind_by_name($statement, ":history_id", $historyId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":old_status_id", $oldStatusId, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));

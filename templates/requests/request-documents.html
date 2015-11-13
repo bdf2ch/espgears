@@ -10,13 +10,15 @@
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                         <span>Загрузка...</span>
                     </div>
-                    <div class="row split-10" ng-show="app.currentRequestStatusDocs.size() > 0" ng-repeat="doc in app.currentRequestStatusDocs.items track by $id(doc)">
+                    <div class="row split-10"
+                         ng-show="app.currentRequestStatusDocs.size() > 0"
+                         ng-repeat="doc in app.currentRequestStatusDocs.items | orderBy:'id.value' track by $index">
                         <div class="row split-5">
-                            <a href="">{{ doc.title.value }}</a>&nbsp;<span class="secondary-text">{{ doc.size.value }}</span>
+                            <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&rsdId=' + doc.id.value }}">{{ doc.title.value }}</a>&nbsp;<span class="secondary-text">{{ doc.size.value | fileSize }}</span>
                         </div>
                         <div class="row">
                             <div class="unit-100 secondary-text">
-                                <span class="left secondary-text">{{ users.find("id", app.currentRequestHistory.find("id", doc.statusId.value).userId.value).fio }}</span>
+                                <span class="left secondary-text">{{ "Разместил: " + users.users.find("id", app.currentRequestHistory.find('id', doc.statusId.value).userId.value).fio }}</span>
                                 <span class="right secondary-text">{{ app.currentRequestHistory.find("id", doc.statusId.value).timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
                             </div>
                         </div>

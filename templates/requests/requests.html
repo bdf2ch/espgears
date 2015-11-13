@@ -109,9 +109,14 @@
                             <span class="left">{{ titles.requestStatuses.find("id", history.statusId.value).title.value }}</span>
                             <span class="right secondary-text">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
                         </div>
+                        <div class="row padding-5" ng-show="history.description.value !== ''">
+                            <span class="paragraph italic">{{ history.description.value }}</span>
+                        </div>
                         <div class="row padding-5">
                             <div class="row split-5" ng-repeat="doc in app.currentRequestStatusDocs.items | byRequestId:app.currentRequest.id.value:history.id.value track by $id(doc)">
-                                <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&requestId=' + app.currentRequest.id.value }}">{{ doc.title.value }}</a>&nbsp;<span class="secondary-text">{{ doc.size.value }}</span>
+                                <div class="row paragraph">
+                                    <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&rsdId=' + doc.id.value }}">{{ doc.title.value }}</a>&nbsp;<span class="secondary-text">{{ doc.size.value | fileSize }}</span>
+                                </div>
                             </div>
                         </div>
                         <div class="row padding-5">

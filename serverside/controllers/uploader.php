@@ -12,6 +12,8 @@ if (isset($_FILES["file"]["tmp_name"]) && isset($_POST["requestId"])) {
     $requestId = $_POST["requestId"];
     $statusId = $_POST["statusId"];
     $userId = $_POST["userId"];
+    $description = $_POST["description"];
+    $historyId = $_POST["historyId"];
 
     switch ($_POST["doc_type"]) {
         case "tu":
@@ -25,6 +27,9 @@ if (isset($_FILES["file"]["tmp_name"]) && isset($_POST["requestId"])) {
             break;
         case "rsd":
             upload_rsd();
+            break;
+        case "rid":
+            upload_rid();
             break;
     }
 }
@@ -251,6 +256,8 @@ function upload_rsd () {
     global $statusId;
     global $userId;
     global $result;
+    global $description;
+    global $historyId;
     $answer = new stdClass;
 
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
@@ -260,7 +267,7 @@ function upload_rsd () {
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
-        if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request_status_doc(:r_id, :r_status_id, :r_user_id, :r_file_title, :r_file_size, :r_file_type, :r_file_content, :rsd, :status); end;")) {
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request_status_doc(:r_id, :r_history_id, :r_status_id, :r_user_id, :r_description, :r_file_title, :r_file_size, :r_file_type, :r_file_content, :rsd, :status); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -274,12 +281,24 @@ function upload_rsd () {
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             }
+
+            if (!oci_bind_by_name($statement, ":r_history_id", $historyId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+
             if (!oci_bind_by_name($statement, ":r_status_id", $statusId, -1, OCI_DEFAULT)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             }
             if (!oci_bind_by_name($statement, ":r_user_id", $userId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_description", $description, -1, OCI_DEFAULT)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
@@ -331,7 +350,6 @@ function upload_rsd () {
                         echo(json_encode($result));
                     } else {
                         $rsd = oci_fetch_assoc($rsd_cursor);
-                        //echo(json_encode($rsd));
                         $answer -> rsd = $rsd;
                     }
                     if (!oci_execute($status_cursor)) {
@@ -341,7 +359,6 @@ function upload_rsd () {
                     } else {
                         $status = oci_fetch_assoc($status_cursor);
                         $answer -> status = $status;
-                        //echo(json_encode($status));
                     }
                 }
             }
@@ -355,6 +372,130 @@ function upload_rsd () {
     }
 };
 
+
+
+
+function upload_rid () {
+    global $db_user;
+    global $db_password;
+    global $db_host;
+    global $requestId;
+    global $statusId;
+    global $userId;
+    global $result;
+    $answer = new stdClass;
+
+    $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
+    if (!$connection) {
+        oci_close($connection);
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_input_doc(:r_id, :r_file_title, :r_file_size, :r_file_type, :r_file_content, :rid, :request); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            $blob = oci_new_descriptor($connection, OCI_D_LOB);
+            $request_cursor = oci_new_cursor($connection);
+            $rsd_cursor = oci_new_cursor($connection);
+
+            if (!oci_bind_by_name($statement, ":r_id", $requestId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+
+            if (!oci_bind_by_name($statement, ":r_history_id", $historyId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+
+            if (!oci_bind_by_name($statement, ":r_status_id", $statusId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_user_id", $userId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_description", $description, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_file_title", $result -> title, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_file_size", $result -> size, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_file_type", $result -> type, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":r_file_content", $blob, -1, OCI_B_BLOB)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":rsd", $rsd_cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":status", $status_cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!$blob -> savefile($_FILES["file"]["tmp_name"])) {
+                    oci_rollback($connection);
+                    echo("file upload error");
+                    print_r(oci_error());
+                } else {
+                    oci_commit($connection);
+                    if (!oci_execute($rsd_cursor)) {
+                        $error = oci_error();
+                        $result = new DBError($error["code"], $error["message"]);
+                        echo(json_encode($result));
+                    } else {
+                        $rsd = oci_fetch_assoc($rsd_cursor);
+                        $answer -> rsd = $rsd;
+                    }
+                    if (!oci_execute($status_cursor)) {
+                        $error = oci_error();
+                        $result = new DBError($error["code"], $error["message"]);
+                        echo(json_encode($result));
+                    } else {
+                        $status = oci_fetch_assoc($status_cursor);
+                        $answer -> status = $status;
+                    }
+                }
+            }
+
+            // Освобождение ресурсов
+            $blob -> free();
+            oci_free_statement($statement);
+        }
+        oci_close($connection);
+        echo(json_encode($answer));
+    }
+};
 
 
 ?>

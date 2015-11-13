@@ -9,6 +9,16 @@
                 ng-options="status.id.value as status.title.value for status in titles.requestStatuses.items | onlySelectableStatuses | orderBy: 'id.value'">
         </select>
     </div>
+    <div class="row split-10" ng-show="app.currentRequest._states_.changed() === true">
+        <label for="request-status-description">Комментарий</label>
+        <textarea class="width-100"
+                name="request-status-description"
+                  id="request-status-description"
+                  rows="3"
+                  ng-model="app.newRequestHistory.description.value"
+                  ng-change="app.currentRequest._states_.changed(true)">
+        </textarea>
+    </div>
     <div class="row split-5" ng-show="app.currentRequest._states_.changed() === true">
         <label for="request-status-uploader" class="label-button">
             Приложить документ
@@ -30,14 +40,14 @@
             </div>
             <div class="width-90 padding-5">
                 <span class="primary-text">{{ doc.title.value }}</span>&nbsp; &nbsp;
-                <span class="secondary-text">{{ doc.size.value }}</span>
+                <span class="secondary-text">{{ doc.size.value | fileSize}}</span>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="width-50">
             <button class="button green square width-100"
-                    ng-disabled="app.currentRequest._states_.loading() === true || app.currentRequest._states_.changed() === false"
+                    ng-disabled="app.currentRequest._states_.loaded() === false || app.currentRequest._states_.changed() === false"
                     ng-click="save()">
                 Сохранить
             </button>

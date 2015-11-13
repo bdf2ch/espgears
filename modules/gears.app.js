@@ -77,6 +77,7 @@ var application = angular.module("gears.app", [
             application.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
             application.currentRequestHistory = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.newRequestHistory = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+            application.newRequestAttachments = $factory({ classes: ["Collection"], base_class: "Collection" });
             application.editableRequest = undefined;
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;

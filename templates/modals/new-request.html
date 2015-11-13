@@ -1,5 +1,5 @@
-<div ng-controller="AddRequestModalController">
-    <div class="row height-100 padding-10">
+<div class="row padding-10" ng-controller="AddRequestModalController">
+    <div class="row height-100">
         <label for="request-type">Вид строительства</label>
         <select name="request-type"
                 id="request-type"
@@ -8,7 +8,7 @@
                 ng-options="type.id.value as type.title.value for type in titles.requestTypes.items">
         </select>
     </div>
-    <div class="row padding-10">
+    <div class="row">
         <label for="request-title">Наименование объекта</label>
         <input type="text"
                name="request-title"
