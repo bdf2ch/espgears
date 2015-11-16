@@ -295,64 +295,67 @@
 /*****
 * BUTTONS
 *****/
-button {
+.button {
   border: none;
   margin-right: 3px;
   padding: 10px;
+  box-sizing: border-box;
   font-family: "Roboto Regular";
+  font-size: 13px;
   cursor: pointer;
   border-radius: 2px;
+  text-decoration: none;
 }
-button:active {
+.button:active {
   outline: none;
 }
-button:focus {
+.button:focus {
   outline: none;
 }
-button[disabled] {
+.button[disabled] {
   cursor: default;
 }
-button.block {
+.button.block {
   display: block;
   width: 100%;
 }
-button.square {
+.button.square {
   border-radius: 0px;
 }
-button.round {
+.button.round {
   width: 20px;
   height: 20px;
   border-radius: 20px;
   vertical-align: top;
 }
-button.green {
+.button.green {
   color: white;
   background: #54C478;
 }
-button.green:hover {
+.button.green:hover {
   background: #58A678;
 }
-button.green[disabled] {
+.button.green[disabled] {
   background: #A7C9B2;
 }
-button.red {
+.button.red {
   color: white;
   background: #E87C79;
 }
-button.red:hover {
+.button.red:hover {
   background: #D64949;
 }
-button.red[disabled] {
+.button.red[disabled] {
   background: #E3BDBC;
 }
-button.blue {
+.button.blue {
   color: white;
   background: #84A8F0;
 }
-button.blue:hover {
+.button.blue:hover {
   background: #4B8CD1;
 }
-button.blue[disabled] {
+.button.blue[disabled] {
   background: #BECBE6;
 }
 /*****

@@ -489,6 +489,7 @@ body {
   display: inline-block;
   padding: 10px;
   font-family: "Roboto Regular";
+  font-size: 13px;
   text-align: center;
   color: white;
   background: #84A8F0;
@@ -499,6 +500,9 @@ body {
 }
 .label-button:hover {
   background: #4B8CD1;
+}
+.label-button input[type="file"] {
+  display: none;
 }
 #request-gensogl-upload {
   display: none;
@@ -511,4 +515,24 @@ body {
 }
 #upload {
   display: none;
+}
+.upload-success {
+  background: #C5E1A5;
+}
+.upload-success img {
+  width: 20px;
+}
+a {
+  text-decoration: none;
+  color: #03A9F4;
+}
+a:hover {
+  color: #01579B;
+}
+.paragraph {
+  padding-left: 15px;
+  color: gray;
+}
+.italic {
+  font-family: "Roboto Italic";
 }

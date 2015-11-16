@@ -2,7 +2,7 @@
     <tr class="column-header">
         <td class="caption width-100">
             Заявки
-            <button class="green right" ng-click="addRequest()">+</button>
+            <button class="button green right" ng-click="addRequest()">+</button>
         </td>
 
     </tr>
@@ -40,8 +40,8 @@
                         <div class="card-header">
                             <span>{{ "Заявка #" + request.id.value }}</span>
                             <div class="right" ng-show="app.currentRequest.id.value === request.id.value">
-                                <button class="round blue" title="Редактировать" ng-click="editRequest(request.id.value, $event)"></button>
-                                <button class="round red" title="Удалить" ng-click="deleteRequest(request.id.value, $event)"></button>
+                                <button class="button round blue" title="Редактировать" ng-click="editRequest(request.id.value, $event)"></button>
+                                <button class="button round red" title="Удалить" ng-click="deleteRequest(request.id.value, $event)"></button>
                             </div>
                         </div>
                         <div class="card-content">
@@ -81,7 +81,7 @@
     <tr class="column-header">
         <td class="caption width-100">
             История
-            <button class="green right"
+            <button class="button green right"
                     ng-show="app.currentRequest !== undefined"
                     ng-click="changeStatus()">
                 +
@@ -109,9 +109,15 @@
                             <span class="left">{{ titles.requestStatuses.find("id", history.statusId.value).title.value }}</span>
                             <span class="right secondary-text">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
                         </div>
+                        <div class="row padding-5" ng-show="history.description.value !== ''">
+                            <span class="paragraph italic">{{ history.description.value }}</span>
+                        </div>
                         <div class="row padding-5">
-                            <a href="">Документ во вложении</a><br>
-                            <a href="">Документ во вложении</a>
+                            <div class="row split-5" ng-repeat="doc in app.currentRequestStatusDocs.items | byRequestId:app.currentRequest.id.value:history.id.value track by $id(doc)">
+                                <div class="row paragraph">
+                                    <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&rsdId=' + doc.id.value }}">{{ doc.title.value }}</a>&nbsp;<span class="secondary-text">{{ doc.size.value | fileSize }}</span>
+                                </div>
+                            </div>
                         </div>
                         <div class="row padding-5">
                             <span class="secondary-text" ng-show="history.statusId.value === 1">{{ "Заявку добавил " + users.users.find("id", history.userId.value).fio }}</span>

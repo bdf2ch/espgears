@@ -1,8 +1,35 @@
-<div class="row width-100" ng-controller="NewRequestDocumentsController">
-    <div class="service-message" ng-show="app.newRequest.inputDocuments.length === 0">
-        <span>К заявке не прикреплено ни одного приложения</span>
+<div class="row padding-10" ng-controller="NewRequestDocumentsController">
+    <div class="row width-100">
+        <div class="service-message" ng-show="uploadedDocs.length === 0">
+            <span>К заявке не прикреплено ни одного приложения</span>
+        </div>
     </div>
-</div>
-<div class="row width-100 text-centered">
-    <attachable></attachable>
+    <div class="row split-30"></div>
+    <div class="row text-centered split-30">
+        <div class="width-50 centered">
+            <label for="new-request-uploader" class="label-button">
+                Приложить документ
+                <input
+                        type="file"
+                        name="new-request-uploader"
+                        id="new-request-uploader"
+                        uploader
+                        uploader-url="serverside/controllers/uploader.php"
+                        uploader-data="app.currentUploaderData"
+                        uploader-on-before-upload="onBeforeUploadRID"
+                        uploader-on-complete-upload="onCompleteUploadRID"/>
+            </label>
+        </div>
+    </div>
+    <div class="row split-10" ng-show="uploadedDocs.length > 0">
+        <div class="row upload-success" ng-repeat="doc in uploadedDocs track by $index">
+            <div class="width-10 padding-5">
+                <img src="resources/img/icons/tick.png" alt=""/>
+            </div>
+            <div class="width-90 padding-5">
+                <span class="primary-text">{{ doc.title.value }}</span>&nbsp; &nbsp;
+                <span class="secondary-text">{{ doc.size.value | fileSize }}</span>
+            </div>
+        </div>
+    </div>
 </div>

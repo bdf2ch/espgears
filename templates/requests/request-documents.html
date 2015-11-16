@@ -3,13 +3,24 @@
         <tr class="column-content-container">
             <td>
                 <div class="column-content y-scrollable padding-10">
-                    <div class="row">
-                        <a href="">Тестовый документ</a>&nbsp;<span class="secondary-text">244 Кб</span>
+                    <div class="service-message" ng-show="app.currentRequestStatusDocs.size() === 0 && app.currentRequestStatusDocs._states_.loaded() === true">
+                        Документы, относящиеся к заявке отсутствуют
                     </div>
-                    <div class="row">
-                        <div class="unit-100 secondary-text">
-                            <span class="left secondary-text">Разместил: Иванов Иван Иванович</span>
-                            <span class="right secondary-text">10 окт 2015 в 13:46</span>
+                    <div class="service-message" ng-show="app.currentRequestStatusDocs._states_.loaded() === false">
+                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                        <span>Загрузка...</span>
+                    </div>
+                    <div class="row split-10"
+                         ng-show="app.currentRequestStatusDocs.size() > 0"
+                         ng-repeat="doc in app.currentRequestStatusDocs.items | orderBy:'id.value' track by $index">
+                        <div class="row split-5">
+                            <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&rsdId=' + doc.id.value }}">{{ doc.title.value }}</a>&nbsp;<span class="secondary-text">{{ doc.size.value | fileSize }}</span>
+                        </div>
+                        <div class="row">
+                            <div class="unit-100 secondary-text">
+                                <span class="left secondary-text">{{ "Разместил: " + users.users.find("id", app.currentRequestHistory.find('id', doc.statusId.value).userId.value).fio }}</span>
+                                <span class="right secondary-text">{{ app.currentRequestHistory.find("id", doc.statusId.value).timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

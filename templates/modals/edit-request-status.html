@@ -1,5 +1,5 @@
-<div ng-controller="EditRequestStatusModalController">
-    <div class="row height-100 padding-10">
+<div class="row padding-10" ng-controller="EditRequestStatusModalController">
+    <div class="row split-10">
         <label for="request-status">Текущий статус заявки</label>
         <select name="request-status"
                 id="request-status"
@@ -9,20 +9,51 @@
                 ng-options="status.id.value as status.title.value for status in titles.requestStatuses.items | onlySelectableStatuses | orderBy: 'id.value'">
         </select>
     </div>
-    <div class="row padding-10" ng-show="app.currentRequest._states_.changed() === true">
-        <label for="status-document">Приложить документ</label>
-        <input type="file" name="status-document" id="status-document"/>
+    <div class="row split-10" ng-show="app.currentRequest._states_.changed() === true">
+        <label for="request-status-description">Комментарий</label>
+        <textarea class="width-100"
+                name="request-status-description"
+                  id="request-status-description"
+                  rows="3"
+                  ng-model="app.newRequestHistory.description.value"
+                  ng-change="app.currentRequest._states_.changed(true)">
+        </textarea>
     </div>
-    <div class="row padding-10">
+    <div class="row split-5" ng-show="app.currentRequest._states_.changed() === true">
+        <label for="request-status-uploader" class="label-button">
+            Приложить документ
+            <input
+                    type="file"
+                    name="request-status-uploader"
+                    id="request-status-uploader"
+                    uploader
+                    uploader-url="serverside/controllers/uploader.php"
+                    uploader-data="app.currentUploaderData"
+                    uploader-on-before-upload="onBeforeUploadRSD"
+                    uploader-on-complete-upload="onCompleteUploadRSD"/>
+        </label>
+    </div>
+    <div class="row split-10" ng-show="uploadedDocs.length > 0">
+        <div class="row upload-success" ng-repeat="doc in uploadedDocs track by $index">
+            <div class="width-10 padding-5">
+                <img src="resources/img/icons/tick.png" alt=""/>
+            </div>
+            <div class="width-90 padding-5">
+                <span class="primary-text">{{ doc.title.value }}</span>&nbsp; &nbsp;
+                <span class="secondary-text">{{ doc.size.value | fileSize}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="width-50">
-            <button class="green square width-100"
-                    ng-disabled="app.currentRequest._states_.loading() === true || app.currentRequest._states_.changed() === false"
+            <button class="button green square width-100"
+                    ng-disabled="app.currentRequest._states_.loaded() === false || app.currentRequest._states_.changed() === false"
                     ng-click="save()">
                 Сохранить
             </button>
         </div>
         <div class="50">
-            <button class="red square width-100"
+            <button class="button red square width-100"
                     ng-disabled="app.currentRequest._states_.loading() === true"
                     ng-click="cancel()">
                 Отмена

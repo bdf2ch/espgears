@@ -722,6 +722,7 @@ html, body {
   display: inline-block;
   padding: 10px;
   font-family: "Roboto Regular";
+  font-size: 13px;
   text-align: center;
   color: white;
   background: #84A8F0;
@@ -732,6 +733,10 @@ html, body {
   
   &:hover {
     background: #4B8CD1;
+  }
+
+  input[type="file"] {
+    display: none;
   }
 }
 
@@ -749,4 +754,35 @@ html, body {
 
 #upload {
   display: none;
+}
+
+
+
+.upload-success {
+  background: #C5E1A5;
+
+  img {
+    width: 20px;
+  }
+}
+
+
+
+a {
+  text-decoration: none;
+  color: #03A9F4;
+
+  &:hover {
+    color: #01579B;
+  }
+}
+
+
+.paragraph {
+  padding-left: 15px;
+  color: gray;
+}
+
+.italic {
+  font-family: "Roboto Italic";
 }

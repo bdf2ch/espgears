@@ -108,6 +108,24 @@ var titles = angular.module("gears.app.titles",[])
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
                 },
 
+
+                FileItem_: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    title: new Field({ source: "FILE_TITLE", value: "", default_value: "", backupable: true }),
+                    size: new Field({ source: "FILE_SIZE", value: 0, default_value: 0 }),
+                    type: new Field({ source: "FILE_TYPE", value: "", default_value: "" })
+                },
+
+                /**
+                 * RequestStatusAttachment
+                 * Набор свойств, описывающих приложение к статусу заяки
+                 */
+                RequestStatusAttachment: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    requestId: new Field({ source: "REQUEST_ID", value: 0, default_value: 0 }),
+                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0 })
+                },
+
                 /**
                  * Request
                  * Набор свойств, описывающих заявку
@@ -116,7 +134,7 @@ var titles = angular.module("gears.app.titles",[])
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     requestTypeId: new Field({ source: "REQUEST_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
                     statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
-                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    userId: new Field({ source: "USER_ID", value: 76, default_value: 76, backupable: true, required: true }),
                     curatorId: new Field({ source: "CURATOR_ID", value: 0, default_value: 0, backupable: true }),
                     investorId: new Field({ source: "INVESTOR_ID", value: 0, default_value:0, backupable: true, required: true }),
                     titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0, backupable: true }),
@@ -125,7 +143,15 @@ var titles = angular.module("gears.app.titles",[])
                     buildingPlanDate: new Field({ source: "BUILDING_PLAN_DATE", value: 0, default_value: 0 }),
                     resources: new Field({ source: "RESOURCES", value: "", default_value: "", backupable: true}),
                     added: new Field({ source: "ADDED", value: 0, default_value: 0 }),
-                    inputDocuments: []
+                    tu: new Field({ source: "TU_DOC", value: 0, default_value: 0 }),
+                    genSogl: new Field({ source: "GEN_SOGL_DOC", value: 0, default_value: 0 }),
+                    doud: new Field({ source: "DOUD_DOC", value: 0, default_value: 0 }),
+
+                    _init_: function () {
+                        this.tu.value = this.tu.value === 1 ? true : false;
+                        this.genSogl.value = this.genSogl.value === 1 ? true : false;
+                        this.doud.value = this.doud.value === 1 ? true : false;
+                    }
                 },
 
                 /**
@@ -139,6 +165,7 @@ var titles = angular.module("gears.app.titles",[])
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
                     description: new Field({ source: "DESCRIPTION", value: "", default_value: "", backupable: true }),
                     timestamp: new Field({ source: "TIMESTAMP", value: 0, default_value: 0 })
+                    //docs: $factory({ classes: ["Collection", "Model", "Backup", "States"], base_class: "Collection" })
                 },
 
                 /**
@@ -856,12 +883,12 @@ var titles = angular.module("gears.app.titles",[])
                                     db_error.init(data);
                                     db_error.display();
                                 } else {
-                                    var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
-                                    temp_request._model_.fromJSON(data);
-                                    temp_request._backup_.setup();
-                                    titles.requests.append(temp_request);
+                                    //var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+                                    //temp_request._model_.fromJSON(data);
+                                    //temp_request._backup_.setup();
+                                    //titles.requests.append(temp_request);
                                     if (callback !== undefined)
-                                        callback(temp_request);
+                                        callback(data);
                                 }
                             }
                         }
@@ -870,14 +897,47 @@ var titles = angular.module("gears.app.titles",[])
             };
 
 
-            titles.changeRequestStatus = function (requestId, statusId, callback) {
+            titles.editRequest = function (request, callback) {
+                if (request !== undefined) {
+                    var params = {
+                        action: "editRequest",
+                        data: {
+                            requestId: request.id.value,
+                            requestTypeId: request.requestTypeId.value,
+                            investorId: request.investorId.value,
+                            title: request.title.value,
+                            description: request.description.value,
+                            resources: request.resources.value,
+                            buildingPlanDate: request.buildingPlanDate.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.changeRequestStatus = function (requestId, statusId, description, callback) {
                 if (requestId !== undefined && statusId !== undefined) {
                     var params = {
                         action: "changeRequestStatus",
                         data: {
                             requestId: requestId,
                             statusId: statusId,
-                            userId: 76
+                            userId: 76,
+                            description: description
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)
@@ -899,12 +959,70 @@ var titles = angular.module("gears.app.titles",[])
             };
 
 
+
+
             titles.getRequestHistory = function (request, callback) {
                 if (request !== undefined) {
                     var params = {
                         action: "getRequestHistory",
                         data: {
                             requestId: request.id.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.addRequestHistory = function (history, callback) {
+                if (history !== undefined) {
+                    var params = {
+                        action: "addRequestHistory",
+                        data: {
+                            requestId: history.requestId.value,
+                            statusId: history.statusId.value,
+                            userId: 46,
+                            description: history.description.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.deleteRequestHistory = function (history, oldStatusId, callback) {
+                if (history !== undefined && oldStatusId !== undefined) {
+                    var params = {
+                        action: "deleteRequestHistory",
+                        data: {
+                            historyId: history.id.value,
+                            oldStatusId: oldStatusId
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)

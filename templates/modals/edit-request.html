@@ -55,16 +55,16 @@
 </div>
 -->
 
-<div ng-controller="EditRequestModalController">
+<div class="row" ng-controller="EditRequestModalController">
     <div class="row height-100">
         <tabs tabs-source="tabs" tabs-position="top"></tabs>
     </div>
     <div class="row width-100 padding-10">
         <div class="width-50">
-            <button class="green square width-100" ng-disabled="app.currentRequest._states_.loading() === true" ng-click="validate()">Сохранить</button>
+            <button class="button green square width-100" ng-disabled="app.currentRequest._states_.loading() === true || app.currentRequest._states_.changed() === false" ng-click="validate()">Сохранить</button>
         </div>
         <div class="50">
-            <button class="red square width-100" ng-disabled="app.currentRequest._states_.loading() === true" ng-click="cancel()">Отмена</button>
+            <button class="button red square width-100" ng-disabled="app.currentRequest._states_.loading() === true" ng-click="cancel()">Отмена</button>
         </div>
     </div>
     <div class="row width-100">

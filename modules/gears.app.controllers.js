@@ -90,12 +90,15 @@ var appControllers = angular.module("gears.app.controllers", [])
                             request._states_.selected(false);
                             $application.currentRequest = undefined;
                             $application.currentRequestHistory.clear();
+                            $application.currentRequestStatusDocs.clear();
                         } else {
                             request._states_.selected(true);
                             $application.currentRequest = request;
-                            $application.currentUploaderData[0]["requestId"] = requestId;
+                            $application.currentUploaderData["requestId"] = requestId;
                             $application.currentRequestHistory.clear();
                             $application.currentRequestHistory._states_.loaded(false);
+                            $application.currentRequestStatusDocs.clear();
+                            $application.currentRequestStatusDocs._states_.loaded(false);
                             $titles.getRequestHistory($application.currentRequest, $scope.onSuccessGetRequestHistory);
                         }
                     } else {
@@ -109,15 +112,26 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.onSuccessGetRequestHistory = function (data) {
             if (data !== undefined) {
-                angular.forEach(data, function (history) {
-                    var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
-                    temp_history._model_.fromJSON(history);
-                    temp_history._backup_.setup();
-                    $application.currentRequestHistory.append(temp_history);
-                });
-                $application.currentRequestHistory._states_.loaded(true);
+                if (data["history"] !== undefined) {
+                    angular.forEach(data["history"], function (history) {
+                        var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+                        temp_history._model_.fromJSON(history);
+                        temp_history._backup_.setup();
+                        $application.currentRequestHistory.append(temp_history);
+                    });
+                    $application.currentRequestHistory._states_.loaded(true);
+                }
+                if (data["docs"] !== undefined) {
+                    angular.forEach(data["docs"], function (history) {
+                        var temp_doc = $factory({ classes: ["RequestStatusAttachment", "FileItem_", "Model"], base_class: "RequestStatusAttachment" });
+                        temp_doc._model_.fromJSON(history);
+                        $application.currentRequestStatusDocs.append(temp_doc);
+                    });
+                    $application.currentRequestStatusDocs._states_.loaded(true);
+                }
             }
         };
+
 
         $scope.addRequest = function () {
             $modals.show({
@@ -135,6 +149,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                 }
             });
         };
+
 
         $scope.editRequest = function (requestId, event) {
             event.stopPropagation();
@@ -170,24 +185,69 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
-    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", function ($log, $scope, $titles, $application, $contractors) {
+    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", "$location", function ($log, $scope, $titles, $application, $contractors, $factory, $location) {
         $scope.titles = $titles;
         $scope.app = $application;
         $scope.contractors = $contractors;
-        //$scope.tuData = [{
-        //    doc_type: "tu",
-        //    requestId: $application.currentRequest !== undefined ? $application.currentRequest.id.value : 0
-        //}];
 
-        $scope.tuInit = function () {
-            $application.currentUploaderData[0]["doc_type"] = "tu";
+
+        $scope.gotoTitle = function (titleId) {
+            if (titleId !== undefined) {
+                angular.forEach($titles.titles.items, function (title) {
+                    if (title.id.value === titleId) {
+                        if (title._states_.selected() === true) {
+                            title._states_.selected(false);
+                            $application.currentTitle = undefined;
+                        } else {
+                            title._states_.selected(true);
+                            $application.currentTitle = title;
+                        }
+                    } else {
+                        title._states_.selected(false);
+                    }
+                });
+                $location.url("titles/");
+            }
+        };
+
+        $scope.onBeforeUploadTU = function () {
+            $application.currentUploaderData["doc_type"] = "tu";
+            $log.log("doc_type = " + $application.currentUploaderData["doc_type"]);
+        };
+
+        $scope.onSuccessUploadTU = function (data) {
+            $log.log("tu = ", data);
+            if (data !== undefined)
+                $application.currentRequest.tu.value = true;
+        };
+
+        $scope.onBeforeUploadGS = function () {
+            $application.currentUploaderData["doc_type"] = "gs";
+            $log.log("doc_type = " + $application.currentUploaderData["doc_type"]);
+        };
+
+        $scope.onSuccessUploadGS = function (data) {
+            if (data !== undefined)
+                $application.currentRequest.genSogl.value = true;
+        };
+
+        $scope.onBeforeUploadDOUD = function () {
+            $application.currentUploaderData["doc_type"] = "doud";
+            $log.log("doc_type = " + $application.currentUploaderData["doc_type"]);
+        };
+
+        $scope.onSuccessUploadDOUD = function (data) {
+            $log.log("tu = ", data);
+            if (data !== undefined)
+                $application.currentRequest.doud.value = true;
         };
     }])
 
 
-    .controller("RequestDocumentsController", ["$log", "$scope", "$titles", "$application", function ($log, $scope, $titles, $application) {
+    .controller("RequestDocumentsController", ["$log", "$scope", "$titles", "$application", "$users", function ($log, $scope, $titles, $application, $users) {
         $scope.titles = $titles;
         $scope.app = $application;
+        $scope.users = $users;
     }])
 
 

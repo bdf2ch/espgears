@@ -75,8 +75,12 @@ var application = angular.module("gears.app", [
 
             application.title = "ЭСпРЭСО";
             application.currentRequest = undefined;
+            application.currentRequestStatusDocs = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+            application.newRequestHistory = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
             application.currentRequestHistory = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            application.newRequestHistory = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+            application.newRequestAttachments = $factory({ classes: ["Collection"], base_class: "Collection" });
             application.editableRequest = undefined;
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
@@ -93,7 +97,7 @@ var application = angular.module("gears.app", [
             application.currentPowerLineNodeConnectionNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentPowerLineConnectionNode = undefined;
             application.currentWorkingCommission = undefined;
-            application.currentUploaderData = [{}];
+            application.currentUploaderData = {};
 
             application.init = function () {
                 $http.post("serverside/controllers/init.php")
