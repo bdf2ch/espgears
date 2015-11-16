@@ -290,44 +290,104 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             if ($application.newRequest.buildingPlanDate.value === "" || $application.newRequest.buildingPlanDate.value === 0)
                 $scope.errors.push("Вы не указали планируемую дату строительства и ввода в эксплуатацию объекта");
             if ($scope.errors.length === 0) {
-                $titles.addRequest($application.newRequest, $scope.onSuccessAddRequest);
+                if ($application.newRequest.id.value !== 0) {
+                    $titles.editRequest($application.newRequest, $scope.onSuccessEditRequest);
+                } else {
+                    $titles.addRequest($application.newRequest, $scope.onSuccessAddRequest);
+                }
             }
         };
 
+
         $scope.onSuccessAddRequest = function (data) {
-            var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
-            temp_request._model_.fromJSON(data);
-            temp_request._backup_.setup();
-            $scope.titles.requests.append(temp_request);
+            if (data !== undefined) {
+                if (data["request"] !== undefined) {
+                    var temp_request = $factory({classes: ["Request", "Model", "Backup", "States"], base_class: "Request"});
+                    temp_request._model_.fromJSON(data);
+                    temp_request._backup_.setup();
+                    $scope.titles.requests.append(temp_request);
+                }
+                if (data["title"] !== undefined) {
+
+                }
+            }
             $modals.close();
             $application.newRequest._model_.reset();
         };
 
+
+        $scope.onSuccessEditRequest = function (data) {
+            if (data !== undefined) {
+                if (data["request"] !== undefined) {
+                    var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+                    temp_request._model_.fromJSON(data["request"]);
+                    temp_request._backup_.setup();
+                    $titles.requests.append(temp_request);
+                }
+                if (data["title"] !== undefined) {
+                    var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+                    temp_title._model_.fromJSON(data["title"]);
+                    temp_title._backup_.setup;
+                    $titles.titles.append(temp_title);
+                }
+                $modals.close();
+                $application.newRequest._model_.reset();
+            }
+        };
+
+
         $scope.cancel = function () {
             $modals.close();
+            if ($application.newRequest.id.value !== 0) {
+                $log.log("newRequest = ", $application.newRequest);
+                $titles.deleteRequestHistory($application.newRequestHistory, 0, $scope.onSuccessCancelAddNewRequest);
+                //$application.currentRequestStatusDocs.delete("id", $scope.temp_file.id.value);
+                //$application.currentRequestHistory.delete("id", $scope.temp_history.id.value);
+            }
+        };
+
+        $scope.onSuccessCancelAddNewRequest = function (data) {
+            $application.newRequestHistory._model_.reset();
             $scope.errors.splice(0, $scope.errors.length);
             $application.newRequest._model_.reset();
             $application.newRequest._states_.changed(false);
         };
     }])
 
-    .controller("NewRequestDetailsController", ["$log", "$scope", "$application", "$titles", "$contractors", function ($log, $scope, $application, $titles, $contractors) {
+    .controller("NewRequestDetailsController", ["$log", "$scope", "$application", "$titles", "$contractors", "$location", function ($log, $scope, $application, $titles, $contractors, $location) {
         $scope.app = $application;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
+
     }])
 
-    .controller("NewRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "FileUploader", function ($log, $scope, $application, $titles, FileUploader) {
+    .controller("NewRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "$factory", function ($log, $scope, $application, $titles, $factory) {
         $scope.app = $application;
         $scope.titles = $titles;
         $scope.uploadedDocs = [];
 
         $scope.onBeforeUploadRID = function () {
-
+            $application.currentUploaderData["doc_type"] = "rid";
+            $application.currentUploaderData["newRequestId"] = $application.newRequest.id.value;
+            $application.currentUploaderData["userId"] = 76;
         };
 
         $scope.onCompleteUploadRID = function (data) {
-
+            if (data["request"] !== undefined)
+                $application.newRequest._model_.fromJSON(data["request"]);
+            if (data["rid"] !== undefined) {
+                var temp_file = $factory({ classes: ["RequestAttachment", "FileItem_", "Model", "States"], base_class: "RequestAttachment" });
+                temp_file._model_.fromJSON(data["rid"]);
+                $scope.uploadedDocs.push(temp_file);
+            }
+            if (data["history"] !== undefined)
+                $application.newRequestHistory._model_.fromJSON(data["history"]);
+            if ($application.currentUploaderData["newRequestId"] !== undefined)
+                delete $application.currentUploaderData.newRequestId;
+            if ($application.currentUploaderData["doc_type"] !== undefined)
+                delete $application.currentUploaderData.doc_type;
+            if ($application.currentUploaderData["userId"] !== undefined)
+                delete $application.currentUploaderData.userId;
         };
     }])
 
@@ -336,7 +396,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
      * EditRequestModalController
      * Контроллер модального окна редактирования заявки
      */
-    .controller("EditRequestModalController", ["$log", "$scope", "$misc", "$application", "$modals", "$nodes", "$contractors", "$location", function ($log, $scope, $misc, $application, $modals, $nodes, $contractors, $location) {
+    .controller("EditRequestModalController", ["$log", "$scope", "$misc", "$application", "$modals", "$nodes", "$contractors", "$location", "$titles", function ($log, $scope, $misc, $application, $modals, $nodes, $contractors, $location, $titles) {
         $scope.app = $application;
         $scope.misc = $misc;
         $scope.contractors = $contractors;
@@ -370,19 +430,21 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
 
         $scope.validate = function () {
             $scope.errors.splice(0, $scope.errors.length);
-            if ($application.currentPowerLineNode.number.value === "")
-                $scope.errors.push("Вы не указали номер опоры");
-            if ($application.currentPowerLineNode.powerLineId.value === "")
-                $scope.errors.push("Вы не указали линию");
+            if ($application.currentRequest.title.value === "")
+                $scope.errors.push("Вы не указали наименование объекта");
+            if ($application.currentRequest.description.value === "")
+                $scope.errors.push("Вы не указали общую информацию об объекте");
+            if ($application.currentRequest.buildingPlanDate.value === "" || $application.currentRequest.buildingPlanDate.value === 0)
+                $scope.errors.push("Вы не указали планируемую дату строительства и ввода в эксплуатацию объекта");
             if ($scope.errors.length === 0) {
-                $application.currentPowerLineNode._states_.loading(true);
-                $nodes.editNode($application.currentPowerLineNode, $scope.onSuccessEditNode);
+                $titles.editRequest($application.currentRequest, $scope.onSuccessEditRequest);
             }
         };
 
-        $scope.onSuccessEditNode = function (data) {
+        $scope.onSuccessEditRequest = function (data) {
             $application.currentRequest._states_.loaded(true);
             $application.currentRequest._states_.loading(false);
+            $application.currentRequest._states_.changed(false);
             $application.currentRequest._backup_.setup();
             $modals.close();
         };

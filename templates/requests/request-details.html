@@ -10,29 +10,29 @@
                     </div>
                     <div class="row split-10">
                         <div class="row padding-5 secondary-text">Наименование объекта</div>
-                        <div class="row padding-5">{{ app.currentRequest.title.value }}</div>
+                        <div class="row padding-5">{{ app.currentRequest._backup_.data.title }}</div>
                     </div>
                     <div class="row split-10">
                         <div class="row padding-5 secondary-text">Вид строительства</div>
-                        <div class="row padding-5">{{ titles.requestTypes.find("id", app.currentRequest.requestTypeId.value).title.value }}</div>
+                        <div class="row padding-5">{{ titles.requestTypes.find("id", app.currentRequest._backup_.data.requestTypeId).title.value }}</div>
                     </div>
                     <div class="row split-10">
                         <div class="row padding-5 secondary-text">Общая информация об объекте</div>
-                        <div class="row padding-5">{{ app.currentRequest.description.value }}</div>
+                        <div class="row padding-5">{{ app.currentRequest._backup_.data.description }}</div>
                     </div>
                     <div class="row split-10">
                         <div class="row padding-5 secondary-text">Необходимые виды ресурсов электроэнергетики</div>
-                        <div class="row padding-5">{{ app.currentRequest.resources.value }}</div>
+                        <div class="row padding-5">{{ app.currentRequest._backup_.data.resources }}</div>
                     </div>
                     <div class="row split-10">
                         <div class="row padding-5 secondary-text">Инвестор</div>
-                        <div class="row padding-5">{{ contractors.contractors.find("id", app.currentRequest.investorId.value).title.value }}</div>
+                        <div class="row padding-5">{{ contractors.contractors.find("id", app.currentRequest._backup_.data.investorId).title.value }}</div>
                     </div>
 
                     <div class="row split-10 width-33">
                         <div class="row padding-5 secondary-text">Титул</div>
                         <div class="row padding-5">
-                            <button class="button blue big width-100">Перейти к титулу</button>
+                            <button class="button blue big width-100" ng-click="gotoTitle(app.currentRequest.titleId.value)">Перейти к титулу</button>
                         </div>
                     </div>
 

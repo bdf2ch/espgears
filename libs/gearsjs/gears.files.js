@@ -295,18 +295,13 @@ var grFiles = angular.module("gears.files", [])
                     //var fd = new FormData();
                     angular.forEach(element[0].files, function (file) {
                         $log.log(file);
-                        fd.append('file', file);
+                        fd.append("file", file);
                     });
 
                     /* Если задан коллбэк onBeforeUpload - выполняем его */
                     $log.log(scope.uploaderOnBeforeUpload);
                     if (scope.uploaderOnBeforeUpload !== undefined) {
                         scope.$apply(scope.uploaderOnBeforeUpload);
-                        //$log.log(scope.onBeforeUpload);
-                        //scope.onBeforeUpload();
-                        //scope.$apply(function () {
-                        //    scope.onBeforeUpload();
-                        //});
                         scope.upload();
                     } else
                         scope.upload();
@@ -338,6 +333,7 @@ var grFiles = angular.module("gears.files", [])
                             element.prop("disabled", "");
                             if (scope.uploaderOnCompleteUpload !== undefined)
                                 scope.uploaderOnCompleteUpload(data);
+                            fd = new FormData();
                         }
                     );
                 };

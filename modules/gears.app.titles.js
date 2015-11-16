@@ -134,7 +134,7 @@ var titles = angular.module("gears.app.titles",[])
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     requestTypeId: new Field({ source: "REQUEST_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
                     statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
-                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    userId: new Field({ source: "USER_ID", value: 76, default_value: 76, backupable: true, required: true }),
                     curatorId: new Field({ source: "CURATOR_ID", value: 0, default_value: 0, backupable: true }),
                     investorId: new Field({ source: "INVESTOR_ID", value: 0, default_value:0, backupable: true, required: true }),
                     titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0, backupable: true }),
@@ -887,6 +887,38 @@ var titles = angular.module("gears.app.titles",[])
                                     //temp_request._model_.fromJSON(data);
                                     //temp_request._backup_.setup();
                                     //titles.requests.append(temp_request);
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.editRequest = function (request, callback) {
+                if (request !== undefined) {
+                    var params = {
+                        action: "editRequest",
+                        data: {
+                            requestId: request.id.value,
+                            requestTypeId: request.requestTypeId.value,
+                            investorId: request.investorId.value,
+                            title: request.title.value,
+                            description: request.description.value,
+                            resources: request.resources.value,
+                            buildingPlanDate: request.buildingPlanDate.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
                                     if (callback !== undefined)
                                         callback(data);
                                 }

@@ -185,11 +185,30 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
-    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", function ($log, $scope, $titles, $application, $contractors, $factory) {
+    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", "$location", function ($log, $scope, $titles, $application, $contractors, $factory, $location) {
         $scope.titles = $titles;
         $scope.app = $application;
         $scope.contractors = $contractors;
 
+
+        $scope.gotoTitle = function (titleId) {
+            if (titleId !== undefined) {
+                angular.forEach($titles.titles.items, function (title) {
+                    if (title.id.value === titleId) {
+                        if (title._states_.selected() === true) {
+                            title._states_.selected(false);
+                            $application.currentTitle = undefined;
+                        } else {
+                            title._states_.selected(true);
+                            $application.currentTitle = title;
+                        }
+                    } else {
+                        title._states_.selected(false);
+                    }
+                });
+                $location.url("titles/");
+            }
+        };
 
         $scope.onBeforeUploadTU = function () {
             $application.currentUploaderData["doc_type"] = "tu";

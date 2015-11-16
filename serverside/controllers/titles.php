@@ -67,6 +67,10 @@
                 case "addRequest":
                     add_request($postdata);
                     break;
+                /* Редактирование заявки */
+                case "editRequest":
+                    edit_request($postdata);
+                    break;
                 /* Добавляет файл технических условий к заявке */
                 case "addRequestTUDoc":
                     add_request_tu_doc($postdata);
@@ -834,28 +838,115 @@
 
 
 function add_request ($postdata) {
+      global $connection;
+      $cursor = oci_new_cursor($connection);
+      $buildingPlanDate = $postdata -> data -> buildingPlanDate;
+      $curatorId = $postdata -> data -> curatorId;
+      $requestTypeId = $postdata -> data -> requestTypeId;
+      $userId = $postdata -> data -> userId;
+      $investorId = $postdata -> data -> investorId;
+      $title = $postdata -> data -> title;
+      $resources = $postdata -> data -> resources;
+      $result = stdClass;
+
+      if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request(:request_type_id, :user_id, :investor_id, :curator_id, :title, :building_plan_date, :resources, :description, :new_request); end;")) {
+          $error = oci_error();
+          $result = new DBError($error["code"], $error["message"]);
+          echo(json_encode($result));
+      } else {
+          if (!oci_bind_by_name($statement, ":request_type_id", $requestTypeId, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":investor_id", $investorId, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":curator_id", $curatorId, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":building_plan_date", $buildingPlanDate, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":resources", $resources, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+          if (!oci_bind_by_name($statement, ":new_request", $cursor, -1, OCI_B_CURSOR)) {
+              $error = oci_error();
+              $result = new DBError($error["code"], $error["message"]);
+              echo(json_encode($result));
+          }
+              if (!oci_execute($statement)) {
+                  $error = oci_error();
+                  $result = new DBError($error["code"], $error["message"]);
+                  echo(json_encode($result));
+              } else {
+                  if (!oci_execute($cursor)) {
+                      $error = oci_error();
+                      $result = new DBError($error["code"], $error["message"]);
+                      echo(json_encode($result));
+                  } else
+                      $result = oci_fetch_object($cursor);
+              }
+      }
+
+      // Освобождение ресурсов
+      oci_free_statement($statement);
+      oci_free_statement($cursor);
+      // Возврат результата
+      echo json_encode($result);
+  };
+
+
+
+/* Редактирует заявку */
+function edit_request($postdata) {
     global $connection;
-    $cursor = oci_new_cursor($connection);
+    $request_cursor = oci_new_cursor($connection);
+    $title_cursor = oci_new_cursor($connection);
     $buildingPlanDate = $postdata -> data -> buildingPlanDate;
-    $curatorId = $postdata -> data -> curatorId;
     $requestTypeId = $postdata -> data -> requestTypeId;
-    $userId = $postdata -> data -> userId;
     $investorId = $postdata -> data -> investorId;
     $title = $postdata -> data -> title;
     $resources = $postdata -> data -> resources;
-    $result = stdClass;
+    $description = $postdata -> data -> description;
+    $requestId = $postdata -> data -> requestId;
+    $result = new stdClass;
 
-    if (!$statement = oci_parse($connection, "begin pkg_titules.p_add_request(:request_type_id, :user_id, :investor_id, :curator_id, :title, :building_plan_date, :resources, :description, :new_request); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_edit_request(:request_id, :request_type_id, :investor_id, :title, :description, :resources, :building_plan_date, :request, :new_title); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
-        if (!oci_bind_by_name($statement, ":request_type_id", $requestTypeId, -1, OCI_DEFAULT)) {
+        if (!oci_bind_by_name($statement, ":request_id", $requestId, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+        if (!oci_bind_by_name($statement, ":request_type_id", $requestTypeId, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -865,22 +956,7 @@ function add_request ($postdata) {
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        if (!oci_bind_by_name($statement, ":curator_id", $curatorId, -1, OCI_DEFAULT)) {
-            $error = oci_error();
-            $result = new DBError($error["code"], $error["message"]);
-            echo(json_encode($result));
-        }
         if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
-            $error = oci_error();
-            $result = new DBError($error["code"], $error["message"]);
-            echo(json_encode($result));
-        }
-        if (!oci_bind_by_name($statement, ":building_plan_date", $buildingPlanDate, -1, OCI_DEFAULT)) {
-            $error = oci_error();
-            $result = new DBError($error["code"], $error["message"]);
-            echo(json_encode($result));
-        }
-        if (!oci_bind_by_name($statement, ":resources", $resources, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -890,31 +966,56 @@ function add_request ($postdata) {
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        if (!oci_bind_by_name($statement, ":new_request", $cursor, -1, OCI_B_CURSOR)) {
+        if (!oci_bind_by_name($statement, ":resources", $resources, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-            if (!oci_execute($statement)) {
+        if (!oci_bind_by_name($statement, ":building_plan_date", $buildingPlanDate, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":request", $request_cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":new_title", $title_cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($request_cursor)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
-            } else {
-                if (!oci_execute($cursor)) {
-                    $error = oci_error();
-                    $result = new DBError($error["code"], $error["message"]);
-                    echo(json_encode($result));
-                } else
-                    $result = oci_fetch_object($cursor);
-            }
+            } else
+                $result -> request = oci_fetch_assoc($request_cursor);
+
+            if (!oci_execute($title_cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else
+                $result -> title = oci_fetch_assoc($title_cursor);
+        }
     }
 
     // Освобождение ресурсов
     oci_free_statement($statement);
-    oci_free_statement($cursor);
+    oci_free_statement($request_cursor);
+    oci_free_statement($title_cursor);
     // Возврат результата
     echo json_encode($result);
 };
+
+
 
 
 

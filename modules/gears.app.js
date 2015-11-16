@@ -75,6 +75,7 @@ var application = angular.module("gears.app", [
             application.currentRequest = undefined;
             application.currentRequestStatusDocs = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.newRequest = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+            application.newRequestHistory = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
             application.currentRequestHistory = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.newRequestHistory = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
             application.newRequestAttachments = $factory({ classes: ["Collection"], base_class: "Collection" });

@@ -1,19 +1,20 @@
-<div class="row height-100" ng-controller="EditRequestDetailsController">
+<div class="row height-100 padding-10" ng-controller="EditRequestDetailsController">
     <div class="row split-20">
         <label for="request-title">Вид строительства</label>
         <select name="request-type"
                 id="request-type"
                 class="width-100"
-                ng-model="app.editableRequest.requestTypeId.value"
-                ng-options="type.id.value as type.title.value for type in titles.requestTypes.items"></select>
+                ng-model="app.currentRequest.requestTypeId.value"
+                ng-options="type.id.value as type.title.value for type in titles.requestTypes.items" ng-change="app.currentRequest._states_.changed(true)"></select>
     </div>
     <div class="row split-20">
         <label for="request-investor">Инвестор</label>
         <select name="request-investor"
                 id="request-investor"
                 class="width-100"
-                ng-model="app.editableRequest.investorId.value"
-                ng-options="investor.id.value as investor.title.value for investor in contractors.contractors.items"></select>
+                ng-model="app.currentRequest.investorId.value"
+                ng-options="investor.id.value as investor.title.value for investor in contractors.contractors.items"
+                ng-change="app.currentRequest._states_.changed(true)"></select>
     </div>
     <div class="row split-20">
         <label for="request-title">Наименование объекта</label>
@@ -22,8 +23,9 @@
                id="request-title"
                class="width-100"
                placeholder="Наименование объекта"
-               ng-disabled="app.editableRequest._states_.loading() === true"
-               ng-model="app.editableRequest.title.value"/>
+               ng-disabled="app.currentRequest._states_.loading() === true"
+               ng-model="app.currentRequest.title.value"
+               ng-change="app.currentRequest._states_.changed(true)"/>
     </div>
     <div class="row split-20">
         <label for="request-date">Планируемый срок ввода в эксплуатацию</label>
@@ -32,8 +34,9 @@
                id="request-date"
                class="width-100"
                placeholder="Планируемый срок ввода в эксплуатацию"
-               ng-disabled="app.editableRequest._states_.loading() === true"
-               ng-model="app.editableRequest.buildingPlanDate.value"/>
+               ng-disabled="app.currentRequest._states_.loading() === true"
+               ng-model="app.currentRequest.buildingPlanDate.value"
+               ng-change="app.currentRequest._states_.changed(true)"/>
     </div>
     <div class="row split-20">
         <label for="request-description">Общая информация об объекте</label>
@@ -43,9 +46,10 @@
                   cols="30"
                   rows="3"
                   placeholder="Информация об объекте"
-                  ng-disabled="app.editableRequest._states_.loading() === true"
-                  ng-change="app.editableRequest._states_.changed(true)"
-                  ng-model="app.editableRequest.description.value">
+                  ng-disabled="app.currentRequest._states_.loading() === true"
+                  ng-change="app.currentRequest._states_.changed(true)"
+                  ng-model="app.currentRequest.description.value"
+                  ng-change="app.currentRequest._states_.changed(true)">
         </textarea>
     </div>
     <div class="row">
@@ -56,9 +60,9 @@
                   cols="30"
                   rows="3"
                   placeholder="Необходимые виды ресурсов"
-                  ng-disabled="app.editableRequest._states_.loading() === true"
-                  ng-change="app.editableRequest._states_.changed(true)"
-                  ng-model="app.editableRequest.resources.value">
+                  ng-disabled="app.currentRequest._states_.loading() === true"
+                  ng-change="app.currentRequest._states_.changed(true)"
+                  ng-model="app.currentRequest.resources.value">
         </textarea>
     </div>
 </div>
