@@ -140,3 +140,17 @@ var grShop = angular.module("gears.shop", [])
         $modules.load($cart);
         $rootScope.cart = $cart;
     });
+
+
+
+
+
+var gearsShop = angular.module("gears.shp", []);
+
+gearsShop.factory("$catalog", ["$log", function($log) {
+    var module = {};
+
+    module.products = $factory();
+
+    return module;
+}]);

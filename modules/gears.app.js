@@ -18,7 +18,9 @@ var application = angular.module("gears.app", [
         "gears.app.nodes",
         "gears.app.misc",
         "gears.app.contractors",
-        "gears.app.users"
+        "gears.app.users",
+
+        "gears.shp"
     ])
     .config(function ($provide, $routeProvider) {
 

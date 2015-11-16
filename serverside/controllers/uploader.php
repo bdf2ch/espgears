@@ -5,7 +5,7 @@ include "../core.php";
 
 
 if (isset($_FILES["file"]["tmp_name"])) {
-    $result = stdClass;
+    $result = new stdClass;
     $result -> title = $_FILES["file"]["name"];
     $result -> type = $_FILES["upload"]["type"];
     $result -> size = $_FILES["upload"]["size"];

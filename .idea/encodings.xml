@@ -19,5 +19,6 @@
     <file url="file://$PROJECT_DIR$/templates/contractors/contractors.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/templates/titles/title-files.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/templates/titles/title-montage-scheme.html" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

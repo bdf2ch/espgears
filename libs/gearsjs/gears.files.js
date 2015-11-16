@@ -269,6 +269,6 @@ var grFiles = angular.module("gears.files", [])
         $modules.load($files);
         $files.items = $factory({ classes: ["FileTree", "States"], base_class: "FileTree" });
         $log.log("items = ", $files.items);
-        $files.scan();
+        //$files.scan();
     }
 );
