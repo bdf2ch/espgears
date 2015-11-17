@@ -373,8 +373,9 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         };
 
         $scope.onCompleteUploadRID = function (data) {
-            if (data["request"] !== undefined)
-                $application.newRequest._model_.fromJSON(data["request"]);
+            var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
+            temp_request._model_.fromJSON(data["request"]);
+            $application.newRequest.id.value = temp_request.id.value;
             if (data["rid"] !== undefined) {
                 var temp_file = $factory({ classes: ["RequestAttachment", "FileItem_", "Model", "States"], base_class: "RequestAttachment" });
                 temp_file._model_.fromJSON(data["rid"]);
@@ -456,40 +457,35 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.contractors = $contractors;
     }])
 
-    .controller("EditRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "FileUploader", function ($log, $scope, $application, $titles, FileUploader) {
+    .controller("EditRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "$factory", function ($log, $scope, $application, $titles, $factory) {
         $scope.app = $application;
         $scope.titles = $titles;
 
-        var uploader = $scope.uploader = new FileUploader({
-            url: "serverside/uploader.php"
-            //formData: [
-            //    { documentType: "requestInputDocument"}
-            //]
-        });
-
-        uploader.onCompleteItem = function (item, response, status, headers) {
-            console.log("response = ", response[0]);
-            //var temp_file = new FileItem();
-            //temp_file.fromSOURCE(response[0]);
-            //$scope.titules.currentTituleFiles.push(temp_file);
+        $scope.deleteRsd = function (rsdId) {
+            if (rsdId !== undefined) {
+                $titles.deleteRequestStatusDoc(rsdId, function () {
+                    $application.currentRequest.inputDocs.delete("id", rsdId);
+                });
+            }
         };
 
-        uploader.onCompleteAll = function () {
-            console.info('onCompleteAll');
-            uploader.clearQueue();
+        $scope.onBeforeUploadRID = function () {
+            $application.currentUploaderData["doc_type"] = "rid";
+            $application.currentUploaderData["userId"] = 76;
+            $application.currentUploaderData["newRequestId"] = $application.currentRequest.id.value;
         };
 
-        uploader.onBeforeUploadItem = function (item) {
-            var formData = [{
-                tituleId: $scope.titules.currentTituleId,
-                userId: $scope.user.id.value
-            }];
-            Array.prototype.push.apply(item.formData, formData);
-        };
-
-        uploader.onAfterAddingFile = function (fileItem) {
-            console.info('onAfterAddingFile', fileItem);
-            uploader.uploadAll();
+        $scope.onCompleteUploadRID = function (data) {
+            if (data["rid"] !== undefined) {
+                var temp_rid = $factory({ classes: ["RequestStatusAttachment", "FileItem_", "Model", "Backup", "States"], base_class: "RequestStatusAttachment" });
+                temp_rid._model_.fromJSON(data["rid"]);
+                $application.currentRequest.inputDocs.append(temp_rid);
+                $application.currentRequestStatusDocs.append(temp_rid);
+            }
+            if ($application.currentUploaderData["doc_type"] !== undefined)
+                delete $application.currentUploaderData.doc_type;
+            if ($application.currentUploaderData["userId"] !== undefined)
+                delete $application.currentUploaderData.userId;
         };
     }])
 

@@ -146,6 +146,7 @@ var titles = angular.module("gears.app.titles",[])
                     tu: new Field({ source: "TU_DOC", value: 0, default_value: 0 }),
                     genSogl: new Field({ source: "GEN_SOGL_DOC", value: 0, default_value: 0 }),
                     doud: new Field({ source: "DOUD_DOC", value: 0, default_value: 0 }),
+                    inputDocs: $factory({ classes: ["Collection", "States"], base_class: "Collection" }),
 
                     _init_: function () {
                         this.tu.value = this.tu.value === 1 ? true : false;
@@ -1035,6 +1036,32 @@ var titles = angular.module("gears.app.titles",[])
                                 } else {
                                     if (callback !== undefined)
                                         callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            titles.deleteRequestStatusDoc = function (rsdId, callback) {
+                if (rsdId !== undefined) {
+                    var params = {
+                        action: "deleteRequestStatusDoc",
+                        data: {
+                            rsdId: rsdId
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback();
                                 }
                             }
                         }

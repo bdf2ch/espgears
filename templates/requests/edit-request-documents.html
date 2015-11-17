@@ -1,8 +1,31 @@
 <div class="row width-100" ng-controller="EditRequestDocumentsController">
-    <div class="service-message" ng-show="app.editableRequest.inputDocuments.length === 0">
+    <div class="service-message" ng-show="app.currentRequest.inputDocs.size() === 0">
         <span>К заявке не прикреплено ни одного приложения</span>
     </div>
-</div>
-<div class="row width-100 text-centered">
-
+    <div class="row split-30"></div>
+    <div class="row text-centered split-10">
+        <div class="width-50 centered">
+            <label for="edit-request-uploader" class="label-button">
+                Приложить документ
+                <input
+                        type="file"
+                        name="edit-request-uploader"
+                        id="edit-request-uploader"
+                        uploader
+                        uploader-url="serverside/controllers/uploader.php"
+                        uploader-data="app.currentUploaderData"
+                        uploader-on-before-upload="onBeforeUploadRID"
+                        uploader-on-complete-upload="onCompleteUploadRID"/>
+            </label>
+        </div>
+    </div>
+    <div class="row padding-10 split-10" ng-show="app.currentRequest.inputDocs.size() > 0">
+        <div class="row upload-success" ng-repeat="doc in app.currentRequest.inputDocs.items track by $index">
+            <div class="width-100 padding-5">
+                <button class="button round red" title="Удалить приложение" ng-click="deleteRsd(doc.id.value)">&times;</button>
+                <span class="primary-text">{{ doc.title.value }}</span>&nbsp; &nbsp;
+                <span class="secondary-text">{{ doc.size.value | fileSize }}</span>
+            </div>
+        </div>
+    </div>
 </div>

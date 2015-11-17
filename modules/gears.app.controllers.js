@@ -86,6 +86,8 @@ var appControllers = angular.module("gears.app.controllers", [])
             if (requestId !== undefined) {
                 angular.forEach($titles.requests.items, function (request) {
                     if (request.id.value === requestId) {
+                        if ($application.currentRequest !== undefined)
+                            $application.currentRequest.inputDocs.clear();
                         if (request._states_.selected() === true) {
                             request._states_.selected(false);
                             $application.currentRequest = undefined;
@@ -112,12 +114,17 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.onSuccessGetRequestHistory = function (data) {
             if (data !== undefined) {
+                var firstHistoryId = 0;
                 if (data["history"] !== undefined) {
                     angular.forEach(data["history"], function (history) {
                         var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
                         temp_history._model_.fromJSON(history);
                         temp_history._backup_.setup();
                         $application.currentRequestHistory.append(temp_history);
+                        if (temp_history.statusId.value === 1) {
+                            firstHistoryId = temp_history.id.value;
+                            $log.log("first history id = ", firstHistoryId);
+                        }
                     });
                     $application.currentRequestHistory._states_.loaded(true);
                 }
@@ -126,6 +133,10 @@ var appControllers = angular.module("gears.app.controllers", [])
                         var temp_doc = $factory({ classes: ["RequestStatusAttachment", "FileItem_", "Model"], base_class: "RequestStatusAttachment" });
                         temp_doc._model_.fromJSON(history);
                         $application.currentRequestStatusDocs.append(temp_doc);
+                        if (temp_doc.statusId.value === firstHistoryId) {
+                            $application.currentRequest.inputDocs.append(temp_doc);
+                            $log.log("doc id = ", temp_doc.id.value);
+                        }
                     });
                     $application.currentRequestStatusDocs._states_.loaded(true);
                 }

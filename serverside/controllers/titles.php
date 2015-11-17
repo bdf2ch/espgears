@@ -91,6 +91,10 @@
                 case "deleteRequestHistory":
                     delete_request_history($postdata);
                     break;
+                /* Удаляет приложение к статусу заявки */
+                case "deleteRequestStatusDoc":
+                    delete_request_status_doc($postdata);
+                    break;
                 /* Меняет статус заявки */
                 case "changeRequestStatus":
                     change_request_status($postdata);
@@ -1400,6 +1404,33 @@ function delete_request_history ($postdata) {
     echo json_encode($moment);
 };
 
+
+
+/* Удаляет этап работ плана строительства титула */
+function delete_request_status_doc ($postdata) {
+    global $connection;
+    $rsdId = $postdata -> data -> rsdId;
+
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_delete_request_status_doc(:rsd_id); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":rsd_id", $rsdId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($moment));
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+};
 
 
 
