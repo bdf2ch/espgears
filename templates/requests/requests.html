@@ -31,6 +31,10 @@
                     <span>Загрузка...</span>
                 </div>
 
+                <div class="service-message" ng-show="titles.requests._states_.loaded() === true && titles.requests.size() === 0">
+                    Заявки отсутствуют
+                </div>
+
                 <ul class="cards">
                     <li class="card"
                         ng-class="{'active': request._states_.selected() === true}"
@@ -40,8 +44,10 @@
                         <div class="card-header">
                             <span>{{ "Заявка #" + request.id.value }}</span>
                             <div class="right" ng-show="app.currentRequest.id.value === request.id.value">
-                                <button class="button round blue" title="Редактировать" ng-click="editRequest(request.id.value, $event)"></button>
-                                <button class="button round red" title="Удалить" ng-click="deleteRequest(request.id.value, $event)"></button>
+                                <button class="button round blue" title="Редактировать" ng-click="editRequest(request.id.value, $event)">
+                                    <img src="resources/img/icons/edit.png" alt=""/>
+                                </button>
+                                <button class="button round red" title="Удалить" ng-click="deleteRequest(request.id.value, $event)">&times;</button>
                             </div>
                         </div>
                         <div class="card-content">

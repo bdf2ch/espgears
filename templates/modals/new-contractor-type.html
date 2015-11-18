@@ -1,5 +1,5 @@
-<div ng-controller="AddContractorTypeModalController">
-    <div class="row height-100 split-20">
+<div class="row" ng-controller="AddContractorTypeModalController">
+    <div class="row padding-10 height-100">
         <label for="new-type-title">Наименование типа</label>
         <input type="text"
                name="new-type-title"
@@ -9,12 +9,12 @@
                ng-disabled="newType._states_.loading() === true"
                ng-model="newType.title.value"/>
     </div>
-    <div class="row">
+    <div class="row padding-10">
         <div class="width-50">
-            <button class="green square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="validate()">Добавить</button>
+            <button class="button green square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="validate()">Добавить</button>
         </div>
         <div class="50">
-            <button class="red square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="cancel()">Отмена</button>
+            <button class="button red square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="cancel()">Отмена</button>
         </div>
     </div>
     <div class="row">

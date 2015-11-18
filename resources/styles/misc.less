@@ -410,6 +410,8 @@
   cursor: pointer;
   border-radius: 2px;
   text-decoration: none;
+  line-height: 13px;
+
 
   &:active {
     outline: none;
@@ -435,8 +437,21 @@
   &.round {
     width: 20px;
     height: 20px;
+    padding: 5px;
+    font-size: 18px;
     border-radius: 20px;
     vertical-align: top;
+    line-height: 9px;
+
+
+    img {
+      display: block;
+      float: left;
+      width: 12px;
+      //margin-left: 6px;
+      //margin-top: -6px;
+    }
+
   }
 
   &.green {
@@ -1358,4 +1373,20 @@ textarea {
 
   }
   
+}
+
+
+
+
+.table {
+  td {
+    padding: 10px;
+  }
+
+  &.stripped {
+    tr:nth-child(odd) {
+      background: #F5F5F5;
+    }
+  }
+
 }

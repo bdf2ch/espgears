@@ -305,6 +305,7 @@
   cursor: pointer;
   border-radius: 2px;
   text-decoration: none;
+  line-height: 13px;
 }
 .button:active {
   outline: none;
@@ -325,8 +326,16 @@
 .button.round {
   width: 20px;
   height: 20px;
+  padding: 5px;
+  font-size: 18px;
   border-radius: 20px;
   vertical-align: top;
+  line-height: 9px;
+}
+.button.round img {
+  display: block;
+  float: left;
+  width: 12px;
 }
 .button.green {
   color: white;
@@ -1011,4 +1020,10 @@ textarea {
 .cards .card .card-content {
   margin-left: 70px;
   padding-top: 5px;
+}
+.table td {
+  padding: 10px;
+}
+.table.stripped tr:nth-child(odd) {
+  background: #F5F5F5;
 }

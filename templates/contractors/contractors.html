@@ -2,11 +2,12 @@
     <tr class="column-header">
         <td class="caption width-100">
             Типы контрагентов
-            <button class="green right"
+            <button class=" button green right"
                     ng-click="addType()"
                     title="Добавить тип контрагента">
                 +
             </button>
+            <!--
             <span class="separator right" ng-show="app.currentContractorType !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentContractorType !== undefined"
@@ -19,16 +20,23 @@
                     title="Удалить тип контрагента">
                 -
             </button>
+            -->
         </td>
     </tr>
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
+                <div class="service-message" ng-show="contractors.contractorTypes._states_.loaded() === false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
+                <div class="service-message" ng-show="contractors.contractorTypes._states_.loaded() === true && contractors.contractorTypes.size() === 0">
+                    Типы контрагентов отсутствуют
+                </div>
+
+
+                <!--
                 <ul class="list hover">
-                    <div class="service-message" ng-show="contractors.contractorTypes._states_.loaded() === false">
-                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                        <span>Загрузка...</span>
-                    </div>
                     <li ng-repeat="type in contractors.contractorTypes.items | orderBy:'_backup_.data.title' track by $id(type)"
                         ng-class="{'active': type._states_.selected() === true}"
                         ng-click="selectType(type.id.value)">
@@ -45,6 +53,38 @@
                         </span>
                     </li>
                 </ul>
+                -->
+
+
+                <ul class="cards">
+                    <li class="card"
+                        ng-class="{'active': type._states_.selected() === true}"
+                        ng-repeat="type in contractors.contractorTypes.items | orderBy:'_backup_.data.title' track by $id(type)"
+                        ng-click="selectType(type.id.value)">
+                        <img src="../resources/img/icons/request.jpg" alt="" class="card-img"/>
+                        <div class="card-header">
+                            <span>{{ type._backup_.data.title }}</span>
+                            <div class="right" ng-show="app.currentContractorType.id.value === type.id.value">
+                                <button class="button round blue" title="Редактировать" ng-click="editType($event)">
+                                    <img src="resources/img/icons/edit.png" alt=""/>
+                                </button>
+                                <button class="button round red" title="Удалить" ng-click="deleteType($event)">&times;</button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span class="secondary-text"
+                                  ng-show="contractors.getContractorsCountByType(type.id.value) !== 0"
+                                  ng-class="{'light': title._states_.selected() === true }">
+                                {{ contractors.getContractorsCountByType(type.id.value) + " контрагентов" }}
+                            </span>
+                            <span class="secondary-text"
+                                  ng-show="contractors.getContractorsCountByType(type.id.value) === 0"
+                                  ng-class="{'light': title._states_.selected() === true }">
+                                Нет контрагентов
+                            </span>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </td>
     </tr>
@@ -54,7 +94,7 @@
     <tr class="column-header">
         <td class="caption width-100">
             Контрагенты
-            <button class="green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
+            <button class="button green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
             <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentContractor !== undefined"

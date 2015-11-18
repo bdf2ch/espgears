@@ -257,8 +257,19 @@ var contractors = angular.module("gears.app.contractors", [])
             return contractors;
         }]);
     })
-    .run(function ($modules, $contractors) {
+    .run(function ($log, $modules, $contractors, $menu) {
         $modules.load($contractors);
+        $contractors.contractorTypes._states_.loaded(false);
+        $menu.add({
+            id: "contractors",
+            title: "Контрагенты",
+            description: "Контрагенты",
+            url: "#/contractors",
+            template: "templates/contractors/contractors.html",
+            controller: "ContractorsController",
+            icon: "resources/img/icons/contractors.png",
+            order: 3
+        });
         //$contractors.getContractorTypes();
         //$contractors.getContractors();
     }

@@ -16,7 +16,14 @@
             <td colspan="2"></td>
         </tr>
         <tr id="app-content">
-            <td id="app-menu"></td>
+            <td id="app-menu">
+                <div class="menu-item"
+                     ng-repeat="menuItem in menu.items.items | orderBy:'order' track by $index" ng-class="{ 'active': menuItem.active === true }">
+                    <a href="{{ menuItem.url }}" title="{{ menuItem.description }}">
+                        <img src="{{ menuItem.icon }}"/>
+                    </a>
+                </div>
+            </td>
             <td id="app-view" ng-view></td>
         </tr>
     </table>

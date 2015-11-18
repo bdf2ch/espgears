@@ -106,7 +106,7 @@ var gears = angular.module("gears", [])
          * $menu
          * Сервис, реализующий функционал для управления меню
          ********************/
-        $provide.factory("$menu", ["$log", "$factory", function ($log, $factory) {
+        $provide.factory("$menu", ["$log", "$factory", "$rootScope", "$location", function ($log, $factory, $rootScope, $location) {
             var menu = {};
 
             /**
@@ -125,6 +125,8 @@ var gears = angular.module("gears", [])
                     url: "",
                     template: "",
                     controller: "",
+                    icon: "",
+                    order: 0,
                     active: false,
                     default: false,
                     submenu: [],
@@ -177,6 +179,7 @@ var gears = angular.module("gears", [])
             menu.add = function (parameters) {
                 if (parameters !== undefined) {
                     var new_menu_item = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
+                    new_menu_item.init(parameters);
                     $routeProvider.when(new_menu_item.url, {
                         templateUrl: new_menu_item.url,
                         controller: new_menu_item.controller
@@ -187,8 +190,21 @@ var gears = angular.module("gears", [])
                             controller: new_menu_item.controller
                         });
                     menu.items.append(new_menu_item);
+                } else {
+                    $log.error("$menu: Не указан параметры при регистрации раздела меню");
+                    return false;
                 }
             };
+
+            $rootScope.$on("$routeChangeStart", function() {
+                var url = $location.url();
+                angular.forEach(menu.items.items, function (item) {
+                    if (item.url === ("#" + url))
+                        item.active = true;
+                    else
+                        item.active = false;
+                });
+            });
 
 
             return menu;
@@ -983,7 +999,8 @@ var gears = angular.module("gears", [])
 
 
     })
-    .run(function ($modules, $classes, $menu) {
+    .run(function ($modules, $classes, $menu, $rootScope) {
         $modules.load($classes);
         $modules.load($menu);
+        $rootScope.menu = $menu;
     });
