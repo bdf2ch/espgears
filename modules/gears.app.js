@@ -79,7 +79,7 @@ var application = angular.module("gears.app", [
             application.currentRequestHistory = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.newRequestHistory = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
             application.newRequestAttachments = $factory({ classes: ["Collection"], base_class: "Collection" });
-            application.editableRequest = undefined;
+            //application.editableRequest = undefined;
             application.currentTitle = undefined;
             application.currentTitlePart = undefined;
             application.currentTitleTabId = 0;
@@ -205,7 +205,6 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["contractorTypes"] !== undefined) {
-                                $contractors.contractorTypes._states_.loaded(false);
                                 angular.forEach(data["contractorTypes"], function (contractorType) {
                                     var temp_contractor_type = $factory({ classes: ["ContractorType", "Model", "Backup", "States"], base_class: "ContractorType" });
                                     temp_contractor_type._model_.fromJSON(contractorType);

@@ -37,8 +37,23 @@ body {
   background: #3194B5;
 }
 #app-menu {
-  width: 50px;
+  width: 55px;
+  padding-top: 5px;
+  vertical-align: top;
   background: url("../img/menu_background.png");
+}
+#app-menu .menu-item {
+  padding: 5px;
+  margin-bottom: 10px;
+}
+#app-menu .menu-item.active img {
+  width: 46px;
+}
+#app-menu .menu-item img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 36px;
 }
 #app-view {
   vertical-align: top;

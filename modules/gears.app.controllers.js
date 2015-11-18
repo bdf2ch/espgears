@@ -165,11 +165,11 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.editRequest = function (requestId, event) {
             event.stopPropagation();
             if (requestId !== undefined) {
-                angular.forEach($titles.requests.items, function (request) {
-                    if (request.id.value === requestId) {
-                        $application.editableRequest = request;
-                    }
-                });
+                //angular.forEach($titles.requests.items, function (request) {
+                //    if (request.id.value === requestId) {
+                //        $application.editableRequest = request;
+                //    }
+                //});
                 $modals.show({
                     width: 500,
                     position: "center",
@@ -729,6 +729,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                         contractorType._states_.selected(false);
                     }
                 });
+                $log.log("ct = ", $application.currentContractorType);
             }
         };
 
@@ -760,7 +761,8 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-        $scope.editType = function () {
+        $scope.editType = function (event) {
+            event.stopPropagation();
             $modals.show({
                 width: 400,
                 position: "center",
@@ -771,7 +773,9 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-        $scope.deleteType = function () {
+
+        $scope.deleteType = function (event) {
+            event.stopPropagation();
             $modals.show({
                 width: 400,
                 position: "center",

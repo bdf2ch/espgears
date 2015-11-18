@@ -270,9 +270,18 @@ var users = angular.module("gears.app.users", [])
             return users;
         }]);
     })
-    .run(function ($modules, $users) {
+    .run(function ($modules, $users, $menu) {
         $modules.load($users);
         //$users.getUserGroups();
         //$users.getUsers();
+        $menu.add({
+            id: "users",
+            title: "Пользователи",
+            description: "Пользователи системы",
+            url: "#/users",
+            template: "templates/users/users.html",
+            controller: "UsersController",
+            icon: "resources/img/icons/user.png"
+        });
     }
 );

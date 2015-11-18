@@ -40,7 +40,7 @@ var titles = angular.module("gears.app.titles",[])
                  */
                 TitlePart: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
-                    tituleId: new Field({ source: "TITUL_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    titleId: new Field({ source: "TITUL_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
                     startPointId: new Field({ source: "START_POINT_ID", value: 0, default_value: 0, backupable: true }),
                     startObjectTypeId: new Field({ source: "START_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
@@ -1129,7 +1129,7 @@ var titles = angular.module("gears.app.titles",[])
             return titles;
         }]);
     })
-    .run(function ($modules, $titles, $log) {
+    .run(function ($modules, $titles, $log, $menu) {
         $modules.load($titles);
         $titles.requests._states_.loaded(false);
         $log.log("requests loaded = ", $titles.requests._states_.loaded());
@@ -1140,4 +1140,25 @@ var titles = angular.module("gears.app.titles",[])
         //$titles.getContractors();
         //$log.log($titules.titules);
         //$titules.titules.display();
+        $menu.add({
+            id: "requests",
+            title: "Заявки",
+            description: "Заявки",
+            url: "#/requests",
+            template: "templates/requests/requests.html",
+            controller: "RequestsController",
+            icon: "resources/img/icons/request.png",
+            order: 1
+        });
+
+        $menu.add({
+            id: "titles",
+            title: "Титулы",
+            description: "Титулы",
+            url: "#/titles",
+            template: "templates/titles/titles.html",
+            controller: "TitlesController",
+            icon: "resources/img/icons/title.png",
+            order: 2
+        });
     });

@@ -1,4 +1,4 @@
-<div ng-controller="EditContractorTypeModalController">
+ <div class="row padding-10" ng-controller="EditContractorTypeModalController">
     <div class="row height-100 split-20">
         <label for="contractor-type-title">Наименование типа</label>
         <input type="text"
@@ -12,14 +12,14 @@
     </div>
     <div class="row">
         <div class="width-50">
-            <button class="green square width-100"
+            <button class="button green square width-100"
                     ng-disabled="app.currentContractorType._states_.loading() === true || app.currentContractorType._states_.changed() === false"
                     ng-click="validate()">
                 Сохранить
             </button>
         </div>
         <div class="50">
-            <button class="red square width-100"
+            <button class="button red square width-100"
                     ng-disabled="app.currentContractorType._states_.loading() === true"
                     ng-click="cancel()">
                 Отмена

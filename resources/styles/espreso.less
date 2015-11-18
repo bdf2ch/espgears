@@ -1,5 +1,5 @@
 @app-header-height: 50px;
-@app-menu-width: 50px;
+@app-menu-width: 55px;
 
 @font-face {
   font-family: "Roboto Regular"; /* Гарнитура шрифта */
@@ -45,7 +45,36 @@ html, body {
 
 #app-menu {
   width: @app-menu-width;
+  padding-top: 5px;
+  vertical-align: top;
   background: url("../img/menu_background.png");
+
+  .menu-item {
+    //float: right;
+    padding: 5px;
+    margin-bottom: 10px;
+    //padding-top: 5px;
+    //padding-bottom: 5px;
+    //width: @app-menu-width - 10px;
+    //border-top-left-radius: 2px;
+    //border-bottom-left-radius: 2px;
+    //border-right: 1px solid lightgrey;
+    //background: white;
+    &.active {
+      //padding-right: 10px;
+      //border-right: 1px solid transparent;
+      img {
+        width: 46px;
+      }
+    }
+
+    img {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 36px;
+    }
+  }
 }
 
 
