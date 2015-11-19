@@ -1,5 +1,5 @@
 <div ng-controller="EditContractorModalController">
-    <div class="row height-100 split-20">
+    <div class="row padding-10 height-100">
         <label for="contractor-type">Тип контрагента</label>
         <select name="contractor-type"
                 id="contractor-type"
@@ -9,7 +9,7 @@
                 ng-options="type.id.value as type.title.value for type in contractors.contractorTypes.items">
         </select>
     </div>
-    <div class="row height-100 split-20">
+    <div class="row padding-10 height-100">
         <label for="contractor-title">Наименование контрагента</label>
         <input type="text"
                name="contractor-title"
@@ -20,7 +20,7 @@
                ng-change="app.currentContractor._states_.changed(true)"
                ng-model="app.currentContractor.title.value"/>
     </div>
-    <div class="row height-100 split-20">
+    <div class="row padding-10 height-100">
         <label for="contractor-full-title">Полное наименование контрагента</label>
         <textarea name="contractor-full-title"
                   id="contractor-full-title"
@@ -31,16 +31,16 @@
                   ng-model="app.currentContractor.fullTitle.value">
         </textarea>
     </div>
-    <div class="row">
+    <div class="row padding-10">
         <div class="width-50">
-            <button class="green square width-100"
+            <button class="button green square width-100"
                     ng-disabled="app.currentContractor._states_.loading() === true || app.currentContractor._states_.changed() === false"
                     ng-click="validate()">
                 Сохранить
             </button>
         </div>
         <div class="50">
-            <button class="red square width-100"
+            <button class="button red square width-100"
                     ng-disabled="app.currentContractor._states_.loading() === true"
                     ng-click="cancel()">
                 Отмена

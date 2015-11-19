@@ -487,6 +487,8 @@ var gears = angular.module("gears", [])
                                     result++;
                                 }
                             }
+                            if (this.__instance__._init_ !== undefined)
+                                this.__instance__._init_();
                             return result;
                         },
 
@@ -504,6 +506,8 @@ var gears = angular.module("gears", [])
                                     result++;
                                 }
                             }
+                            if (this.__instance__._init_ !== undefined)
+                                this.__instance__._init_();
                             return result;
                         }
                     }

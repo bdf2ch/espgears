@@ -638,4 +638,112 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $scope.newWorkingCommission._model_.reset();
             $scope.newWorkingCommission._states_.changed(false);
         };
+    }])
+
+
+    .controller("NewUserModalController", ["$log", "$scope", "$application", "$users", "$factory", "$modals", function ($log, $scope, $application, $users, $factory, $modals) {
+        $scope.app = $application;
+        $scope.users = $users;
+        $scope.newUser = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+        $scope.newUserPassword = "";
+        $scope.errors = [];
+
+
+        $scope.validate = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($scope.newUser.name.value === "")
+                $scope.errors.push("Вы не указали имя пользователя");
+            if ($scope.newUser.surname.value === "")
+                $scope.errors.push("Вы не указали фамилию пользователя");
+            if ($scope.newUser.email.value === "")
+                $scope.errors.push("Вы не указали E-mail пользователя");
+            if ($scope.newUserPassword === "")
+                $scope.errors.push("Вы не указали пароль пользователя");
+            if ($scope.errors.length === 0) {
+                $users.addUser($scope.newUser, $scope.newUserPassword, $scope.onSuccessAddUser);
+            }
+        };
+
+        $scope.onSuccessAddUser = function (data) {
+            if (data !== undefined) {
+                var temp_user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
+                temp_user._model_.fromJSON(data);
+                temp_user._backup_.setup();
+                $users.users.append(temp_user);
+                $scope.cancel();
+            }
+        };
+
+        $scope.cancel = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newUser._model_.reset();
+            $scope.newUserPassword = "";
+            $modals.close();
+        };
+    }])
+
+
+
+    .controller("EditUserModalController", ["$log", "$scope", "$users", "$application", "$modals", function ($log, $scope, $users, $application, $modals) {
+        $scope.app = $application;
+        $scope.users = $users;
+        $scope.errors = [];
+        $scope.tabs = [
+            {
+                id: 1,
+                title: "Подробности",
+                template: "templates/requests/edit-request-details.html",
+                isActive: true
+            },
+            {
+                id: 2,
+                title: "Приложения",
+                template: "templates/requests/edit-request-documents.html",
+                isActive: false
+            }
+        ];
+
+
+        $scope.cancel = function () {
+            $modals.close();
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.currentUser._backup_.restore();
+            $application.currentUser._states_.changed(false);
+        };
+
+        $scope.save = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            if ($application.currentUser.name.value === "")
+                $scope.errors.push("Вы не имя пользователя");
+            if ($application.currentUser.surname.value === "")
+                $scope.errors.push("Вы не указали фамилию пользователя");
+            if ($application.currentUser.email.value === "")
+                $scope.errors.push("Вы не указали E-mail пользователя");
+            if ($scope.errors.length === 0) {
+                $users.editUser($application.currentUser, $scope.onSuccessEditUser);
+            }
+        };
+
+        $scope.onSuccessEditUser = function (data) {
+            $application.currentUser._states_.loaded(true);
+            $application.currentUser._states_.loading(false);
+            $application.currentUser._states_.changed(false);
+            $application.currentUser._backup_.setup();
+            $modals.close();
+        };
+    }])
+
+
+
+    .controller("DeleteUserModalController", ["$log", "$scope", "$users", "$application", "$modals", function ($log, $scope, $users, $application, $modals) {
+        $scope.app = $application;
+
+        $scope.delete = function () {
+            $users.deleteUser($application.currentUser.id.value, $scope.onSuccessDeleteUser);
+        };
+
+        $scope.onSuccessDeleteUser = function () {
+            $users.users.delete("id", $application.currentUser.id.value);
+            $modals.close();
+        };
     }]);

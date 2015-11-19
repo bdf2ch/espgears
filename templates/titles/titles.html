@@ -32,7 +32,7 @@
                         ng-class="{'active': title._states_.selected() === true}"
                         ng-repeat="title in titles.titles.items | orderBy:'id.value' track by $id(title)"
                         ng-click="selectTitle(title.id.value)">
-                        <img src="../resources/img/icons/request.jpg" alt="" class="card-img"/>
+                        <img src="../resources/img/icons/title.png" alt="" class="card-img icon"/>
                         <div class="card-header">
                             <span>{{ title._backup_.data.title }}</span>
                             <div class="right" ng-show="app.currentTitle.id.value === title.id.value">

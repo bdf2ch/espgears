@@ -1010,6 +1010,13 @@ textarea {
   width: 64px;
   height: 64px;
 }
+.cards .card .card-img.icon {
+  width: 40px;
+  height: 40px;
+  margin-top: 12px;
+  margin-left: 10px;
+  margin-bottom: 12px;
+}
 .cards .card .card-header {
   margin-left: 70px;
   margin-right: 5px;
@@ -1021,9 +1028,23 @@ textarea {
   margin-left: 70px;
   padding-top: 5px;
 }
+.table caption {
+  padding: 10px;
+  text-align: left;
+  text-transform: uppercase;
+  font-family: "Roboto Regular";
+  font-size: 13px;
+  color: #BDBDBD;
+}
 .table td {
   padding: 10px;
 }
-.table.stripped tr:nth-child(odd) {
+.table.stripped tr:nth-child(even) {
   background: #F5F5F5;
+}
+.table.condensed caption {
+  padding: 3px;
+}
+.table.condensed td {
+  padding: 3px;
 }

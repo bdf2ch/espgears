@@ -796,11 +796,12 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-        $scope.editContractor = function () {
+        $scope.editContractor = function (event) {
+            event.stopPropagation();
             $modals.show({
                 width: 400,
                 position: "center",
-                caption: "Редактирование типа контрагента",
+                caption: "Редактирование контрагента",
                 showFog: true,
                 closeButton: false,
                 template: "templates/modals/edit-contractor.html"
@@ -1022,7 +1023,8 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-        $scope.editGroup = function () {
+        $scope.editGroup = function (event) {
+            event.stopPropagation();
             $modals.show({
                 width: 400,
                 position: "center",
@@ -1033,7 +1035,8 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
-        $scope.deleteGroup = function () {
+        $scope.deleteGroup = function (event) {
+            event.stopPropagation();
             $modals.show({
                 width: 400,
                 position: "center",
@@ -1041,6 +1044,43 @@ var appControllers = angular.module("gears.app.controllers", [])
                 showFog: true,
                 closeButton: true,
                 template: "templates/modals/delete-user-group.html"
+            });
+        };
+
+
+        $scope.addUser = function () {
+            $modals.show({
+                width: 500,
+                position: "center",
+                caption: "Добавление пользователя",
+                showFog: true,
+                template: "templates/modals/new-user.html"
+            });
+        };
+
+
+        $scope.editUser = function (event) {
+            event.stopPropagation();
+            $modals.show({
+                width: 500,
+                position: "center",
+                caption: "Редактирование пользователя",
+                showFog: true,
+                closeButton: true,
+                template: "templates/modals/edit-user.html"
+            });
+        };
+
+
+        $scope.deleteUser = function (event) {
+            event.stopPropagation();
+            $modals.show({
+                width: 400,
+                position: "center",
+                caption: "Удаление пользователя",
+                showFog: true,
+                closeButton: true,
+                template: "templates/modals/delete-user.html"
             });
         };
 

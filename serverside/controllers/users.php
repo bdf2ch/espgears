@@ -42,6 +42,10 @@
                 case "addUser":
                     add_user($postdata);
                     break;
+                /* Редактирование пользователя */
+                case "editUser":
+                    edit_user($postdata);
+                    break;
                 /* Удаление пользователя */
                 case "deleteUser":
                     delete_user($postdata);
@@ -306,7 +310,7 @@
         $phone = $postdata -> data -> phone;
         $position = $postdata -> data -> position;
         $password = $postdata -> data -> password;
-        $result = array();
+        $result = new stdClass;
 
         if (!$statement = oci_parse($connection, "begin pkg_users.p_insert_user(:group_id, :name, :fname, :surname, :phone, :email, :position, :passwd, :new_user ); end;")) {
             $error = oci_error();
@@ -379,6 +383,96 @@
         /* Возврат результата */
         echo json_encode($result);
     };
+
+
+
+
+
+/* Функция редактирования пользователя */
+function edit_user ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $userId = $postdata -> data -> userId;
+    $name = $postdata -> data -> name;
+    $fname = $postdata -> data -> fname;
+    $surname = $postdata -> data -> surname;
+    $groupId = $postdata -> data -> groupId;
+    $email = $postdata -> data -> email;
+    $phone = $postdata -> data -> phone;
+    $position = $postdata -> data -> position;
+    $result = new stdClass;
+
+    if (!$statement = oci_parse($connection, "begin pkg_users.p_edit_user(:user_id, :group_id, :name, :fname, :surname, :phone, :email, :position, :user ); end;")) {
+        $error = oci_error();
+        echo $error["message"];
+    } else {
+        if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":group_id", $groupId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":name", $name, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":fname", $fname, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":surname", $surname, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":phone", $phone, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":email", $email, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":position", $position, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":user", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    /* Освобождение ресурсов */
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+
+    /* Возврат результата */
+    echo json_encode($result);
+};
 
 
 

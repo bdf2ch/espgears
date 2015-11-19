@@ -22,7 +22,7 @@ var contractors = angular.module("gears.app.contractors", [])
                  */
                 Contractor: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
-                    contractorTypeId: new Field({ source: "CONTRACTOR_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
+                    contractorTypeId: new Field({ source: "CONTRACTOR_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
                     title: new Field({ source: "NAME", value: "", default_value: "", backupable: true, required: true }),
                     fullTitle: new Field({ source: "FULL_NAME", value: "", default_value: "", backupable: true })
                 },
@@ -267,7 +267,7 @@ var contractors = angular.module("gears.app.contractors", [])
             url: "#/contractors",
             template: "templates/contractors/contractors.html",
             controller: "ContractorsController",
-            icon: "resources/img/icons/contractors.png",
+            icon: "resources/img/icons/contractor-type.png",
             order: 3
         });
         //$contractors.getContractorTypes();

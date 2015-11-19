@@ -1329,6 +1329,7 @@ textarea {
     margin-bottom: 7px;
     border: 1px solid #E0E0E0;
     cursor: pointer;
+    //background: #FAFAFA;
 
     &:hover {
       background: #FAFAFA;
@@ -1356,6 +1357,14 @@ textarea {
       float: left;
       width: 64px;
       height: 64px;
+
+      &.icon {
+        width: 40px;
+        height: 40px;
+        margin-top: 12px;
+        margin-left: 10px;
+        margin-bottom: 12px;
+      }
     }
 
     .card-header {
@@ -1379,13 +1388,32 @@ textarea {
 
 
 .table {
+  caption {
+    padding: 10px;
+    text-align: left;
+    text-transform: uppercase;
+    font-family: "Roboto Regular";
+    font-size: 13px;
+    color: #BDBDBD;
+  }
+
   td {
     padding: 10px;
   }
 
   &.stripped {
-    tr:nth-child(odd) {
+    tr:nth-child(even) {
       background: #F5F5F5;
+    }
+  }
+
+  &.condensed {
+    caption {
+      padding: 3px;
+    }
+
+    td {
+      padding: 3px;
     }
   }
 

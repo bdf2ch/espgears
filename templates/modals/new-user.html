@@ -1,0 +1,104 @@
+<div class="row" ng-controller="NewUserModalController">
+    <!-- Имя пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-name">Имя пользователя</label>
+        <input type="text"
+               name="new-user-name"
+               id="new-user-name"
+               class="width-100"
+               placeholder="Имя пользователя"
+               ng-model="newUser.name.value"/>
+    </div>
+
+    <!-- Отчество пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-fname">Отчество пользователя</label>
+        <input type="text"
+               name="new-user-fname"
+               id="new-user-fname"
+               class="width-100"
+               placeholder="Отчество пользователя"
+               ng-model="newUser.fname.value"/>
+    </div>
+
+    <!-- Фамилия пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-surname">Фамилия пользователя</label>
+        <input type="text"
+               name="new-user-surname"
+               id="new-user-surname"
+               class="width-100"
+               placeholder="Фамилия пользователя"
+               ng-model="newUser.surname.value"/>
+    </div>
+
+    <!-- Должность пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-position">Должность пользователя</label>
+        <input type="text"
+               name="new-user-position"
+               id="new-user-position"
+               class="width-100"
+               placeholder="Должность пользователя"
+               ng-model="newUser.position.value"/>
+    </div>
+
+    <!-- Группа пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-group">Группа</label>
+        <select class="width-100"
+                name="new-user-group"
+                id="new-user-group"
+                ng-model="newUser.groupId.value"
+                ng-options="group.id.value as group.title.value for group in users.groups.items">
+        </select>
+    </div>
+
+    <!-- E-mail пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-email">E-mail пользователя</label>
+        <input type="text"
+               name="new-user-email"
+               id="new-user-email"
+               class="width-100"
+               placeholder="E-mail пользователя"
+               ng-model="newUser.email.value"/>
+    </div>
+
+    <!-- Телефон пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-phone">Телефон пользователя</label>
+        <input type="text"
+               name="new-user-phone"
+               id="new-user-phone"
+               class="width-100"
+               placeholder="Телефон пользователя"
+               ng-model="newUser.phone.value"/>
+    </div>
+
+    <!-- Пароль пользователя -->
+    <div class="row padding-10">
+        <label for="new-user-password">Пароль пользователя</label>
+        <input type="text"
+               name="new-user-password"
+               id="new-user-password"
+               class="width-100"
+               placeholder="Пароль пользователя"
+               ng-model="newUserPassword"
+               maxlength="10"/>
+    </div>
+
+    <div class="row padding-10">
+        <div class="width-50">
+            <button class="button green square width-100" ng-disabled="newUser._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="button red square width-100" ng-disabled="newUser._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>
