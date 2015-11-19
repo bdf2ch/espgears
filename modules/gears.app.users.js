@@ -194,8 +194,8 @@ var users = angular.module("gears.app.users", [])
             };
 
 
-            users.addUser = function (user, callback) {
-                if (user !== undefined) {
+            users.addUser = function (user, password, callback) {
+                if (user !== undefined && password !== undefined) {
                     var params = {
                         action: "addUser",
                         data: {
@@ -206,7 +206,7 @@ var users = angular.module("gears.app.users", [])
                             email: user.email.value,
                             phone: user.phone.value,
                             position: user.position.value,
-                            password: user.password
+                            password: password
                         }
                     };
                     $http.post("serverside/controllers/users.php", params)
@@ -217,18 +217,48 @@ var users = angular.module("gears.app.users", [])
                                     db_error.init(data);
                                     db_error.display();
                                 } else {
-                                    var temp_user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
-                                    temp_user._model_.fromJSON(data);
-                                    temp_user._backup_.setup();
-                                    users.users.append(temp_user);
                                     if (callback !== undefined)
-                                        callback(temp_user);
+                                        callback(data);
                                 }
                             }
                         }
                     );
                 }
             };
+
+
+            users.editUser = function (user, callback) {
+                if (user !== undefined) {
+                    var params = {
+                        action: "editUser",
+                        data: {
+                            userId: user.id.value,
+                            groupId: user.groupId.value,
+                            name: user.name.value,
+                            fname: user.fname.value,
+                            surname: user.surname.value,
+                            position: user.position.value,
+                            email: user.email.value,
+                            phone: user.phone.value
+                        }
+                    };
+                    $http.post("serverside/controllers/users.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
 
             users.deleteUser = function (userId, callback) {
                 if (userId !== undefined) {
@@ -281,7 +311,7 @@ var users = angular.module("gears.app.users", [])
             url: "#/users",
             template: "templates/users/users.html",
             controller: "UsersController",
-            icon: "resources/img/icons/user.png"
+            icon: "resources/img/icons/user-group.png"
         });
     }
 );

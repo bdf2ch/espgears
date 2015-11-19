@@ -1,0 +1,114 @@
+<div class="row" ng-controller="EditUserModalController">
+    <!-- Имя пользователя -->
+    <div class="row padding-10">
+        <label for="edit-user-name">Имя пользователя</label>
+        <input type="text"
+               name="edit-user-name"
+               id="edit-user-name"
+               class="width-100"
+               placeholder="Имя пользователя"
+               ng-model="app.currentUser.name.value"
+               ng-change="app.currentUser._states_.changed(true)"/>
+    </div>
+
+    <!-- Отчество пользователя -->
+    <div class="row padding-10">
+        <label for="edit-user-fname">Отчество пользователя</label>
+        <input type="text"
+               name="edit-user-fname"
+               id="edit-user-fname"
+               class="width-100"
+               placeholder="Отчество пользователя"
+               ng-model="app.currentUser.fname.value"
+               ng-change="app.currentUser._states_.changed(true)"/>
+    </div>
+
+    <!-- Фамилия пользователя -->
+    <div class="row padding-10">
+        <label for="edit-user-surname">Фамилия пользователя</label>
+        <input type="text"
+               name="edit-user-surname"
+               id="edit-user-surname"
+               class="width-100"
+               placeholder="Фамилия пользователя"
+               ng-model="app.currentUser.surname.value"
+               ng-change="app.currentUser._states_.changed(true)"/>
+    </div>
+
+    <!-- Должность пользователя -->
+    <div class="row padding-10">
+        <label for="edit-user-position">Должность пользователя</label>
+        <input type="text"
+               name="edit-user-position"
+               id="edit-user-position"
+               class="width-100"
+               placeholder="Должность пользователя"
+               ng-model="app.currentUser.position.value"
+               ng-change="app.currentUser._states_.changed(true)"/>
+    </div>
+
+    <!-- Группа пользователя -->
+    <div class="row padding-10">
+        <label for="edit-user-group">Группа</label>
+        <select class="width-100"
+                name="edit-user-group"
+                id="edit-user-group"
+                ng-model="app.currentUser.groupId.value"
+                ng-options="group.id.value as group.title.value for group in users.groups.items"
+                ng-change="app.currentUser._states_.changed(true)">
+        </select>
+    </div>
+
+    <!-- E-mail пользователя -->
+    <div class="row padding-10">
+        <label for="edit-user-email">E-mail пользователя</label>
+        <input type="text"
+               name="edit-user-email"
+               id="edit-user-email"
+               class="width-100"
+               placeholder="E-mail пользователя"
+               ng-model="app.currentUser.email.value"
+               ng-change="app.currentUser._states_.changed(true)"/>
+    </div>
+
+    <!-- Телефон пользователя -->
+    <div class="row padding-10">
+        <label for="edit-user-phone">Телефон пользователя</label>
+        <input type="text"
+               name="edit-user-phone"
+               id="edit-user-phone"
+               class="width-100"
+               placeholder="Телефон пользователя"
+               ng-model="app.currentUser.phone.value"
+               ng-change="app.currentUser._states_.changed(true)"/>
+    </div>
+
+    <!-- Пароль пользователя -->
+    <!--
+    <div class="row padding-10">
+        <label for="edit-user-password">Пароль пользователя</label>
+        <input type="text"
+               name="edit-user-password"
+               id="edit-user-password"
+               class="width-100"
+               placeholder="Пароль пользователя"
+               ng-model="newUserPassword"
+               ng-change="app.currentUser._states_.changed(true)"
+               maxlength="10"/>
+    </div>
+    -->
+
+    <div class="row padding-10">
+        <div class="width-50">
+            <button class="button green square width-100" ng-disabled="app.currentUser._states_.changed() === false" ng-click="save()">Сохранить</button>
+        </div>
+        <div class="50">
+            <button class="button red square width-100" ng-disabled="app.currentUser._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

@@ -2,11 +2,12 @@
     <tr class="column-header">
         <td class="caption width-100">
             Группы
-            <button class="green right"
+            <button class="button green right"
                     ng-click="addGroup()"
                     title="Добавить группу">
                 +
             </button>
+            <!--
             <span class="separator right" ng-show="app.currentUserGroup !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentUserGroup !== undefined"
@@ -19,11 +20,14 @@
                     title="Удалить группу">
                 -
             </button>
+            -->
         </td>
     </tr>
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
+
+                <!--
                 <ul class="list hover">
                     <div class="service-message" ng-show="users.groups._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
@@ -45,6 +49,39 @@
                         </span>
                     </li>
                 </ul>
+                -->
+
+
+
+                <ul class="cards">
+                    <li class="card"
+                        ng-class="{'active': group._states_.selected() === true}"
+                        ng-repeat="group in users.groups.items | orderBy:'_backup_.data.title' track by $id(group)"
+                        ng-click="selectGroup(group.id.value)">
+                        <img src="../resources/img/icons/user-group.png" alt="" class="card-img icon"/>
+                        <div class="card-header">
+                            <span>{{ group._backup_.data.title }}</span>
+                            <div class="right" ng-show="app.currentUserGroup.id.value === group.id.value">
+                                <button class="button round blue" title="Редактировать" ng-click="editGroup($event)">
+                                    <img src="resources/img/icons/edit.png" alt=""/>
+                                </button>
+                                <button class="button round red" title="Удалить" ng-click="deleteGroup($event)">&times;</button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span class="secondary-text"
+                                  ng-show="users.countUsersInGroup(group.id.value) !== 0"
+                                  ng-class="{'light': title._states_.selected() === true }">
+                                {{ "Пользователей: " + users.countUsersInGroup(group.id.value) }}
+                            </span>
+                            <span class="secondary-text"
+                                  ng-show="users.countUsersInGroup(group.id.value) === 0"
+                                  ng-class="{'light': title._states_.selected() === true }">
+                                Нет пользователей
+                            </span>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </td>
     </tr>
@@ -54,15 +91,19 @@
     <tr class="column-header">
         <td class="caption width-100">
             Пользователи
-            <button class="green right" ng-click="gotoAddUser()" ng-show="app.currentUser === undefined" title="Добавить пользователя">+</button>
+            <button class="button green right" ng-click="addUser()" title="Добавить пользователя">+</button>
+            <!--
             <button class="red right" ng-click="app.currentUser._states_.deleting(true)" ng-show="app.currentUser !== undefined && app.currentUser._states_.deleting() === false" title="Удалить пользователя">-</button>
             <button class="red right" ng-click="app.currentUser._states_.deleting(false)" ng-show="app.currentUser._states_.deleting() === true" title="Отмена">&times;</button>
             <button class="green right" ng-click="users.deleteUser(app.currentUser.id.value, onSuccessDeleteUser)" ng-show="app.currentUser._states_.deleting() === true" title="Подтвердить удаление">✓</button>
+            -->
         </td>
     </tr>
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
+
+                <!--
                 <ul class="list hover">
                     <div class="service-message" ng-show="users.users._states_.loaded() === false">
                         <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
@@ -82,6 +123,33 @@
                             <span class="secondary-text">{{ "e-mail: " + user.email.value }} &nbsp; &nbsp; &nbsp;</span>
                             <span class="secondary-text" ng-show="user.phone.value !== 'NaN'">{{ "телефон: " + user.phone.value }} &nbsp; &nbsp; &nbsp;</span>
                         </span>
+                    </li>
+                </ul>
+                -->
+
+                <ul class="cards">
+                    <li class="card"
+                        ng-class="{'active': user._states_.selected() === true}"
+                        ng-repeat="user in users.users.items | byUserGroup:app.currentUserGroup.id.value | orderBy:'fio' track by $id(user)"
+                        ng-click="selectUser(user.id.value)">
+                        <img src="../resources/img/icons/user_.png" alt="" class="card-img icon"/>
+                        <div class="card-header">
+                            <span>{{ user.fio }}</span>
+                            <div class="right" ng-show="app.currentUser.id.value === user.id.value">
+                                <button class="button round blue" title="Редактировать" ng-click="editUser($event)">
+                                    <img src="resources/img/icons/edit.png" alt=""/>
+                                </button>
+                                <button class="button round red" title="Удалить" ng-click="deleteUser($event)">&times;</button>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <span class="secondary-text">
+                                <span class="secondary-text" ng-show="user._backup_.data.groupId !== 0">{{ "Группа: " + users.groups.find("id", user._backup_.data.groupId).title.value }} &nbsp; &nbsp; &nbsp;</span>
+                                <span class="secondary-text" ng-show="user._backup_.data.position !== ''">{{ "Должность: " + user._backup_.data.position }} &nbsp; &nbsp; &nbsp;</span>
+                                <span class="secondary-text">{{ "E-mail: " + user._backup_.data.email }} &nbsp; &nbsp; &nbsp;</span>
+                                <span class="secondary-text" ng-show="user._backup_.data.phone !== ''">{{ "Телефон: " + user._backup_.data.phone }} &nbsp; &nbsp; &nbsp;</span>
+                            </span>
+                        </div>
                     </li>
                 </ul>
             </div>

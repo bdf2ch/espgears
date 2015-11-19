@@ -1,5 +1,5 @@
 <div ng-controller="EditUserGroupModalController">
-    <div class="row height-100 split-20">
+    <div class="row padding-10 height-100">
         <label for="user-group-title">Наименование группы</label>
         <input type="text"
                name="user-group-title"
@@ -10,7 +10,7 @@
                ng-change="app.currentUserGroup._states_.changed(true)"
                ng-model="app.currentUserGroup.title.value"/>
     </div>
-    <div class="row height-100 split-20">
+    <div class="row padding-10 height-100">
         <label for="user-group-description">Описание группы</label>
         <textarea name="user-group-description"
                id="user-group-description"
@@ -21,16 +21,16 @@
                ng-model="app.currentUserGroup.description.value">
         </textarea>
     </div>
-    <div class="row">
+    <div class="row padding-10">
         <div class="width-50">
-            <button class="green square width-100"
+            <button class=" button green square width-100"
                     ng-disabled="app.currentUserGroup._states_.loading() === true || app.currentUserGroup._states_.changed() === false"
                     ng-click="validate()">
                 Сохранить
             </button>
         </div>
         <div class="50">
-            <button class="red square width-100"
+            <button class="button red square width-100"
                     ng-disabled="app.currentUserGroup._states_.loading() === true"
                     ng-click="cancel()">
                 Отмена
