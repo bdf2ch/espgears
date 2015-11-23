@@ -752,11 +752,11 @@ var titles = angular.module("gears.app.titles",[])
                                     db_error.display();
                                 } else {
                                     var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
-                                    temp_title._model_.fromJSON(data);
-                                    temp_title._backup_.setup();
-                                    titles.titles.append(temp_title);
+                                    //temp_title._model_.fromJSON(data);
+                                    //temp_title._backup_.setup();
+                                    //titles.titles.append(temp_title);
                                     if (callback !== undefined)
-                                        callback(temp_title);
+                                        callback(data);
                                 }
                             }
                         }

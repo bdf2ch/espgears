@@ -29,6 +29,8 @@ var nodes = angular.module("gears.app.nodes", [])
                     _init_: function () {
                         this.isBasicNode.value = this.isBasicNode.value === 1 ? true : false;
                         this.isAllowConnection.value = this.isAllowConnection.value === 1 ? true : false;
+
+                        $log.log("isBasic = ", this.isBasicNode.value);
                     }
                 },
 

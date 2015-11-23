@@ -400,6 +400,16 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
+        $scope.addTitle = function () {
+            $modals.show({
+                width: 570,
+                position: "center",
+                caption: "Новый титул",
+                showFog: true,
+                template: "templates/modals/new-title.html"
+            });
+        };
+
     }])
 
 

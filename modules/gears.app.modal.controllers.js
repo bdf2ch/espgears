@@ -746,4 +746,133 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             $users.users.delete("id", $application.currentUser.id.value);
             $modals.close();
         };
+    }])
+
+    .controller("NewTitleModalController", ["$log", "$scope", "$application", "$titles", "$factory", "$modals", "$misc", "$nodes", function ($log, $scope, $application, $titles, $factory, $modals, $misc, $nodes) {
+        $scope.app = $application;
+        $scope.misc = $misc;
+        $scope.nodes = $nodes;
+        $scope.newTitle = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+        $scope.startNodePowerLineId = 0;
+        $scope.startNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+        $scope.endNodePowerLineId = 0;
+        $scope.endNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+        $scope.errors = [];
+
+
+        $scope.onStartNodeTypeChange = function (typeId) {
+            if (typeId !== undefined) {
+                if (typeId !== 1)
+                    $scope.startNodePowerLineId = 0;
+            }
+        };
+
+        $scope.onEndNodeTypeChange = function (typeId) {
+            if (typeId !== undefined) {
+                if (typeId !== 1)
+                    $scope.endNodePowerLineId = 0;
+            }
+        };
+
+
+        $scope.selectStartNodePowerLine = function (powerLineId) {
+            if (powerLineId !== undefined) {
+                $scope.newTitle.startNodeId.value = 0;
+                $scope.startNodePylons._states_.loaded(false);
+                $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetStartNodePylons);
+            }
+        };
+
+
+        $scope.onSuccessGetStartNodePylons = function (data) {
+            if (data !== undefined) {
+                $scope.startNodePylons.clear();
+                angular.forEach(data, function (pylon) {
+                    var temp_pylon = $factory({ classes: ["Pylon", "Model"], base_class: "Pylon" });
+                    temp_pylon._model_.fromJSON(pylon);
+                    $log.log(temp_pylon);
+                    $scope.startNodePylons.append(temp_pylon);
+                });
+                $scope.startNodePylons._states_.loaded(true);
+            }
+        };
+
+
+        $scope.selectEndNodePowerLine = function (powerLineId) {
+            $log.log("calleD", powerLineId);
+            if (powerLineId !== undefined) {
+                $scope.newTitle.endNodeId.value = 0;
+                $scope.endNodePylons._states_.loaded(false);
+                $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetEndNodePylons);
+            }
+        };
+
+
+        $scope.onSuccessGetEndNodePylons = function (data) {
+            if (data !== undefined) {
+                $scope.endNodePylons.clear();
+                angular.forEach(data, function (pylon) {
+                    var temp_pylon = $factory({ classes: ["Pylon", "Model"], base_class: "Pylon" });
+                    temp_pylon._model_.fromJSON(pylon);
+                    $scope.endNodePylons.append(temp_pylon);
+                });
+                $scope.endNodePylons._states_.loaded(true);
+            }
+        };
+
+
+        $scope.validate = function () {
+            $scope.newTitle._states_.loaded(false);
+            $scope.errors.splice(0, $scope.errors.length);
+
+            if ($scope.newTitle.title.value === "")
+                $scope.errors.push("Вы не указали наименование титула");
+
+            /**
+             * Если тип узла в начальной точке титула - опора
+             */
+            if ($scope.newTitle.startNodeTypeId.value === 1) {
+                if ($scope.startNodePowerLineId === 0)
+                    $scope.errors.push("Вы не выбрали линию опоры в начале титула");
+                if ($scope.newTitle.startNodeId.value === 0)
+                    $scope.errors.push("Вы не указали номер опоры в начале титула");
+            }
+            /**
+             * Если тип узла в конечной точке титула - опора
+             */
+            if ($scope.newTitle.endNodeTypeId.value === 1) {
+                if ($scope.endNodePowerLineId === 0)
+                    $scope.errors.push("Вы не выбрали линию опоры в конце титула");
+                if ($scope.newTitle.endNodeId.value === 0)
+                    $scope.errors.push("Вы не указали номер опоры в конце титула");
+            }
+
+            if ($scope.errors.length === 0) {
+                $titles.addTitle($scope.newTitle, $scope.onSuccessAddTitle);
+            }
+        };
+
+        $scope.onSuccessAddTitle = function (data) {
+            if (data !== undefined) {
+                var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+                temp_title._model_.fromJSON(data);
+                temp_title._backup_.setup();
+                $titles.titles.append(temp_title);
+                $scope.newTitle._states_.loaded(true);
+                $scope.startNodePowerLineId = 0;
+                $scope.startNodePylons.clear();
+                $scope.endNodePowerLineId = 0;
+                $scope.endNodePylons.clear();
+                $scope.newTitle._model_.reset();
+                $modals.close();
+            }
+        };
+
+        $scope.cancel = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newTitle._model_.reset();
+            $scope.startNodePowerLineId = 0;
+            $scope.endNodePowerLineId = 0;
+            $modals.close();
+        };
     }]);
