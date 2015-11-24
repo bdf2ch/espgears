@@ -837,6 +837,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
                 if ($scope.newTitle.startNodeId.value === 0)
                     $scope.errors.push("Вы не указали номер опоры в начале титула");
             }
+
             /**
              * Если тип узла в конечной точке титула - опора
              */

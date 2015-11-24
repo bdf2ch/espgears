@@ -1,0 +1,129 @@
+<div class="row" ng-controller="EditTitleModalController">
+    <div class="row padding-10">
+        <label for="new-title-title">Наименование титула</label>
+        <input type="text"
+               name="new-title-title"
+               id="new-title-title"
+               class="width-100"
+               placeholder="Наименование титула"
+               ng-disabled="app.currentTitle._states_.loading() === true"
+               ng-change="app.currentTitle._states_.changed(true)"
+               ng-model="app.currentTitle.title.value"/>
+    </div>
+
+    <div class="row padding-10">
+        <label for="new-title-description">Описание титула</label>
+        <input type="text"
+               name="new-title-description"
+               id="new-title-description"
+               class="width-100"
+               placeholder="Описание титула"
+               ng-disabled="app.currentTitle._states_.loading() === true"
+               ng-change="app.currentTitle._states_.changed(true)"
+               ng-model="app.currentTitle.description.value"/>
+    </div>
+
+    <div class="row height-100 padding-10">
+        <div class="width-45">
+            <label for="new-title-start-object-type">Тип объекта в начале</label>
+            <select name="new-title-start-object-type"
+                    id="new-title-start-object-type"
+                    class="width-100"
+                    ng-model="app.currentTitle.startNodeTypeId.value"
+                    ng-change="onStartNodeTypeChange(app.currentTitle.startNodeTypeId.value)"
+                    ng-options="nodeType.id.value as nodeType.title.value for nodeType in nodes.types.items">
+            </select>
+        </div>
+        <div class="width-10">&nbsp;</div>
+        <div class="width-45">
+            <label for="new-title-end-object-type">Тип объекта в конце</label>
+            <select name="new-title-end-object-type"
+                    id="new-title-end-object-type"
+                    class="width-100"
+                    ng-model="app.currentTitle.endNodeTypeId.value"
+                    ng-change="onEndNodeTypeChange(app.currentTitle.endNodeTypeId.value)"
+                    ng-options="nodeType.id.value as nodeType.title.value for nodeType in nodes.types.items">
+            </select>
+        </div>
+    </div>
+
+    <div class="row height-100 padding-10" ng-show="app.currentTitle.startNodeTypeId.value === 1 || app.currentTitle.endNodeTypeId.value === 1">
+        <div class="width-45">
+            <label for="new-title-start-object-powerline" ng-show="app.currentTitle.startNodeTypeId.value === 1">Линия</label>
+            <select name="new-title-start-object-powerline"
+                    id="new-title-start-object-powerline"
+                    class="width-100"
+                    ng-model="startNodePowerLineId"
+                    ng-change="selectStartNodePowerLine(startNodePowerLineId)"
+                    ng-show="app.currentTitle.startNodeTypeId.value === 1"
+                    ng-options="powerline.id.value as powerline.display for powerline in misc.powerLines.items">
+            </select>
+            <span ng-show="app.currentTitle.startNodeTypeId.value !== 1">&nbsp;</span>
+        </div>
+        <div class="width-10">&nbsp;</div>
+        <div class="width-45">
+            <label for="new-title-end-object-powerline" ng-show="app.currentTitle.endNodeTypeId.value === 1">Линия</label>
+            <select name="new-title-end-object-powerline"
+                    id="new-title-end-object-powerline"
+                    class="width-100"
+                    ng-model="endNodePowerLineId"
+                    ng-change="selectEndNodePowerLine(endNodePowerLineId)"
+                    ng-show="app.currentTitle.endNodeTypeId.value === 1"
+                    ng-options="powerline.id.value as powerline.display for powerline in misc.powerLines.items">
+            </select>
+            <span ng-show="app.currentTitle.endNodeTypeId.value !== 1">&nbsp;</span>
+        </div>
+    </div>
+
+    <div class="row height-100 padding-10" ng-show="startNodePowerLineId !== 0 || endNodePowerLineId !== 0">
+        <div class="width-45">
+            <label for="new-title-start-node-pylon-number" ng-show="startNodePowerLineId !== 0"># Опоры</label>
+            <input type="text"
+                   name="new-title-start-node-pylon-number"
+                   id="new-title-start-node-pylon-number"
+                   class="width-100" placeholder="# Опоры"
+                   ng-model="newTitle.startNodeId.value"
+                   ng-disabled="startNodePylons._states_.loaded() === false"
+                   ng-show="startNodePowerLineId !== 0"
+                   typeahead
+                   typeahead-data-source="startNodePylons.items"
+                   typeahead-items-limit="5"
+                   typeahead-model-field="id"
+                   typeahead-display-field="number"/>
+            <span ng-show="startNodePowerLineId === 0">&nbsp;</span>
+        </div>
+        <div class="width-10">&nbsp;</div>
+        <div class="width-45">
+            <label for="new-title-end-node-pylon-number" ng-show="endNodePowerLineId !== 0"># Опоры</label>
+            <input type="text"
+                   name="new-title-end-node-pylon-number"
+                   id="new-title-end-node-pylon-number"
+                   class="width-100" placeholder="# Опоры"
+                   ng-model="newTitle.endNodeId.value"
+                   ng-show="endNodePowerLineId !== 0"
+                   ng-disabled="endNodePylons._states_.loaded() === false"
+                   typeahead
+                   typeahead-data-source="endNodePylons.items"
+                   typeahead-items-limit="5"
+                   typeahead-model-field="id"
+                   typeahead-display-field="number"/>
+            <span ng-show="newTitle.endNodeTypeId.value !== 1">&nbsp;</span>
+        </div>
+    </div>
+
+
+
+    <div class="row padding-10">
+        <div class="width-50">
+            <button class="button green square width-100" ng-disabled="app.currentTitle._states_.changed() === false" ng-click="save()">Сохранить</button>
+        </div>
+        <div class="50">
+            <button class="button red square width-100" ng-disabled="app.currentTitle._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

@@ -410,6 +410,18 @@ var appControllers = angular.module("gears.app.controllers", [])
             });
         };
 
+
+        $scope.editTitle = function (event) {
+            event.stopPropagation();
+            $modals.show({
+                width: 570,
+                position: "center",
+                caption: "Редактирование титула",
+                showFog: true,
+                template: "templates/modals/edit-title.html"
+            });
+        };
+
     }])
 
 
