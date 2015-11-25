@@ -37,200 +37,16 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     }])
 
 
-    /**
-     * EditPowerLineModalController
-     * Контроллер модального окна редактирования линии
-     */
-    .controller("EditPowerLineModalController", ["$log", "$scope", "$misc", "$application", "$modals", function ($log, $scope, $misc, $application, $modals) {
-        $scope.app = $application;
-        $scope.misc = $misc;
-        $scope.errors = [];
-
-        $scope.cancel = function () {
-            $modals.close();
-            $scope.errors.splice(0, $scope.errors.length);
-            $application.currentPowerLine._backup_.restore();
-            $application.currentPowerLine._states_.changed(false);
-        };
-
-        $scope.validate = function () {
-            $scope.errors.splice(0, $scope.errors.length);
-            if ($application.currentPowerLine.title.value === "")
-                $scope.errors.push("Вы не указали наименование линии");
-            if ($application.currentPowerLine.voltage.value === "")
-                $scope.errors.push("Вы не указали напряжение линии");
-            if ($scope.errors.length === 0) {
-                $application.currentPowerLine._states_.loading(true);
-                $misc.editPowerLine($application.currentPowerLine, $scope.onSuccessEditLine);
-            }
-        };
-
-        $scope.onSuccessEditLine = function (data) {
-            $application.currentPowerLine._states_.loaded(true);
-            $application.currentPowerLine._states_.loading(false);
-            $application.currentPowerLine._backup_.setup();
-            $modals.close();
-        };
-    }])
 
 
-    /**
-     * AddPowerLineNodeModalController
-     * Контроллер модального окна добавления опоры в линию
-     */
-    .controller("AddPowerLineNodeModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$nodes", function ($log, $scope, $misc, $factory, $application, $modals, $nodes) {
-        $scope.misc = $misc;
-        $scope.app = $application;
-        $scope.nodes = $nodes;
-        $scope.newNode = undefined;
-        $scope.newNodeTypeId = 0;
-        $scope.errors = [];
 
 
-        $scope.onChangeNodeType = function (typeId) {
-            if (typeId !== undefined) {
-                switch (typeId) {
-                    case 1:
-                        $scope.newNode = $factory({ classes: ["Pylon", "Model", "Backup", "States"], base_class: "Pylon" });
-                        break;
-                    case 4:
-                        $scope.newNode = $factory({ classes: ["PowerStation", "Model", "Backup", "States"], base_class: "PowerStation" });
-                        break;
-                }
-                $log.log("newNode = ", $scope.newNode);
-            }
-        };
-
-        $scope.validate = function () {
-            $scope.errors.splice(0, $scope.errors.length);
-            if ($scope.newNodeTypeId === 1) {
-                $scope.newNode.powerLineId.value = $application.currentPowerLine.id.value;
-                if ($scope.newNode.number.value === "" || $scope.newNode.number.value === 0)
-                    $scope.errors.push("Вы не указали номер опоры");
-                if ($scope.newNode.powerLineId.value === 0)
-                    $scope.errors.push("Вы не указали линию");
-            }
-            if ($scope.errors.length === 0) {
-                $nodes.addNode($scope.newNode, $scope.onSuccessAddNode);
-            }
-        };
 
 
-        $scope.onSuccessAddNode = function (data) {
-            $modals.close();
-            $scope.newNode._model_.reset();
-            var temp_node = $nodes.parseNode(data);
-            $application.currentPowerLineNodes.append(temp_node);
-        };
 
 
-        $scope.cancel = function () {
-            $modals.close();
-            $scope.errors.splice(0, $scope.errors.length);
-            $scope.newNode._model_.reset();
-            $scope.newNode._states_.changed(false);
-        };
-    }])
 
 
-    /**
-     * EditPowerLineNodeModalController
-     * Контроллер модального окна редактирования опоры
-     */
-    .controller("EditPowerLineNodeModalController", ["$log", "$scope", "$misc", "$application", "$modals", "$nodes", function ($log, $scope, $misc, $application, $modals, $nodes) {
-        $scope.app = $application;
-        $scope.misc = $misc;
-        $scope.errors = [];
-
-        $scope.cancel = function () {
-            $modals.close();
-            $scope.errors.splice(0, $scope.errors.length);
-            $application.currentPowerLineNode._backup_.restore();
-            $application.currentPowerLineNode._states_.changed(false);
-        };
-
-        $scope.validate = function () {
-            $scope.errors.splice(0, $scope.errors.length);
-            if ($application.currentPowerLineNode.number.value === "")
-                $scope.errors.push("Вы не указали номер опоры");
-            if ($application.currentPowerLineNode.powerLineId.value === "")
-                $scope.errors.push("Вы не указали линию");
-            if ($scope.errors.length === 0) {
-                $application.currentPowerLineNode._states_.loading(true);
-                $nodes.editNode($application.currentPowerLineNode, $scope.onSuccessEditNode);
-            }
-        };
-
-        $scope.onSuccessEditNode = function (data) {
-            $application.currentPowerLineNode._states_.loaded(true);
-            $application.currentPowerLineNode._states_.loading(false);
-            $application.currentPowerLineNode._backup_.setup();
-            $modals.close();
-        };
-    }])
-
-
-/**
- * AddPowerLineModalController
- * Контроллер модального окна добавления линии
- */
-    .controller("AddConnectionNodeModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$nodes", function ($log, $scope, $misc, $factory, $application, $modals, $nodes) {
-        $scope.nodes = $nodes;
-        $scope.misc = $misc;
-        $scope.newConnectionNode = undefined;
-        $scope.newConnectionNodeTypeId = 0;
-        $scope.errors = [];
-
-        $scope.onChangeNodeType = function (typeId) {
-            if (typeId !== undefined) {
-                switch (typeId) {
-                    case 2:
-                        $scope.newConnectionNode = $factory({ classes: ["Anchor", "Model", "Backup", "States"], base_class: "Anchor" });
-                        break;
-                    case 3:
-                        $scope.newConnectionNode = $factory({ classes: ["Union", "Model", "Backup", "States"], base_class: "Union" });
-                        break;
-                }
-                $log.log("newConnectionNode = ", $scope.newConnectionNode);
-            }
-        };
-
-        $scope.validate = function () {
-            $scope.errors.splice(0, $scope.errors.length);
-            if ($scope.newConnectionNodeTypeId === 0) {
-                $scope.errors.push("Вы не выбрали тип оборудования");
-            }
-            if ($scope.newConnectionNodeTypeId === 2) {
-                if ($scope.newConnectionNode.anchorTypeId.value === 0)
-                    $scope.errors.push("Вы не выбрали тип крепления");
-            }
-            if ($scope.errors.length === 0) {
-                $nodes.addConnectionNode(
-                    $scope.newConnectionNode,
-                    $scope.newConnectionNodeTypeId,
-                    $application.currentPowerLineNode.id.value,
-                    $scope.onSuccessAddConnectionNode
-                );
-            }
-        };
-
-
-        $scope.onSuccessAddConnectionNode = function (data) {
-            $modals.close();
-            $scope.newConnectionNode = undefined;
-            $scope.newConnectionNodeTypeId = 0;
-            var temp_connection_node = $nodes.parseNode(data);
-            $application.currentPowerLineNodeConnectionNodes.append(temp_connection_node);
-        };
-
-
-        $scope.cancel = function () {
-            $modals.close();
-            $scope.errors.splice(0, $scope.errors.length);
-            $scope.newConnectionNodeTypeId = 0;
-            $scope.newConnectionNode = undefined;
-        };
-    }])
 
 
     .controller("DeleteConnectionNodeModalController", ["$log", "$scope", "$titles", "$application", "$modals", "$nodes", function ($log, $scope, $titles, $application, $modals, $nodes) {
@@ -327,7 +143,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
                 if (data["title"] !== undefined) {
                     var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
                     temp_title._model_.fromJSON(data["title"]);
-                    temp_title._backup_.setup;
+                    temp_title._backup_.setup();
                     $titles.titles.append(temp_title);
                 }
                 $modals.close();
@@ -744,6 +560,136 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
 
         $scope.onSuccessDeleteUser = function () {
             $users.users.delete("id", $application.currentUser.id.value);
+            $modals.close();
+        };
+    }])
+
+    .controller("NewTitleModalController", ["$log", "$scope", "$application", "$titles", "$factory", "$modals", "$misc", "$nodes", function ($log, $scope, $application, $titles, $factory, $modals, $misc, $nodes) {
+        $scope.app = $application;
+        $scope.misc = $misc;
+        $scope.nodes = $nodes;
+        $scope.newTitle = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+        $scope.startNodePowerLineId = 0;
+        $scope.startNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+        $scope.endNodePowerLineId = 0;
+        $scope.endNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+        $scope.errors = [];
+
+
+        $scope.onStartNodeTypeChange = function (typeId) {
+            if (typeId !== undefined) {
+                if (typeId !== 1)
+                    $scope.startNodePowerLineId = 0;
+            }
+        };
+
+        $scope.onEndNodeTypeChange = function (typeId) {
+            if (typeId !== undefined) {
+                if (typeId !== 1)
+                    $scope.endNodePowerLineId = 0;
+            }
+        };
+
+
+        $scope.selectStartNodePowerLine = function (powerLineId) {
+            if (powerLineId !== undefined) {
+                $scope.newTitle.startNodeId.value = 0;
+                $scope.startNodePylons._states_.loaded(false);
+                $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetStartNodePylons);
+            }
+        };
+
+
+        $scope.onSuccessGetStartNodePylons = function (data) {
+            if (data !== undefined) {
+                $scope.startNodePylons.clear();
+                angular.forEach(data, function (pylon) {
+                    var temp_pylon = $factory({ classes: ["Pylon", "Model"], base_class: "Pylon" });
+                    temp_pylon._model_.fromJSON(pylon);
+                    $log.log(temp_pylon);
+                    $scope.startNodePylons.append(temp_pylon);
+                });
+                $scope.startNodePylons._states_.loaded(true);
+            }
+        };
+
+
+        $scope.selectEndNodePowerLine = function (powerLineId) {
+            $log.log("calleD", powerLineId);
+            if (powerLineId !== undefined) {
+                $scope.newTitle.endNodeId.value = 0;
+                $scope.endNodePylons._states_.loaded(false);
+                $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetEndNodePylons);
+            }
+        };
+
+
+        $scope.onSuccessGetEndNodePylons = function (data) {
+            if (data !== undefined) {
+                $scope.endNodePylons.clear();
+                angular.forEach(data, function (pylon) {
+                    var temp_pylon = $factory({ classes: ["Pylon", "Model"], base_class: "Pylon" });
+                    temp_pylon._model_.fromJSON(pylon);
+                    $scope.endNodePylons.append(temp_pylon);
+                });
+                $scope.endNodePylons._states_.loaded(true);
+            }
+        };
+
+
+        $scope.validate = function () {
+            $scope.newTitle._states_.loaded(false);
+            $scope.errors.splice(0, $scope.errors.length);
+
+            if ($scope.newTitle.title.value === "")
+                $scope.errors.push("Вы не указали наименование титула");
+
+            /**
+             * Если тип узла в начальной точке титула - опора
+             */
+            if ($scope.newTitle.startNodeTypeId.value === 1) {
+                if ($scope.startNodePowerLineId === 0)
+                    $scope.errors.push("Вы не выбрали линию опоры в начале титула");
+                if ($scope.newTitle.startNodeId.value === 0)
+                    $scope.errors.push("Вы не указали номер опоры в начале титула");
+            }
+
+            /**
+             * Если тип узла в конечной точке титула - опора
+             */
+            if ($scope.newTitle.endNodeTypeId.value === 1) {
+                if ($scope.endNodePowerLineId === 0)
+                    $scope.errors.push("Вы не выбрали линию опоры в конце титула");
+                if ($scope.newTitle.endNodeId.value === 0)
+                    $scope.errors.push("Вы не указали номер опоры в конце титула");
+            }
+
+            if ($scope.errors.length === 0) {
+                $titles.addTitle($scope.newTitle, $scope.onSuccessAddTitle);
+            }
+        };
+
+        $scope.onSuccessAddTitle = function (data) {
+            if (data !== undefined) {
+                var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+                temp_title._model_.fromJSON(data);
+                temp_title._backup_.setup();
+                $titles.titles.append(temp_title);
+                $scope.newTitle._states_.loaded(true);
+                $scope.startNodePowerLineId = 0;
+                $scope.startNodePylons.clear();
+                $scope.endNodePowerLineId = 0;
+                $scope.endNodePylons.clear();
+                $scope.newTitle._model_.reset();
+                $modals.close();
+            }
+        };
+
+        $scope.cancel = function () {
+            $scope.errors.splice(0, $scope.errors.length);
+            $scope.newTitle._model_.reset();
+            $scope.startNodePowerLineId = 0;
+            $scope.endNodePowerLineId = 0;
             $modals.close();
         };
     }]);

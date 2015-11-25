@@ -26,9 +26,11 @@ var nodes = angular.module("gears.app.nodes", [])
                     isBasicNode: new Field({ source: "IS_BASE_OBJECT", value: false }),
                     isAllowConnection: new Field({ source: "IS_ALLOW_CONNECTION", value: false }),
 
-                    _init_: function () {
+                    onInitModel: function () {
                         this.isBasicNode.value = this.isBasicNode.value === 1 ? true : false;
                         this.isAllowConnection.value = this.isAllowConnection.value === 1 ? true : false;
+
+                        $log.log(this.title.value + " isBasic = ", this.isBasicNode.value);
                     }
                 },
 

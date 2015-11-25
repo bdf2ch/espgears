@@ -330,7 +330,7 @@ grUi.directive("modal", ["$log", "$window", "$modals", function ($log, $window, 
             });
 
             element[0].addEventListener("DOMSubtreeModified", function (ev) {
-                $log.log("MODIFIED");
+                //$log.log("MODIFIED");
                 recalculatePosition();
             }, false);
         }

@@ -2,7 +2,7 @@
     <tr class="column-header">
         <td class="caption width-100">
             Титулы
-            <button class="button green right" ng-click="gotoAddTitle()">+</button>
+            <button class="button green right" ng-click="addTitle()">+</button>
         </td>
 
     </tr>
@@ -27,6 +27,10 @@
                 -->
 
 
+                <div class="service-message" ng-show="titles.titles._states_.loaded() === false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
                 <ul class="cards">
                     <li class="card"
                         ng-class="{'active': title._states_.selected() === true}"
@@ -36,7 +40,7 @@
                         <div class="card-header">
                             <span>{{ title._backup_.data.title }}</span>
                             <div class="right" ng-show="app.currentTitle.id.value === title.id.value">
-                                <button class="button round blue" title="Редактировать" ng-click="editType($event)">
+                                <button class="button round blue" title="Редактировать" ng-click="editTitle($event)">
                                     <img src="resources/img/icons/edit.png" alt=""/>
                                 </button>
                                 <button class="button round red" title="Удалить" ng-click="deleteType($event)">&times;</button>

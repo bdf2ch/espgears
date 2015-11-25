@@ -752,11 +752,11 @@ var titles = angular.module("gears.app.titles",[])
                                     db_error.display();
                                 } else {
                                     var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
-                                    temp_title._model_.fromJSON(data);
-                                    temp_title._backup_.setup();
-                                    titles.titles.append(temp_title);
+                                    //temp_title._model_.fromJSON(data);
+                                    //temp_title._backup_.setup();
+                                    //titles.titles.append(temp_title);
                                     if (callback !== undefined)
-                                        callback(temp_title);
+                                        callback(data);
                                 }
                             }
                         }
@@ -1132,7 +1132,7 @@ var titles = angular.module("gears.app.titles",[])
     .run(function ($modules, $titles, $log, $menu) {
         $modules.load($titles);
         $titles.requests._states_.loaded(false);
-        $log.log("requests loaded = ", $titles.requests._states_.loaded());
+        $titles.titles._states_.loaded(false);
         //$titles.getTitles();
         //$titles.getStatuses();
         //$titles.getBuildingPlans();
@@ -1162,3 +1162,195 @@ var titles = angular.module("gears.app.titles",[])
             order: 2
         });
     });
+
+
+
+
+titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$application", "$factory", "$titles", "$nodes", "$misc", "$modals", "$rootScope", function ($log, $scope, $location, $application, $factory, $titles, $nodes, $misc, $modals, $rootScope) {
+    $scope.nodes = $nodes;
+    $scope.misc = $misc;
+    $scope.app = $application;
+    $scope.title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+    $scope.startNode = undefined;
+    $scope.startNodePowerLineId = 0;
+    $scope.startNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+    $scope.endNode = undefined;
+    $scope.endNodePowerLineId = 0;
+    $scope.endNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+    $scope.needToRefresh = 0;
+    $scope.errors = [];
+
+
+    $scope.$watch("app.currentTitle.startNode.powerLineId.value", function (value) {
+        $log.log("start node powerline changed = ", value);
+        if (value !== undefined) {
+            $scope.startNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId($application.currentTitle.startNode.powerLineId.value, $scope.onSuccessGetStartNodePylons);
+        }
+    });
+
+    $scope.$watch("app.currentTitle.endNode.powerLineId.value", function (value) {
+        $log.log("end node powerline changed = ", value);
+        if (value !== undefined) {
+            $scope.endNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId($application.currentTitle.endNode.powerLineId.value, $scope.onSuccessGetEndNodePylons);
+        }
+    });
+
+    /**
+     * Коллбэк, вызываемый при получении начального и конечного узлов титула
+     * @param data - Данные, которые вернул сервер
+     */
+    $scope.onSuccessGetBoundaryNodes = function (data) {
+        $scope.startNode = $nodes.parseNode(data[0]);
+        $scope.endNode = $nodes.parseNode(data[1]);
+        if ($scope.startNode.nodeTypeId.value === 1) {
+            $scope.startNodePowerLineId = $scope.startNode.powerLineId.value;
+            $scope.startNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId($scope.startNodePowerLineId, $scope.onSuccessGetStartNodePylons);
+        }
+        if ($scope.endNode.nodeTypeId.value === 1) {
+            $scope.endNodePowerLineId = $scope.endNode.powerLineId.value;
+            $scope.endNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId($scope.endNodePowerLineId, $scope.onSuccessGetEndNodePylons);
+        }
+        $log.log("start node = ", $scope.startNode);
+        $log.log("end node = ", $scope.endNode);
+    };
+
+
+    //if ($routeParams.titleId !== undefined) {
+    //    $scope.title = $titles.titles.find("id", parseInt($routeParams.titleId));
+    //    $scope.title._states_.loaded(false);
+    //    $log.log("title = ", $scope.title);
+        //$titles.getBoundaryNodes($application.currentTitle.id.value, $scope.onSuccessGetBoundaryNodes);
+    //scope.test();
+   // }
+
+
+    $scope.selectStartNodePowerLine = function (powerLineId) {
+        $log.log("start node powerline changed");
+        if (powerLineId !== undefined) {
+            $scope.title.startNodeId.value = 0;
+            $scope.startNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetStartNodePylons);
+        }
+    };
+
+
+    $scope.onSuccessGetStartNodePylons = function (data) {
+        if (data !== undefined) {
+            $scope.startNodePylons.clear();
+            angular.forEach(data, function (pylon) {
+                var temp_pylon = $factory({ classes: ["Pylon", "Model"], base_class: "Pylon" });
+                temp_pylon._model_.fromJSON(pylon);
+                $scope.startNodePylons.append(temp_pylon);
+            });
+            $scope.startNodePylons._states_.loaded(true);
+        }
+    };
+
+
+    $scope.selectEndNodePowerLine = function (powerLineId) {
+        if (powerLineId !== undefined) {
+            $scope.title.endNodeId.value = 0;
+            $scope.endNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetEndNodePylons);
+        }
+    };
+
+
+    $scope.onSuccessGetEndNodePylons = function (data) {
+        if (data !== undefined) {
+            $scope.endNodePylons.clear();
+            angular.forEach(data, function (pylon) {
+                var temp_pylon = $factory({ classes: ["Pylon", "Model"], base_class: "Pylon" });
+                temp_pylon._model_.fromJSON(pylon);
+                $scope.endNodePylons.append(temp_pylon);
+            });
+            $scope.endNodePylons._states_.loaded(true);
+        }
+    };
+
+
+
+    /**
+     * Отмена изменения в текущем титуле
+     */
+    $scope.cancelChanges = function () {
+        $scope.title._backup_.restore();
+        $scope.title._states_.changed(false);
+        if ($scope.startNode.nodeTypeId.value === 1)
+            $scope.startNodePowerLineId = $scope.startNode.powerLineId.value;
+        if ($scope.endNode.nodeTypeId.value === 1)
+            $scope.endNodePowerLineId = $scope.endNode.powerLineId.value;
+        $scope.errors.splice(0, $scope.errors.length);
+        $scope.title._states_.loaded(false);
+    };
+
+
+    /**
+     * Коллбэк, вызываемый при изменении титула
+     */
+    $scope.onChangeTitle = function () {
+        $application.currentTitle._states_.changed(true);
+        $application.currentTitle._states_.loaded(false);
+    };
+
+
+    /**
+     * Валидация данных титула
+     */
+    $scope.validate = function () {
+        $scope.title._states_.loaded(false);
+        $scope.errors.splice(0, $scope.errors.length);
+
+        if ($application.currentTitle.title.value === "")
+            $scope.errors.push("Вы не указали наименование титула");
+
+        /**
+         * Если тип узла в начальной точке титула - опора
+         */
+        if ($application.currentTitle.startNodeTypeId.value === 1) {
+            if ($application.currentTitle.startNode.powerLineId.value === 0)
+                $scope.errors.push("Вы не выбрали линию опоры в начале титула");
+            if ($application.currentTitle.startNodeId.value === 0)
+                $scope.errors.push("Вы не указали номер опоры в начале титула");
+        }
+        /**
+         * Если тип узла в конечной точке титула - опора
+         */
+        if ($application.currentTitle.endNodeTypeId.value === 1) {
+            if ($application.currentTitle.endNode.powerLineId.value === 0)
+                $scope.errors.push("Вы не выбрали линию опоры в конце титула");
+            if ($application.currentTitle.endNodeId.value === 0)
+                $scope.errors.push("Вы не указали номер опоры в конце титула");
+        }
+
+        if ($scope.errors.length === 0) {
+            $titles.editTitle($application.currentTitle, $scope.onSuccessEditTitle);
+        }
+    };
+
+
+    /**
+     * Коллбэк, вызываемый при успешном изменении титула
+     * @param data {} - Данные, которые вернул сервер
+     */
+    $scope.onSuccessEditTitle = function (data) {
+        $modals.close();
+        $log.log("onSuccessEditTilteData = ", data);
+        $application.currentTitle._backup_.setup();
+        $application.currentTitle._states_.loaded(true);
+        $application.currentTitle._states_.changed(false);
+    };
+
+
+    $scope.cancel = function () {
+        $modals.close();
+        $application.currentTitle._backup_.restore();
+        $scope.startNodePowerLineId = 0;
+        $scope.endNodePowerLineId = 0;
+    };
+
+}]);

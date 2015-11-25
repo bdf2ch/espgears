@@ -286,9 +286,9 @@ var gears = angular.module("gears", [])
                                     }
                                 }
                             }
-                            if (this.__instance__["_init_"] !== undefined) {
-                                if (this.__instance__["_init_"].constructor === Function) {
-                                    this.__instance__._init_();
+                            if (this.__instance__["onInitModel"] !== undefined) {
+                                if (this.__instance__["onInitModel"].constructor === Function) {
+                                    this.__instance__.onInitModel();
                                 }
                             }
                             return result;

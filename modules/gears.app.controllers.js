@@ -335,19 +335,30 @@ var appControllers = angular.module("gears.app.controllers", [])
                                     $application.currentTitleNodes._states_.loaded(false);
                                     $scope.app.currentTitleNodes.clear();
                                     $titles.getTitleNodes(titleId, -1, -1, -1, $scope.onSuccessGetTitleNodes);
+                                    //$titles.getBoundaryNodes(titleId, $scope.onSuccessGetBoundaryNodes);
                                     $scope.app.currentTitleNodes.titleId = titleId;
                                 }
                             } else {
                                 $scope.app.currentTitleNodes.clear();
                                 $titles.getTitleNodes(titleId, -1, -1, -1, $scope.onSuccessGetTitleNodes);
+                                $titles.getBoundaryNodes(titleId, $scope.onSuccessGetBoundaryNodes);
                                 $scope.app.currentTitleNodes.titleId = titleId;
                             }
                         }
                     } else
                         title._states_.selected(false);
                 });
+                $log.log("currentTitle = ", $application.currentTitle);
             }
         };
+
+
+        //$scope.onSuccessGetBoundaryNodes = function (data) {
+        //    if (data !== undefined) {
+        //        $application.currentTitle.startNode = $nodes.parseNode(data[0]);
+        //        $application.currentTitle.endNode = $nodes.parseNode(data[1]);
+        //    }
+        //};
 
 
         $scope.selectNode = function (node) {
@@ -357,12 +368,18 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.onSuccessGetTitleNodes = function (data) {
             if (data !== undefined) {
-                angular.forEach(data, function (node) {
-                    var temp_node = $nodes.parseNode(node);
-                    $log.log("appended node = ", temp_node);
-                    $application.currentTitleNodes.appendNode({ node: temp_node });
-                });
-                $application.currentTitleNodes._states_.loaded(true);
+                if (data["nodes"] !== undefined) {
+                    angular.forEach(data["nodes"], function (node) {
+                        var temp_node = $nodes.parseNode(node);
+                        $log.log("appended node = ", temp_node);
+                        $application.currentTitleNodes.appendNode({ node: temp_node });
+                    });
+                    $application.currentTitleNodes._states_.loaded(true);
+                }
+                if (data["boundaryNodes"] !== undefined) {
+                    $application.currentTitle.startNode = $nodes.parseNode(data["boundaryNodes"][0]);
+                    $application.currentTitle.endNode = $nodes.parseNode(data["boundaryNodes"][1]);
+                }
             }
         };
 
@@ -397,6 +414,28 @@ var appControllers = angular.module("gears.app.controllers", [])
                 caption: "Новая рабочая коммиссия",
                 showFog: true,
                 template: "templates/modals/new-working-commission.html"
+            });
+        };
+
+        $scope.addTitle = function () {
+            $modals.show({
+                width: 570,
+                position: "center",
+                caption: "Новый титул",
+                showFog: true,
+                template: "templates/modals/new-title.html"
+            });
+        };
+
+
+        $scope.editTitle = function (event) {
+            event.stopPropagation();
+            $modals.show({
+                width: 570,
+                position: "center",
+                caption: "Редактирование титула",
+                showFog: true,
+                template: "templates/modals/edit-title.html"
             });
         };
 
@@ -1463,195 +1502,6 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.onSuccessScanFolder = function () {
             $log.log("ONSUCCESSSCANFOLDER");
         };
-    }])
-
-
-    .controller("PowerLinesController", ["$log", "$scope", "$misc", "$application", "$factory", "$nodes", "$modals", function ($log, $scope, $misc, $application, $factory, $nodes, $modals) {
-        $scope.misc = $misc;
-        $scope.app = $application;
-        $scope.pylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
-        $scope.search = "";
-
-        $scope.selectPowerLine = function (powerLineId) {
-            if (powerLineId !== undefined) {
-                angular.forEach($misc.powerLines.items, function (line) {
-                    if (line.id.value === powerLineId) {
-                        if (line._states_.selected() === true) {
-                            line._states_.selected(false);
-                            $application.currentPowerLine = undefined;
-                            $application.currentPowerLineNodes.clear();
-                        } else {
-                            line._states_.selected(true);
-                            $application.currentPowerLine = line;
-                            $log.log("currentPowerLineId = ", $application.currentPowerLine.id.value);
-                            $application.currentPowerLineNodes._states_.loaded(false);
-                            $application.currentPowerLineNodes.clear();
-                            $application.currentPowerLineNodeConnectionNodes.clear();
-                            $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetPylons)
-                        }
-                    } else {
-                        line._states_.selected(false);
-                    }
-                });
-            }
-        };
-
-
-        $scope.selectNode = function (nodeId) {
-            if (nodeId !== undefined) {
-                angular.forEach($application.currentPowerLineNodes.items, function (node) {
-                    if (node.id.value === nodeId) {
-                        if (node._states_.selected() === true) {
-                            node._states_.selected(false);
-                            $application.currentPowerLineNode = undefined;
-                            $application.currentPowerLineNodeConnectionNodes.clear();
-                        } else {
-                            node._states_.selected(true);
-                            $application.currentPowerLineNode = node;
-                            $application.currentPowerLineNodeConnectionNodes.clear();
-                            $application.currentPowerLineNodeConnectionNodes._states_.loaded(false);
-                            $nodes.getConnectionNodesByBaseNodeId(nodeId, $scope.onSuccessGetConnectionNodes);
-                        }
-                    } else {
-                        node._states_.selected(false);
-                    }
-                });
-            }
-        };
-
-
-        $scope.selectConnectionNode = function (connectionNodeId) {
-            if (connectionNodeId !== undefined) {
-                angular.forEach($application.currentPowerLineNodeConnectionNodes.items, function (node) {
-                    if (node.id.value === connectionNodeId) {
-                        if (node._states_.selected() === true) {
-                            node._states_.selected(false);
-                            $application.currentPowerLineConnectionNode = undefined;
-                            //$application.currentPowerLineNodeConnectionNodes.clear();
-                        } else {
-                            node._states_.selected(true);
-                            $application.currentPowerLineConnectionNode = node;
-                            //$application.currentPowerLineNodeConnectionNodes.clear();
-                            //$application.currentPowerLineNodeConnectionNodes._states_.loaded(false);
-                            //$nodes.getConnectionNodesByBaseNodeId(nodeId, $scope.onSuccessGetConnectionNodes);
-                        }
-                    } else {
-                        node._states_.selected(false);
-                    }
-                    $log.log($application.currentPowerLineConnectionNode);
-                });
-            }
-        };
-
-
-        $scope.onSuccessGetConnectionNodes = function (data) {
-            if (data !== undefined) {
-                angular.forEach(data, function (connector) {
-                    var temp_connector = $nodes.parseNode(connector);
-                    $application.currentPowerLineNodeConnectionNodes.append(temp_connector);
-                });
-                $application.currentPowerLineNodeConnectionNodes._states_.loaded(true);
-                $log.log($scope.app.currentPowerLineNodeConnectionNodes.items);
-            }
-        };
-
-
-        $scope.onSuccessGetPylons = function (data) {
-            if (data !== undefined) {
-                angular.forEach(data, function (pylon) {
-                    var temp_pylon = $nodes.parseNode(pylon);
-                    $application.currentPowerLineNodes.append(temp_pylon);
-                });
-                $application.currentPowerLineNodes._states_.loaded(true);
-            }
-        };
-
-
-        $scope.addPowerLine = function () {
-            $modals.show({
-                width: 400,
-                position: "center",
-                caption: "Новая линия",
-                showFog: true,
-                template: "templates/modals/new-power-line.html"
-            });
-        };
-
-
-        $scope.editPowerLine = function () {
-            $modals.show({
-                width: 400,
-                position: "center",
-                caption: "Редактирование линии",
-                showFog: true,
-                closeButton: false,
-                template: "templates/modals/edit-power-line.html"
-            });
-        };
-
-        $scope.deleteType = function () {
-            $modals.show({
-                width: 400,
-                position: "center",
-                caption: "Удаление типа контрагента",
-                showFog: true,
-                closeButton: true,
-                template: "templates/modals/delete-contractor-type.html"
-            });
-        };
-
-        $scope.addNode = function () {
-            $modals.show({
-                width: 400,
-                position: "center",
-                caption: "Новый объект на линии",
-                showFog: true,
-                template: "templates/modals/new-power-line-node.html"
-            });
-        };
-
-        $scope.editNode = function () {
-            $modals.show({
-                width: 400,
-                position: "center",
-                caption: "Редактирование объекта на линии",
-                showFog: true,
-                closeButton: false,
-                template: "templates/modals/edit-power-line-node.html"
-            });
-        };
-
-        $scope.addConnectionNode = function () {
-            $modals.show({
-                width: 400,
-                position: "center",
-                caption: "Новое оборудование на объекте",
-                showFog: true,
-                template: "templates/modals/new-connection-node.html"
-            });
-        };
-
-
-        $scope.editConnectionNode = function (event) {
-            $log.log(event);
-            event.stopPropagation();
-        };
-
-
-        $scope.deleteConnectionNode = function (connectionNodeId, event) {
-            event.stopPropagation();
-            if (connectionNodeId !== undefined) {
-                $modals.show({
-                    width: 400,
-                    position: "center",
-                    caption: "Удаление оборудования на объекте",
-                    showFog: true,
-                    closeButton: true,
-                    template: "templates/modals/delete-connection-node.html",
-                    data: {
-                        connectionNodeId: connectionNodeId
-                    }
-                });
-            }
-        };
     }]);
+
+

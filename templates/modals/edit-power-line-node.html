@@ -1,5 +1,5 @@
 <div ng-controller="EditPowerLineNodeModalController">
-    <div class="row height-100 split-20" ng-show="app.currentPowerLineNode.__class__ === 'Pylon'">
+    <div class="row height-100 padding-10" ng-show="app.currentPowerLineNode.__class__ === 'Pylon'">
         <label for="pylon-number"># Опоры</label>
         <input type="text"
                name="pylon-number"
@@ -22,26 +22,27 @@
         </select>
     </div>
     -->
-    <div class="row height-100 split-20" ng-show="app.currentPowerLineNode.__class__ === 'Pylon'">
+    <div class="row height-100 padding-10" ng-show="app.currentPowerLineNode.__class__ === 'Pylon'">
         <label for="pylon-type">Тип опоры</label>
         <select name="pylon-type"
                 id="pylon-type"
                 class="width-100"
                 ng-change="app.currentPowerLineNode._states_.changed(true)"
                 ng-model="app.currentPowerLineNode.pylonTypeId.value"
+                ng-disabled="app.currentPowerLineNode._states_.loading() === true"
                 ng-options="type.id.value as type.title.value for type in misc.pylonTypes.items">
         </select>
     </div>
-    <div class="row">
+    <div class="row padding-10">
         <div class="width-50">
-            <button class="green square width-100"
+            <button class="button green square width-100"
                     ng-disabled="app.currentPowerLineNode._states_.loading() === true || app.currentPowerLineNode._states_.changed() === false"
                     ng-click="validate()">
                 Сохранить
             </button>
         </div>
         <div class="50">
-            <button class="red square width-100"
+            <button class="button red square width-100"
                     ng-disabled="app.currentPowerLineNode._states_.loading() === true"
                     ng-click="cancel()">
                 Отмена

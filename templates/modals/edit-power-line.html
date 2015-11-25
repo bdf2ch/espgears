@@ -1,5 +1,5 @@
 <div ng-controller="EditPowerLineModalController">
-    <div class="row height-100 split-20">
+    <div class="row height-100 padding-10">
         <label for="power-line-title">Наименование линии</label>
         <input type="text"
                name="power-line-title"
@@ -10,7 +10,7 @@
                ng-change="app.currentPowerLine._states_.changed(true)"
                ng-model="app.currentPowerLine.title.value"/>
     </div>
-    <div class="row height-100 split-20">
+    <div class="row height-100 padding-10">
         <label for="power-line-voltage">Напряжение линии</label>
         <input type="text"
                name="power-line-voltage"
@@ -21,16 +21,16 @@
                ng-change="app.currentPowerLine._states_.changed(true)"
                ng-model="app.currentPowerLine.voltage.value"/>
     </div>
-    <div class="row">
+    <div class="row padding-10">
         <div class="width-50">
-            <button class="green square width-100"
+            <button class="button green square width-100"
                     ng-disabled="app.currentPowerLine._states_.loading() === true || app.currentPowerLine._states_.changed() === false"
                     ng-click="validate()">
                 Сохранить
             </button>
         </div>
         <div class="50">
-            <button class="red square width-100"
+            <button class="button red square width-100"
                     ng-disabled="app.currentPowerLine._states_.loading() === true"
                     ng-click="cancel()">
                 Отмена
