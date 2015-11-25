@@ -1132,7 +1132,7 @@ var titles = angular.module("gears.app.titles",[])
     .run(function ($modules, $titles, $log, $menu) {
         $modules.load($titles);
         $titles.requests._states_.loaded(false);
-        $log.log("requests loaded = ", $titles.requests._states_.loaded());
+        $titles.titles._states_.loaded(false);
         //$titles.getTitles();
         //$titles.getStatuses();
         //$titles.getBuildingPlans();
@@ -1166,7 +1166,7 @@ var titles = angular.module("gears.app.titles",[])
 
 
 
-titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$application", "$factory", "$titles", "$nodes", "$misc", function ($log, $scope, $location, $application, $factory, $titles, $nodes, $misc) {
+titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$application", "$factory", "$titles", "$nodes", "$misc", "$modals", "$rootScope", function ($log, $scope, $location, $application, $factory, $titles, $nodes, $misc, $modals, $rootScope) {
     $scope.nodes = $nodes;
     $scope.misc = $misc;
     $scope.app = $application;
@@ -1177,8 +1177,25 @@ titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$
     $scope.endNode = undefined;
     $scope.endNodePowerLineId = 0;
     $scope.endNodePylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+    $scope.needToRefresh = 0;
     $scope.errors = [];
 
+
+    $scope.$watch("app.currentTitle.startNode.powerLineId.value", function (value) {
+        $log.log("start node powerline changed = ", value);
+        if (value !== undefined) {
+            $scope.startNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId($application.currentTitle.startNode.powerLineId.value, $scope.onSuccessGetStartNodePylons);
+        }
+    });
+
+    $scope.$watch("app.currentTitle.endNode.powerLineId.value", function (value) {
+        $log.log("end node powerline changed = ", value);
+        if (value !== undefined) {
+            $scope.endNodePylons._states_.loaded(false);
+            $nodes.getPylonsByPowerLineId($application.currentTitle.endNode.powerLineId.value, $scope.onSuccessGetEndNodePylons);
+        }
+    });
 
     /**
      * Коллбэк, вызываемый при получении начального и конечного узлов титула
@@ -1206,11 +1223,13 @@ titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$
     //    $scope.title = $titles.titles.find("id", parseInt($routeParams.titleId));
     //    $scope.title._states_.loaded(false);
     //    $log.log("title = ", $scope.title);
-        $titles.getBoundaryNodes($scope.app.currentTitle.id.value, $scope.onSuccessGetBoundaryNodes);
+        //$titles.getBoundaryNodes($application.currentTitle.id.value, $scope.onSuccessGetBoundaryNodes);
+    //scope.test();
    // }
 
 
     $scope.selectStartNodePowerLine = function (powerLineId) {
+        $log.log("start node powerline changed");
         if (powerLineId !== undefined) {
             $scope.title.startNodeId.value = 0;
             $scope.startNodePylons._states_.loaded(false);
@@ -1254,13 +1273,6 @@ titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$
     };
 
 
-    /**
-     * Переход в раздел титулов
-     */
-    $scope.gotoTitles = function () {
-        $location.url("/titles");
-    };
-
 
     /**
      * Отмена изменения в текущем титуле
@@ -1281,20 +1293,8 @@ titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$
      * Коллбэк, вызываемый при изменении титула
      */
     $scope.onChangeTitle = function () {
-        $scope.title._states_.changed(true);
-        $scope.title._states_.loaded(false);
-    };
-
-
-    /**
-     * Коллбэк, вызываемый при успешном изменении титула
-     * @param data {} - Данные, которые вернул сервер
-     */
-    $scope.onSuccessEditTitle = function (data) {
-        $log.log("onSuccessEditTilteData = ", data);
-        $scope.title._backup_.setup();
-        $scope.title._states_.loaded(true);
-        $scope.title._states_.changed(false);
+        $application.currentTitle._states_.changed(true);
+        $application.currentTitle._states_.loaded(false);
     };
 
 
@@ -1305,31 +1305,52 @@ titles.controller("EditTitleModalController", ["$log", "$scope", "$location", "$
         $scope.title._states_.loaded(false);
         $scope.errors.splice(0, $scope.errors.length);
 
-        if ($scope.title.title.value === "")
+        if ($application.currentTitle.title.value === "")
             $scope.errors.push("Вы не указали наименование титула");
 
         /**
          * Если тип узла в начальной точке титула - опора
          */
-        if ($scope.title.startNodeTypeId.value === 1) {
-            if ($scope.startNodePowerLineId === 0)
+        if ($application.currentTitle.startNodeTypeId.value === 1) {
+            if ($application.currentTitle.startNode.powerLineId.value === 0)
                 $scope.errors.push("Вы не выбрали линию опоры в начале титула");
-            if ($scope.title.startNodeId.value === 0)
+            if ($application.currentTitle.startNodeId.value === 0)
                 $scope.errors.push("Вы не указали номер опоры в начале титула");
         }
         /**
          * Если тип узла в конечной точке титула - опора
          */
-        if ($scope.title.endNodeTypeId.value === 1) {
-            if ($scope.endNodePowerLineId === 0)
+        if ($application.currentTitle.endNodeTypeId.value === 1) {
+            if ($application.currentTitle.endNode.powerLineId.value === 0)
                 $scope.errors.push("Вы не выбрали линию опоры в конце титула");
-            if ($scope.title.endNodeId.value === 0)
+            if ($application.currentTitle.endNodeId.value === 0)
                 $scope.errors.push("Вы не указали номер опоры в конце титула");
         }
 
         if ($scope.errors.length === 0) {
-            $titles.edit($scope.title, $scope.onSuccessEditTitle);
+            $titles.editTitle($application.currentTitle, $scope.onSuccessEditTitle);
         }
+    };
+
+
+    /**
+     * Коллбэк, вызываемый при успешном изменении титула
+     * @param data {} - Данные, которые вернул сервер
+     */
+    $scope.onSuccessEditTitle = function (data) {
+        $modals.close();
+        $log.log("onSuccessEditTilteData = ", data);
+        $application.currentTitle._backup_.setup();
+        $application.currentTitle._states_.loaded(true);
+        $application.currentTitle._states_.changed(false);
+    };
+
+
+    $scope.cancel = function () {
+        $modals.close();
+        $application.currentTitle._backup_.restore();
+        $scope.startNodePowerLineId = 0;
+        $scope.endNodePowerLineId = 0;
     };
 
 }]);

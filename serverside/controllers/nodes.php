@@ -86,10 +86,7 @@
         oci_free_statement($cursor);
 
         // Возврат результата
-        if (sizeof($result) == 0)
-            echo json_encode(0);
-        else
-            echo json_encode($result);
+        echo json_encode($result);
     };
 
 

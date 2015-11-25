@@ -2,11 +2,12 @@
     <tr class="column-header">
         <td class="caption width-100">
             Линии
-            <button class="green right"
+            <button class="button green right"
                     ng-click="addPowerLine()"
                     title="Добавить линию">
                 +
             </button>
+            <!--
             <span class="separator right" ng-show="app.currentPowerLine !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentPowerLine !== undefined"
@@ -19,6 +20,7 @@
                     title="Удалить линию">
                 -
             </button>
+            -->
         </td>
     </tr>
     <tr class="column-content-container">
@@ -48,12 +50,14 @@
                         ng-repeat="line in misc.powerLines.items | orderBy:'_backup_.data.title' track by $id(line)"
                         ng-class="{'active': line._states_.selected() === true}"
                         ng-click="selectPowerLine(line.id.value)">
-                        <img src="../resources/img/icons/powerline.png" alt="" class="card-img"/>
+                        <img src="../resources/img/icons/powerline.png" alt="" class="card-img icon"/>
                         <div class="card-header">
                             {{ line._backup_.data.title }}
-                            <div class="hover-visible right">
-                                <button class="round blue" title="Редактировать"></button>
-                                <button class="round red" title="Удалить"></button>
+                            <div class="right" ng-show="app.currentPowerLine.id.value === line.id.value">
+                                <button class="button round blue" title="Редактировать" ng-click="editPowerLine($event)">
+                                    <img src="resources/img/icons/edit.png" alt=""/>
+                                </button>
+                                <button class="button round red" title="Удалить">&times;</button>
                             </div>
                         </div>
                         <div class="card-content">
@@ -70,12 +74,13 @@
     <tr class="column-header">
         <td class="caption width-100">
             Объекты
-            <button class="green right"
+            <button class="button green right"
                     ng-show="app.currentPowerLine !== undefined"
                     ng-click="addNode()"
                     title="Добавить объект">
                 +
             </button>
+            <!--
             <span class="separator right" ng-show="app.currentPowerLineNode !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentPowerLineNode !== undefined"
@@ -88,6 +93,7 @@
                     ng-show="app.currentPowerLineNode !== undefined">
                 -
             </button>
+            -->
         </td>
     </tr>
     <tr ng-show="app.currentPowerLineNodes.items.length > 0">
@@ -136,16 +142,23 @@
                         ng-class="{'active': node._states_.selected() === true}"
                         ng-repeat="node in app.currentPowerLineNodes.items | filter: {search: search} track by $index"
                         ng-click="selectNode(node.id.value)">
-                        <img src="../resources/img/icons/pylon_.png" alt="" class="card-img"/>
+                        <img src="../resources/img/icons/pylon.png" class="card-img icon" ng-show="node.__class__ === 'Pylon'"/>
                         <div class="card-header">
-                            {{ "Опора #" + node._backup_.data.number }}
-                            <div class="hover-visible right">
-                                <button class="round blue" title="Редактировать"></button>
-                                <button class="round red" title="Удалить"></button>
+                            <span class="primary-text" ng-show="node.__class__ === 'Pylon'">{{ "Опора #" + node._backup_.data.number }}</span>
+                            <div class="right" ng-show="app.currentPowerLineNode.id.value === node.id.value">
+                                <button class="button round blue" title="Редактировать" ng-click="editNode($event)">
+                                    <img src="resources/img/icons/edit.png" alt=""/>
+                                </button>
+                                <button class="button round red" title="Удалить" ng-click="deleteNode($event)">&times;</button>
                             </div>
                         </div>
                         <div class="card-content">
-                            <span class="secondary-text">{{ "Тип опоры: " + misc.pylonTypes.find("id", node._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
+                            <span class="secondary-text" ng-show="node.__class__ === 'Pylon' && node.pylonTypeId.value !== 0">
+                                {{ "Тип опоры: " + misc.pylonTypes.find("id", node._backup_.data.pylonTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;
+                            </span>
+                            <span class="secondary-text" ng-show="node.__class__ === 'Pylon' && node.pylonTypeId.value === 0">
+                                Тип опоры: не указан &nbsp; &nbsp; &nbsp;
+                            </span>
                         </div>
                     </li>
                 </ul>
@@ -159,9 +172,14 @@
     <tr class="column-header">
         <td class="caption width-100">
             Оборудование на объекте
-            <button class="green right" ng-show="app.currentPowerLineNode !== undefined" ng-click="addConnectionNode()" title="Добавить оборудование">+</button>
-            <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
+            <button class="button green right"
+                    ng-show="app.currentPowerLineNode !== undefined"
+                    ng-click="addConnectionNode()"
+                    title="Добавить оборудование">
+                +
+            </button>
             <!--
+            <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
             <button class="blue right"
                     ng-show="app.currentContractor !== undefined"
                     ng-click="editContractor()"
@@ -233,7 +251,7 @@
 <table class="column width-30">
     <tr class="column-header">
         <td class="caption width-100">
-            Оборудование на опоре
+            ВОЛС
             <button class="green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
             <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
             <button class="blue right"

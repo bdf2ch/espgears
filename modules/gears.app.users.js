@@ -32,7 +32,7 @@ var users = angular.module("gears.app.users", [])
                     fio: "",
                     short: "",
 
-                    _init_: function () {
+                    onInitModel: function () {
                         this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
                         this.short = this.surname.value + " " + this.name.value.toUpperCase()[0] + ". " + this.fname.value.toString().toUpperCase()[0] + ".";
                     }

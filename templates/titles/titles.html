@@ -27,6 +27,10 @@
                 -->
 
 
+                <div class="service-message" ng-show="titles.titles._states_.loaded() === false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
                 <ul class="cards">
                     <li class="card"
                         ng-class="{'active': title._states_.selected() === true}"
