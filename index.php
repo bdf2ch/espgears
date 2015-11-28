@@ -26,10 +26,10 @@
 
     //setcookie("_appUser_", "dasdasdasd");
 
-    //if (isset($_COOKIE["_appUser_"]))
+    if (isset($_COOKIE["espreso_session_id"]))
         $template = new XTemplate("templates/application.html");
-    //else
-    //    $template = new XTemplate("templates/authorization.html");
+    else
+        $template = new XTemplate("templates/authorization.html");
 
     $template -> parse("main");
     $template -> out("main");
