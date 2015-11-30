@@ -653,3 +653,48 @@ grUi.directive("tabs", ["$log", function ($log) {
 
 
 
+grUi.directive("alignment", ["$log", "$window", "$document", function ($log, $window, $document) {
+    return {
+        restrict: "A",
+        scope: {
+            alignVertical: "@",
+            alignHorizontal: "@"
+        },
+        link: function (scope, element, attr, ctrl) {
+            function recalculate_position () {
+                var document_height = $document[0].body.clientHeight;
+                var document_width = $document[0].body.clientWidth;
+                var element_height = element[0].clientHeight;
+                var element_width = element[0].clientWidth;
+
+                if (scope.alignVertical !== undefined) {
+                    switch (scope.alignVertical) {
+                        case "middle":
+                            element.css("top", ((document_height / 2) - (element_height / 2)) + "px");
+                            break;
+                    }
+                }
+
+                if (scope.alignHorizontal !== undefined) {
+                    switch (scope.alignHorizontal) {
+                        case "middle":
+                            element.css("left", ((document_width / 2) - (element_width / 2)) + "px");
+                            break;
+                    }
+                }
+            };
+
+            angular.element($window).bind("resize", function (event) {
+                recalculate_position();
+            });
+
+            recalculate_position();
+        }
+    }
+}]);
+
+
+
+
+
+
