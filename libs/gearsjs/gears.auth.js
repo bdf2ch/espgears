@@ -26,7 +26,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
                  * CurrentUser
                  * Набор свойств, описывающих текущего пользователя приложения
                  */
-                CurrentUser: {
+                AppUser: {
                     id: new Field({ source: "id", value: 0, default_value: 0 }),
                     name: new Field({ source: "name", value: "", default_value: "", backupable: true }),
                     fname: new Field({ source: "fname", value: "", default_value: "", backupable: true }),
@@ -39,14 +39,15 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
                  * CurrentSession
                  * Набор свойст, описывающих текущую сессию приложения
                  */
-                CurrentSession: {
-                    id: new Field({ source: "id", value: 0, default_value: 0 }),
-                    userId: new Field({ source: "user_id", value: 0, default_value: 0 }),
-                    startedAt: 0,
+                AppSession: {
+                    token: new Field({ source: "TOKEN", value: 0, default_value: 0 }),
+                    //userId: new Field({ source: "user_id", value: 0, default_value: 0 }),
+                    started: new Field({ source: "STARTED", value: 0, default_value: 0 }),
+                    expires: new Field({ source: "EXPIRES", avalue: 0, default_value: 0 }),
 
-                    _init_: function () {
+                    onInitModel: function () {
                         $log.log("CURRENT SESSION INIT FUNCTION");
-                        this.startedAt = new moment().unix();
+                        //this.startedAt = new moment().unix();
                     }
                 }
             };
@@ -66,6 +67,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
              * Объект, содержащий методы для работы с текущим пользователем приложения
              */
             session.user = {
+
                 /**
                  * Возвращает текущего пользователя приложения
                  * @returns {CurrentUser / undefined} - Возвращает текущего пользователя приложения
@@ -73,6 +75,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
                 get: function () {
                     return currentUser;
                 },
+
 
                 /**
                  * Устанавливает пользователя текущей сессии
@@ -83,11 +86,11 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
                     var result = false;
                     if (newUser !== undefined) {
                         if (newUser.__class__ !== undefined) {
-                            if (newUser.__class__ === "CurrentUser") {
+                            if (newUser.__class__ === "AppUser") {
                                 currentUser = newUser;
-                                $cookies.appUser = currentUser._model_.toString();
+                                //$cookies.appUser = currentUser._model_.toString();
                                 isLoggedIn = true;
-                                result = user;
+                                result = currentUser;
                                 session.onSuccessSetUser();
                             }
                         }
@@ -216,24 +219,19 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
             /**
              * Инициализирует сервис
              */
-            session.init = function () {
-                //$cookies.appUser = JSON.stringify("test");
-
-                currentUser = $factory({ classes: ["CurrentUser", "Model", "Backup", "States"], base_class: "CurrentUser" });
-                currentSession = $factory({ classes: ["CurrentSession"], base_class: "CurrentSession" });
-                startedAt = new moment().unix();
-                if ($cookies.appUser !== undefined) {
-                    $log.log("appUser cookie json = ", JSON.parse($cookies.appUser));
-                    currentUser._model_.fromAnother(JSON.parse($cookies.appUser));
-                    currentUser._backup_.setup();
-                    isLoggedIn = true;
-                } else {
-                    $log.log("there are no appUser cookie");
+            session.init = function (data) {
+                if (data !== undefined) {
+                    if (data["session"] !== undefined && data["session"]["token"] !== "fail") {
+                        currentSession = $factory({ classes: ["AppSession", "Model"], base_class: "AppSession" });
+                        currentSession._model_.fromJSON(data["session"]);
+                        $cookies.espsessionid = currentSession.token.value;
+                    }
+                    if (data["user"] !== undefined) {
+                        currentUser = $factory({ classes: ["AppUser", "Model", "Backup", "States"], base_class: "AppUser" });
+                        currentUser._model_.fromJSON(data["user"]);
+                        currentUser._backup_.setup();
+                    }
                 }
-                $log.log("session started at = ", startedAt);
-                $log.log("current session = ", currentSession);
-                $log.log("user is logged in = ", session.user.loggedIn());
-                $log.log("currentUser = ", currentUser);
                 session.onSuccessInitUser();
             };
 
@@ -329,9 +327,9 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
                                         $session.user.set(temp_user);
                                         auth.isAuthSuccessed = true;
                                     }
-                                    if (data["data"] !== undefined) {
+                                    //if (data["data"] !== undefined) {
                                         callback(data);
-                                    }
+                                    //}
                                 }
                             } else {
                                 var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });

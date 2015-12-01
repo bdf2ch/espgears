@@ -33,6 +33,7 @@ html, body {
 
 
 #app-header {
+  overflow: visible;
   height: @app-header-height;
   background: #3194B5;
 }
@@ -876,4 +877,61 @@ hr {
       color: #F44336;
     }
   }
+}
+
+
+
+
+
+/***** TOP MENU *****/
+.top-menu-item {
+  float: left;
+  overflow: visible;
+  z-index: 5;
+  height: @app-header-height;
+  padding-top: 5px;
+  padding-bottom: 9px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-family: "Roboto Regular";
+  color: white;
+  box-sizing: border-box;
+  border-top: 4px solid transparent;
+  box-sizing: border-box;
+  background: #1D82A3;
+  
+  &:hover {
+    background: #1D82A3;
+    color: white;
+  }
+
+  &.active {
+    font-family: "Roboto Bold";
+    border-top: 4px solid lightblue;
+  }
+
+
+  img {
+    display: inline-block;
+    float: left;
+    width: 35px;
+    margin-right: 10px;
+  }
+
+  .menu-item-title {
+    display: inline-block;
+    float: left;
+    margin-top: 8px;
+  }
+
+  .sub-menu-item {
+    background: #1D82A3;
+  }
+}
+
+
+.app-title {
+  font-family: "Roboto Bold";
+  font-size: 30px;
+  color: white;
 }
