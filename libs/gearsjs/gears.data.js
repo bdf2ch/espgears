@@ -271,5 +271,5 @@ var grData = angular.module("gears.data", [])
     }).run(function ($modules, $storage, $vcs) {
         $modules.load($vcs);
         $storage.init();
-        $vcs.init();
+        //$vcs.init();
     });

@@ -26,7 +26,7 @@
 
     //setcookie("_appUser_", "dasdasdasd");
 
-    if (isset($_COOKIE["espsessionid"]))
+    if (isset($_COOKIE["appsession"]))
         $template = new XTemplate("templates/application.html");
     else
         $template = new XTemplate("templates/authorization.html");

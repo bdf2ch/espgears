@@ -10,7 +10,7 @@ var application = angular.module("gears.app", [
         "gears.data",
         "gears.files",
         "angularFileUpload",
-        //"gears.auth",                   // Подключаем модуль с сервисами авторизации
+        "gears.auth",                   // Подключаем модуль с сервисами авторизации
         "gears.app.controllers",        // Подключаем модуль с контроллерами приложения
         "gears.app.modal.controllers",
         "gears.app.filters",             // Подключаем модуль с фильтрами приложения
@@ -68,7 +68,7 @@ var application = angular.module("gears.app", [
          * $application
          * Сервис приложения
          */
-        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$misc", "$nodes", "$users", "$contractors", function ($log, $http, $factory, $titles, $misc, $nodes, $users, $contractors) {
+        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$misc", "$nodes", "$users", "$contractors", "$session", function ($log, $http, $factory, $titles, $misc, $nodes, $users, $contractors, $session) {
             var application = {};
 
             application.title = "ЭСпРЭСО";
@@ -194,14 +194,12 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["users"] !== undefined) {
-                                $users.users._states_.loaded(false);
                                 angular.forEach(data["users"], function (user) {
                                     var temp_user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
                                     temp_user._model_.fromJSON(user);
                                     temp_user._backup_.setup();
                                     $users.users.append(temp_user);
                                 });
-                                $users.users._states_.loaded(true);
                             }
 
                             if (data["contractorTypes"] !== undefined) {
@@ -310,7 +308,7 @@ var application = angular.module("gears.app", [
             return application;
         }]);
     })
-    .run(function ($log, $application, $menu, $rootScope, $modules, $factory, $titles) {
+    .run(function ($log, $application, $menu, $rootScope, $modules, $factory, $titles, $session, $window) {
         $modules.load($application);
         $menu.register();
         $rootScope.application = $application;
@@ -320,5 +318,10 @@ var application = angular.module("gears.app", [
         $application.currentTitleNodes = $factory({ classes: ["TitleNodes", "States"], base_class: "TitleNodes" })
         $titles.requests._states_.loaded(false);
         $application.init();
+
+        $session.onStart();
+        $session.onSuccessUserLogOut = function () {
+            $window.location.reload();
+        };
     }
 );

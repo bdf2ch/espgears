@@ -8,7 +8,7 @@ var users = angular.module("gears.app.users", [])
          * $users
          * Сервис, содержащий функционал для работы с пользователями системы
          */
-        $provide.factory("$users", ["$log", "$http", "$factory", function ($log, $http, $factory) {
+        $provide.factory("$users", ["$log", "$http", "$factory", "$rootScope", function ($log, $http, $factory, $rootScope) {
             var users = {};
 
 
@@ -300,8 +300,10 @@ var users = angular.module("gears.app.users", [])
             return users;
         }]);
     })
-    .run(function ($modules, $users, $menu) {
+    .run(function ($modules, $users, $menu, $rootScope) {
         $modules.load($users);
+        $rootScope.users = $users;
+        $users.groups._states_.loaded(false);
         //$users.getUserGroups();
         //$users.getUsers();
         $menu.add({

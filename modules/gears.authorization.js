@@ -15,13 +15,13 @@ var authorization = angular.module("authorization", ["ngRoute", "gears", "gears.
 authorization.controller("AppAuthorizationController", ["$log", "$scope", "$authorization", "$session", "$window", function ($log, $scope, $authorization, $session, $window) {
     $scope.auth = $authorization;
 
-    $session.onSuccessInitUser = function () {
-        $window.location.reload()
+    $session.onSuccessUserLogIn = function () {
+        $window.location.reload();
     };
 
     $scope.onSuccessLogIn = function (data) {
         if (data !== undefined) {
-            $session.init(data);
+            $session.fromResponse(data);
         }
     };
 }]);
