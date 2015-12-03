@@ -80,6 +80,18 @@ var grData = angular.module("gears.data", [])
                 return result;
             };
 
+
+            storage.delete = function (dataName) {
+                var result = false;
+                if (storage.isLocalStorageEnabled === true) {
+                    if (dataName !== undefined) {
+                        $window.localStorage.removeItem(dataName);
+                        result = true;
+                    }
+                }
+                return result;
+            };
+
             return storage;
         }]);
 

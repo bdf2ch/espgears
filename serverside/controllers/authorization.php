@@ -13,6 +13,9 @@ switch ($action) {
     case "logOut":
         log_out($postdata);
         break;
+    case "changePassword":
+        change_password($postdata);
+        break;
 }
 
 
@@ -153,6 +156,60 @@ function log_out ($postdata) {
             echo(json_encode($result));
         } else {
             if (!oci_bind_by_name($statement, ":session_token", $session_token, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":answer", $result, 50, SQLT_CHR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                echo(json_encode($result));
+            }
+
+            /* Освобождение ресурсов */
+            oci_free_statement($statement);
+            oci_close($connection);
+        }
+    }
+};
+
+
+
+
+function change_password ($postdata) {
+    global $db_host;
+    global $db_name;
+    global $db_user;
+    global $db_password;
+    $userId = $postdata -> data -> userId;
+    $password = $postdata -> data -> password;
+    $result = "";
+
+    /* Подключение к БД */
+    $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
+    if (!$connection){
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!$statement = oci_parse($connection, "begin pkg_authorization.p_change_password(:user_id, :password, :answer); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":password", $password, -1, OCI_DEFAULT)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));

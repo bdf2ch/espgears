@@ -84,7 +84,7 @@ var users = angular.module("gears.app.users", [])
                         action: "addGroup",
                         data: {
                             title: group.title.value,
-                            description: ""
+                            description: group.description.value
                         }
                     };
                     $http.post("serverside/controllers/users.php", params)
@@ -304,6 +304,7 @@ var users = angular.module("gears.app.users", [])
         $modules.load($users);
         $rootScope.users = $users;
         $users.groups._states_.loaded(false);
+        $users.users._states_.loaded(false);
         //$users.getUserGroups();
         //$users.getUsers();
         $menu.add({
@@ -317,3 +318,70 @@ var users = angular.module("gears.app.users", [])
         });
     }
 );
+
+
+
+users.controller("UserController", ["$log", "$scope", "$users", "$session", "$modals", "$window", function ($log, $scope, $users, $session, $modals, $window) {
+    $scope.users = $users;
+    $scope.session = $session;
+
+    $scope.onSuccessCloseSession = function () {
+        $window.location.reload();
+    };
+
+    $scope.changePassword = function () {
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Изменение пароля",
+            showFog: true,
+            template: "templates/modals/edit-user-password.html"
+        });
+    };
+}]);
+
+
+users.controller("EditUserPasswordModalController", ["$log", "$scope", "$modals", "$session", function ($log, $scope, $modals, $session) {
+    $scope.password = "";
+    $scope.passwordRepeat = "";
+    $scope.isLoading = false;
+    $scope.isChanged = false;
+    $scope.errors = [];
+
+    $scope.onSuccessChangePassword = function () {
+        $modals.close();
+        $scope.password = "";
+        $scope.passwordRepeat = "";
+        $scope.errors.splice(0, $scope.errors.length);
+        $scope.isLoading = false;
+        $scope.isChanged = false;
+        $log.log("password changed");
+    };
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($scope.password === "")
+            $scope.errors.push("Вы не ввели пароль");
+        if ($scope.passwordRepeat === "")
+            $scope.errors.push("Вы не ввели пароль повторно");
+        if ($scope.password !== "" && $scope.passwordRepeat !== "") {
+            if ($scope.password !== $scope.passwordRepeat) {
+                $scope.errors.push("Введенные пароли не совпадают");
+            }
+        }
+        if ($scope.errors.length === 0) {
+            $scope.isLoading = true;
+            $session.onSuccessChangeUserPassword = $scope.onSuccessChangePassword;
+            $session.user.changePassword($scope.password);
+        }
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+        $scope.password = "";
+        $scope.passwordRepeat = "";
+        $scope.errors.splice(0, $scope.errors.length);
+        $scope.isLoading = false;
+        $scope.isChanged = false;
+    };
+}]);

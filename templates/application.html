@@ -26,17 +26,17 @@
                             <span class="menu-item-title">{{ menuItem.title }}</span>
                         </a>
                     </div>
-                    <div id="app-user" class="width-100">
+                    <div id="app-user" class="width-100" ng-controller="UserController">
                         <div id="app-user-content" class="row">
                             {{ session.user.get().name.value + " " + session.user.get().surname.value }}
                             <span class="user-position">{{ session.user.get().position.value }}</span>
                         </div>
                         <div class="hover-visible">
                             <div class="row padding-5">
-                                <button class="button blue width-100">Поменять пароль</button>
+                                <button class="button blue width-100" ng-click="changePassword()">Поменять пароль</button>
                             </div>
                             <div class="row padding-5">
-                                <button class="button red width-100" ng-click="session.close()">Выйти</button>
+                                <button class="button red width-100" ng-click="session.close(onSuccessCloseSession)">Выйти</button>
                             </div>
                         </div>
                     </div>
@@ -44,13 +44,15 @@
             </td>
         </tr>
         <tr id="app-content">
-            <td id="app-menu">
+            <td id="app-menu" ng-show="session.appData.get('showSideBar') === true">
+                <!--
                 <div class="menu-item"
                      ng-repeat="menuItem in menu.items.items | orderBy:'order' track by $index" ng-class="{ 'active': menuItem.active === true }">
                     <a href="{{ menuItem.url }}" title="{{ menuItem.description }}" ng-class="{ 'active': menuItem.active === true }">
                         <img src="{{ menuItem.icon }}"/>
                     </a>
                 </div>
+                -->
             </td>
             <td id="app-view" ng-view></td>
         </tr>

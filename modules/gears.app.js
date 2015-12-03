@@ -183,7 +183,6 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["userGroups"] !== undefined) {
-                                $users.groups._states_.loaded(false);
                                 angular.forEach(data["userGroups"], function (userGroup) {
                                     var temp_user_group = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
                                     temp_user_group._model_.fromJSON(userGroup);
@@ -200,6 +199,7 @@ var application = angular.module("gears.app", [
                                     temp_user._backup_.setup();
                                     $users.users.append(temp_user);
                                 });
+                                $users.users._states_.loaded(true);
                             }
 
                             if (data["contractorTypes"] !== undefined) {
@@ -213,7 +213,6 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["contractors"] !== undefined) {
-                                $contractors.contractors._states_.loaded(false);
                                 angular.forEach(data["contractors"], function (contractor) {
                                     var temp_contractor = $factory({ classes: ["Contractor", "Model", "Backup", "States"], base_class: "Contractor" });
                                     temp_contractor._model_.fromJSON(contractor);
@@ -320,8 +319,8 @@ var application = angular.module("gears.app", [
         $application.init();
 
         $session.onStart();
-        $session.onSuccessUserLogOut = function () {
-            $window.location.reload();
-        };
+
+
+        $session.appData.set("showSideBar", false);
     }
 );

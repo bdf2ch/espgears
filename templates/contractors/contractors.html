@@ -136,6 +136,14 @@
                 -->
 
 
+                <div class="service-message" ng-show="contractors.contractors._states_.loaded() === false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
+                <div class="service-message" ng-show="contractors.contractors._states_.loaded() === true && contractors.contractorTypes.size() === 0">
+                    Контрагенты отсутствуют
+                </div>
+
                 <ul class="cards">
                     <li class="card"
                         ng-class="{'active': contractor._states_.selected() === true}"

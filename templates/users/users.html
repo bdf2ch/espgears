@@ -51,7 +51,7 @@
                 </ul>
                 -->
 
-                <div class="service-message" ng-show="users.groups._states_.loaded() == false">
+                <div class="service-message" ng-show="users.groups._states_.loaded() === false">
                     <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                     <span>Загрузка...</span>
                 </div>
@@ -134,6 +134,15 @@
                     </li>
                 </ul>
                 -->
+
+                <div class="service-message" ng-show="users.users._states_.loaded() === false">
+                    <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                    <span>Загрузка...</span>
+                </div>
+
+                <div class="service-message" ng-show="users.users._states_.loaded() === true && users.users.size() === 0">
+                    Пользователи отсутствуют
+                </div>
 
                 <ul class="cards">
                     <li class="card"

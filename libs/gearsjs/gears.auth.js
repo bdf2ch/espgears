@@ -26,7 +26,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                  * Набор свойств, описывающих текущего пользователя приложения
                  */
                 AppUser: {
-                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
                     groupId: new Field({ source: "USER_GROUP_ID", value: 0, default_value: 0, backupable: true }),
                     name: new Field({ source: "FNAME", value: "", default_value: "", backupable: true }),
                     fname: new Field({ source: "SNAME", value: "", default_value: "", backupable: true }),
@@ -58,6 +58,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
              */
             var currentUser = undefined;       // Пользователь приложения
             var currentSession = undefined;    // Пользовательская скссия приложения
+            var sessionData = {};
 
 
             /**
@@ -67,6 +68,8 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             session.onFailureUserLogIn = function () {};
             session.onSuccessUserLogOut = function () {};
             session.onFailureUserLogOut = function () {};
+            session.onSuccessChangeUserPassword = function () {};
+            session.onFailureChangeUserPassword = function () {};
 
 
             session.get = function () {
@@ -124,8 +127,8 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                             $log.log(JSON.parse(data));
                             if (JSON.parse(data) === "success") {
                                 $cookieStore.remove("appsession");
-                                $storage.set("appuser", undefined);
-                                $storage.set("appsession", undefined);
+                                $storage.delete("appuser");
+                                $storage.delete("appsession");
                                 session.onSuccessUserLogOut();
                                 if (callback !== undefined)
                                     callback(data);
@@ -134,6 +137,30 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                             session.onFailureUserLogOut();
                     }
                 );
+            };
+
+
+            session.appData = {
+
+                get: function (dataName) {
+                    var result = false;
+                    if (dataName !== undefined) {
+                        if (sessionData[dataName] !== undefined) {
+                            result = sessionData[dataName];
+                        }
+                    }
+                    return result;
+                },
+
+                set: function (dataName, data) {
+                    var result = false;
+                    if (dataName !== undefined && data !== undefined) {
+                        sessionData[dataName] = data;
+                        result = true;
+                    }
+                    return result;
+                }
+
             };
 
 
@@ -155,6 +182,35 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                         if (user.__class__ !== undefined && user.__class__ === "AppUser") {
                             currentUser = user;
                         }
+                    }
+                },
+
+                changePassword: function (password) {
+                    if (password !== undefined && password !== "") {
+                        var params = {
+                            action: "changePassword",
+                            data: {
+                                userId: session.user.get().id.value,
+                                password: password
+                            }
+                        };
+                        $http.post("serverside/controllers/authorization.php", params)
+                            .success(function (data) {
+                                if (data !== undefined) {
+                                    if (data["error_code"] !== undefined) {
+                                        var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                        db_error.init(data);
+                                        db_error.display();
+                                        session.onFailureChangeUserPassword();
+                                    } else {
+                                        if (JSON.parse(data) === "success") {
+                                            session.onSuccessChangeUserPassword();
+                                        } else
+                                            session.onFailureChangeUserPassword();
+                                    }
+                                }
+                            }
+                        );
                     }
                 },
 
@@ -235,9 +291,8 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             auth.username = "";                     // Имя пользователя
             auth.password = "";                     // Пароль пользователя
             auth.sendingInProgress = false;         // Флаг, сигнализирующий, что выполняется отправка данных на сервер
-            auth.isAuthSuccessed = false;           // Флаг, сигнализирующий, что авторизация завершилась успешно
             auth.isAuthFailed = false;              // Флаг, сигнализирующий, что авторизация завершилась ошибкой
-            auth.inRemindPasswordMode = false;       // Флаг, сигнализирующий, что активирован режим напоминания пароля
+            auth.inRemindPasswordMode = false;      // Флаг, сигнализирующий, что активирован режим напоминания пароля
             auth.errors = {
                 username: [],                       // Массив ошибок имени пользователя
                 password: []                        // Массив ошибок пароля пользователя
@@ -245,11 +300,19 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
 
 
             /**
+             * Коллбэки сервиса
+             */
+            auth.onSuccessUserLogIn = function () {};
+            auth.onFailureUserLogin = function () {};
+            auth.onSuccessPasswordRemind = function () {};
+            auth.onFailurePasswordRemind = function () {};
+
+
+            /**
              * Валидация имени пользователя и пароля
              */
             auth.logIn = function (callback) {
                 /* Сброс флагов состояний */
-                auth.isAuthSuccessed = false;
                 auth.isAuthFailed = false;
 
                 /* Очистка массивов с ошибками */
@@ -310,7 +373,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                                         var temp_user = $factory({ classes: ["AppUser", "Model", "Backup", "States"], base_class: "AppUser" });
                                         temp_user._model_.fromJSON(data);
                                         temp_user._backup_.setup();
-                                        $session.user = temp_user;
+                                        $session.user.set(temp_user);
                                         auth.isAuthSuccessed = true;
                                     }
                                     //if (data["data"] !== undefined) {

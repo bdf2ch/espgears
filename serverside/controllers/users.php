@@ -119,7 +119,7 @@
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             }
-            if (!oci_bind_by_name($statement, ":description", $name, -1, OCI_DEFAULT)) {
+            if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
