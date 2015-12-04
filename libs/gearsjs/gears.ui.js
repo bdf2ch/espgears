@@ -652,4 +652,22 @@ grUi.directive("tabs", ["$log", function ($log) {
 
 
 
+grUi.directive("positionTop", ["$log", function ($log, $document) {
+    return {
+        restrict: "A",
+        scope: {
+            positionTop: "@"
+        },
+        link: function (scope, element, attr, ctrl) {
+            var documentHeight = $document.body.clientHeight;
+            $log.log("height = ", documentHeight);
+
+        }
+    }
+}]);
+
+
+
+
+
 
