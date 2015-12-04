@@ -28,42 +28,41 @@ body {
   font-family: "Roboto Regular";
 }
 #app-wrapper {
+  position: relative;
   height: 100%;
   min-width: 1200px;
   overflow-x: auto;
+  z-index: 2;
 }
 #app-header {
   position: relative;
   overflow-y: visible;
   height: 50px;
-  max-height: 50px;
   z-index: 1;
   background: #3194B5;
-  box-sizing: content-box;
+  box-sizing: border-box;
+}
+#app-header #app-header-container {
+  height: 50px;
+  border: 1px solid green;
 }
 #app-header #app-title {
-  position: relative;
   float: left;
   width: 270px;
-  height: 50px;
-  padding: 5px;
-  padding-left: 20px;
-  box-sizing: border-box;
   font-family: "Roboto Bold";
-  font-size: 25px;
-  line-height: 40px;
   color: white;
   border: 1px solid white;
 }
-#app-header #top-menu {
+#app-header #header-controls {
   position: relative;
-  height: 50px;
-  margin-right: 235px;
+  width: auto;
+  border: 1px solid orange;
+}
+#app-header #header-controls #top-menu {
   border: 1px solid red;
-  box-sizing: content-box;
   text-align: center;
 }
-#app-header #top-menu .top-menu-item {
+#app-header #header-controls #top-menu .top-menu-item {
   display: inline-block;
   float: left;
   overflow: visible;
@@ -75,38 +74,36 @@ body {
   padding-right: 15px;
   font-family: "Roboto Regular";
   color: white;
+  box-sizing: content-box;
   border-top: 4px solid transparent;
   box-sizing: border-box;
 }
-#app-header #top-menu .top-menu-item:hover {
+#app-header #header-controls #top-menu .top-menu-item:hover {
   background: #1D82A3;
   color: white;
 }
-#app-header #top-menu .top-menu-item.active {
+#app-header #header-controls #top-menu .top-menu-item.active {
   font-family: "Roboto Bold";
   border-top: 4px solid lightblue;
 }
-#app-header #top-menu .top-menu-item img {
+#app-header #header-controls #top-menu .top-menu-item img {
   display: inline-block;
   float: left;
   width: 35px;
   margin-right: 10px;
 }
-#app-header #top-menu .top-menu-item .menu-item-title {
+#app-header #header-controls #top-menu .top-menu-item .menu-item-title {
   display: inline-block;
   float: left;
   margin-top: 8px;
 }
-#app-header #top-menu .top-menu-item .sub-menu-item {
+#app-header #header-controls #top-menu .top-menu-item .sub-menu-item {
   background: #1D82A3;
 }
-#app-header #app-user {
-  position: relative;
+#app-header #header-controls #app-user {
   float: right;
-  overflow: visible;
+  overflow: hidden;
   width: 230px;
-  height: 50px;
-  box-sizing: border-box;
   text-align: center;
   font-family: "Roboto Regular";
   color: white;
@@ -115,24 +112,21 @@ body {
   cursor: pointer;
   border: 1px solid blue;
 }
-#app-header #app-user #app-user-content {
-  height: 50px;
+#app-header #header-controls #app-user #app-user-content {
   padding: 5px;
-  box-sizing: border-box;
 }
-#app-header #app-user .hover-visible {
+#app-header #header-controls #app-user .hover-visible {
   position: relative;
   display: none;
-  height: 100px;
   padding: 5px;
   z-index: 10;
   background: #16586E;
   cursor: default;
 }
-#app-header #app-user:hover .hover-visible {
+#app-header #header-controls #app-user:hover .hover-visible {
   display: block;
 }
-#app-header #app-user .user-position {
+#app-header #header-controls #app-user .user-position {
   display: block;
   font-size: 13px;
   color: #DBDBDB;
@@ -161,6 +155,7 @@ body {
 }
 #app-view {
   vertical-align: top;
+  z-index: 1;
 }
 /*****
 * NEW-TITLE-TEMPLATE
@@ -694,11 +689,21 @@ hr {
   padding-right: 10px;
   padding-bottom: 10px;
   padding-top: 10px;
-  background: #FFEBEE;
   box-sizing: border-box;
 }
-#authorization-box .modal-messages-container .message {
+#authorization-box .modal-messages-container.error {
+  background: #FFEBEE;
+}
+#authorization-box .modal-messages-container.error .message {
   font-family: "Roboto Regular";
   font-size: 15px;
   color: #F44336;
+}
+#authorization-box .modal-messages-container.success {
+  background: #E1EDDD;
+}
+#authorization-box .modal-messages-container.success .message {
+  font-family: "Roboto Regular";
+  font-size: 15px;
+  color: #6BA35A;
 }

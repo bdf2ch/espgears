@@ -7,6 +7,9 @@
 .x-scrollable {
   overflow-x: scroll;
 }
+.no-overflow {
+  overflow: hidden;
+}
 /*****
 * ALIGNMENTS
 *****/
@@ -15,6 +18,9 @@
 }
 .right {
   float: right;
+}
+.no-float {
+  float: inherit !important;
 }
 .centered {
   float: none !important;
@@ -972,6 +978,10 @@ textarea {
   font-family: "Roboto Regular";
   font-size: 15px;
   color: #F44336;
+}
+.gears-ui-modals .modal-messages-container .message.success {
+  color: #8DC27C;
+  background: #B5DBA9;
 }
 /*****
 * CARDS

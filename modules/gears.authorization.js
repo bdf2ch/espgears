@@ -14,14 +14,9 @@ var authorization = angular.module("authorization", ["ngRoute", "gears", "gears.
 
 authorization.controller("AppAuthorizationController", ["$log", "$scope", "$authorization", "$session", "$window", function ($log, $scope, $authorization, $session, $window) {
     $scope.auth = $authorization;
+    $scope.session = $session;
 
-    $session.onSuccessUserLogIn = function () {
+    $authorization.onSuccessLogIn = function () {
         $window.location.reload();
-    };
-
-    $scope.onSuccessLogIn = function (data) {
-        if (data !== undefined) {
-            $session.fromResponse(data);
-        }
     };
 }]);

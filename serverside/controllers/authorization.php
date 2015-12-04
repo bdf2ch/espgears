@@ -16,6 +16,9 @@ switch ($action) {
     case "changePassword":
         change_password($postdata);
         break;
+    case "remindPassword":
+        remind_password($postdata);
+        break;
 }
 
 
@@ -30,7 +33,7 @@ function log_in ($postdata) {
     $password = $postdata -> data -> password;
     $result = array();
 
-    /* œÓ‰ÍÎ˛˜ÂÌËÂ Í ¡ƒ */
+    /* –ü–æ–¥–∫–ª—é—á–µ–Ω–∏–µ –∫ –ë–î */
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
     if (!$connection){
         $error = oci_error();
@@ -126,7 +129,7 @@ function log_in ($postdata) {
                 echo(json_encode($result));
             }
 
-            /* ŒÒ‚Ó·ÓÊ‰ÂÌËÂ ÂÒÛÒÓ‚ */
+            /* –û—Å–≤–æ–±–æ–∂–¥–µ–Ω–∏–µ —Ä–µ—Å—É—Ä—Å–æ–≤ */
             oci_free_statement($statement);
             oci_close($connection);
         }
@@ -143,7 +146,7 @@ function log_out ($postdata) {
     $session_token = $postdata -> data -> sessionToken;
     $result = "";
 
-    /* œÓ‰ÍÎ˛˜ÂÌËÂ Í ¡ƒ */
+    /* –ü–æ–¥–∫–ª—é—á–µ–Ω–∏–µ –∫ –ë–î */
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
     if (!$connection){
         $error = oci_error();
@@ -173,7 +176,7 @@ function log_out ($postdata) {
                 echo(json_encode($result));
             }
 
-            /* ŒÒ‚Ó·ÓÊ‰ÂÌËÂ ÂÒÛÒÓ‚ */
+            /* –û—Å–≤–æ–±–æ–∂–¥–µ–Ω–∏–µ —Ä–µ—Å—É—Ä—Å–æ–≤ */
             oci_free_statement($statement);
             oci_close($connection);
         }
@@ -192,7 +195,7 @@ function change_password ($postdata) {
     $password = $postdata -> data -> password;
     $result = "";
 
-    /* œÓ‰ÍÎ˛˜ÂÌËÂ Í ¡ƒ */
+    /* –ü–æ–¥–∫–ª—é—á–µ–Ω–∏–µ –∫ –ë–î */
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
     if (!$connection){
         $error = oci_error();
@@ -227,7 +230,89 @@ function change_password ($postdata) {
                 echo(json_encode($result));
             }
 
-            /* ŒÒ‚Ó·ÓÊ‰ÂÌËÂ ÂÒÛÒÓ‚ */
+            /* –û—Å–≤–æ–±–æ–∂–¥–µ–Ω–∏–µ —Ä–µ—Å—É—Ä—Å–æ–≤ */
+            oci_free_statement($statement);
+            oci_close($connection);
+        }
+    }
+};
+
+
+
+
+
+function remind_password ($postdata) {
+    global $db_host;
+    global $db_name;
+    global $db_user;
+    global $db_password;
+    $userEmail = $postdata -> data -> username;
+    $userId = 0;
+    $result = "";
+
+    /* –ü–æ–¥–∫–ª—é—á–µ–Ω–∏–µ –∫ –ë–î */
+    $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
+    if (!$connection){
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!$statement = oci_parse($connection, "begin pkg_authorization.p_remind_password(:user_mail, :user_id, :answer); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":user_mail", $userEmail, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_B_INT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":answer", $result, 256, SQLT_CHR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if ($result == "success") {
+                    if (!$statement2 = oci_parse($connection, "begin pkg_authorization.p_get_temp_password(:user_id, :temp_password); end;")) {
+                        $error = oci_error();
+                        $result = new DBError($error["code"], $error["message"]);
+                        echo(json_encode($result));
+                    } else {
+                        if (!oci_bind_by_name($statement2, ":user_id", $userId, -1, OCI_DEFAULT)) {
+                            $error = oci_error();
+                            $result = new DBError($error["code"], $error["message"]);
+                            echo(json_encode($result));
+                        }
+                        if (!oci_bind_by_name($statement2, ":temp_password", $temp_password, 256, SQLT_CHR)) {
+                            $error = oci_error();
+                            $result = new DBError($error["code"], $error["message"]);
+                            echo(json_encode($result));
+                        }
+                        if (!oci_execute($statement2)) {
+                            $error = oci_error();
+                            $result = new DBError($error["code"], $error["message"]);
+                            echo(json_encode($result));
+                        } else {
+                            $mail_subject = "–ù–æ–≤—ã–π –ø–∞—Ä–æ–ª—å –¥–ª—è –≤—Ö–æ–¥–∞ –≤ —Å–ø—Ä–∞–≤–æ—á–Ω–∏–∫ –í–û–õ–°";
+                            $mail_content = "–í–∞—à –Ω–æ–≤—ã–π –ø–∞—Ä–æ–ª—å: ".$temp_password;
+                            mail($userEmail, $mail_subject, $mail_content);
+                        }
+                    }
+                }
+                echo(json_encode($result));
+            }
+
+            /* –û—Å–≤–æ–±–æ–∂–¥–µ–Ω–∏–µ —Ä–µ—Å—É—Ä—Å–æ–≤ */
             oci_free_statement($statement);
             oci_close($connection);
         }

@@ -86,7 +86,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             };
 
 
-            session.fromResponse = function (data) {
+            session.fromAuthorizationResponse = function (data) {
                 if (data !== undefined) {
                     if (data["TOKEN"] !== undefined && data["TOKEN"] !== "fail") {
                         currentSession = $factory({ classes: ["AppSession", "Model", "Backup"], base_class: "AppSession" });
@@ -290,9 +290,6 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
 
             auth.username = "";                     // Имя пользователя
             auth.password = "";                     // Пароль пользователя
-            auth.sendingInProgress = false;         // Флаг, сигнализирующий, что выполняется отправка данных на сервер
-            auth.isAuthFailed = false;              // Флаг, сигнализирующий, что авторизация завершилась ошибкой
-            auth.inRemindPasswordMode = false;      // Флаг, сигнализирующий, что активирован режим напоминания пароля
             auth.errors = {
                 username: [],                       // Массив ошибок имени пользователя
                 password: []                        // Массив ошибок пароля пользователя
@@ -300,43 +297,110 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
 
 
             /**
+             * Приватные переменные сервиса
+             */
+            var isInRemindPasswordMode = false;
+            var isSendingInProgress = false;
+            var isPasswordSent = false;
+
+
+            /**
              * Коллбэки сервиса
              */
-            auth.onSuccessUserLogIn = function () {};
-            auth.onFailureUserLogin = function () {};
-            auth.onSuccessPasswordRemind = function () {};
-            auth.onFailurePasswordRemind = function () {};
+            auth.onSuccessLogIn = function () {};
+            auth.onFailureLogIn = function () {};
+            auth.onSuccessRemindPassword = function () {};
+            auth.onFailureRemindPassword = function () {};
 
 
             /**
              * Валидация имени пользователя и пароля
              */
-            auth.logIn = function (callback) {
-                /* Сброс флагов состояний */
-                auth.isAuthFailed = false;
-
-                /* Очистка массивов с ошибками */
+            auth.logIn = function () {
                 auth.errors.username.splice(0, auth.errors.username.length);
                 auth.errors.password.splice(0, auth.errors.password.length);
 
-                if (auth.inRemindPasswordMode === true) {
-                    /* Проверка корректности ввода имени пользователя */
-                    if (auth.username === "")
-                        auth.errors.username.push("Вы не указали имя пользователя");
-                } else {
-                    /* Проверка корректности ввода имени пользователя */
-                    if (auth.username === "")
-                        auth.errors.username.push("Вы не указали имя пользователя");
+                if (auth.username === "")
+                    auth.errors.username.push("Вы не указали имя пользователя");
+                if (auth.password === "")
+                    auth.errors.password.push("Вы не указали пароль");
 
-                    /* Проверка корректности ввода пароля */
-                    if (auth.password === "")
-                        auth.errors.password.push("Вы не указали пароль");
+                if (auth.errors.username.length === 0 && auth.errors.password.length === 0) {
+                    isSendingInProgress = true;
+                    var params = {
+                        action: "logIn",
+                        data: {
+                            username: auth.username,
+                            password: auth.password
+                        }
+                    };
+                    $http.post("serverside/controllers/authorization.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $log.log(data);
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({classes: ["DBError"], base_class: "DBError"});
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (data["TOKEN"] !== undefined && (data["TOKEN"] === "fail")) {
+                                        auth.errors.username.push("Пользователь не найден");
+                                        auth.onFailureLogIn()
+                                    } else {
+                                        $session.fromAuthorizationResponse(data);
+                                        auth.onSuccessLogIn();
+                                    }
+                                }
+                            } else
+                                auth.onFailureLogIn();
+                            isSendingInProgress = false;
+                        }
+                    );
                 }
 
-                /* Если ошибок нет, то отправляем данные на сервер */
-                if (auth.errors.username.length === 0 && auth.errors.password.length === 0 )
-                    auth.send(callback);
             };
+
+
+            auth.remindPassword = function () {
+                auth.errors.username.splice(0, auth.errors.username.length);
+                auth.errors.password.splice(0, auth.errors.password.length);
+
+                if (auth.username === "")
+                    auth.errors.username.push("Вы не указали имя пользователя");
+
+                if (auth.errors.username.length === 0 && auth.errors.password.length === 0) {
+                    isSendingInProgress = true;
+                    var params = {
+                        action: "remindPassword",
+                        data: {
+                            username: auth.username
+                        }
+                    };
+                    $http.post("serverside/controllers/authorization.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $log.log(data);
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({classes: ["DBError"], base_class: "DBError"});
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (JSON.parse(data) === "fail") {
+                                        auth.errors.username.push("Пользователь не найден");
+                                        auth.onFailureRemindPassword();
+                                    } else {
+                                        isPasswordSent = true;
+                                        auth.onSuccessRemindPassword();
+                                    }
+                                }
+                            } else
+                                auth.onFailureRemindPassword();
+                            isSendingInProgress = false;
+                        }
+                    );
+                }
+            };
+
 
             auth.reset = function () {
                 auth.username = "";
@@ -346,58 +410,24 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             };
 
 
-            /**
-             * Отправляет имя пользователя и пароль на сервер
-             */
-            auth.send = function (callback) {
-                var act = auth.inRemindPasswordMode === true ? "remindPassword" : "logIn";
-                var params = {
-                    action: act,
-                    data: {
-                        username: auth.username,
-                        password: auth.password
-                    }
-                };
-                auth.sendingInProgress = true;
-                $http.post("serverside/controllers/authorization.php", params)
-                    .success(function (data) {
-                        if (data !== undefined) {
-                            $log.log(data);
 
-                            if (data["error_code"] === undefined) {
-                                if (parseInt(data) === -1) {
-                                    auth.errors.username.push("Пользователь не найден");
-                                    auth.isAuthFailed = true;
-                                } else {
-                                    if (data["user"] !== undefined) {
-                                        var temp_user = $factory({ classes: ["AppUser", "Model", "Backup", "States"], base_class: "AppUser" });
-                                        temp_user._model_.fromJSON(data);
-                                        temp_user._backup_.setup();
-                                        $session.user.set(temp_user);
-                                        auth.isAuthSuccessed = true;
-                                    }
-                                    //if (data["data"] !== undefined) {
-                                        callback(data);
-                                    //}
-                                }
-                            } else {
-                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
-                                db_error.init(data);
-                                db_error.display();
-                                auth.isAuthFailed = true;
-                            }
-
-                        }
-                        auth.sendingInProgress = false;
-                    })
+            auth.remindPasswordMode = function (flag) {
+                if (flag !== undefined && typeof flag === "boolean") {
+                    auth.errors.username.splice(0, auth.errors.username.length);
+                    auth.errors.password.splice(0, auth.errors.password.length);
+                    isPasswordSent = false;
+                    isInRemindPasswordMode = flag;
+                }
+                return isInRemindPasswordMode;
             };
 
 
-            auth.remindPasswordMode = function () {
-                auth.errors.username.splice(0, auth.errors.username.length);
-                auth.errors.password.splice(0, auth.errors.password.length);
-                auth.inRemindPasswordMode = !auth.inRemindPasswordMode;
-                return auth.inRemindPasswordMode;
+            auth.isSendingInProgress = function () {
+                return isSendingInProgress;
+            };
+
+            auth.isPasswordSent = function () {
+                return isPasswordSent;
             };
 
             return auth;
