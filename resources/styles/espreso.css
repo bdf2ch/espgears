@@ -27,12 +27,118 @@ body {
   overflow: hidden;
   font-family: "Roboto Regular";
 }
+body {
+  padding-top: 50px;
+}
 #app-wrapper {
   position: relative;
   height: 100%;
   min-width: 1200px;
   overflow-x: auto;
   z-index: 2;
+}
+#app-header_ {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  width: 100%;
+  min-width: 1200px;
+  height: 50px;
+  background: #3194B5;
+}
+#app-header_ #app-title_ {
+  float: left;
+  width: 270px;
+  height: 50px;
+  padding-left: 25px;
+  font-family: "Roboto Bold";
+  font-size: 25px;
+  line-height: 50px;
+  color: white;
+  box-sizing: border-box;
+}
+#app-header_ #app-menu_ {
+  position: absolute;
+  left: 270px;
+  top: 0px;
+  right: 230px;
+  height: 50px;
+  text-align: center;
+}
+#app-header_ #app-menu_ #menu-container {
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+#app-header_ #app-menu_ .top-menu-item {
+  display: inline-block;
+  float: left;
+  overflow: visible;
+  z-index: 5;
+  height: 50px;
+  padding-top: 5px;
+  padding-bottom: 9px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-family: "Roboto Regular";
+  color: white;
+  box-sizing: content-box;
+  border-top: 4px solid transparent;
+  box-sizing: border-box;
+}
+#app-header_ #app-menu_ .top-menu-item:hover {
+  background: #1D82A3;
+  color: white;
+}
+#app-header_ #app-menu_ .top-menu-item.active {
+  font-family: "Roboto Bold";
+  border-top: 4px solid lightblue;
+}
+#app-header_ #app-menu_ .top-menu-item img {
+  display: inline-block;
+  float: left;
+  width: 35px;
+  margin-right: 10px;
+}
+#app-header_ #app-menu_ .top-menu-item .menu-item-title {
+  display: inline-block;
+  float: left;
+  margin-top: 8px;
+}
+#app-header_ #app-menu_ .top-menu-item .sub-menu-item {
+  background: #1D82A3;
+}
+#app-header_ #app-user_ {
+  float: right;
+  width: 230px;
+  height: 50px;
+  text-align: center;
+  font-family: "Roboto Regular";
+  color: white;
+  background: #1D82A3;
+  cursor: pointer;
+}
+#app-header_ #app-user_ #app-user-content {
+  height: 50px;
+  padding: 5px;
+  box-sizing: border-box;
+}
+#app-header_ #app-user_ .hover-visible {
+  position: relative;
+  display: none;
+  padding: 5px;
+  z-index: 10;
+  background: #16586E;
+  cursor: default;
+}
+#app-header_ #app-user_:hover .hover-visible {
+  display: block;
+}
+#app-header_ #app-user_ .user-position {
+  display: block;
+  font-size: 13px;
+  color: #DBDBDB;
 }
 #app-header {
   position: relative;
