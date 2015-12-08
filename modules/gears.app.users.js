@@ -307,6 +307,8 @@ var users = angular.module("gears.app.users", [])
         $users.users._states_.loaded(false);
         //$users.getUserGroups();
         //$users.getUsers();
+
+        /*
         $menu.add({
             id: "users",
             title: "Пользователи",
@@ -316,6 +318,7 @@ var users = angular.module("gears.app.users", [])
             controller: "UsersController",
             icon: "resources/img/icons/user-group.png"
         });
+        */
     }
 );
 

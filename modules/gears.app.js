@@ -325,10 +325,8 @@ var application = angular.module("gears.app", [
         $session.appData.set("showSideBar", false);
 
 
-        var utilities = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
-        var contractors = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
-        var users = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
-        utilities.init({
+
+        $menu.add({
             id: "utilities",
             title: "Дополнительно",
             description: "Дополнительно",
@@ -338,7 +336,8 @@ var application = angular.module("gears.app", [
             icon: "resources/img/icons/utilities.png",
             order: 5
         });
-        users.init({
+
+        $menu.add({
             id: "users",
             title: "Пользователи системы",
             description: "Пользователи и группы пользователей системы",
@@ -346,8 +345,9 @@ var application = angular.module("gears.app", [
             template: "templates/users/users.html",
             controller: "UsersController",
             icon: "resources/img/icons/user-group.png"
-        });
-        contractors.init({
+        }, "utilities");
+
+        $menu.add({
             id: "contractors",
             title: "Контрагенты",
             description: "Контрагенты",
@@ -356,10 +356,7 @@ var application = angular.module("gears.app", [
             controller: "ContractorsController",
             icon: "resources/img/icons/contractor-type.png",
             order: 3
-        });
-        utilities.submenu.append(contractors);
-        utilities.submenu.append(users);
-        $menu.get().append(utilities);
+        }, "utilities");
 
     }
 );

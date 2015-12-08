@@ -261,6 +261,8 @@ var contractors = angular.module("gears.app.contractors", [])
         $modules.load($contractors);
         $contractors.contractorTypes._states_.loaded(false);
         $contractors.contractors._states_.loaded(false);
+
+        /*
         $menu.add({
             id: "contractors",
             title: "Контрагенты",
@@ -271,6 +273,7 @@ var contractors = angular.module("gears.app.contractors", [])
             icon: "resources/img/icons/contractor-type.png",
             order: 3
         });
+        */
         //$contractors.getContractorTypes();
         //$contractors.getContractors();
     }

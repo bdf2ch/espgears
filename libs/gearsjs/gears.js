@@ -122,6 +122,7 @@ var gears = angular.module("gears", [])
                  */
                 MenuItem: {
                     id: 0,
+                    parentId: "",
                     title: "",
                     description: "",
                     url: "",
@@ -130,8 +131,9 @@ var gears = angular.module("gears", [])
                     icon: "",
                     order: 0,
                     active: false,
+                    childActive: false,
                     default: false,
-                    submenu: $factory({ classes: ["Collection"], base_class: "Collection" }),
+                    submenu: [],
 
                     /**
                      * Инициализирует пункт меню заданными параметрами
@@ -144,7 +146,7 @@ var gears = angular.module("gears", [])
                                     this[param] = parameters[param];
                             }
                         } else
-                            $log.error("$menu: Не указаны параметры инициализации раздела меню.");
+                            $log.error("class MenuItem: Не указаны параметры инициализации раздела меню.");
                     }
                 }
 
@@ -152,13 +154,68 @@ var gears = angular.module("gears", [])
 
 
             /**
-             * Переменные сервиса
+             * Приватные переменные и методы сервиса
              */
-            var items = $factory({ classes: ["Collection"], base_class: "Collection" });
-            var currentMenuItem = undefined;
-            menu.items = $factory({ classes: ["Collection"], base_class: "Collection" });
-            menu.activeMenuItem = undefined;
 
+            var items = [];
+            var stack = [];
+            var currentMenuItem = undefined;
+            var breadcrumb = [];
+
+            var isAlreadyExists = function (menuItemId) {
+                if (menuItemId !== undefined) {
+                    var length = stack.length;
+                    for (var i = 0; i < length; i++) {
+                        if (stack[i].id === menuItemId) {
+                            return stack[i];
+                        }
+                    }
+                    return false
+                }
+            };
+
+            var registerRoute = function (menuItem) {
+                if (menuItem != undefined) {
+                    $routeProvider.when(menuItem.url, {
+                        templateUrl: menuItem.url,
+                        controller: menuItem.controller
+                    });
+                    if (menuItem.default === true)
+                        $routeProvider.when("/", {
+                            templateUrl: menuItem.url,
+                            controller: menuItem.controller
+                        });
+                }
+            };
+
+            var setBreadCrumb = function (menuItemId) {
+                if (menuItemId !== undefined) {
+                    var length = stack.length;
+                    var finish = false;
+
+                    for (var i = 0; i < length; i++) {
+                        if (stack[i].id === menuItemId) {
+                            var tempMenuItem = stack[i];
+                            breadcrumb.push(stack[i]);
+                            /*
+                            while (tempMenuItem.parentId !== "") {
+                                $log.log("loop");
+                                for (var x = 0; x < length; x++) {
+                                    var parentMenuItemFound = false;
+                                    if (stack[x].id === tempMenuItem.parentId) {
+                                        parentMenuItemFound = true;
+                                        tempMenuItem = stack[x];
+                                        breadcrumb.push(tempMenuItem);
+                                    }
+                                }
+                                //if (parentMenuItemFound === false)
+                                    break;
+                            }
+                            */
+                        }
+                    }
+                }
+            };
 
             menu.get = function () {
                 return items;
@@ -168,55 +225,60 @@ var gears = angular.module("gears", [])
                 return currentMenuItem;
             };
 
-
-            menu.register = function (parameters) {
+            menu.add = function (parameters, parentId) {
                 if (parameters !== undefined) {
-                    var temp_menu_item = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
-                    $routeProvider.when(temp_menu_item.url, {
-                        templateUrl: temp_menu_item.url,
-                        controller: temp_menu_item.controller
-                    });
-                    if (temp_menu_item.default === true)
-                        $routeProvider.when("/", {
-                            templateUrl: temp_menu_item.url,
-                            controller: temp_menu_item.controller
-                        });
-                    menu.append(temp_menu_item);
+                    var menuItem = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
+                    menuItem.init(parameters);
+
+                    if (isAlreadyExists(menuItem.id) === false) {
+                        if (parentId !== undefined) {
+                            var parent = isAlreadyExists(parentId);
+                            if (parent !== false) {
+                                stack.push(menuItem);
+                                parent.submenu.push(menuItem);
+                                registerRoute(menuItem);
+                                setBreadCrumb(menuItem.id);
+                                return menuItem;
+                            } else {
+                                $log.error("$menu: Родительский пункт меню '" + parentId + "' не найден");
+                                return false;
+                            }
+                        } else {
+                            stack.push(menuItem);
+                            items.push(menuItem);
+                            registerRoute(menuItem);
+                            setBreadCrumb(menuItem.id);
+                            return menuItem;
+                        }
+                    } else {
+                        $log.error("$menu: Пункт меню '" + menuItem.id + "' уже существует");
+                        return false;
+                    }
                 } else {
-                    $log.error("$menu: Не указан параметры при регистрации раздела меню");
+                    $log.error("$menu: Не заданы параметры добавляемого пункта меню");
                     return false;
                 }
+                $log.log("breadcrumb = ", breadcrumb);
             };
 
-
-            menu.add = function (parameters) {
-                if (parameters !== undefined) {
-                    var new_menu_item = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
-                    new_menu_item.init(parameters);
-                    $routeProvider.when(new_menu_item.url, {
-                        templateUrl: new_menu_item.url,
-                        controller: new_menu_item.controller
-                    });
-                    if (new_menu_item.default === true)
-                        $routeProvider.when("/", {
-                            templateUrl: new_menu_item.url,
-                            controller: new_menu_item.controller
-                        });
-                    menu.items.append(new_menu_item);
-                } else {
-                    $log.error("$menu: Не указан параметры при регистрации раздела меню");
-                    return false;
-                }
-            };
 
             $rootScope.$on("$routeChangeStart", function() {
                 var url = $location.url();
-                angular.forEach(items.items, function (item) {
-                    if (item.url === ("#" + url))
-                        item.active = true;
-                    else
-                        item.active = false;
-                });
+                var stackLength = stack.length;
+                var itemsLength = items.length;
+                for (var i = 0; i < stackLength; i++) {
+                    if (stack[i].url === ("#" + url)) {
+                        stack[i].active = true;
+                        currentMenuItem = stack[i];
+                        for (var x = 0; x < itemsLength; x++) {
+                            if (items[x].url === ("#" + url))
+                                items[x].active = true;
+                            else
+                                items[x].active = false;
+                        }
+                    } else
+                        stack[i].active = false;
+                }
             });
 
 
