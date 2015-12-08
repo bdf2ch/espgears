@@ -3,26 +3,69 @@
 <html lang="en" ng-app="gears.app">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Справочник ВОЛС</title>
     <link rel="stylesheet" href="resources/styles/misc.css"/>
     <link rel="stylesheet" href="resources/styles/espreso.css"/>
     <script src="libs/angularjs/angular.min.js"></script>
 </head>
 <body>
-
-
     <table id="app-wrapper" class="width-100" cellpadding="0" cellspacing="0">
+
         <tr id="app-header">
-            <td colspan="2"></td>
+            <td colspan="2">
+                <div id="app-header-container" class="row no-overflow">
+                    <div id="app-title">
+                        Справочник ВОЛС
+                    </div>
+
+
+
+                    <div id="header-controls">
+                        <div id="top-menu">
+                            <a href="{{ menuItem.url }}" class="top-menu-item"
+                               ng-repeat="menuItem in menu.items.items | orderBy:'order' track by $index"
+                               ng-class="{ 'active': menuItem.active === true }">
+                                <img src="{{ menuItem.icon }}" alt=""/>
+                                <span class="menu-item-title">{{ menuItem.title }}</span>
+                            </a>
+                        </div>
+
+
+                        <div id="app-user" ng-controller="UserController">
+                            <div id="app-user-content" class="row">
+                                {{ session.user.get().name.value + " " + session.user.get().surname.value }}
+                                <span class="user-position">{{ session.user.get().position.value }}</span>
+                            </div>
+                            <div class="hover-visible">
+                                <div class="row padding-5">
+                                    <button class="button blue width-100" ng-click="changePassword()">Поменять пароль</button>
+                                </div>
+                                <div class="row padding-5">
+                                    <button class="button red width-100" ng-click="session.close(onSuccessCloseSession)">Выйти</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+            </td>
         </tr>
+
+
+
         <tr id="app-content">
-            <td id="app-menu">
+            <td id="app-menu" ng-show="session.appData.get('showSideBar') === true">
+                <!--
                 <div class="menu-item"
                      ng-repeat="menuItem in menu.items.items | orderBy:'order' track by $index" ng-class="{ 'active': menuItem.active === true }">
-                    <a href="{{ menuItem.url }}" title="{{ menuItem.description }}">
+                    <a href="{{ menuItem.url }}" title="{{ menuItem.description }}" ng-class="{ 'active': menuItem.active === true }">
                         <img src="{{ menuItem.icon }}"/>
                     </a>
                 </div>
+                -->
             </td>
             <td id="app-view" ng-view></td>
         </tr>
@@ -37,6 +80,7 @@
     <script src="libs/momentjs/moment-with-locales.min.js"></script>
     <script src="libs/gearsjs/gears.js"></script>
     <script src="libs/gearsjs/gears.data.js"></script>
+    <script src="libs/gearsjs/gears.auth.js"></script>
     <script src="libs/gearsjs/gears.ui.js"></script>
     <script src="libs/gearsjs/gears.files.js"></script>
     <script src="modules/angular-file-upload.min.js"></script>

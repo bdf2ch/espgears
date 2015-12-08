@@ -10,6 +10,10 @@
   overflow-x: scroll;
 }
 
+.no-overflow {
+  overflow: hidden;
+}
+
 
 
 /*****
@@ -21,6 +25,10 @@
 
 .right {
   float: right;
+}
+
+.no-float {
+  float: inherit !important;
 }
 
 .centered {
@@ -1307,7 +1315,11 @@ textarea {
       font-family: "Roboto Regular";
       font-size: 15px;
       color: #F44336;
-      //border-left: 5px solid #EF9A9A;
+      
+      &.success {
+        color: #8DC27C;
+        background: #B5DBA9;
+      }
     }
   }
 }

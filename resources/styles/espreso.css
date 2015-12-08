@@ -28,19 +28,117 @@ body {
   font-family: "Roboto Regular";
 }
 #app-wrapper {
+  position: relative;
   height: 100%;
   min-width: 1200px;
   overflow-x: auto;
+  z-index: 2;
 }
 #app-header {
+  position: relative;
+  overflow-y: visible;
   height: 50px;
+  z-index: 1;
   background: #3194B5;
+  box-sizing: border-box;
+}
+#app-header #app-header-container {
+  height: 50px;
+  border: 1px solid green;
+}
+#app-header #app-title {
+  float: left;
+  width: 270px;
+  font-family: "Roboto Bold";
+  color: white;
+  border: 1px solid white;
+}
+#app-header #header-controls {
+  position: relative;
+  width: auto;
+  border: 1px solid orange;
+}
+#app-header #header-controls #top-menu {
+  border: 1px solid red;
+  text-align: center;
+}
+#app-header #header-controls #top-menu .top-menu-item {
+  display: inline-block;
+  float: left;
+  overflow: visible;
+  z-index: 5;
+  height: 50px;
+  padding-top: 5px;
+  padding-bottom: 9px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-family: "Roboto Regular";
+  color: white;
+  box-sizing: content-box;
+  border-top: 4px solid transparent;
+  box-sizing: border-box;
+}
+#app-header #header-controls #top-menu .top-menu-item:hover {
+  background: #1D82A3;
+  color: white;
+}
+#app-header #header-controls #top-menu .top-menu-item.active {
+  font-family: "Roboto Bold";
+  border-top: 4px solid lightblue;
+}
+#app-header #header-controls #top-menu .top-menu-item img {
+  display: inline-block;
+  float: left;
+  width: 35px;
+  margin-right: 10px;
+}
+#app-header #header-controls #top-menu .top-menu-item .menu-item-title {
+  display: inline-block;
+  float: left;
+  margin-top: 8px;
+}
+#app-header #header-controls #top-menu .top-menu-item .sub-menu-item {
+  background: #1D82A3;
+}
+#app-header #header-controls #app-user {
+  float: right;
+  overflow: hidden;
+  width: 230px;
+  text-align: center;
+  font-family: "Roboto Regular";
+  color: white;
+  background: #1D82A3;
+  z-index: 2;
+  cursor: pointer;
+  border: 1px solid blue;
+}
+#app-header #header-controls #app-user #app-user-content {
+  padding: 5px;
+}
+#app-header #header-controls #app-user .hover-visible {
+  position: relative;
+  display: none;
+  padding: 5px;
+  z-index: 10;
+  background: #16586E;
+  cursor: default;
+}
+#app-header #header-controls #app-user:hover .hover-visible {
+  display: block;
+}
+#app-header #header-controls #app-user .user-position {
+  display: block;
+  font-size: 13px;
+  color: #DBDBDB;
 }
 #app-menu {
-  width: 55px;
+  width: 0px;
   padding-top: 5px;
   vertical-align: top;
   background: url("../img/menu_background.png");
+}
+#app-menu.visible {
+  width: 200px;
 }
 #app-menu .menu-item {
   padding: 5px;
@@ -57,6 +155,7 @@ body {
 }
 #app-view {
   vertical-align: top;
+  z-index: 1;
 }
 /*****
 * NEW-TITLE-TEMPLATE
@@ -565,7 +664,47 @@ hr {
 /***** AUTHORIZATION *****/
 #authorization-box {
   width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-  border: 1px solid black;
+  border: 1px solid lightgrey;
 }
+#authorization-box .box-header {
+  font-family: "Roboto Bold";
+  font-size: 14px;
+  color: gray;
+  text-transform: uppercase;
+  background-color: #fafafa;
+  background-image: -moz-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f2f2f2));
+  background-image: -webkit-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: -o-linear-gradient(top, #ffffff, #f2f2f2);
+  background-image: linear-gradient(to bottom, #ffffff, #f2f2f2);
+  border-bottom: 1px solid lightgrey;
+}
+#authorization-box a {
+  font-family: "Roboto Regular";
+  font-size: 14px;
+}
+#authorization-box .modal-messages-container {
+  margin-top: 10px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  box-sizing: border-box;
+}
+#authorization-box .modal-messages-container.error {
+  background: #FFEBEE;
+}
+#authorization-box .modal-messages-container.error .message {
+  font-family: "Roboto Regular";
+  font-size: 15px;
+  color: #F44336;
+}
+#authorization-box .modal-messages-container.success {
+  background: #E1EDDD;
+}
+#authorization-box .modal-messages-container.success .message {
+  font-family: "Roboto Regular";
+  font-size: 15px;
+  color: #6BA35A;
+}
+/***** TOP MENU *****/

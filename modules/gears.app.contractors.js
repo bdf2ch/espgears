@@ -260,6 +260,7 @@ var contractors = angular.module("gears.app.contractors", [])
     .run(function ($log, $modules, $contractors, $menu) {
         $modules.load($contractors);
         $contractors.contractorTypes._states_.loaded(false);
+        $contractors.contractors._states_.loaded(false);
         $menu.add({
             id: "contractors",
             title: "Контрагенты",

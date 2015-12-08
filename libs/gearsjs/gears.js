@@ -506,9 +506,13 @@ var gears = angular.module("gears", [])
                                     result++;
                                 }
                             }
-                            if (this.__instance__._init_ !== undefined)
-                                this.__instance__._init_();
+                            if (this.__instance__.onInitModel !== undefined)
+                                this.__instance__.onInitModel();
                             return result;
+                        },
+
+                        toString: function () {
+                            return JSON.stringify(this.data);
                         }
                     }
                 },

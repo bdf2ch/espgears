@@ -6,7 +6,7 @@
  * system.auth
  * Модуль авторизации
  */
-var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
+var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gears.data"])
     .config(function ($provide) {
 
 
@@ -14,40 +14,41 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
          * $session
          * Сервис сессии текущего пользователя
          */
-        $provide.factory("$session", ["$log", "$cookies", "$http", "$factory", function ($log, $cookies, $http, $factory) {
+        $provide.factory("$session", ["$log", "$cookies", "$http", "$factory", "$storage", "$cookieStore", function ($log, $cookies, $http, $factory, $storage, $cookieStore) {
             var session = {};
-
 
             /**
              * Описание моделей данных
              */
             session.classes = {
                 /**
-                 * CurrentUser
+                 * AppUser
                  * Набор свойств, описывающих текущего пользователя приложения
                  */
-                CurrentUser: {
-                    id: new Field({ source: "id", value: 0, default_value: 0 }),
-                    name: new Field({ source: "name", value: "", default_value: "", backupable: true }),
-                    fname: new Field({ source: "fname", value: "", default_value: "", backupable: true }),
-                    surname: new Field({ source: "surname", value: "", default_value: "", backupable: true }),
-                    email: new Field({ source: "email", value: "", default_value: "", backupable: true }),
-                    phone: new Field({ source: "phone", value: "", default_value: "", backupable: true })
+                AppUser: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
+                    groupId: new Field({ source: "USER_GROUP_ID", value: 0, default_value: 0, backupable: true }),
+                    name: new Field({ source: "FNAME", value: "", default_value: "", backupable: true }),
+                    fname: new Field({ source: "SNAME", value: "", default_value: "", backupable: true }),
+                    surname: new Field({ source: "SURNAME", value: "", default_value: "", backupable: true }),
+                    email: new Field({ source: "EMAIL", value: "", default_value: "", backupable: true }),
+                    phone: new Field({ source: "PHONE", value: "", default_value: "", backupable: true }),
+                    position: new Field({ source: "POSITION", value: "", default_value: "", backupable: true }),
+                    fio: "",
+
+                    onInitModel: function () {
+                        this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
+                    }
                 },
 
                 /**
-                 * CurrentSession
+                 * AppSession
                  * Набор свойст, описывающих текущую сессию приложения
                  */
-                CurrentSession: {
-                    id: new Field({ source: "id", value: 0, default_value: 0 }),
-                    userId: new Field({ source: "user_id", value: 0, default_value: 0 }),
-                    startedAt: 0,
-
-                    _init_: function () {
-                        $log.log("CURRENT SESSION INIT FUNCTION");
-                        this.startedAt = new moment().unix();
-                    }
+                AppSession: {
+                    token: new Field({ source: "TOKEN", value: 0, default_value: 0, backupable: true }),
+                    started: new Field({ source: "STARTED", value: 0, default_value: 0, backupable: true }),
+                    expires: new Field({ source: "EXPIRES", value: 0, default_value: 0, backupable: true })
                 }
             };
 
@@ -55,17 +56,119 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
             /**
              * Приватные переменные сервиса
              */
-            var currentUser = undefined;               // Пользователь
-            var currentSession = undefined;
-            var sessionId = undefined;                 // Идентификатор сессии
-            var startedAt = 0;                  // Время начала сессии в формате Unix
-            var isLoggedIn = false;
+            var currentUser = undefined;       // Пользователь приложения
+            var currentSession = undefined;    // Пользовательская скссия приложения
+            var sessionData = {};
+
+
+            /**
+             * Коллбэки сервиса
+             */
+            session.onSuccessUserLogIn = function () {};
+            session.onFailureUserLogIn = function () {};
+            session.onSuccessUserLogOut = function () {};
+            session.onFailureUserLogOut = function () {};
+            session.onSuccessChangeUserPassword = function () {};
+            session.onFailureChangeUserPassword = function () {};
+
+
+            session.get = function () {
+                return currentSession;
+            };
+
+
+            session.set = function (sess) {
+                if (sess !== undefined) {
+                    if (sess.__class__ !== undefined && sess.__class__ === "AppSession") {
+                        currentSession = sess;
+                    }
+                }
+            };
+
+
+            session.fromAuthorizationResponse = function (data) {
+                if (data !== undefined) {
+                    if (data["TOKEN"] !== undefined && data["TOKEN"] !== "fail") {
+                        currentSession = $factory({ classes: ["AppSession", "Model", "Backup"], base_class: "AppSession" });
+                        currentSession._model_.fromJSON(data);
+                        currentSession._backup_.setup();
+                        $cookies.appsession = currentSession.token.value;
+                        if (!$storage.set("appsession", session.get()._backup_.toString()))
+                            $log.error("$session: Не удалось сохранить данные сессии в localStorage");
+                    } else
+                        session.onFailureUserLogIn();
+
+                    if (data["ID"] !== undefined && parseInt(data["ID"]) !== 0) {
+                        currentUser = $factory({ classes: ["AppUser", "Model", "Backup", "States"], base_class: "AppUser" });
+                        currentUser._model_.fromJSON(data);
+                        currentUser._backup_.setup();
+                        if (!$storage.set("appuser", session.user.get()._backup_.toString()))
+                            $log.error("$session: Не удалось сохранить данные пользователя приложения в localStorage");
+                    } else
+                        session.onFailureUserLogIn();
+
+                    if (currentSession !== undefined && currentUser !== undefined)
+                        session.onSuccessUserLogIn();
+                } else
+                    session.onFailureUserLogIn();
+            };
+
+
+            session.close = function (callback) {
+                var params = {
+                    action: "logOut",
+                    data: {
+                        sessionToken: session.get().token.value
+                    }
+                };
+                $http.post("serverside/controllers/authorization.php", params)
+                    .success(function (data) {
+                        if (data !== undefined) {
+                            $log.log(JSON.parse(data));
+                            if (JSON.parse(data) === "success") {
+                                $cookieStore.remove("appsession");
+                                $storage.delete("appuser");
+                                $storage.delete("appsession");
+                                session.onSuccessUserLogOut();
+                                if (callback !== undefined)
+                                    callback(data);
+                            }
+                        } else
+                            session.onFailureUserLogOut();
+                    }
+                );
+            };
+
+
+            session.appData = {
+
+                get: function (dataName) {
+                    var result = false;
+                    if (dataName !== undefined) {
+                        if (sessionData[dataName] !== undefined) {
+                            result = sessionData[dataName];
+                        }
+                    }
+                    return result;
+                },
+
+                set: function (dataName, data) {
+                    var result = false;
+                    if (dataName !== undefined && data !== undefined) {
+                        sessionData[dataName] = data;
+                        result = true;
+                    }
+                    return result;
+                }
+
+            };
 
 
             /**
              * Объект, содержащий методы для работы с текущим пользователем приложения
              */
             session.user = {
+
                 /**
                  * Возвращает текущего пользователя приложения
                  * @returns {CurrentUser / undefined} - Возвращает текущего пользователя приложения
@@ -74,25 +177,41 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
                     return currentUser;
                 },
 
-                /**
-                 * Устанавливает пользователя текущей сессии
-                 * @param newUser {CurrentUser} - Объект, описывающий текущего пользователя приложения
-                 * @returns {CurrentUser / boolean} - Возвращает текущего пользователя приложения
-                 */
-                set: function (newUser) {
-                    var result = false;
-                    if (newUser !== undefined) {
-                        if (newUser.__class__ !== undefined) {
-                            if (newUser.__class__ === "CurrentUser") {
-                                currentUser = newUser;
-                                $cookies.appUser = currentUser._model_.toString();
-                                isLoggedIn = true;
-                                result = user;
-                                session.onSuccessSetUser();
-                            }
+                set: function (user) {
+                    if (user !== undefined) {
+                        if (user.__class__ !== undefined && user.__class__ === "AppUser") {
+                            currentUser = user;
                         }
                     }
-                    return result;
+                },
+
+                changePassword: function (password) {
+                    if (password !== undefined && password !== "") {
+                        var params = {
+                            action: "changePassword",
+                            data: {
+                                userId: session.user.get().id.value,
+                                password: password
+                            }
+                        };
+                        $http.post("serverside/controllers/authorization.php", params)
+                            .success(function (data) {
+                                if (data !== undefined) {
+                                    if (data["error_code"] !== undefined) {
+                                        var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                        db_error.init(data);
+                                        db_error.display();
+                                        session.onFailureChangeUserPassword();
+                                    } else {
+                                        if (JSON.parse(data) === "success") {
+                                            session.onSuccessChangeUserPassword();
+                                        } else
+                                            session.onFailureChangeUserPassword();
+                                    }
+                                }
+                            }
+                        );
+                    }
                 },
 
                 /**
@@ -135,107 +254,28 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
                         );
                     }
                     return result;
-                },
-
-                /**
-                 * Возвращает флаг, авторизован ли пользователь в приложении
-                 * @returns {boolean} - Возвращает флаг, авторизован ли пользователь в приложении
-                 */
-                loggedIn: function () {
-                    return isLoggedIn;
-                },
-
-                /**
-                 * Завершает сеанс текущего пользователя приложения
-                 * @returns {boolean} - Возвращает флаг, успешно ли завершилась процедура
-                 */
-                logOut: function () {
-                    if (isLoggedIn === true) {
-                        currentUser = undefined;
-                        currentSession = undefined;
-                        $cookies.appUser = undefined;
-                        isLoggedIn = false;
-                        session.onSuccessUserLogOut();
-                    }
-                    return isLoggedIn;
                 }
 
             };
 
 
-            /**
-             * Объект, содержащий методы дял работы с текущей сессией пользователя приложения
-             */
-            session.session = {
-                /**
-                 * Возвращает текущую сессию пользователя приложения
-                 * @returns {undefined}
-                 */
-                get: function () {
-                    return session;
-                },
 
-                close: function () {
-
+            session.onStart = function () {
+                if ($storage.isDataExists("appuser") === true) {
+                    var temp_user = $factory({ classes: ["AppUser", "Model", "Backup", "States"], base_class: "AppUser" });
+                    temp_user._backup_.data = JSON.parse($storage.get("appuser"));
+                    temp_user._backup_.restore();
+                    session.user.set(temp_user);
+                }
+                if ($storage.isDataExists("appsession") === true) {
+                    var temp_session = $factory({ classes: ["AppSession", "Model", "Backup", "States"], base_class: "AppSession" });
+                    temp_session._backup_.data = JSON.parse($storage.get("appsession"));
+                    temp_session._backup_.restore();
+                    session.set(temp_session);
                 }
             };
 
 
-            /**
-             * Колбэк, вызывающийся при установке пользователя в результате вызова user.set()
-             */
-            session.onSuccessSetUser = function () {
-                $log.log("user.set() callback");
-            };
-
-            /**
-             * Колбэк, вызываемый при инициализации пользователя из cookie
-             */
-            session.onSuccessInitUser = function () {
-                $log.log("init user callback");
-            };
-
-
-            /**
-             * Колбэк, вызывающийся при изменении данных пользователя
-             * @param data {object} - Данные, которые вернул сервер в результате вызова user.edit()
-             */
-            session.onSuccessEditUser = function (data) {
-                $log.log("user.edit() callback");
-            };
-
-
-            /**
-             * Колбэк, вызываемый при
-             */
-            session.onSuccessUserLogOut = function () {
-                $log.log("user.logOut() callback");
-            };
-
-
-            /**
-             * Инициализирует сервис
-             */
-            session.init = function () {
-                //$cookies.appUser = JSON.stringify("test");
-
-                currentUser = $factory({ classes: ["CurrentUser", "Model", "Backup", "States"], base_class: "CurrentUser" });
-                currentSession = $factory({ classes: ["CurrentSession"], base_class: "CurrentSession" });
-                startedAt = new moment().unix();
-                if ($cookies.appUser !== undefined) {
-                    $log.log("appUser cookie json = ", JSON.parse($cookies.appUser));
-                    currentUser._model_.fromAnother(JSON.parse($cookies.appUser));
-                    currentUser._backup_.setup();
-                    isLoggedIn = true;
-                } else {
-                    $log.log("there are no appUser cookie");
-                }
-                $log.log("session started at = ", startedAt);
-                $log.log("current session = ", currentSession);
-                $log.log("user is logged in = ", session.user.loggedIn());
-                $log.log("currentUser = ", currentUser);
-                session.onSuccessInitUser();
-            };
 
             return session;
         }]);
@@ -250,10 +290,6 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
 
             auth.username = "";                     // Имя пользователя
             auth.password = "";                     // Пароль пользователя
-            auth.sendingInProgress = false;         // Флаг, сигнализирующий, что выполняется отправка данных на сервер
-            auth.isAuthSuccessed = false;           // Флаг, сигнализирующий, что авторизация завершилась успешно
-            auth.isAuthFailed = false;              // Флаг, сигнализирующий, что авторизация завершилась ошибкой
-            auth.inRemindPasswordMode = false;       // Флаг, сигнализирующий, что активирован режим напоминания пароля
             auth.errors = {
                 username: [],                       // Массив ошибок имени пользователя
                 password: []                        // Массив ошибок пароля пользователя
@@ -261,35 +297,111 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
 
 
             /**
+             * Приватные переменные сервиса
+             */
+            var isInRemindPasswordMode = false;
+            var isSendingInProgress = false;
+            var isPasswordSent = false;
+
+
+            /**
+             * Коллбэки сервиса
+             */
+            auth.onSuccessLogIn = function () {};
+            auth.onFailureLogIn = function () {};
+            auth.onSuccessRemindPassword = function () {};
+            auth.onFailureRemindPassword = function () {};
+
+
+            /**
              * Валидация имени пользователя и пароля
              */
-            auth.logIn = function (callback) {
-                /* Сброс флагов состояний */
-                auth.isAuthSuccessed = false;
-                auth.isAuthFailed = false;
-
-                /* Очистка массивов с ошибками */
+            auth.logIn = function () {
                 auth.errors.username.splice(0, auth.errors.username.length);
                 auth.errors.password.splice(0, auth.errors.password.length);
 
-                if (auth.inRemindPasswordMode === true) {
-                    /* Проверка корректности ввода имени пользователя */
-                    if (auth.username === "")
-                        auth.errors.username.push("Вы не указали имя пользователя");
-                } else {
-                    /* Проверка корректности ввода имени пользователя */
-                    if (auth.username === "")
-                        auth.errors.username.push("Вы не указали имя пользователя");
+                if (auth.username === "")
+                    auth.errors.username.push("Вы не указали имя пользователя");
+                if (auth.password === "")
+                    auth.errors.password.push("Вы не указали пароль");
 
-                    /* Проверка корректности ввода пароля */
-                    if (auth.password === "")
-                        auth.errors.password.push("Вы не указали пароль");
+                if (auth.errors.username.length === 0 && auth.errors.password.length === 0) {
+                    isSendingInProgress = true;
+                    var params = {
+                        action: "logIn",
+                        data: {
+                            username: auth.username,
+                            password: auth.password
+                        }
+                    };
+                    $http.post("serverside/controllers/authorization.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $log.log(data);
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({classes: ["DBError"], base_class: "DBError"});
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (data["TOKEN"] !== undefined && (data["TOKEN"] === "fail")) {
+                                        auth.errors.username.push("Пользователь не найден");
+                                        auth.onFailureLogIn()
+                                    } else {
+                                        $session.fromAuthorizationResponse(data);
+                                        auth.onSuccessLogIn();
+                                    }
+                                }
+                            } else
+                                auth.onFailureLogIn();
+                            isSendingInProgress = false;
+                        }
+                    );
                 }
 
-                /* Если ошибок нет, то отправляем данные на сервер */
-                if (auth.errors.username.length === 0 && auth.errors.password.length === 0 )
-                    auth.send(callback);
             };
+
+
+            auth.remindPassword = function () {
+                auth.errors.username.splice(0, auth.errors.username.length);
+                auth.errors.password.splice(0, auth.errors.password.length);
+
+                if (auth.username === "")
+                    auth.errors.username.push("Вы не указали имя пользователя");
+
+                if (auth.errors.username.length === 0 && auth.errors.password.length === 0) {
+                    isSendingInProgress = true;
+                    var params = {
+                        action: "remindPassword",
+                        data: {
+                            username: auth.username
+                        }
+                    };
+                    $http.post("serverside/controllers/authorization.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                $log.log(data);
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({classes: ["DBError"], base_class: "DBError"});
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (JSON.parse(data) === "fail") {
+                                        auth.errors.username.push("Пользователь не найден");
+                                        auth.onFailureRemindPassword();
+                                    } else {
+                                        isPasswordSent = true;
+                                        auth.password = "";
+                                        auth.onSuccessRemindPassword();
+                                    }
+                                }
+                            } else
+                                auth.onFailureRemindPassword();
+                            isSendingInProgress = false;
+                        }
+                    );
+                }
+            };
+
 
             auth.reset = function () {
                 auth.username = "";
@@ -299,58 +411,24 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears"])
             };
 
 
-            /**
-             * Отправляет имя пользователя и пароль на сервер
-             */
-            auth.send = function (callback) {
-                var act = auth.inRemindPasswordMode === true ? "remindPassword" : "logIn";
-                var params = {
-                    action: act,
-                    data: {
-                        username: auth.username,
-                        password: auth.password
-                    }
-                };
-                auth.sendingInProgress = true;
-                $http.post("serverside/controllers/authorization.php", params)
-                    .success(function (data) {
-                        if (data !== undefined) {
-                            $log.log(data);
 
-                            if (data["error_code"] === undefined) {
-                                if (parseInt(data) === -1) {
-                                    auth.errors.username.push("Пользователь не найден");
-                                    auth.isAuthFailed = true;
-                                } else {
-                                    if (data["user"] !== undefined) {
-                                        var temp_user = $factory({ classes: ["CurrentUser", "Model", "Backup", "States"], base_class: "CurrentUser" });
-                                        temp_user._model_.fromJSON(data["user"]);
-                                        temp_user._backup_.setup();
-                                        $session.user.set(temp_user);
-                                        auth.isAuthSuccessed = true;
-                                    }
-                                    if (data["data"] !== undefined) {
-                                        callback(data);
-                                    }
-                                }
-                            } else {
-                                var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
-                                db_error.init(data);
-                                db_error.display();
-                                auth.isAuthFailed = true;
-                            }
-
-                        }
-                        auth.sendingInProgress = false;
-                    })
+            auth.remindPasswordMode = function (flag) {
+                if (flag !== undefined && typeof flag === "boolean") {
+                    auth.errors.username.splice(0, auth.errors.username.length);
+                    auth.errors.password.splice(0, auth.errors.password.length);
+                    isPasswordSent = false;
+                    isInRemindPasswordMode = flag;
+                }
+                return isInRemindPasswordMode;
             };
 
 
-            auth.remindPasswordMode = function () {
-                auth.errors.username.splice(0, auth.errors.username.length);
-                auth.errors.password.splice(0, auth.errors.password.length);
-                auth.inRemindPasswordMode = !auth.inRemindPasswordMode;
-                return auth.inRemindPasswordMode;
+            auth.isSendingInProgress = function () {
+                return isSendingInProgress;
+            };
+
+            auth.isPasswordSent = function () {
+                return isPasswordSent;
             };
 
             return auth;

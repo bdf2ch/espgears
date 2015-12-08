@@ -9,6 +9,16 @@
                ng-disabled="newGroup._states_.loading() === true"
                ng-model="newGroup.title.value"/>
     </div>
+    <div class="row padding-10 height-100">
+        <label for="user-group-description">Описание группы</label>
+        <input type="text"
+               name="user-group-description"
+               id="user-group-description"
+               class="width-100"
+               placeholder="Описание группы"
+               ng-disabled="newGroup._states_.loading() === true"
+               ng-model="newGroup.description.value"/>
+    </div>
     <div class="row padding-10">
         <div class="width-50">
             <button class="button green square width-100" ng-disabled="newGroup._states_.loading() === true" ng-click="validate()">Добавить</button>

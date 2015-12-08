@@ -10,7 +10,7 @@ var application = angular.module("gears.app", [
         "gears.data",
         "gears.files",
         "angularFileUpload",
-        //"gears.auth",                   // Подключаем модуль с сервисами авторизации
+        "gears.auth",                   // Подключаем модуль с сервисами авторизации
         "gears.app.controllers",        // Подключаем модуль с контроллерами приложения
         "gears.app.modal.controllers",
         "gears.app.filters",             // Подключаем модуль с фильтрами приложения
@@ -70,7 +70,7 @@ var application = angular.module("gears.app", [
          * $application
          * Сервис приложения
          */
-        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$misc", "$nodes", "$users", "$contractors", function ($log, $http, $factory, $titles, $misc, $nodes, $users, $contractors) {
+        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$misc", "$nodes", "$users", "$contractors", "$session", function ($log, $http, $factory, $titles, $misc, $nodes, $users, $contractors, $session) {
             var application = {};
 
             application.title = "ЭСпРЭСО";
@@ -185,7 +185,6 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["userGroups"] !== undefined) {
-                                $users.groups._states_.loaded(false);
                                 angular.forEach(data["userGroups"], function (userGroup) {
                                     var temp_user_group = $factory({ classes: ["UserGroup", "Model", "Backup", "States"], base_class: "UserGroup" });
                                     temp_user_group._model_.fromJSON(userGroup);
@@ -196,7 +195,6 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["users"] !== undefined) {
-                                $users.users._states_.loaded(false);
                                 angular.forEach(data["users"], function (user) {
                                     var temp_user = $factory({ classes: ["User", "Model", "Backup", "States"], base_class: "User" });
                                     temp_user._model_.fromJSON(user);
@@ -217,7 +215,6 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["contractors"] !== undefined) {
-                                $contractors.contractors._states_.loaded(false);
                                 angular.forEach(data["contractors"], function (contractor) {
                                     var temp_contractor = $factory({ classes: ["Contractor", "Model", "Backup", "States"], base_class: "Contractor" });
                                     temp_contractor._model_.fromJSON(contractor);
@@ -312,7 +309,7 @@ var application = angular.module("gears.app", [
             return application;
         }]);
     })
-    .run(function ($log, $application, $menu, $rootScope, $modules, $factory, $titles) {
+    .run(function ($log, $application, $menu, $rootScope, $modules, $factory, $titles, $session, $window) {
         $modules.load($application);
         $menu.register();
         $rootScope.application = $application;
@@ -322,5 +319,10 @@ var application = angular.module("gears.app", [
         $application.currentTitleNodes = $factory({ classes: ["TitleNodes", "States"], base_class: "TitleNodes" })
         $titles.requests._states_.loaded(false);
         $application.init();
+
+        $session.onStart();
+
+
+        $session.appData.set("showSideBar", false);
     }
 );
