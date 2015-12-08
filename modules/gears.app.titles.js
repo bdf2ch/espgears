@@ -1140,7 +1140,7 @@ var titles = angular.module("gears.app.titles",[])
         //$titles.getContractors();
         //$log.log($titules.titules);
         //$titules.titules.display();
-        $menu.add({
+        $menu.get().append({
             id: "requests",
             title: "Заявки",
             description: "Заявки",
@@ -1151,7 +1151,7 @@ var titles = angular.module("gears.app.titles",[])
             order: 1
         });
 
-        $menu.add({
+        $menu.get().append({
             id: "titles",
             title: "Титулы",
             description: "Титулы",

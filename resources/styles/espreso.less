@@ -25,13 +25,15 @@ html, body {
 }
 
 body {
-  padding-top: @app-header-height;
+  //padding-top: @app-header-height;
+  //padding-bottom: @app-header-height;
 }
 
 
 #app-wrapper {
   position: relative;
   height: 100%;
+  padding-top: @app-header-height;
   min-width: 1200px;
   overflow-x: auto;
   z-index: 2;
@@ -43,6 +45,7 @@ body {
 #app-header_ {
   position: absolute;
   //display: table;
+  z-index: 3;
   top: 0px;
   left: 0px;
   right: 0px;
@@ -83,7 +86,9 @@ body {
     .top-menu-item {
       display: inline-block;
       float: left;
-      overflow: visible;
+      overflow-y: visible;
+      //overflow-x: hidden;
+      //overflow: auto;
       z-index: 5;
       height: @app-header-height;
       padding-top: 5px;
@@ -100,11 +105,70 @@ body {
       &:hover {
         background: #1D82A3;
         color: white;
+
+        .hover-visible {
+          display: block;
+        }
       }
 
       &.active {
         font-family: "Roboto Bold";
         border-top: 4px solid lightblue;
+      }
+
+      .hover-visible {
+        display: none;
+      }
+
+      .menu-item-arrow-down {
+        display: block;
+        float: left;
+        margin-left: 5px;
+        font-family: "Roboto Regular";
+        font-size: 12px;
+        line-height: 38px;
+      }
+
+      .sub-menu {
+        position: absolute;
+        float: left;
+        //width: 300px;
+        overflow: visible;
+        //height: 200px;
+        margin-left: -15px;
+        margin-right: -15px;
+        margin-top: @app-header-height - 10px;
+        z-index: 10;
+
+        .sub-menu-item {
+          position: relative;
+          display: block;
+          //float: left;
+          overflow-y: visible;
+          //overflow-x: hidden;
+          overflow: auto;
+          z-index: 10;
+          //height: @app-header-height;
+          padding-top: 8px;
+          padding-bottom: 10px;
+          padding-left: 15px;
+          padding-right: 15px;
+          font-family: "Roboto Regular";
+          color: white;
+          box-sizing: content-box;
+          border-top: 4px solid transparent;
+          box-sizing: border-box;
+          background: #16586E;
+
+          &:hover {
+            background: #1D82A3;
+            color: white;
+
+            .hover-visible {
+              display: block;
+            }
+          }
+        }
       }
 
       img {
@@ -121,6 +185,7 @@ body {
       }
 
       .sub-menu-item {
+        display: block;
         background: #1D82A3;
       }
 

@@ -309,7 +309,6 @@ var application = angular.module("gears.app", [
     })
     .run(function ($log, $application, $menu, $rootScope, $modules, $factory, $titles, $session, $window) {
         $modules.load($application);
-        $menu.register();
         $rootScope.application = $application;
         $rootScope.menu = $menu;
         moment.locale("ru");
@@ -322,5 +321,43 @@ var application = angular.module("gears.app", [
 
 
         $session.appData.set("showSideBar", false);
+
+
+        var utilities = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
+        var contractors = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
+        var users = $factory({ classes: ["MenuItem"], base_class: "MenuItem" });
+        utilities.init({
+            id: "utilities",
+            title: "Дополнительно",
+            description: "Дополнительно",
+            url: "",
+            template: "",
+            controller: "",
+            icon: "resources/img/icons/utilities.png",
+            order: 5
+        });
+        users.init({
+            id: "users",
+            title: "Пользователи системы",
+            description: "Пользователи и группы пользователей системы",
+            url: "#/users",
+            template: "templates/users/users.html",
+            controller: "UsersController",
+            icon: "resources/img/icons/user-group.png"
+        });
+        contractors.init({
+            id: "contractors",
+            title: "Контрагенты",
+            description: "Контрагенты",
+            url: "#/contractors",
+            template: "templates/contractors/contractors.html",
+            controller: "ContractorsController",
+            icon: "resources/img/icons/contractor-type.png",
+            order: 3
+        });
+        utilities.submenu.append(contractors);
+        utilities.submenu.append(users);
+        $menu.get().append(utilities);
+
     }
 );

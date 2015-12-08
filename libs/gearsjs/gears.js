@@ -102,6 +102,8 @@ var gears = angular.module("gears", [])
 
 
 
+
+
         /********************
          * $menu
          * Сервис, реализующий функционал для управления меню
@@ -129,7 +131,7 @@ var gears = angular.module("gears", [])
                     order: 0,
                     active: false,
                     default: false,
-                    submenu: [],
+                    submenu: $factory({ classes: ["Collection"], base_class: "Collection" }),
 
                     /**
                      * Инициализирует пункт меню заданными параметрами
@@ -152,8 +154,19 @@ var gears = angular.module("gears", [])
             /**
              * Переменные сервиса
              */
+            var items = $factory({ classes: ["Collection"], base_class: "Collection" });
+            var currentMenuItem = undefined;
             menu.items = $factory({ classes: ["Collection"], base_class: "Collection" });
             menu.activeMenuItem = undefined;
+
+
+            menu.get = function () {
+                return items;
+            };
+
+            menu.current = function () {
+                return currentMenuItem;
+            };
 
 
             menu.register = function (parameters) {
@@ -198,7 +211,7 @@ var gears = angular.module("gears", [])
 
             $rootScope.$on("$routeChangeStart", function() {
                 var url = $location.url();
-                angular.forEach(menu.items.items, function (item) {
+                angular.forEach(items.items, function (item) {
                     if (item.url === ("#" + url))
                         item.active = true;
                     else
@@ -650,9 +663,9 @@ var gears = angular.module("gears", [])
                     append: function (item) {
                         var result = false;
                         if (item !== undefined) {
-                            result = this.items.push(item);
+                            this.items.push(item);
                         }
-                        return result;
+                        return item;
                     },
 
                     /**
