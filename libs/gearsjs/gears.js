@@ -188,32 +188,36 @@ var gears = angular.module("gears", [])
                 }
             };
 
-            var setBreadCrumb = function (menuItemId) {
-                if (menuItemId !== undefined) {
+            var setBreadCrumb = function (parentMenuItemId) {
+                if (parentMenuItemId !== undefined && parentMenuItemId !== "") {
                     var length = stack.length;
                     var finish = false;
+                    var tempParentMenuId = parentMenuItemId;
 
-                    for (var i = 0; i < length; i++) {
-                        if (stack[i].id === menuItemId) {
-                            var tempMenuItem = stack[i];
-                            breadcrumb.push(stack[i]);
-                            /*
-                            while (tempMenuItem.parentId !== "") {
-                                $log.log("loop");
-                                for (var x = 0; x < length; x++) {
-                                    var parentMenuItemFound = false;
-                                    if (stack[x].id === tempMenuItem.parentId) {
-                                        parentMenuItemFound = true;
-                                        tempMenuItem = stack[x];
-                                        breadcrumb.push(tempMenuItem);
-                                    }
-                                }
-                                //if (parentMenuItemFound === false)
-                                    break;
+                    while (!finish) {
+                        var found = false;
+                        for (var x = 0; x < length; x++) {
+                            if (stack[x].id === tempParentMenuId) {
+                                found = true;
+                                breadcrumb.splice(0, 0, stack[x]);
+                                if (stack[x].parentId !== "")
+                                    tempParentMenuId = stack[x].parentId;
+                                else
+                                    finish = true;
                             }
-                            */
+                        }
+                        if (found === false) {
+                            break;
                         }
                     }
+                    //if (breadcrumb.length > 1) {
+                    for (var i = 0; i < length; i++) {
+                        if (stack[i].id === breadcrumb[0].id)
+                            stack[i].childActive = true;
+                        else
+                            stack[i].childActive = false;
+                    }
+                //}
                 }
             };
 
@@ -234,10 +238,10 @@ var gears = angular.module("gears", [])
                         if (parentId !== undefined) {
                             var parent = isAlreadyExists(parentId);
                             if (parent !== false) {
+                                menuItem.parentId = parentId;
                                 stack.push(menuItem);
                                 parent.submenu.push(menuItem);
                                 registerRoute(menuItem);
-                                setBreadCrumb(menuItem.id);
                                 return menuItem;
                             } else {
                                 $log.error("$menu: Родительский пункт меню '" + parentId + "' не найден");
@@ -247,7 +251,6 @@ var gears = angular.module("gears", [])
                             stack.push(menuItem);
                             items.push(menuItem);
                             registerRoute(menuItem);
-                            setBreadCrumb(menuItem.id);
                             return menuItem;
                         }
                     } else {
@@ -258,7 +261,6 @@ var gears = angular.module("gears", [])
                     $log.error("$menu: Не заданы параметры добавляемого пункта меню");
                     return false;
                 }
-                $log.log("breadcrumb = ", breadcrumb);
             };
 
 
@@ -266,10 +268,16 @@ var gears = angular.module("gears", [])
                 var url = $location.url();
                 var stackLength = stack.length;
                 var itemsLength = items.length;
+                breadcrumb.splice(0, breadcrumb.length);
                 for (var i = 0; i < stackLength; i++) {
                     if (stack[i].url === ("#" + url)) {
                         stack[i].active = true;
                         currentMenuItem = stack[i];
+                        if (stack[i].parentId !== "") {
+                            breadcrumb.push(stack[i]);
+                            setBreadCrumb(stack[i].parentId);
+                        }
+                        $log.log("breadcrumb = ", breadcrumb);
                         for (var x = 0; x < itemsLength; x++) {
                             if (items[x].url === ("#" + url))
                                 items[x].active = true;
@@ -380,16 +388,16 @@ var gears = angular.module("gears", [])
                                     //console.log("prop = ", another_prop);
                                     //console.log("prop constructor = ", obj[another_prop].constructor);
                                     if (this.__instance__[another_prop].constructor === Field) {
-                                        //if (obj[another_prop].constructor === Field)
-                                        //    this.__instance__[another_prop].value = obj[another_prop].value;
-                                       // else
+                                        if (obj[another_prop].constructor === Field)
                                             this.__instance__[another_prop].value = obj[another_prop].value;
+                                        else
+                                            this.__instance__[another_prop].value = obj[another_prop];
 
                                     } else {
-                                        //if (obj[another_prop].constructor === Field)
+                                        if (obj[another_prop].constructor === Field)
                                             this.__instance__[another_prop] = obj[another_prop].value;
-                                        //else
-                                            //this.__instance__[another_prop] = obj[another_prop];
+                                        else
+                                            this.__instance__[another_prop] = obj[another_prop];
                                     }
                                 }
                             }
@@ -583,6 +591,8 @@ var gears = angular.module("gears", [])
                             }
                             if (this.__instance__.onInitModel !== undefined)
                                 this.__instance__.onInitModel();
+                            if (this.__instance__.onRestoreBackup !== undefined && typeof (this.__instance__.onRestoreBackup === "function"))
+                                this.__instance__.onRestoreBackup();
                             return result;
                         },
 

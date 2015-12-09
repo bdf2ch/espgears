@@ -17,21 +17,44 @@
 
             <div id="app-menu_">
                 <div id="menu-container">
+                    <div class="app-menu-item"
+                         ng-if="session.user.get().permissions[menuItem.id].enabled.value === true"
+                         ng-repeat="menuItem in menu.get() | orderBy:'order' track by $index">
+                        <a href="{{ menuItem.url }}"
+                           ng-show="menuItem.url !== ''"
+                           ng-class="{ 'active': menuItem.active === true }"
+                           title="{{ menuItem.description }}">
+                            <img src="{{ menuItem.icon }}" alt=""/>
+                            {{ menuItem.title }}
+                        </a>
+                        <a ng-show="menuItem.url === ''"
+                           ng-class="{ 'active': menuItem.childActive === true }"
+                           title="{{ menuItem.description }}">
+                            <img src="{{ menuItem.icon }}" alt=""/>
+                            {{ menuItem.title }}
+                            <span class="menu-item-arrow-down" ng-show="menuItem.submenu.length > 0">▼</span>
+                        </a>
+                        <div class="submenu hover-visible" ng-show="menuItem.submenu.length > 0">
+                            <div class="app-submenu-item"
+                                 ng-if="session.user.get().permissions[subMenuItem.id].enabled.value === true"
+                                 ng-repeat="subMenuItem in menuItem.submenu | orderBy:'order' track by $index">
+                                <a href="{{ subMenuItem.url }}" ng-show="subMenuItem.url !== ''" ng-class="{ 'active': subMenuItem.active === true }" title="{{ subMenuItem.description }}">
+                                    <img src="{{ subMenuItem.icon }}" alt=""/>
+                                    {{ subMenuItem.title }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--
                     <a href="{{ menuItem.url }}" class="top-menu-item"
                        ng-repeat="menuItem in menu.get() | orderBy:'order' track by $index"
-                       ng-class="{ 'active': menuItem.active === true }">
+                       ng-class="{ 'active': menuItem.active === true || menuItem.childActive === true }">
                         <img src="{{ menuItem.icon }}" alt=""/>
                         <span class="menu-item-title">{{ menuItem.title }}</span>
                         <span class="menu-item-arrow-down" ng-show="menuItem.submenu.length > 0">▼</span>
                         <div ng-show="menuItem.submenu.size() > 0" class="sub-menu hover-visible">
-                            <!--
-                            <a href="{{ subMenu.url }}" class="top-menu-item"
-                               ng-repeat="subMenu in menuItem.submenu.items | orderBy:'order' track by $index"
-                               ng-class="{ 'active': subMenu.active === true }">
-                                <img src="{{ subMenu.icon }}" alt=""/>
-                                <span class="menu-item-title">{{ subMenu.title }}</span>
-                            </a>
-                            -->
+
 
                             <div class="sub-menu-item" ng-repeat="subMenu in menuItem.submenu.items track by $id(subMenu)">
                                 <a>gdfg</a>
@@ -42,6 +65,7 @@
 
                         </div>
                     </a>
+                    -->
                 </div>
             </div>
 

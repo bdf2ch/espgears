@@ -29,12 +29,14 @@ var users = angular.module("gears.app.users", [])
                     email: new Field({ source: "EMAIL", value: "", default_value: "", backupable: true, required: true }),
                     phone: new Field({ source: "PHONE", value: "", default_value: "", backupable: true }),
                     position: new Field({ source: "POSITION", value: "", default_value: "", backupable: true }),
+                    isDeleted: new Field({ source: "IS_DELETED", value: false, default_value: false }),
                     fio: "",
                     short: "",
 
                     onInitModel: function () {
                         this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
                         this.short = this.surname.value + " " + this.name.value.toUpperCase()[0] + ". " + this.fname.value.toString().toUpperCase()[0] + ".";
+                        this.isDeleted.value = this.isDeleted.value === 0 ? false : true;
                     }
                 },
 
@@ -264,6 +266,32 @@ var users = angular.module("gears.app.users", [])
                 if (userId !== undefined) {
                     var params = {
                         action: "deleteUser",
+                        data: {
+                            userId: userId
+                        }
+                    };
+                    $http.post("serverside/controllers/users.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
+            users.getPermissions = function (userId, callback) {
+                if (userId !== undefined) {
+                    var params = {
+                        action: "getPermissions",
                         data: {
                             userId: userId
                         }

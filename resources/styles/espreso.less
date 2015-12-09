@@ -66,6 +66,8 @@ body {
     box-sizing: border-box;
   }
 
+
+
   #app-menu_ {
     position: absolute;
     left: 270px;
@@ -75,7 +77,97 @@ body {
     //float: left;
     height: @app-header-height;
     text-align: center;
+    box-sizing: border-box;
     //background: yellow;
+
+    .app-menu-item {
+      display: block;
+      float: left;
+      z-index: 5;
+      height: @app-header-height;
+      box-sizing: border-box;
+
+      &:hover {
+        background: #1D82A3;
+        .hover-visible {
+          display: block;
+        }
+      }
+
+      .hover-visible {
+        display: none;
+      }
+
+      a {
+        position: relative;
+        display: block;
+        z-index: 5;
+        height: @app-header-height;
+        padding-top: 5px;
+        padding-bottom: 9px;
+        padding-left: 15px;
+        padding-right: 15px;
+        font-family: "Roboto Regular";
+        color: white;
+        line-height: 35px;
+        text-align: left;
+        box-sizing: border-box;
+        border-top: 4px solid transparent;
+
+        &.active {
+          font-family: "Roboto Bold";
+          border-top: 4px solid lightblue;
+        }
+
+        img {
+          display: inline-block;
+          float: left;
+          width: 35px;
+          margin-right: 10px;
+        }
+
+        .menu-item-arrow-down {
+          display: inline-block;
+          margin-left: 5px;
+          font-size: 12px;
+          line-height: 38px;
+        }
+      }
+
+      .submenu {
+        position: absolute;
+        float: left;
+        overflow: visible;
+        z-index: 10;
+        background: #16586E;
+
+        .app-submenu-item {
+          height: 50px;
+          box-sizing: border-box;
+          a {
+            position: relative;
+            display: block;
+            line-height: 35px;
+            box-sizing: border-box;
+            border-top: 2px solid transparent;
+
+            &:hover {
+              background: #246E87;
+            }
+
+            &.active {
+            }
+
+            img {
+              display: inline-block;
+              float: left;
+              width: 35px;
+              margin-right: 10px;
+            }
+          }
+        }
+      }
+    }
 
     #menu-container {
       display: inline-block;
@@ -120,19 +212,13 @@ body {
         display: none;
       }
 
-      .menu-item-arrow-down {
-        display: block;
-        float: left;
-        margin-left: 5px;
-        font-family: "Roboto Regular";
-        font-size: 12px;
-        line-height: 38px;
-      }
+
 
       .sub-menu {
         position: absolute;
         float: left;
         //width: 300px;
+        min-width: inherit;
         overflow: visible;
         //height: 200px;
         margin-left: -15px;

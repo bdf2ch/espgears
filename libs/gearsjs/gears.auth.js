@@ -35,6 +35,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                     phone: new Field({ source: "PHONE", value: "", default_value: "", backupable: true }),
                     position: new Field({ source: "POSITION", value: "", default_value: "", backupable: true }),
                     fio: "",
+                    permissions: {},
 
                     onInitModel: function () {
                         this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
@@ -49,6 +50,23 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                     token: new Field({ source: "TOKEN", value: 0, default_value: 0, backupable: true }),
                     started: new Field({ source: "STARTED", value: 0, default_value: 0, backupable: true }),
                     expires: new Field({ source: "EXPIRES", value: 0, default_value: 0, backupable: true })
+                },
+
+                /**
+                 * UserPermission
+                 * Набор свойств и методов, описывающих правило доступа пользователя к данным
+                 */
+                UserPermission: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
+                    parentId: new Field({ source: "PARENT_PERMISSION_ID", value: 0, default_value: 0, backupable: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true }),
+                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
+                    data: new Field({ source: "DATA", value: "", default_value: "", backupable: true }),
+                    enabled: new Field({ source: "ENABLED", value: false, default_value: false, backupable: true }),
+
+                    onRestoreBackup: function () {
+                        this.enabled.value = this.enabled.value === 1 ? true : false;
+                    }
                 }
             };
 
@@ -88,9 +106,10 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
 
             session.fromAuthorizationResponse = function (data) {
                 if (data !== undefined) {
-                    if (data["TOKEN"] !== undefined && data["TOKEN"] !== "fail") {
+                    if (data.token !== undefined && data.token !== "fail") {
                         currentSession = $factory({ classes: ["AppSession", "Model", "Backup"], base_class: "AppSession" });
-                        currentSession._model_.fromJSON(data);
+                        //currentSession._model_.fromJSON(data);
+                        currentSession._model_.fromAnother(data);
                         currentSession._backup_.setup();
                         $cookies.appsession = currentSession.token.value;
                         if (!$storage.set("appsession", session.get()._backup_.toString()))
@@ -98,12 +117,26 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                     } else
                         session.onFailureUserLogIn();
 
-                    if (data["ID"] !== undefined && parseInt(data["ID"]) !== 0) {
+                    if (data.id !== undefined && parseInt(data.id) !== 0) {
                         currentUser = $factory({ classes: ["AppUser", "Model", "Backup", "States"], base_class: "AppUser" });
-                        currentUser._model_.fromJSON(data);
+                        //currentUser._model_.fromJSON(data);
+                        currentUser._model_.fromAnother(data);
                         currentUser._backup_.setup();
                         if (!$storage.set("appuser", session.user.get()._backup_.toString()))
                             $log.error("$session: Не удалось сохранить данные пользователя приложения в localStorage");
+                    } else
+                        session.onFailureUserLogIn();
+
+                    if (data.permissions !== undefined && data.permissions.length !== 0) {
+                        var permissions = [];
+                        angular.forEach(data.permissions, function (permission) {
+                            var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"] });
+                            temp_permission._model_.fromJSON(permission);
+                            temp_permission._backup_.setup();
+                            permissions.push(temp_permission._backup_.data);
+                        });
+                        if (!$storage.set("userpermissions", JSON.stringify(permissions)))
+                            $log.error("$session: Не удалось сохранить данные о правилах доступа к данным в localStorage");
                     } else
                         session.onFailureUserLogIn();
 
@@ -129,6 +162,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                                 $cookieStore.remove("appsession");
                                 $storage.delete("appuser");
                                 $storage.delete("appsession");
+                                $storage.delete("userpermissions");
                                 session.onSuccessUserLogOut();
                                 if (callback !== undefined)
                                     callback(data);
@@ -272,6 +306,17 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                     temp_session._backup_.data = JSON.parse($storage.get("appsession"));
                     temp_session._backup_.restore();
                     session.set(temp_session);
+                }
+                if ($storage.isDataExists("userpermissions") === true) {
+                    var parsed_permissions = [];
+                    angular.forEach(JSON.parse($storage.get("userpermissions")), function (permission) {
+                        var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
+                        temp_permission._backup_.data = permission;
+                        temp_permission._backup_.restore();
+                        parsed_permissions[temp_permission.data.value] = temp_permission;
+                    });
+                    $log.log("PERMISSIONS = ", parsed_permissions);
+                    session.user.get().permissions = parsed_permissions;
                 }
             };
 

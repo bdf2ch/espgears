@@ -195,6 +195,23 @@ var AppFilters = angular.module("gears.app.filters", [])
         }]);
 
 
+        /**
+         * undeletedUsers
+         * Фильтр статусов заявки, возвращает статусы, доступнея для выбора
+         */
+        $filterProvider.register("undeletedUsers", ["$log", function ($log) {
+            return function (input) {
+                var result = [];
+                angular.forEach(input, function (user) {
+                    if (user.isDeleted.value === false) {
+                        result.push(user);
+                    }
+                });
+                return result;
+            }
+        }]);
+
+
     })
     .run(function () {
 

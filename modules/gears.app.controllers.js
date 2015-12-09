@@ -61,8 +61,9 @@ var appControllers = angular.module("gears.app.controllers", [])
      * RequestsController
      * Контроллер раздела журнала заявок
      */
-    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", "$contractors", "$factory", "$users", function ($log, $scope, $titles, $application, $modals, $contractors, $factory, $users) {
+    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", "$contractors", "$factory", "$users", "$session", function ($log, $scope, $titles, $application, $modals, $contractors, $factory, $users, $session) {
         $scope.app = $application;
+        $scope.session = $session;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
         $scope.users = $users;
@@ -1043,6 +1044,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                         } else {
                             user._states_.selected(true);
                             $application.currentUser = user;
+                            $users.getPermissions(userId, $scope.onSuccessGetUserPermissions);
                             $log.log("user " + $users.users.find("id", userId).fio + " selected");
                         }
                     } else {
@@ -1127,6 +1129,12 @@ var appControllers = angular.module("gears.app.controllers", [])
             $log.log("user deleted, moment = ", moment);
             $users.users.delete("id", $application.currentUser.id.value);
             $application.currentUser = undefined;
+        };
+
+        $scope.onSuccessGetUserPermissions = function (data) {
+            if (data !== undefined) {
+                $log.log(data);
+            }
         };
     }])
 

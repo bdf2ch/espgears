@@ -2,7 +2,11 @@
     <tr class="column-header">
         <td class="caption width-100">
             Заявки
-            <button class="button green right" ng-click="addRequest()">+</button>
+            <button class="button green right"
+                    ng-if="session.user.get().permissions.add_request.enabled.value === true"
+                    ng-click="addRequest()">
+                +
+            </button>
         </td>
 
     </tr>
@@ -44,10 +48,16 @@
                         <div class="card-header">
                             <span>{{ "Заявка #" + request.id.value }}</span>
                             <div class="right" ng-show="app.currentRequest.id.value === request.id.value">
-                                <button class="button round blue" title="Редактировать" ng-click="editRequest(request.id.value, $event)">
+                                <button class="button round blue"
+                                        title="Редактировать"
+                                        ng-if="session.user.get().permissions.edit_request.enabled.value === true"
+                                        ng-click="editRequest(request.id.value, $event)">
                                     <img src="resources/img/icons/edit.png" alt=""/>
                                 </button>
-                                <button class="button round red" title="Удалить" ng-click="deleteRequest(request.id.value, $event)">&times;</button>
+                                <button class="button round red"
+                                        title="Удалить"
+                                        ng-if="session.user.get().permissions.delete_request.enabled.value === true"
+                                        ng-click="deleteRequest(request.id.value, $event)">&times;</button>
                             </div>
                         </div>
                         <div class="card-content">
@@ -89,6 +99,7 @@
             История
             <button class="button green right"
                     ng-show="app.currentRequest !== undefined"
+                    ng-if="session.user.get().permissions.change_request_status.enabled.value === true"
                     ng-click="changeStatus()">
                 +
             </button>

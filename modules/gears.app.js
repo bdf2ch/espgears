@@ -90,6 +90,7 @@ var application = angular.module("gears.app", [
             application.currentContractor = undefined;
             application.currentUserGroup = undefined;
             application.currentUser = undefined;
+            application.currentUserPermissions = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             application.currentBuildingPlanItem = undefined;
             application.currentPowerLine = undefined;
             application.currentPowerLineNodes = $factory({ classes: ["Collection", "States"], base_class: "Collection" });

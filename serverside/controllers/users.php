@@ -50,6 +50,10 @@
                 case "deleteUser":
                     delete_user($postdata);
                     break;
+                /* Получение прав пользователя */
+                case "getPermissions":
+                    get_user_permissions($postdata);
+                    break;
             }
         }
         oci_close($connection);
@@ -512,5 +516,53 @@ function edit_user ($postdata) {
         /* Возврат результата */
         echo json_encode($moment);
     };
+
+
+
+/* Функция получения прав пользователя */
+function get_user_permissions ($postdata) {
+    global $connection;
+    $userId = $postdata -> data -> userId;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin pkg_users.p_get_user_permissions(:user_id, :permissions); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        $cursor = oci_new_cursor($connection);
+        if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+           $result = new DBError($error["code"], $error["message"]);
+           echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":permissions", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                while ($permission = oci_fetch_assoc($cursor))
+                    array_push($result, $permission);
+            }
+        }
+    }
+
+    /* Освобождение ресурсов */
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+
+    /* Возврат результата */
+    echo json_encode($result);
+};
 
 ?>

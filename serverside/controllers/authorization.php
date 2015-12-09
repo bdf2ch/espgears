@@ -31,7 +31,8 @@ function log_in ($postdata) {
     global $db_password;
     $username = $postdata -> data -> username;
     $password = $postdata -> data -> password;
-    $result = array();
+    $user_permissions = array();
+    $result = new stdClass;
 
     /* Подключение к БД */
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
@@ -40,11 +41,12 @@ function log_in ($postdata) {
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
-        if (!$statement = oci_parse($connection, "begin pkg_authorization.p_sign_in(:auth_email, :auth_password, :session_token, :session_started, :session_expires, :user_id, :user_group_id, :user_name, :user_fname, :user_surname, :user_position, :user_email, :user_phone); end;")) {
+        if (!$statement = oci_parse($connection, "begin pkg_authorization.p_sign_in(:auth_email, :auth_password, :session_token, :session_started, :session_expires, :user_id, :user_group_id, :user_name, :user_fname, :user_surname, :user_position, :user_email, :user_phone, :permissions); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         } else {
+            $permissions = oci_new_cursor($connection);
             if (!oci_bind_by_name($statement, ":auth_email", $username, -1, OCI_DEFAULT)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
@@ -110,27 +112,44 @@ function log_in ($postdata) {
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             }
+            if (!oci_bind_by_name($statement, ":permissions", $permissions, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
             if (!oci_execute($statement)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             } else {
-                $result["TOKEN"] = $session_token;
-                $result["STARTED"] = $session_started;
-                $result["EXPIRES"] = $session_expires;
-                $result["ID"] = $user_id;
-                $result["USER_GROUP_ID"] = $user_group_id;
-                $result["FNAME"] = $user_name;
-                $result["SNAME"] = $user_fname;
-                $result["SURNAME"] = $user_surname;
-                $result["POSITION"] = $user_position;
-                $result["EMAIL"] = $user_email;
-                $result["PHONE"] = $user_phone;
+                $result -> token = $session_token;
+                $result -> started = $session_started;
+                $result -> expires = $session_expires;
+                $result -> id = $user_id;
+                $result -> roupId = $user_group_id;
+                $result -> fname = $user_name;
+                $result -> sname = $user_fname;
+                $result -> surname = $user_surname;
+                $result -> position = $user_position;
+                $result -> email = $user_email;
+                $result -> phone = $user_phone;
+
+                if (!oci_execute($permissions)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                     while ($permission = oci_fetch_assoc($permissions))
+                        array_push($user_permissions, $permission);
+                }
+                $result -> permissions = $user_permissions;
+
                 echo(json_encode($result));
             }
 
             /* Освобождение ресурсов */
             oci_free_statement($statement);
+            oci_free_statement($permissions);
             oci_close($connection);
         }
     }
