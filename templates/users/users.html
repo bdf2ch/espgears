@@ -179,22 +179,43 @@
                     Выберите пользователя
                 </div>
 
-                <div class="row">
+                <div class="row" ng-show="app.currentUser !== undefined && app.currentUserPermissions._states_.loaded() === true">
                     <table class="table stripped width-100">
-                        <caption>Раздел пользователей</caption>
                         <tbody>
-                        <tr>
-                            <td>Доступ к пункту меню "Пользователи"</td>
-                            <td><input type="checkbox" name="" id=""/></td>
-                        </tr>
-                        <tr>
+                        <tr ng-repeat="permission in users.permissions.items track by $index">
+                            <td>{{ permission.title.value }}</td>
                             <td>
-                                {{ session.user.get().permissions.add_user.title.value }}
+                                <input type="checkbox"
+                                       name=""
+                                       id=""
+                                       ng-show="app.currentUserPermissions.find('data', permission.data.value) !== false"
+                                       ng-model="app.currentUserPermissions.find('data', permission.data.value).enabled.value"
+                                       ng-disabled="permission._states_.loading() === true"
+                                       ng-change="onChangePermission(app.currentUserPermissions.find('data', permission.data.value))"
+                                />
+
+                                <input type="checkbox"
+                                       name=""
+                                       id=""
+                                       ng-show="app.currentUserPermissions.find('data', permission.data.value) == false"
+                                       ng-model="permission.enabled.value"
+                                       ng-disabled="permission._states_.loading() === true"
+                                       ng-change="onChangePermission(permission)"
+                                />
                             </td>
                         </tr>
                         </tbody>
                     </table>
+
+
+
+
                 </div>
+
+
+                <ul ng-repeat="group in users.permissions.items | groupByPermission track by $index">
+                    {{ group.id }}
+                </ul>
 
 
             </div>

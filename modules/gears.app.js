@@ -205,6 +205,16 @@ var application = angular.module("gears.app", [
                                 $users.users._states_.loaded(true);
                             }
 
+                            if (data["permissions"] !== undefined) {
+                                angular.forEach(data["permissions"], function (permission) {
+                                    var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
+                                    temp_permission._model_.fromJSON(permission);
+                                    temp_permission._backup_.setup();
+                                    $users.permissions.append(temp_permission);
+                                });
+                                $users.permissions._states_.loaded(true);
+                            }
+
                             if (data["contractorTypes"] !== undefined) {
                                 angular.forEach(data["contractorTypes"], function (contractorType) {
                                     var temp_contractor_type = $factory({ classes: ["ContractorType", "Model", "Backup", "States"], base_class: "ContractorType" });
@@ -350,8 +360,8 @@ var application = angular.module("gears.app", [
 
         $menu.add({
             id: "contractors",
-            title: "Контрагенты",
-            description: "Контрагенты",
+            title: "Справочник контрагентов",
+            description: "Контрагенты и типы контрагентов",
             url: "#/contractors",
             template: "templates/contractors/contractors.html",
             controller: "ContractorsController",

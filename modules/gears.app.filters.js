@@ -212,6 +212,38 @@ var AppFilters = angular.module("gears.app.filters", [])
         }]);
 
 
+        /**
+         * groupByPermission
+         * Фильтр пользователей по группе
+         */
+        $filterProvider.register("groupByPermission", ["$log", function ($log) {
+            return function (input) {
+                var result = [];
+                angular.forEach(input, function (permission) {
+                    var group_found = false;
+
+                    angular.forEach(result, function (group) {
+                        if (group.id === permission.data.value) {
+                            $log.log("group '" + permission.data.value + "' found");
+                            group_found = true;
+                            group.push(permission);
+                        }
+                    });
+                    if (group_found === false) {
+                        $log.log("group '" + permission.data.value + "' not found");
+                        var new_group = [];
+                        new_group.id = permission.data.value;
+                        new_group.push(permission);
+                        result.push(new_group);
+                    }
+
+                });
+                $log.log("groups = ", result);
+                return result;
+            }
+        }]);
+
+
     })
     .run(function () {
 

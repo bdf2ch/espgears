@@ -134,15 +134,17 @@ function log_in ($postdata) {
                 $result -> email = $user_email;
                 $result -> phone = $user_phone;
 
-                if (!oci_execute($permissions)) {
-                    $error = oci_error();
-                    $result = new DBError($error["code"], $error["message"]);
-                    echo(json_encode($result));
-                } else {
-                     while ($permission = oci_fetch_assoc($permissions))
-                        array_push($user_permissions, $permission);
+                if ($session_token !== "fail") {
+                    if (!oci_execute($permissions)) {
+                        $error = oci_error();
+                        $result = new DBError($error["code"], $error["message"]);
+                        echo(json_encode($result));
+                    } else {
+                        while ($permission = oci_fetch_assoc($permissions))
+                            array_push($user_permissions, $permission);
+                    }
+                    $result -> permissions = $user_permissions;
                 }
-                $result -> permissions = $user_permissions;
 
                 echo(json_encode($result));
             }

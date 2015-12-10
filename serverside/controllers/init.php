@@ -12,6 +12,7 @@
     $nodeTypes = array();
     $userGroups = array();
     $users = array();
+    $permissions = array();
     $contractorTypes = array();
     $contractors = array();
     $pylonTypes = array();
@@ -24,7 +25,7 @@
 
     $workingCommissions = array();
 
-    /* Подключение к БД */
+    /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ */
     $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
     if (!$connection){
         oci_close($connection);
@@ -34,7 +35,7 @@
     } else {
         $cursor = oci_new_cursor($connection);
 
-        /* Получение списка всех титулов */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_titules(:data); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -62,7 +63,7 @@
         }
         $result -> titles = $titles;
 
-        /* Получение всех статусов титула */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_statuses.p_get_statuses(:data); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -90,7 +91,7 @@
         }
         $result -> titleStatuses = $titleStatuses;
 
-        /* Получение всех этапов работ всех планов строительства вех титулов */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_building_plans(:plans); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -118,7 +119,7 @@
         }
         $result -> buildingPlans = $buildingPlans;
 
-        /* Получение всех статусав этапа плана строительства титула */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_building_statuses(:building_statuses); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -146,7 +147,7 @@
         }
         $result -> buildingStatuses = $buildingStatuses;
 
-        /* Получение списка всех подрядчиков всех этыпов строительства всех титулов */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_titles_contractors(:contractors); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -174,7 +175,7 @@
         }
         $result -> titleContractors = $titleContractors;
 
-        /* Получение списка всех линий */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin PKG_POWER_LINES.P_GET_POWER_LINES(:power_lines); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -202,7 +203,7 @@
         }
         $result -> powerLines = $powerLines;
 
-        /* Получение списка типов узлов */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin PKG_OBJECT_TYPES.P_GET_OBJECT_TYPES(:node_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -230,7 +231,7 @@
         }
         $result -> nodeTypes = $nodeTypes;
 
-        /* Получение списка всех групп пользователей */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_usergroups.p_get_groups(:user_groups); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -258,7 +259,7 @@
         }
         $result -> userGroups = $userGroups;
 
-        /* Получение списка всех пользователей */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_users.p_get_users(:users); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -286,7 +287,36 @@
         }
         $result -> users = $users;
 
-        /* Получение списка всех типов контрагентов */
+
+        /* Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃРїРёСЃРѕРє РІСЃРµС… РїСЂР°РІРёР» РґРѕСЃС‚СѓРїР° Рє РґР°РЅРЅС‹Рј */
+        if (!$statement = oci_parse($connection, "begin pkg_users.p_get_permissions(:permissions); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":permissions", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($permission = oci_fetch_assoc($cursor))
+                        array_push($permissions, $permission);
+                    }
+                }
+        }
+        $result -> permissions = $permissions;
+
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_contractor_types.p_get_contractor_types(:contractor_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -314,7 +344,7 @@
         }
         $result -> contractorTypes = $contractorTypes;
 
-        /* Получение списка всех контрагентов */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_contractors.p_get_contractors(:contractors); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -342,7 +372,7 @@
         }
         $result -> contractors = $contractors;
 
-        /* Получение списка всех типов опор */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin PKG_PYLON_TYPES.P_GET_PYLON_TYPES(:pylon_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -371,7 +401,7 @@
         $result -> pylonTypes = $pylonTypes;
 
 
-        /* Получение списка типов кабеля */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin PKG_CABLE_TYPES.P_GET_CABLE_TYPES(:cable_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -399,7 +429,7 @@
         }
         $result -> cableTypes = $cableTypes;
 
-        /* Получение списка типов креплений */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin PKG_ANCHOR_TYPES.P_GET_ANCHOR_TYPES(:anchor_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -427,7 +457,7 @@
         }
         $result -> anchorTypes = $anchorTypes;
 
-        /* Получение списка всех типов заявок */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_types(:data); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -457,7 +487,7 @@
 
 
 
-        /* Получение списка всех заявок */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_statuses(:data); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -486,7 +516,7 @@
         $result -> requestStatuses = $requestStatuses;
 
 
-        /* Получение списка всех заявок */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_requests(:data); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -580,11 +610,11 @@
 
 
 
-        /* Освобождение ресурсов */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         oci_free_statement($statement);
         oci_free_statement($cursor);
 
-        /* Возврат результата */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
         echo json_encode($result);
         //echo $result;
     }

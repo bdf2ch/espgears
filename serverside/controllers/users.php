@@ -54,6 +54,10 @@
                 case "getPermissions":
                     get_user_permissions($postdata);
                     break;
+                /* Добавление правила доступа к данным */
+                case "setPermission":
+                    set_permission($postdata);
+                    break;
             }
         }
         oci_close($connection);
@@ -565,4 +569,63 @@ function get_user_permissions ($postdata) {
     echo json_encode($result);
 };
 
+
+
+
+/* Функция добавления правила доступа к данным*/
+function set_permission ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $userId = $postdata -> data -> userId;
+    $permissionData = $postdata -> data -> permissionData;
+    $enabled = $postdata -> data -> enabled;
+    $result = new stdClass;
+
+    if (!$statement = oci_parse($connection, "begin pkg_users.p_set_user_permission(:user_id, :permission_data, :enabled, :permission); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":user_id", $userId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":permission_data", $permissionData, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":enabled", $enabled, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":permission", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                 $result = oci_fetch_object($cursor);
+            }
+        }
+    }
+
+    /* Освобождение ресурсов */
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+
+    /* Возврат результата */
+    echo json_encode($result);
+};
 ?>

@@ -54,6 +54,7 @@ var users = angular.module("gears.app.users", [])
 
             users.users = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
             users.groups = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
+            users.permissions = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
 
             users.getUserGroups = function () {
                 users.groups._states_.loaded(false);
@@ -314,6 +315,34 @@ var users = angular.module("gears.app.users", [])
             };
 
 
+            users.editPermission = function (userId, permission, callback) {
+                if (userId !== undefined && permission !== undefined) {
+                    var params = {
+                        action: "setPermission",
+                        data: {
+                            userId: userId,
+                            permissionData: permission.data.value,
+                            enabled: permission.enabled.value === true ? 1 : 0
+                        }
+                    };
+                    $http.post("serverside/controllers/users.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(permission, data);
+                                }
+                            }
+                        }
+                    );
+                }
+            };
+
+
             users.countUsersInGroup = function (groupId) {
                 if (groupId !== undefined) {
                     var result = 0;
@@ -350,6 +379,175 @@ var users = angular.module("gears.app.users", [])
     }
 );
 
+
+
+/**
+ * UsersController
+ * Контроллер раздела пользователей системы
+ */
+users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$application", "$modals", "$factory", "$session", function ($log, $scope, $location, $users, $application, $modals, $factory, $session) {
+    $scope.users = $users;
+    $scope.app = $application;
+
+    $scope.gotoAddUser = function () {
+        $location.url("/new-user");
+    };
+
+    $scope.selectGroup = function (groupId) {
+        if (groupId !== undefined) {
+            angular.forEach($scope.users.groups.items, function (group) {
+                if (group.id.value === groupId) {
+                    if (group._states_.selected() === true) {
+                        group._states_.selected(false);
+                        $application.currentUserGroup = undefined;
+                    } else {
+                        group._states_.selected(true);
+                        $application.currentUserGroup = group;
+                        $log.log("group " + $users.groups.find("id", groupId).title.value + " selected");
+                    }
+                } else {
+                    group._states_.selected(false);
+                }
+            });
+        }
+    };
+
+    $scope.selectUser = function (userId) {
+        if (userId !== undefined) {
+            angular.forEach($scope.users.users.items, function (user) {
+                if (user.id.value === userId) {
+                    if (user._states_.selected() === true) {
+                        user._states_.selected(false);
+                        $application.currentUser = undefined;
+                        $application.currentUserPermissions.clear();
+                    } else {
+                        user._states_.selected(true);
+                        $application.currentUser = user;
+                        $application.currentUserPermissions.clear();
+                        $application.currentUserPermissions._states_.loaded(false);
+                        $users.getPermissions(userId, $scope.onSuccessGetUserPermissions);
+                        $log.log("user " + $users.users.find("id", userId).fio + " selected");
+                    }
+                } else {
+                    user._states_.selected(false);
+                }
+            });
+        }
+    };
+
+    $scope.addGroup = function () {
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Новая группа пользователей",
+            showFog: true,
+            template: "templates/modals/new-user-group.html"
+        });
+    };
+
+    $scope.editGroup = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Редактирование группы пользователей",
+            showFog: true,
+            closeButton: false,
+            template: "templates/modals/edit-user-group.html"
+        });
+    };
+
+    $scope.deleteGroup = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Удаление группы пользователей",
+            showFog: true,
+            closeButton: true,
+            template: "templates/modals/delete-user-group.html"
+        });
+    };
+
+
+    $scope.addUser = function () {
+        $modals.show({
+            width: 500,
+            position: "center",
+            caption: "Добавление пользователя",
+            showFog: true,
+            template: "templates/modals/new-user.html"
+        });
+    };
+
+
+    $scope.editUser = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 500,
+            position: "center",
+            caption: "Редактирование пользователя",
+            showFog: true,
+            closeButton: true,
+            template: "templates/modals/edit-user.html"
+        });
+    };
+
+
+    $scope.deleteUser = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Удаление пользователя",
+            showFog: true,
+            closeButton: true,
+            template: "templates/modals/delete-user.html"
+        });
+    };
+
+    $scope.onSuccessDeleteUser = function (moment) {
+        $log.log("user deleted, moment = ", moment);
+        $users.users.delete("id", $application.currentUser.id.value);
+        $application.currentUser = undefined;
+    };
+
+    $scope.onSuccessGetUserPermissions = function (data) {
+        if (data !== undefined) {
+            angular.forEach(data, function (permission) {
+                var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
+                temp_permission._model_.fromJSON(permission);
+                temp_permission._backup_.setup();
+                temp_permission._backup_.restore();
+                $application.currentUserPermissions.append(temp_permission);
+            });
+            $application.currentUserPermissions._states_.loaded(true);
+            $log.log("user permissions = ", $application.currentUserPermissions.items);
+        }
+    };
+
+    $scope.onChangePermission = function (permission) {
+        if (permission !== undefined) {
+            $log.log("permission value = ", permission.enabled.value);
+            permission._states_.loading(true);
+            $users.editPermission($session.user.get().id.value, permission, $scope.onSuccessEditPermission);
+        }
+    };
+
+    $scope.onSuccessEditPermission = function (permission, data) {
+        if (permission !== undefined && data !== undefined) {
+            permission._states_.loading(false);
+            var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
+            temp_permission._model_.fromJSON(data);
+            temp_permission._backup_.setup();
+            temp_permission._backup_.restore();
+            permission.enabled.value = temp_permission.enabled.value;
+            //$application.currentUserPermissions.delete("data", permission.data.value);
+            //$application.currentUserPermissions.append(temp_permission);
+            $log.log("new permission = ", data);
+        }
+    };
+}]);
 
 
 users.controller("UserController", ["$log", "$scope", "$users", "$session", "$modals", "$window", function ($log, $scope, $users, $session, $modals, $window) {

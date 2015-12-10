@@ -388,7 +388,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                                     db_error.init(data);
                                     db_error.display();
                                 } else {
-                                    if (data["TOKEN"] !== undefined && (data["TOKEN"] === "fail")) {
+                                    if (data.token !== undefined && (data.token === "fail")) {
                                         auth.errors.username.push("Пользователь не найден");
                                         auth.onFailureLogIn()
                                     } else {
