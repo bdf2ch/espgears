@@ -53,15 +53,26 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                 },
 
                 /**
+                 * PermissionRule
+                 * Набор свойств и методов, описывающих правило доступа к данным
+                 */
+                PermissionRule: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
+                    parentId: new Field({ source: "PARENT_ID", value: 0, default_value: 0, backupable: true }),
+                    code: new Field({ source: "CODE", value: "", default_value: "", backupable: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true }),
+                    url: new Field({ source: "URL", value: "", default_value: "", backupable: true })
+                },
+
+                /**
                  * UserPermission
-                 * Набор свойств и методов, описывающих правило доступа пользователя к данным
+                 * Набор свойств и методов, описывающих право доступа пользователя к данным
                  */
                 UserPermission: {
                     id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
-                    parentId: new Field({ source: "PARENT_PERMISSION_ID", value: 0, default_value: 0, backupable: true }),
-                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true }),
+                    permissionId: new Field({ source: "PERMISSION_ID", value: 0, default_value: 0, backupable: true }),
+                    permissionCode: new Field({ source: "CODE", value: "", default_value: "", backupable: true }),
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
-                    data: new Field({ source: "DATA", value: "", default_value: "", backupable: true }),
                     enabled: new Field({ source: "ENABLED", value: false, default_value: false, backupable: true }),
 
                     onRestoreBackup: function () {
@@ -77,7 +88,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             var currentUser = undefined;       // Пользователь приложения
             var currentSession = undefined;    // Пользовательская скссия приложения
             var sessionData = {};
-
+            var permissions = {};
 
             /**
              * Коллбэки сервиса
@@ -130,7 +141,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                     if (data.permissions !== undefined && data.permissions.length !== 0) {
                         var permissions = [];
                         angular.forEach(data.permissions, function (permission) {
-                            var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"] });
+                            var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
                             temp_permission._model_.fromJSON(permission);
                             temp_permission._backup_.setup();
                             permissions.push(temp_permission._backup_.data);
@@ -293,6 +304,27 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             };
 
 
+            session.permissions = {
+                get: function (code) {
+                    if (code !== undefined) {
+                        for (var permission in permissions) {
+                            if (permission === code)
+                                return permissions[permission];
+                        }
+                        return false;
+                    } else {
+                        return permissions;
+                    }
+                },
+
+                set: function (perm) {
+                    if (perm !== undefined) {
+                        permissions = perm;
+                    }
+                }
+            };
+
+
 
             session.onStart = function () {
                 if ($storage.isDataExists("appuser") === true) {
@@ -308,15 +340,16 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                     session.set(temp_session);
                 }
                 if ($storage.isDataExists("userpermissions") === true) {
-                    var parsed_permissions = [];
+                    var parsed_permissions = {};
                     angular.forEach(JSON.parse($storage.get("userpermissions")), function (permission) {
                         var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
                         temp_permission._backup_.data = permission;
                         temp_permission._backup_.restore();
-                        parsed_permissions[temp_permission.data.value] = temp_permission;
+                        parsed_permissions[temp_permission.permissionCode.value] = temp_permission;
                     });
-                    $log.log("PERMISSIONS = ", parsed_permissions);
-                    session.user.get().permissions = parsed_permissions;
+
+                    session.permissions.set(parsed_permissions);
+                    $log.log("PERMISSIONS = ", session.permissions.get());
                 }
             };
 

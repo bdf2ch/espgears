@@ -315,14 +315,14 @@ var users = angular.module("gears.app.users", [])
             };
 
 
-            users.editPermission = function (userId, permission, callback) {
-                if (userId !== undefined && permission !== undefined) {
+            users.editPermission = function (userId, permissionId, value, callback) {
+                if (userId !== undefined && permissionId !== undefined && value !== undefined) {
                     var params = {
                         action: "setPermission",
                         data: {
                             userId: userId,
-                            permissionData: permission.data.value,
-                            enabled: permission.enabled.value === true ? 1 : 0
+                            permissionId: permissionId,
+                            enabled: value === true ? 1 : 0
                         }
                     };
                     $http.post("serverside/controllers/users.php", params)
@@ -334,7 +334,7 @@ var users = angular.module("gears.app.users", [])
                                     db_error.display();
                                 } else {
                                     if (callback !== undefined)
-                                        callback(permission, data);
+                                        callback(permissionId, data);
                                 }
                             }
                         }
@@ -419,11 +419,11 @@ users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$
                     if (user._states_.selected() === true) {
                         user._states_.selected(false);
                         $application.currentUser = undefined;
-                        $application.currentUserPermissions.clear();
+                        //$application.currentUserPermissions.clear();
                     } else {
                         user._states_.selected(true);
                         $application.currentUser = user;
-                        $application.currentUserPermissions.clear();
+                        //$application.currentUserPermissions.clear();
                         $application.currentUserPermissions._states_.loaded(false);
                         $users.getPermissions(userId, $scope.onSuccessGetUserPermissions);
                         $log.log("user " + $users.users.find("id", userId).fio + " selected");
@@ -519,29 +519,45 @@ users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$
                 temp_permission._model_.fromJSON(permission);
                 temp_permission._backup_.setup();
                 temp_permission._backup_.restore();
-                $application.currentUserPermissions.append(temp_permission);
+
+                var permission = $application.currentUserPermissions.find("permissionId", temp_permission.id.value);
+                if (permission !== false) {
+                    permission.enabled.value = temp_permission.enabled.value;
+                } else
+                    $log.log("permission " + temp_permission.permissionId.value + " not found");
+                //$application.currentUserPermissions.append(temp_permission);
+
+                //var permission = $users.permissions.find("id", temp_permission.permissionId.value);
+                //if (permission !== false) {
+                //    permission.enabled.value
+               // }
             });
             $application.currentUserPermissions._states_.loaded(true);
             $log.log("user permissions = ", $application.currentUserPermissions.items);
         }
     };
 
-    $scope.onChangePermission = function (permission) {
-        if (permission !== undefined) {
-            $log.log("permission value = ", permission.enabled.value);
-            permission._states_.loading(true);
-            $users.editPermission($session.user.get().id.value, permission, $scope.onSuccessEditPermission);
+    $scope.onChangePermission = function (permissionId, value) {
+        if (permissionId !== undefined && value !== undefined) {
+            $log.log("permission value = ", value);
+            //permission._states_.loading(true);
+            $users.permissions.find("id", permissionId)._states_.loading(true);
+
+            $users.editPermission($session.user.get().id.value, permissionId, value, $scope.onSuccessEditPermission);
         }
     };
 
-    $scope.onSuccessEditPermission = function (permission, data) {
-        if (permission !== undefined && data !== undefined) {
+    $scope.onSuccessEditPermission = function (permissionId, data) {
+        if (permissionId !== undefined && data !== undefined) {
+            var permission = $users.permissions.find("id", permissionId);
+            var userPermission = $application.currentUserPermissions.find("permissionId", permissionId);
             permission._states_.loading(false);
             var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
             temp_permission._model_.fromJSON(data);
             temp_permission._backup_.setup();
             temp_permission._backup_.restore();
-            permission.enabled.value = temp_permission.enabled.value;
+            //permission.enabled.value = temp_permission.enabled.value;
+            userPermission.enabled.value = temp_permission.enabled.value;
             //$application.currentUserPermissions.delete("data", permission.data.value);
             //$application.currentUserPermissions.append(temp_permission);
             $log.log("new permission = ", data);

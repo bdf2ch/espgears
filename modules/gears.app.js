@@ -205,12 +205,18 @@ var application = angular.module("gears.app", [
                                 $users.users._states_.loaded(true);
                             }
 
-                            if (data["permissions"] !== undefined) {
-                                angular.forEach(data["permissions"], function (permission) {
+                            if (data["permissionRules"] !== undefined) {
+                                angular.forEach(data["permissionRules"], function (permission_rule) {
+                                    var temp_permission_rule = $factory({ classes: ["PermissionRule", "Model", "Backup", "States"], base_class: "PermissionRule" });
+                                    temp_permission_rule._model_.fromJSON(permission_rule);
+                                    temp_permission_rule._backup_.setup();
+                                    $users.permissions.append(temp_permission_rule);
+                                    //$session.permissions.set($users.permissions.items);
+
                                     var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
-                                    temp_permission._model_.fromJSON(permission);
-                                    temp_permission._backup_.setup();
-                                    $users.permissions.append(temp_permission);
+                                    temp_permission.permissionId.value = temp_permission_rule.id.value;
+                                    temp_permission.userId.value = $session.user.get().id.value;
+                                    application.currentUserPermissions.append(temp_permission);
                                 });
                                 $users.permissions._states_.loaded(true);
                             }

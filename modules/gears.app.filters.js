@@ -219,21 +219,21 @@ var AppFilters = angular.module("gears.app.filters", [])
         $filterProvider.register("groupByPermission", ["$log", function ($log) {
             return function (input) {
                 var result = [];
-                angular.forEach(input, function (permission) {
+                angular.forEach(input, function (permission_rule) {
                     var group_found = false;
 
                     angular.forEach(result, function (group) {
-                        if (group.id === permission.data.value) {
-                            $log.log("group '" + permission.data.value + "' found");
+                        if (group.id === permission_rule.id.value) {
+                            $log.log("group '" + permission_rule.code.value + "' found");
                             group_found = true;
-                            group.push(permission);
+                            group.push(permission_rule);
                         }
                     });
                     if (group_found === false) {
-                        $log.log("group '" + permission.data.value + "' not found");
+                        $log.log("group '" + permission_rule.code.value + "' not found");
                         var new_group = [];
-                        new_group.id = permission.data.value;
-                        new_group.push(permission);
+                        new_group.id = permission_rule.id.value;
+                        new_group.push(permission_rule);
                         result.push(new_group);
                     }
 
