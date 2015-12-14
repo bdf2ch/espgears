@@ -883,6 +883,50 @@ hr {
   border: 0px solid transparent;
   border-bottom: 1px solid lightgrey;
 }
+.request-status {
+  display: block;
+  overflow: visible;
+  margin-left: 10px;
+  padding-left: 0px;
+}
+.request-status li {
+  overflow: visible;
+  list-style-type: none;
+  border-left: 3px solid #2196F3
+  ;
+}
+.request-status li:last-of-type {
+  border-bottom: none;
+  border-left: 3px solid transparent;
+}
+.request-status li:before {
+  content: "\2022";
+  display: block;
+  float: left;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  margin-top: -25px;
+  vertical-align: top;
+  font-size: 50px;
+  color: #2196F3;
+}
+.request-status li .request-status-content {
+  display: block;
+  overflow: auto;
+  margin-left: 20px;
+  margin-top: -15px;
+  border: 1px solid red;
+}
+.request-status li .status-comment {
+  float: left;
+}
+.request-status li .status-info {
+  float: left;
+  padding-bottom: 10px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid lightgray;
+}
 /***** AUTHORIZATION *****/
 #authorization-box {
   width: 400px;

@@ -1263,6 +1263,79 @@ hr {
 }
 
 
+.request-status {
+  display: block;
+  //width: auto;
+  overflow: visible;
+  margin-left: 10px;
+  padding-left: 0px;
+  //border-left: 3px solid #90CAF9;
+  //border:1px solid black;
+
+  li {
+    overflow: visible;
+    //height: 50px;
+    list-style-type: none;
+    //border: 1px solid red;
+    //margin-bottom: 20px;
+    //padding-bottom: 20px;
+    border-left: 3px solid #2196F3
+  ;
+    //border-bottom:1px solid lightgray;
+
+    &:last-of-type {
+      border-bottom: none;
+      border-left: 3px solid transparent;
+    }
+
+    &:before {
+      content: "\2022";
+      display: block;
+      float: left;
+      width: 20px;
+      height: 20px;
+      margin-left: -10px;
+      margin-top: -25px;
+      vertical-align: top;
+      font-size: 50px;
+      color: #2196F3;
+    }
+
+    .request-status-content {
+      display: block;
+      overflow: auto;
+      margin-left: 20px;
+      margin-top: -15px;
+      border: 1px solid red;
+    }
+
+    .status-header {
+      //float: left;
+      //width: auto;
+      //margin-top: -15px;
+      //margin-left: -5px;
+      //padding-left: 5px;
+      //padding-right: 5px;
+      //border-bottom: 1px solid #90CAF9;
+    }
+
+    .status-comment {
+      float: left;
+      //width: auto;
+    }
+
+    .status-info {
+      float: left;
+      //width: auto;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+      border-bottom: 1px solid lightgray;
+    }
+  }
+
+}
+
+
 
 
 /***** AUTHORIZATION *****/

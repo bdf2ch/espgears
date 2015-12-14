@@ -160,6 +160,43 @@
                     </li>
                 </ul>
 
+
+
+                <ul class="request-status">
+                    <li ng-repeat="history in app.currentRequestHistory.items | orderBy:'timestamp.value' track by $index">
+
+                        <div class="request-status-content">
+                            <div class="row status-header">
+                                <span class="secondary-text">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
+                            </div>
+                        </div>
+
+                        <!--
+
+                        <div class="row split-10 status-comment" ng-show="history.description.value !== ''">
+                            <span class="italic">{{ history.description.value }}</span>
+                        </div>
+                        <div class="row">
+                            <table class="table width-100 stripped condensed" ng-show="histDocs.length > 0">
+                                <caption>Приложения</caption>
+                                <tbody>
+                                <tr ng-repeat="doc in histDocs = (app.currentRequestStatusDocs.items | byRequestId:app.currentRequest.id.value:history.id.value) track by $id(doc)">
+                                    <td>
+                                        <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&rsdId=' + doc.id.value }}">{{ doc.title.value }}</a>&nbsp;
+                                        <span class="secondary-text right">{{ doc.size.value | fileSize }}</span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row status-info">
+                            <span class="secondary-text" ng-show="history.statusId.value === 1">{{ "Заявку добавил " + users.users.find("id", history.userId.value).fio }}</span>
+                            <span class="secondary-text" ng-show="history.statusId.value !== 1">{{ "Статус изменил " + users.users.find("id", history.userId.value).fio }}</span>
+                        </div>
+                        -->
+                    </li>
+                </ul>
+
             </div>
         </td>
     </tr>
