@@ -168,6 +168,7 @@
                         <div class="request-status-content">
                             <div class="row status-header">
                                 <span class="secondary-text">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
+                                <span class="request-status-big right">{{ titles.requestStatuses.find("id", history.statusId.value).title.value }}</span>
                             </div>
                         </div>
 

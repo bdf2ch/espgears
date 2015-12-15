@@ -560,6 +560,10 @@ users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$
             userPermission.enabled.value = temp_permission.enabled.value;
             //$application.currentUserPermissions.delete("data", permission.data.value);
             //$application.currentUserPermissions.append(temp_permission);
+            if ($storage.isDataExists("userpermissions")) {
+                $storage.delete("userpermissions");
+
+            }
             $log.log("new permission = ", data);
         }
     };
