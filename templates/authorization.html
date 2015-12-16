@@ -20,7 +20,8 @@
                        name="authorization-login"
                        id="authorization-login"
                        class="width-100"
-                       ng-model="auth.username"/>
+                       ng-model="auth.username"
+                       ng-disabled="auth.sendingInProgress() === true"/>
             </div>
             <div class="row padding-10" ng-show="auth.remindPasswordMode() === false">
                 <label for="authorization-password">Пароль</label>
@@ -29,10 +30,15 @@
                        name="authorization-password"
                        id="authorization-password"
                        class="width-100"
-                       ng-model="auth.password"/>
+                       ng-model="auth.password"
+                       ng-disabled="auth.sendingInProgress() === true"/>
             </div>
             <div class="row padding-10" ng-show="auth.remindPasswordMode() === false">
-                <button class="button blue width-100" ng-click="auth.logIn()" ng-disabled="auth.isSendingInProgress() === true || session.get() !== undefined">Войти</button>
+                <button class="button blue width-100" ng-click="auth.logIn()" ng-disabled="auth.isSendingInProgress() === true || session.get() !== undefined">
+                    <img class="loading-in-progress" src="resources/img/loader.gif" alt="Загрузка" ng-show="auth.isSendingInProgress() === true || session.get() !== undefined">
+                    <span ng-show="auth.isSendingInProgress() === true || session.get() !== undefined">Загрузка...</span>
+                    <span ng-show="auth.isSendingInProgress() === false && session.get() === undefined">Войти</span>
+                </button>
             </div>
         </form>
         <div class="row padding-10" ng-show="auth.remindPasswordMode() === true" ng-cloak>

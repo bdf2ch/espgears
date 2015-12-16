@@ -28,8 +28,8 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                 AppUser: {
                     id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
                     groupId: new Field({ source: "USER_GROUP_ID", value: 0, default_value: 0, backupable: true }),
-                    name: new Field({ source: "FNAME", value: "", default_value: "", backupable: true }),
-                    fname: new Field({ source: "SNAME", value: "", default_value: "", backupable: true }),
+                    fname: new Field({ source: "FNAME", value: "", default_value: "", backupable: true }),
+                    sname: new Field({ source: "SNAME", value: "", default_value: "", backupable: true }),
                     surname: new Field({ source: "SURNAME", value: "", default_value: "", backupable: true }),
                     email: new Field({ source: "EMAIL", value: "", default_value: "", backupable: true }),
                     phone: new Field({ source: "PHONE", value: "", default_value: "", backupable: true }),
@@ -38,7 +38,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                     permissions: {},
 
                     onInitModel: function () {
-                        this.fio = this.surname.value + " " + this.name.value + " " + this.fname.value;
+                        this.fio = this.surname.value + " " + this.fname.value + " " + this.sname.value;
                     }
                 },
 
@@ -356,6 +356,81 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
 
 
             return session;
+        }]);
+
+
+        $provide.factory("$permissions", ["$log", "$http", "$session", "$factory", function ($log, $session, $factory) {
+            var service = {};
+
+            /**
+             * Описание моделей данных
+             */
+            service.classes = {
+                /**
+                 * PermissionRule
+                 * Набор свойств и методов, описывающих правило доступа к данным
+                 */
+                PermissionRule: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
+                    parentId: new Field({ source: "PARENT_ID", value: 0, default_value: 0, backupable: true }),
+                    code: new Field({ source: "CODE", value: "", default_value: "", backupable: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true }),
+                    url: new Field({ source: "URL", value: "", default_value: "", backupable: true })
+                },
+
+                /**
+                 * UserPermission
+                 * Набор свойств и методов, описывающих право доступа пользователя к данным
+                 */
+                UserPermission: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
+                    permissionId: new Field({ source: "PERMISSION_ID", value: 0, default_value: 0, backupable: true }),
+                    permissionCode: new Field({ source: "CODE", value: "", default_value: "", backupable: true }),
+                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
+                    enabled: new Field({ source: "ENABLED", value: false, default_value: false, backupable: true }),
+
+                    onRestoreBackup: function () {
+                        this.enabled.value = this.enabled.value === 1 ? true : false;
+                    }
+                }
+            };
+
+            /* Приватные переменные сервиса */
+            var rules = [];
+            var permissions = {};
+            var isPermissionsLoaded = false;
+
+            service.get = function (permissionCode) {
+                if (permissionCode !== undefined) {
+                    if (permissions[permissionCode] !== undefined)
+                        return permissions[permissionCode];
+                    else
+                        return false;
+                } else
+                    return permissions;
+            };
+
+            service.set = function (permissionCode, value) {
+                if (permissionCode !== undefined) {
+                    permissions[permissionCode] = value;
+                }
+            };
+
+            service.rules = {
+                add: function (rule) {
+                    if (rule !== undefined) {
+                        rules.push(rule);
+                        return true;
+                    } else
+                        return false;
+                }
+            };
+
+
+            service.onStart = function () {};
+
+
+            return service;
         }]);
 
 

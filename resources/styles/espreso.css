@@ -934,6 +934,38 @@ hr {
   margin-bottom: 30px;
   border-bottom: 1px solid lightgray;
 }
+.request-status-item {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-left: 5px solid transparent;
+  border-bottom: 1px dotted lightgray;
+}
+.request-status-item:last-of-type {
+  border-bottom: none;
+}
+.request-status-item.added {
+  border-left: 5px solid #FFE0B2;
+}
+.request-status-item.inner-expertise {
+  border-left: 5px solid #BBDEFB;
+}
+.request-status-item.outer-expertise {
+  border-left: 5px solid #E1BEE7;
+}
+.request-status-item.rejected {
+  border-left: 5px solid #EF5350;
+}
+.request-status-item.approved {
+  border-left: 5px solid #C8E6C9;
+}
+.request-status-item .request-status-title {
+  font-family: "Roboto Bold";
+  font-size: 20px;
+  color: gray;
+}
+.request-status-item .request-status-comment {
+  color: black;
+}
 /***** AUTHORIZATION *****/
 #authorization-box {
   width: 400px;
@@ -979,4 +1011,11 @@ hr {
   font-family: "Roboto Regular";
   font-size: 15px;
   color: #6BA35A;
+}
+#authorization-box .loading-in-progress {
+  display: inline-block;
+  margin-right: 10px;
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
 }

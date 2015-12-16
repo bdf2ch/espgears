@@ -1,5 +1,5 @@
- <div class="row padding-10" ng-controller="EditContractorTypeModalController">
-    <div class="row height-100 split-20">
+ <div class="row" ng-controller="EditContractorTypeModalController">
+    <div class="row padding-10 height-100">
         <label for="contractor-type-title">Наименование типа</label>
         <input type="text"
                name="contractor-type-title"
@@ -10,7 +10,7 @@
                ng-change="app.currentContractorType._states_.changed(true)"
                ng-model="app.currentContractorType.title.value"/>
     </div>
-    <div class="row">
+    <div class="row padding-10">
         <div class="width-50">
             <button class="button green square width-100"
                     ng-disabled="app.currentContractorType._states_.loading() === true || app.currentContractorType._states_.changed() === false"
