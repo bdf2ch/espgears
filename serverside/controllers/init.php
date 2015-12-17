@@ -1,6 +1,7 @@
 <?php
     include "../config.php";
     include "../core.php";
+    $postdata = json_decode(file_get_contents('php://input'));
 
     $result = new stdClass;
     $titles = array();
@@ -13,6 +14,7 @@
     $userGroups = array();
     $users = array();
     $permission_rules = array();
+    $user_permissions = array();
     $contractorTypes = array();
     $contractors = array();
     $pylonTypes = array();
@@ -315,6 +317,40 @@
                 }
         }
         $result -> permissionRules = $permission_rules;
+
+
+        /* Возвращает список всех разрешений доступа к данным для пользователя */
+        if (!$statement = oci_parse($connection, "begin pkg_users.p_get_user_permissions(:user_id, :permissions); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":user_id", $postdata -> data -> userId, -1, OCI_DEFAULT)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_bind_by_name($statement, ":permissions", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($permission = oci_fetch_assoc($cursor))
+                        array_push($user_permissions, $permission);
+                }
+            }
+        }
+        $result -> userPermissions = $user_permissions;
 
         /* ��������� ������ ���� ����� ������������ */
         if (!$statement = oci_parse($connection, "begin pkg_contractor_types.p_get_contractor_types(:contractor_types); end;")) {

@@ -359,6 +359,9 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
         }]);
 
 
+
+
+
         $provide.factory("$permissions", ["$log", "$http", "$session", "$factory", function ($log, $session, $factory) {
             var service = {};
 
@@ -384,13 +387,20 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
                  */
                 UserPermission: {
                     id: new Field({ source: "ID", value: 0, default_value: 0, backupable: true }),
-                    permissionId: new Field({ source: "PERMISSION_ID", value: 0, default_value: 0, backupable: true }),
-                    permissionCode: new Field({ source: "CODE", value: "", default_value: "", backupable: true }),
+                    ruleId: new Field({ source: "PERMISSION_ID", value: 0, default_value: 0, backupable: true }),
                     userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true }),
                     enabled: new Field({ source: "ENABLED", value: false, default_value: false, backupable: true }),
 
                     onRestoreBackup: function () {
                         this.enabled.value = this.enabled.value === 1 ? true : false;
+                    },
+
+                    set: function (value) {
+                        if (value !== undefined && typeof value === "boolean") {
+                            this.enabled.value = value;
+                            return true;
+                        }
+                        return false;
                     }
                 }
             };
@@ -400,15 +410,61 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             var permissions = {};
             var isPermissionsLoaded = false;
 
-            service.get = function (permissionCode) {
-                if (permissionCode !== undefined) {
-                    if (permissions[permissionCode] !== undefined)
-                        return permissions[permissionCode];
-                    else
-                        return false;
-                } else
-                    return permissions;
+
+            /**
+             * Возвращает все права доступа пользователя к данным
+             * @returns {Array}
+             */
+            service.getAll = function () {
+                return permissions;
             };
+
+
+            /**
+             * Возвращает право доступа пользователя к данным по коду данных
+             * @param code - Код данных
+             * @returns {UserPermission}
+             */
+            service.getByRuleCode = function (code) {
+                if (code !== undefined && code !== "") {
+                    var rule = session.rules.getByCode(code);
+                    if (rule !== false) {
+                        var length = permissions.length;
+                        for (var i = 0; i < length; i++) {
+                            if (permissions[i].ruleId.value === rule.id.value)
+                                return permissions[i];
+                        }
+                    }
+                    return false;
+                } else {
+                    $log.error("$permissions: Не задан параметр при получении права доступа пользователя к данным по коду правила доступа");
+                    return false;
+                }
+            };
+
+
+            /**
+             * Возвращает право доступа пользователя к данным по идентификатору правила доступа
+             * @param id - Идентификатор правила доступа
+             * @returns {PermissionRule}
+             */
+            service.getByRuleId = function (id) {
+                if (id !== undefined) {
+                    var rule = session.rules.getById(id);
+                    if (rule !== false) {
+                        var length = permissions.length;
+                        for (var i = 0; i < length; i++) {
+                            if (permissions[i].ruleId.value === rule.id.value)
+                                return permissions[i];
+                        }
+                    }
+                    return false;
+                } else {
+                    $log.error("$permissions: Не указан параметр при установке права доступа пользователя к данным по идентификатору");
+                    return false;
+                }
+            };
+
 
             service.set = function (permissionCode, value) {
                 if (permissionCode !== undefined) {
@@ -417,12 +473,72 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             };
 
             service.rules = {
+                /**
+                 * Добавляет правило доступа к данным
+                 * @param rule {PermissionRule} - Правило доступа к данным
+                 * @returns {boolean}
+                 */
                 add: function (rule) {
                     if (rule !== undefined) {
-                        rules.push(rule);
-                        return true;
-                    } else
+                        if (rule.__class__ !== undefined && rule.__class__ === "PermissionRule") {
+                            rules.push(rule);
+                            return true;
+                        } else {
+                            $log.error("$permissions: Добавляемое правило доступа к данным не является экземпляром класса PermissionRule");
+                            return false;
+                        }
+                    } else {
+                        $log.error("$permissions: Не задан параметр при добавлении правила доступа к данным");
                         return false;
+                    }
+                },
+
+
+                /**
+                 * Возвращает все правила доступа к данным
+                 * @returns {Array}
+                 */
+                getAll: function () {
+                    return rules;
+                },
+
+
+                /**
+                 * Возвращает правило доступа к данным по коду правила
+                 * @param code - Код правила доступа к данным
+                 * @returns {PermissionRule}
+                 */
+                getByCode: function (code) {
+                    if (code !== undefined && code !== "") {
+                        var length = rules.length;
+                        for (var i = 0; i < length; i++) {
+                            if (rules[i].code.value === code)
+                                return rules[i];
+                        }
+                        return false;
+                    } else {
+                        $log.eror("$permissions: Не задан параметр при получении правила доступа к данным по коду");
+                    }
+                },
+
+
+                /**
+                 * Возвращает правило доступа к данным по идентификатору правила
+                 * @param id - Идкнтификатор правила доступа к данным
+                 * @returns {PermissionRule}
+                 */
+                getById: function (id) {
+                    if (id !== undefined) {
+                        var length = rules.length;
+                        for (var i = 0; i < length; i++) {
+                            if (rules[i].id.value === id)
+                                return rules[i];
+                        }
+                        return false;
+                    } else {
+                        $log.error("$permissions: Не задан параметр при получении правила доступа к данным по идентификатору");
+                        return false;
+                    }
                 }
             };
 
@@ -595,6 +711,7 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
         //$session.init();
         $rootScope.authorization = $authorization;
         $rootScope.session = $session;
+        $session.onStart();
     });
 
 

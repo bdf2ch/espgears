@@ -70,7 +70,7 @@ var application = angular.module("gears.app", [
          * $application
          * Сервис приложения
          */
-        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$misc", "$nodes", "$users", "$contractors", "$session", function ($log, $http, $factory, $titles, $misc, $nodes, $users, $contractors, $session) {
+        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$misc", "$nodes", "$users", "$contractors", "$session", "$permissions", function ($log, $http, $factory, $titles, $misc, $nodes, $users, $contractors, $session, $permissions) {
             var application = {};
 
             application.title = "ЭСпРЭСО";
@@ -101,7 +101,12 @@ var application = angular.module("gears.app", [
             application.currentUploaderData = {};
 
             application.init = function () {
-                $http.post("serverside/controllers/init.php")
+                var params = {
+                    data: {
+                        userId: $session.user.get().id.value
+                    }
+                };
+                $http.post("serverside/controllers/init.php", params)
                     .success(function (data) {
                         if (data["error_code"] !== undefined) {
                             var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
@@ -211,6 +216,7 @@ var application = angular.module("gears.app", [
                                     temp_permission_rule._model_.fromJSON(permission_rule);
                                     temp_permission_rule._backup_.setup();
                                     $users.permissions.append(temp_permission_rule);
+                                    $permissions.rules.add(temp_permission_rule);
                                     //$session.permissions.set($users.permissions.items);
 
                                     var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
@@ -219,6 +225,19 @@ var application = angular.module("gears.app", [
                                     application.currentUserPermissions.append(temp_permission);
                                 });
                                 $users.permissions._states_.loaded(true);
+                                $log.log("$permission rules = ", $permissions.rules.get());
+                            }
+
+
+                            if (data["userPermissions"] !== undefined) {
+                                angular.forEach(data["userPermissions"], function (permission) {
+                                    var temp_permission = $factory({ classes: ["UserPermission", "Model", "Backup", "States"], base_class: "UserPermission" });
+                                    temp_permission._model_.fromJSON(permission);
+                                    temp_permission._backup_.setup();
+                                    $permissions.add(temp_permission);
+                                });
+                                $users.permissions._states_.loaded(true);
+                                $log.log("$permission rules = ", $permissions.rules.get());
                             }
 
                             if (data["contractorTypes"] !== undefined) {
