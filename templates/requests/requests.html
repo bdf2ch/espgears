@@ -3,7 +3,7 @@
         <td class="caption width-100">
             Заявки
             <button class="button green right"
-                    ng-if="session.permissions.get('add_request').enabled.value === true"
+                    ng-if="permissions.getByRuleCode('add_request').enabled.value === true"
                     ng-click="addRequest()">
                 +
             </button>
@@ -13,22 +13,6 @@
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
-                <!--
-                <ul class="list hover">
-                    <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
-                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                        <span>Загрузка...</span>
-                    </div>
-                    <li ng-repeat="request in titles.requests.items track by $id(request)"
-                        ng-class="{'active': request._states_.selected() === true}"
-                        ng-click="selectTitle(title.id.value)">
-                        <span class="primary-text">{{ title.title.value }}</span><br>
-                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
-                            {{ titles.statuses.find("id", title.statusId.value).title.value }}
-                        </span>
-                    </li>
-                </ul>
-                -->
 
                 <div class="service-message" ng-show="titles.requests._states_.loaded() == false">
                     <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
@@ -50,13 +34,13 @@
                             <div class="right" ng-show="app.currentRequest.id.value === request.id.value">
                                 <button class="button round blue"
                                         title="Редактировать"
-                                        ng-if="session.permissions.get('edit_request').enabled.value === true"
+                                        ng-if="permissions.getByRuleCode('edit_request').enabled.value === true"
                                         ng-click="editRequest(request.id.value, $event)">
                                     <img src="resources/img/icons/edit.png" alt=""/>
                                 </button>
                                 <button class="button round red"
                                         title="Удалить"
-                                        ng-if="session.permissions.get('delete_request').enabled.value === true"
+                                        ng-if="permissions.getByRuleCode('delete_request').enabled.value === true"
                                         ng-click="deleteRequest(request.id.value, $event)">&times;</button>
                             </div>
                         </div>
@@ -99,7 +83,7 @@
             История
             <button class="button green right"
                     ng-show="app.currentRequest !== undefined"
-                    ng-if="session.permissions.get('change_request_status').enabled.value === true"
+                    ng-if="permissions.getByRuleCode('change_request_status').enabled.value === true"
                     ng-click="changeStatus()">
                 +
             </button>
@@ -151,22 +135,6 @@
                             <span class="secondary-text" ng-show="history.statusId.value === 1">{{ "Заявку добавил " + users.users.find("id", history.userId.value).fio }}</span>
                             <span class="secondary-text" ng-show="history.statusId.value !== 1">{{ "Статус изменил " + users.users.find("id", history.userId.value).fio }}</span>
                         </div>
-                    </li>
-                </ul>
-                -->
-
-
-                <!--
-                <ul class="request-status">
-                    <li ng-repeat="history in app.currentRequestHistory.items | orderBy:'timestamp.value' track by $index">
-
-                        <div class="request-status-content">
-                            <div class="row status-header">
-                                <span class="secondary-text">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
-                                <span class="request-status-big right">{{ titles.requestStatuses.find("id", history.statusId.value).title.value }}</span>
-                            </div>
-                        </div>
-
                     </li>
                 </ul>
                 -->

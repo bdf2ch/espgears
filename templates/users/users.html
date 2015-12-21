@@ -3,7 +3,7 @@
         <td class="caption width-100">
             Группы
             <button class="button green right"
-                    ng-if="session.permissions.get('add_user_group').enabled.value === true"
+                    ng-if="permissions.getByRuleCode('add_user_group').enabled.value === true"
                     ng-click="addGroup()"
                     title="Добавить группу">
                 +
@@ -182,14 +182,14 @@
                 <div class="row" ng-show="app.currentUser !== undefined && app.currentUserPermissions._states_.loaded() === true">
                     <table class="table stripped width-100">
                         <tbody>
-                        <tr ng-repeat="permission in users.permissions.items | orderBy:'id.value' track by $index">
-                            <td>{{ permission.id.value + ". " + permission.title.value }}</td>
+                        <tr ng-repeat="rule in permissions.rules.getAll() | orderBy:'id.value' track by $index">
+                            <td>{{ rule.id.value + ". " + rule.title.value }}</td>
                             <td>
                                 <input type="checkbox"
                                        name=""
                                        id=""
-                                       ng-model="app.currentUserPermissions.find('permissionId', permission.id.value).enabled.value"
-                                       ng-disabled="permission._states_.loading() === true || session.permissions.get('edit_user_permissions').enabled.value === false"
+                                       ng-model="permissions.getByRuleId(rule.id.value).enabled.value"
+                                       ng-disabled="rule._states_.loading() === true"
                                        ng-change="onChangePermission(permission.id.value, app.currentUserPermissions.find('permissionId', permission.id.value).enabled.value)"
                                 />
 

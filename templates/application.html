@@ -18,7 +18,7 @@
             <div id="app-menu_">
                 <div id="menu-container">
                     <div class="app-menu-item"
-                         ng-if="session.permissions.get()[menuItem.id].enabled.value === true"
+                         ng-if="permissions.getByRuleCode(menuItem.id).enabled.value === true"
                          ng-repeat="menuItem in menu.get() | orderBy:'order' track by $index">
                         <a href="{{ menuItem.url }}"
                            ng-show="menuItem.url !== ''"
@@ -36,7 +36,7 @@
                         </a>
                         <div class="submenu hover-visible" ng-show="menuItem.submenu.length > 0">
                             <div class="app-submenu-item"
-                                 ng-if="session.permissions.get()[subMenuItem.id].enabled.value === true"
+                                 ng-if="permissions.getByRuleCode(subMenuItem.id).enabled.value === true"
                                  ng-repeat="subMenuItem in menuItem.submenu | orderBy:'order' track by $index">
                                 <a href="{{ subMenuItem.url }}" ng-show="subMenuItem.url !== ''" ng-class="{ 'active': subMenuItem.active === true }" title="{{ subMenuItem.description }}">
                                     <img src="{{ subMenuItem.icon }}" alt=""/>

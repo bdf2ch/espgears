@@ -385,9 +385,10 @@ var users = angular.module("gears.app.users", [])
  * UsersController
  * Контроллер раздела пользователей системы
  */
-users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$application", "$modals", "$factory", "$session", function ($log, $scope, $location, $users, $application, $modals, $factory, $session) {
+users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$application", "$modals", "$factory", "$session", "$permissions", function ($log, $scope, $location, $users, $application, $modals, $factory, $session, $permissions) {
     $scope.users = $users;
     $scope.app = $application;
+    $scope.permissions = $permissions;
 
     $scope.gotoAddUser = function () {
         $location.url("/new-user");
@@ -520,11 +521,13 @@ users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$
                 temp_permission._backup_.setup();
                 temp_permission._backup_.restore();
 
+                /*
                 var permission = $application.currentUserPermissions.find("permissionId", temp_permission.id.value);
                 if (permission !== false) {
                     permission.enabled.value = temp_permission.enabled.value;
                 } else
                     $log.log("permission " + temp_permission.permissionId.value + " not found");
+                    */
                 //$application.currentUserPermissions.append(temp_permission);
 
                 //var permission = $users.permissions.find("id", temp_permission.permissionId.value);
