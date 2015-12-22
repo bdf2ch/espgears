@@ -424,12 +424,12 @@ var grAuth = angular.module("gears.auth", ["ngCookies", "ngRoute", "gears", "gea
             service.getByRuleCode = function (code) {
                 if (code !== undefined && code !== "") {
                     var rule = service.rules.getByCode(code);
-                    $log.log("found rule = ", rule);
+                    //$log.log("found rule = ", rule);
                     if (rule !== false) {
                         var length = permissions.length;
                         for (var i = 0; i < length; i++) {
                             if (permissions[i].ruleId.value === rule.id.value) {
-                                $log.log("found permission = ", permissions[i]);
+                                //$log.log("found permission = ", permissions[i]);
                                 return permissions[i];
                             }
                         }

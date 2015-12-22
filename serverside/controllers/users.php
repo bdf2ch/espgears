@@ -577,11 +577,11 @@ function set_permission ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
     $userId = $postdata -> data -> userId;
-    $permissionId = $postdata -> data -> permissionId;
+    $ruleId = $postdata -> data -> ruleId;
     $enabled = $postdata -> data -> enabled;
     $result = new stdClass;
 
-    if (!$statement = oci_parse($connection, "begin pkg_users.p_set_user_permission(:user_id, :permission_id, :enabled, :permission); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_users.p_set_user_permission(:user_id, :rule_id, :enabled, :permission); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -591,7 +591,7 @@ function set_permission ($postdata) {
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-        if (!oci_bind_by_name($statement, ":permission_id", $permissionId, -1, OCI_DEFAULT)) {
+        if (!oci_bind_by_name($statement, ":rule_id", $ruleId, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));

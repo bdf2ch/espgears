@@ -3,24 +3,11 @@
         <td class="caption width-100">
             Типы контрагентов
             <button class=" button green right"
+                    ng-if="permissions.getByRuleCode('add_contractor_group').enabled.value === true"
                     ng-click="addType()"
                     title="Добавить тип контрагента">
                 +
             </button>
-            <!--
-            <span class="separator right" ng-show="app.currentContractorType !== undefined"></span>
-            <button class="blue right"
-                    ng-show="app.currentContractorType !== undefined"
-                    ng-click="editType()"
-                    title="Редактировать тип контрагента">
-            </button>
-            <button class="red right"
-                    ng-show="app.currentContractorType !== undefined"
-                    ng-click="deleteType()"
-                    title="Удалить тип контрагента">
-                -
-            </button>
-            -->
         </td>
     </tr>
     <tr class="column-content-container">
@@ -34,28 +21,6 @@
                     Типы контрагентов отсутствуют
                 </div>
 
-
-                <!--
-                <ul class="list hover">
-                    <li ng-repeat="type in contractors.contractorTypes.items | orderBy:'_backup_.data.title' track by $id(type)"
-                        ng-class="{'active': type._states_.selected() === true}"
-                        ng-click="selectType(type.id.value)">
-                        <span class="primary-text">{{ type._backup_.data.title }}</span><br>
-                        <span class="secondary-text"
-                              ng-show="contractors.getContractorsCountByType(type.id.value) !== 0"
-                              ng-class="{'light': title._states_.selected() === true }">
-                            {{ contractors.getContractorsCountByType(type.id.value) + " контрагентов" }}
-                        </span>
-                        <span class="secondary-text"
-                              ng-show="contractors.getContractorsCountByType(type.id.value) === 0"
-                              ng-class="{'light': title._states_.selected() === true }">
-                            Нет контрагентов
-                        </span>
-                    </li>
-                </ul>
-                -->
-
-
                 <ul class="cards">
                     <li class="card"
                         ng-class="{'active': type._states_.selected() === true}"
@@ -65,10 +30,18 @@
                         <div class="card-header">
                             <span>{{ type._backup_.data.title }}</span>
                             <div class="right" ng-show="app.currentContractorType.id.value === type.id.value">
-                                <button class="button round blue" title="Редактировать" ng-click="editType($event)">
+                                <button class="button round blue"
+                                        title="Редактировать"
+                                        ng-if="permissions.getByRuleCode('edit_contractor_group').enabled.value === true"
+                                        ng-click="editType($event)">
                                     <img src="resources/img/icons/edit.png" alt=""/>
                                 </button>
-                                <button class="button round red" title="Удалить" ng-click="deleteType($event)">&times;</button>
+                                <button class="button round red"
+                                        title="Удалить"
+                                        ng-if="permissions.getByRuleCode('delete_contractor_group').enabled.value === true"
+                                        ng-click="deleteType($event)">
+                                    &times;
+                                </button>
                             </div>
                         </div>
                         <div class="card-content">
@@ -94,47 +67,17 @@
     <tr class="column-header">
         <td class="caption width-100">
             Контрагенты
-            <button class="button green right" ng-click="addContractor()" title="Добавить контрагента">+</button>
-            <!--
-            <span class="separator right" ng-show="app.currentContractor !== undefined"></span>
-            <button class="blue right"
-                    ng-show="app.currentContractor !== undefined"
-                    ng-click="editContractor()"
-                    title="Редактировать контрагента">
+            <button class="button green right"
+                    ng-if="permissions.getByRuleCode('add_contractor').enabled.value === true"
+                    ng-click="addContractor()"
+                    title="Добавить контрагента">
+                +
             </button>
-            <button class="red right"
-                    title="Удалить контрагента"
-                    ng-click="deleteContractor()"
-                    ng-show="app.currentContractor !== undefined">
-                -
-            </button>
-            -->
         </td>
     </tr>
     <tr class="column-content-container">
         <td>
             <div class="column-content y-scrollable padding-5">
-                <!--
-                <ul class="list hover">
-                    <div class="service-message" ng-show="contractors.contractors._states_.loaded() === false">
-                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                        <span>Загрузка...</span>
-                    </div>
-                    <div class="service-message" ng-show="app.currentContractorType !== undefined && contractorsList.length === 0">
-                        В выбранной группе отстутствуют пользователи
-                    </div>
-                    <li ng-repeat="contractor in contractorsList = contractors.contractors.items | byContractorType:app.currentContractorType.id.value | orderBy:'_backup_.data.title' track by $id(contractor)"
-                        ng-class="{'active': contractor._states_.selected() === true}"
-                        ng-click="selectContractor(contractor.id.value)">
-                        <span class="primary-text">{{ contractor._backup_.data.title }}</span><br>
-                        <span class="secondary-text" ng-class="{'light': title._states_.selected() === true }">
-                            <span class="secondary-text" ng-show="contractor.contractorTypeId.value !== 0">{{ "тип: " + contractors.contractorTypes.find("id", contractor._backup_.data.contractorTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;</span>
-                            <span class="secondary-text" ng-show="contractor.contractorTypeId.value === 0">Тип контрагента не указан &nbsp; &nbsp; &nbsp;</span>
-                        </span>
-                    </li>
-                </ul>
-                -->
-
 
                 <div class="service-message" ng-show="contractors.contractors._states_.loaded() === false">
                     <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
@@ -153,10 +96,18 @@
                         <div class="card-header">
                             <span>{{ contractor._backup_.data.title }}</span>
                             <div class="right" ng-show="app.currentContractor.id.value === contractor.id.value">
-                                <button class="button round blue" title="Редактировать" ng-click="editContractor($event)">
+                                <button class="button round blue"
+                                        title="Редактировать"
+                                        ng-if="permissions.getByRuleCode('edit_contractor').enabled.value === true"
+                                        ng-click="editContractor($event)">
                                     <img src="resources/img/icons/edit.png" alt=""/>
                                 </button>
-                                <button class="button round red" title="Удалить" ng-click="deleteContractor($event)">&times;</button>
+                                <button class="button round red"
+                                        title="Удалить"
+                                        ng-if="permissions.getByRuleCode('delete_contractor').enabled.value === true"
+                                        ng-click="deleteContractor($event)">
+                                    &times;
+                                </button>
                             </div>
                         </div>
                         <div class="card-content">

@@ -14,30 +14,6 @@
         <td>
             <div class="column-content y-scrollable padding-5">
 
-                <!--
-                <ul class="list hover">
-                    <div class="service-message" ng-show="users.groups._states_.loaded() === false">
-                        <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                        <span>Загрузка...</span>
-                    </div>
-                    <li ng-repeat="group in users.groups.items | orderBy:'title.value' track by $id(group)"
-                        ng-class="{'active': group._states_.selected() === true}"
-                        ng-click="selectGroup(group.id.value)">
-                        <span class="primary-text" ng-show="user.group_id.value !== 0">{{ group._backup_.data.title }}</span><br>
-                        <span class="secondary-text"
-                              ng-show="users.countUsersInGroup(group.id.value) !== 0"
-                              ng-class="{'light': title._states_.selected() === true }">
-                            {{ users.countUsersInGroup(group.id.value) + " пользователей" }}
-                        </span>
-                        <span class="secondary-text"
-                              ng-show="users.countUsersInGroup(group.id.value) === 0"
-                              ng-class="{'light': title._states_.selected() === true }">
-                            Нет пользователей
-                        </span>
-                    </li>
-                </ul>
-                -->
-
                 <div class="service-message" ng-show="users.groups._states_.loaded() === false">
                     <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                     <span>Загрузка...</span>
@@ -59,13 +35,13 @@
                             <div class="right" ng-show="app.currentUserGroup.id.value === group.id.value">
                                 <button class="button round blue"
                                         title="Редактировать"
-                                        ng-if="session.permissions.get('edit_user_group').enabled.value === true"
+                                        ng-if="permissions.getByRuleCode('edit_user_group').enabled.value === true"
                                         ng-click="editGroup($event)">
                                     <img src="resources/img/icons/edit.png" alt=""/>
                                 </button>
                                 <button class="button round red"
                                         title="Удалить"
-                                        ng-if="session.permissions.get('delete_user_group').enabled.value === true"
+                                        ng-if="permissions.getByRuleCode('delete_user_group').enabled.value === true"
                                         ng-click="deleteGroup($event)">
                                     &times;
                                 </button>
@@ -179,29 +155,30 @@
                     Выберите пользователя
                 </div>
 
-                <div class="row" ng-show="app.currentUser !== undefined && app.currentUserPermissions._states_.loaded() === true">
+                <div class="row" ng-if="app.currentUser !== undefined && app.currentUserPermissions._states_.loaded() === true">
                     <table class="table stripped width-100">
                         <tbody>
                         <tr ng-repeat="rule in permissions.rules.getAll() | orderBy:'id.value' track by $index">
-                            <td>{{ rule.id.value + ". " + rule.title.value }}</td>
-                            <td>
+                            <td>{{ rule.title.value }}</td>
+                            <td class="text-centered">
                                 <input type="checkbox"
                                        name=""
                                        id=""
-                                       ng-model="permissions.getByRuleId(rule.id.value).enabled.value"
-                                       ng-disabled="rule._states_.loading() === true"
-                                       ng-change="onChangePermission(permission.id.value, app.currentUserPermissions.find('permissionId', permission.id.value).enabled.value)"
+                                       ng-model="app.currentUserPermissions.find('ruleId', rule.id.value).enabled.value"
+                                       ng-disabled="app.currentUserPermissions.find('ruleId', rule.id.value)._states_.loading() === true || permissions.getByRuleCode('edit_user_permissions').enabled.value === false"
+                                       ng-change="onChangePermission(rule.id.value, app.currentUser.id.value, app.currentUserPermissions.find('ruleId', rule.id.value).enabled.value)"
                                 />
 
                                 <!--
                                 <input type="checkbox"
                                        name=""
                                        id=""
-                                       ng-show="app.currentUserPermissions.find('permissionId', permission.id.value) === false"
+                                       ng-show="app.currentUserPermissions.find('ruleId', permission.ruleId.value) === false"
                                        ng-model="false"
-                                       ng-disabled="permission._states_.loading() === true || session.permissions.get('edit_user_permissions').enabled.value === false"
-                                       ng-change="onChangePermission(permission.id.value, app.currentUserPermissions.find('permissionId', permission.id.value).enabled.value)"
-                                />-->
+                                       ng-disabled="permission._states_.loading() === true"
+                                       ng-change="onChangePermission(permission.id.value, app.currentUser.id.value, app.currentUserPermissions.find('ruleId', permission.id.value).enabled.value)"
+                                />
+                                -->
                             </td>
                         </tr>
                         </tbody>
