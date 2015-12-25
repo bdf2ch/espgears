@@ -123,7 +123,8 @@ var titles = angular.module("gears.app.titles",[])
                 RequestStatusAttachment: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     requestId: new Field({ source: "REQUEST_ID", value: 0, default_value: 0 }),
-                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0 })
+                    statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0 }),
+                    added: new Field({ source: "ADDED", value: 0, default_value: 0 })
                 },
 
                 /**
@@ -1013,6 +1014,33 @@ var titles = angular.module("gears.app.titles",[])
                             }
                         }
                     );
+                }
+            };
+
+
+            titles.editRequestHistory = function (history, callback) {
+                if (history !== undefined) {
+                    var params = {
+                        action: "editRequestHistory",
+                        data: {
+                            historyId: history.id.value,
+                            description: history.description.value
+                        }
+                    };
+                    $http.post("serverside/controllers/titles.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({classes: ["DBError"], base_class: "DBError"});
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        }
+                        );
                 }
             };
 

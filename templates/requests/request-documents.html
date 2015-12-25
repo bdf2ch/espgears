@@ -13,11 +13,11 @@
                     <div class="row" ng-show="app.currentRequestStatusDocs.size() > 0">
                         <table class="table stripped width-100">
                             <tbody>
-                            <tr ng-repeat="doc in app.currentRequestStatusDocs.items | orderBy:'id.value' track by $index">
+                            <tr ng-repeat="doc in app.currentRequestStatusDocs.items | orderBy:'added.value' track by $index">
                                 <td class="width-100">
                                     <a href="{{ 'serverside/controllers/downloader.php?docType=rsd&rsdId=' + doc.id.value }}">{{ doc.title.value }}</a>&nbsp; &nbsp;<span class="secondary-text black">{{ doc.size.value | fileSize }}</span><br>
                                     <span class="left secondary-text">{{ "Разместил: " + users.users.find("id", app.currentRequestHistory.find('id', doc.statusId.value).userId.value).fio }}</span>
-                                    <span class="right secondary-text">{{ app.currentRequestHistory.find("id", doc.statusId.value).timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
+                                    <span class="right secondary-text">{{ doc.added.value | timestamp:"DDMMMYYYYHHmm" }}</span>
                                 </td>
                             </tr>
                             </tbody>

@@ -435,7 +435,6 @@ users.controller("UsersController", ["$log", "$scope", "$location", "$users", "$
                         //$application.currentUserPermissions.clear();
                         $application.currentUserPermissions._states_.loaded(false);
                         $users.getPermissions(userId, $scope.onSuccessGetUserPermissions);
-                        $log.log("user " + $users.users.find("id", userId).fio + " selected");
                     }
                 } else {
                     user._states_.selected(false);

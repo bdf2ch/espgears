@@ -87,6 +87,9 @@
                 case "addRequestHistory":
                     add_request_history($postdata);
                     break;
+                case "editRequestHistory":
+                    edit_request_history($postdata);
+                    break;
                 /* Удаляет историю изменения заявки и приложения к ней */
                 case "deleteRequestHistory":
                     delete_request_history($postdata);
@@ -1379,6 +1382,57 @@ function add_request_history ($postdata) {
     echo json_encode($result);
 };
 
+
+
+
+
+function edit_request_history ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $historyId = $postdata -> data -> historyId;
+    $description = $postdata -> data -> description;
+    $result = stdClass;
+
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_edit_history(:history_id, :description, :history); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":request_id", $historyId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":description", $description, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":history", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else
+                    $result = oci_fetch_object($cursor);
+            }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    // Возврат результата
+    echo json_encode($result);
+};
 
 
 

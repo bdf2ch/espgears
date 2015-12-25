@@ -340,6 +340,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             /* Если новая история изменения заявки не создана */
             if ($scope.temp_history.id.value === 0) {
                 $scope.temp_history._model_.fromJSON(data["status"]);
+
                 var history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
                 history._model_.fromAnother($scope.temp_history);
                 $application.currentRequestHistory.append(history);
@@ -374,13 +375,30 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
                     $application.newRequestHistory.description.value,
                     $scope.onSuccessChangeRequestStatus
                 );
+            } else {
+                $titles.editRequestHistory(
+                    $scope.temp_history,
+                    $scope.onSuccessEditRequestStatus
+                );
             }
+            //var history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"], base_class: "RequestHistory" });
+            //history._model_.fromAnother($scope.temp_history);
+            //$application.currentRequestHistory.append(history);
+            //$application.currentRequestHistory.find("id", $scope.temp_history.id.value).description.value = $scope.temp_history.description.value;
+
             $scope.uploadedDocs.splice(0, $scope.uploadedDocs.length);
             $scope.temp_history._model_.reset();
             $scope.temp_file._model_.reset();
             $application.newRequestHistory._model_.reset();
             $application.currentRequest._states_.changed(false);
             $modals.close();
+        };
+
+
+        $scope.onSuccessEditRequestStatus = function (data) {
+            if (data !== undefined) {
+
+            }
         };
 
 
