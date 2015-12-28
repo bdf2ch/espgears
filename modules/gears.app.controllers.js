@@ -13,6 +13,7 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.titles = $titles;
         $scope.contractors = $contractors;
 
+
         $scope.selectRequest = function (requestId) {
             if (requestId !== undefined) {
                 angular.forEach($titles.requests.items, function (request) {
@@ -29,6 +30,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                 });
             }
         };
+
 
         $scope.addRequest = function () {
             $modals.show({
@@ -205,6 +207,7 @@ var appControllers = angular.module("gears.app.controllers", [])
 
         $scope.gotoTitle = function (titleId) {
             if (titleId !== undefined) {
+                /*
                 angular.forEach($titles.titles.items, function (title) {
                     if (title.id.value === titleId) {
                         if (title._states_.selected() === true) {
@@ -219,6 +222,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                     }
                 });
                 $location.url("titles/");
+                */
             }
         };
 

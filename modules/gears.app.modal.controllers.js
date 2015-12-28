@@ -119,12 +119,15 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
             if (data !== undefined) {
                 if (data["request"] !== undefined) {
                     var temp_request = $factory({classes: ["Request", "Model", "Backup", "States"], base_class: "Request"});
-                    temp_request._model_.fromJSON(data);
+                    temp_request._model_.fromJSON(data["request"]);
                     temp_request._backup_.setup();
                     $scope.titles.requests.append(temp_request);
                 }
                 if (data["title"] !== undefined) {
-
+                    var temp_title = $factory({ classes: ["Title", "Model", "Backup", "States"], base_class: "Title" });
+                    temp_title._model_.fromJSON(data["title"]);
+                    temp_title._backup_.setup();
+                    $titles.titles.append(temp_title);
                 }
             }
             $modals.close();
@@ -160,6 +163,8 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
                 //$application.currentRequestStatusDocs.delete("id", $scope.temp_file.id.value);
                 //$application.currentRequestHistory.delete("id", $scope.temp_history.id.value);
             }
+            $scope.errors.splice(0, $scope.errors.length);
+            $application.newRequest._model_.reset();
         };
 
         $scope.onSuccessCancelAddNewRequest = function (data) {
@@ -177,7 +182,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
 
     }])
 
-    .controller("NewRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "$factory", function ($log, $scope, $application, $titles, $factory) {
+    .controller("NewRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "$factory", "$session", function ($log, $scope, $application, $titles, $factory, $session) {
         $scope.app = $application;
         $scope.titles = $titles;
         $scope.uploadedDocs = [];
@@ -185,7 +190,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.onBeforeUploadRID = function () {
             $application.currentUploaderData["doc_type"] = "rid";
             $application.currentUploaderData["newRequestId"] = $application.newRequest.id.value;
-            $application.currentUploaderData["userId"] = 76;
+            $application.currentUploaderData["userId"] = $session.user.get().id.value;
         };
 
         $scope.onCompleteUploadRID = function (data) {
@@ -273,7 +278,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.contractors = $contractors;
     }])
 
-    .controller("EditRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "$factory", function ($log, $scope, $application, $titles, $factory) {
+    .controller("EditRequestDocumentsController", ["$log", "$scope", "$application", "$titles", "$factory", "$session", function ($log, $scope, $application, $titles, $factory, $session) {
         $scope.app = $application;
         $scope.titles = $titles;
 
@@ -287,7 +292,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
 
         $scope.onBeforeUploadRID = function () {
             $application.currentUploaderData["doc_type"] = "rid";
-            $application.currentUploaderData["userId"] = 76;
+            $application.currentUploaderData["userId"] = $session.user.get().id.value;
             $application.currentUploaderData["newRequestId"] = $application.currentRequest.id.value;
         };
 
@@ -306,7 +311,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
     }])
 
 
-    .controller("EditRequestStatusModalController", ["$log", "$scope", "$application", "$titles", "$contractors", "$modals", "$factory", function ($log, $scope, $application, $titles, $contractors, $modals, $factory) {
+    .controller("EditRequestStatusModalController", ["$log", "$scope", "$application", "$titles", "$contractors", "$modals", "$factory", "$session", function ($log, $scope, $application, $titles, $contractors, $modals, $factory, $session) {
         $scope.app = $application;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
@@ -329,7 +334,7 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
         $scope.onBeforeUploadRSD = function () {
             $application.currentUploaderData["doc_type"] = "rsd";
             $application.currentUploaderData["statusId"] = $application.currentRequest.statusId.value;
-            $application.currentUploaderData["userId"] = 76;
+            $application.currentUploaderData["userId"] = $session.user.get().id.value;
             $application.currentUploaderData["description"] = $application.newRequestHistory.description.value;
             $application.currentUploaderData["historyId"] = $scope.temp_history.id.value;
             $application.currentRequest._states_.loaded(false);
@@ -377,7 +382,8 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
                 );
             } else {
                 $titles.editRequestHistory(
-                    $scope.temp_history,
+                    $scope.temp_history.id.value,
+                    $application.newRequestHistory.description.value,
                     $scope.onSuccessEditRequestStatus
                 );
             }
@@ -397,7 +403,11 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
 
         $scope.onSuccessEditRequestStatus = function (data) {
             if (data !== undefined) {
-
+                var temp_history = $factory({ classes: ["RequestHistory", "Model", "Backup", "States"] });
+                temp_history._model_.fromJSON(data);
+                $application.currentRequestHistory.find("id", temp_history.id.value).description.value = temp_history.description.value;
+                $application.currentRequest.statusId.value = temp_history.statusId.value;
+                $application.currentRequest._backup_.setup();
             }
         };
 
@@ -408,6 +418,10 @@ var modalControllers = angular.module("gears.app.modal.controllers", [])
                 temp_history._model_.fromJSON(data);
                 $application.currentRequestHistory.append(temp_history);
                 $application.currentRequest._backup_.setup();
+
+                $application.currentRequest.statusId.value = temp_history.statusId.value;
+                $application.currentRequest._backup_.setup();
+
                 $application.newRequestHistory._model_.reset();
                 $modals.close();
             }

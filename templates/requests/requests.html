@@ -28,7 +28,7 @@
                         ng-class="{'active': request._states_.selected() === true}"
                         ng-repeat="request in titles.requests.items | orderBy:'id.value' track by $index"
                         ng-click="selectRequest(request.id.value)">
-                        <img src="../resources/img/icons/request.png" alt="" class="card-img icon"/>
+                        <img ng-src="../resources/img/icons/request.png" alt="" class="card-img icon"/>
                         <div class="card-header">
                             <span>{{ "Заявка #" + request.id.value }}</span>
                             <div class="right" ng-show="app.currentRequest.id.value === request.id.value">

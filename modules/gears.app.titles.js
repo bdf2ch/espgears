@@ -8,7 +8,7 @@ var titles = angular.module("gears.app.titles",[])
          * $titles
          * Сервис, одержащий функционал для работы с титулами
          */
-        $provide.factory("$titles", ["$log", "$http", "$factory", function ($log, $http, $factory) {
+        $provide.factory("$titles", ["$log", "$http", "$factory", "$session", function ($log, $http, $factory, $session) {
             var titles = {};
 
 
@@ -124,6 +124,7 @@ var titles = angular.module("gears.app.titles",[])
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     requestId: new Field({ source: "REQUEST_ID", value: 0, default_value: 0 }),
                     statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0 }),
+                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0 }),
                     added: new Field({ source: "ADDED", value: 0, default_value: 0 })
                 },
 
@@ -135,7 +136,7 @@ var titles = angular.module("gears.app.titles",[])
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     requestTypeId: new Field({ source: "REQUEST_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
                     statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
-                    userId: new Field({ source: "USER_ID", value: 76, default_value: 76, backupable: true, required: true }),
+                    userId: new Field({ source: "USER_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     curatorId: new Field({ source: "CURATOR_ID", value: 0, default_value: 0, backupable: true }),
                     investorId: new Field({ source: "INVESTOR_ID", value: 0, default_value:0, backupable: true, required: true }),
                     titleId: new Field({ source: "TITLE_ID", value: 0, default_value: 0, backupable: true }),
@@ -873,7 +874,7 @@ var titles = angular.module("gears.app.titles",[])
                             buildingPlanDate: request.buildingPlanDate.value,
                             resources: request.resources.value,
                             investorId: request.investorId.value,
-                            userId: request.userId.value,
+                            userId: $session.user.get().id.value,
                             curatorId: request.curatorId.value
                         }
                     };
@@ -1018,13 +1019,13 @@ var titles = angular.module("gears.app.titles",[])
             };
 
 
-            titles.editRequestHistory = function (history, callback) {
-                if (history !== undefined) {
+            titles.editRequestHistory = function (historyId, description, callback) {
+                if (historyId !== undefined && description !== undefined) {
                     var params = {
                         action: "editRequestHistory",
                         data: {
-                            historyId: history.id.value,
-                            description: history.description.value
+                            historyId: historyId,
+                            description: description
                         }
                     };
                     $http.post("serverside/controllers/titles.php", params)
