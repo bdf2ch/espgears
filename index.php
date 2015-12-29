@@ -24,8 +24,6 @@
         oci_close($connection);
     }
 
-    //setcookie("_appUser_", "dasdasdasd");
-
     if (isset($_COOKIE["appsession"]))
         $template = new XTemplate("templates/application.html");
     else

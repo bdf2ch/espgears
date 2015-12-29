@@ -840,6 +840,10 @@ body {
 .label-button input[type="file"] {
   display: none;
 }
+.label-button.disabled {
+  background: #BECBE6;
+  cursor: default;
+}
 #request-gensogl-upload {
   display: none;
 }

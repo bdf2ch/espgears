@@ -1,0 +1,15 @@
+<div ng-controller="DeleteRequestModalController">
+    <div class="row padding-10">
+        <div class="width-100">
+            {{ "Заявка #" + app.currentRequest.id.value + ", а так же история изменения соответствующих ей статусов и все документы будут удалены" }}
+        </div>
+    </div>
+    <div class="row padding-10">
+        <div class="width-50">
+            <button class="button green square width-100" ng-click="delete()">Удалить</button>
+        </div>
+        <div class="50">
+            <button class=" button red square width-100" ng-click="close()">Отмена</button>
+        </div>
+    </div>
+</div>

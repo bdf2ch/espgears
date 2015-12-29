@@ -71,6 +71,10 @@
                 case "editRequest":
                     edit_request($postdata);
                     break;
+                /* Удаление заявки */
+                case "deleteRequest":
+                    delete_request($postdata);
+                    break;
                 /* Добавляет файл технических условий к заявке */
                 case "addRequestTUDoc":
                     add_request_tu_doc($postdata);
@@ -1055,6 +1059,43 @@ function edit_request($postdata) {
     echo json_encode($result);
 };
 
+
+
+
+
+/* Редактирует заявку */
+function delete_request($postdata) {
+    global $connection;
+    $requestId = $postdata -> data -> requestId;
+    $result = 0;
+
+    if (!$statement = oci_parse($connection, "begin pkg_titules.p_delete_request(:request_id, :delete_timestamp); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":request_id", $requestId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":delete_timestamp", $result, -1, OCI_B_INT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+    }
+
+    // Освобождение ресурсов
+    oci_free_statement($statement);
+    // Возврат результата
+    echo json_encode($result);
+};
 
 
 

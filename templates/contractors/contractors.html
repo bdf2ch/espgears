@@ -26,7 +26,7 @@
                         ng-class="{'active': type._states_.selected() === true}"
                         ng-repeat="type in contractors.contractorTypes.items | orderBy:'_backup_.data.title' track by $id(type)"
                         ng-click="selectType(type.id.value)">
-                        <img src="../resources/img/icons/contractor-type.png" alt="" class="card-img icon"/>
+                        <img src="resources/img/icons/contractor-type.png" alt="" class="card-img icon"/>
                         <div class="card-header">
                             <span>{{ type._backup_.data.title }}</span>
                             <div class="right" ng-show="app.currentContractorType.id.value === type.id.value">
@@ -92,7 +92,7 @@
                         ng-class="{'active': contractor._states_.selected() === true}"
                         ng-repeat="contractor in contractors.contractors.items | byContractorType: app.currentContractorType.id.value | orderBy:'_backup_.data.title' track by $id(contractor)"
                         ng-click="selectContractor(contractor.id.value)">
-                        <img src="../resources/img/icons/contractors.png" alt="" class="card-img icon"/>
+                        <img src="resources/img/icons/contractors.png" alt="" class="card-img icon"/>
                         <div class="card-header">
                             <span>{{ contractor._backup_.data.title }}</span>
                             <div class="right" ng-show="app.currentContractor.id.value === contractor.id.value">

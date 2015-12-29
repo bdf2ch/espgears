@@ -29,7 +29,7 @@
                         ng-class="{'active': group._states_.selected() === true}"
                         ng-repeat="group in users.groups.items | orderBy:'_backup_.data.title' track by $id(group)"
                         ng-click="selectGroup(group.id.value)">
-                        <img src="../resources/img/icons/user-group.png" alt="" class="card-img icon"/>
+                        <img src="resources/img/icons/user-group.png" alt="" class="card-img icon"/>
                         <div class="card-header">
                             <span>{{ group._backup_.data.title }}</span>
                             <div class="right" ng-show="app.currentUserGroup.id.value === group.id.value">
@@ -94,7 +94,7 @@
                         ng-class="{'active': user._states_.selected() === true}"
                         ng-repeat="user in users.users.items | byUserGroup:app.currentUserGroup.id.value | orderBy:'fio' | undeletedUsers track by $id(user)"
                         ng-click="selectUser(user.id.value)">
-                        <img src="../resources/img/icons/user_.png" alt="" class="card-img icon"/>
+                        <img src="resources/img/icons/user_.png" alt="" class="card-img icon"/>
                         <div class="card-header">
                             <span>{{ user.fio }}</span>
                             <div class="right" ng-show="app.currentUser.id.value === user.id.value">

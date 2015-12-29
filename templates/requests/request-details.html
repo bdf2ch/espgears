@@ -5,7 +5,7 @@
                 <div class="column-content y-scrollable padding-10">
 
                     <div class="row split-10 padding-5">
-                        <span class="request-title left">{{ "Заявка #" + app.currentRequest.id.value + " (" + titles.requestStatuses.find("id", app.currentRequest._backup_.data.statusId).title.value + ")" }}</span>
+                        <span class="request-title left">{{ "Заявка #" + app.currentRequest.id.value + " - " + titles.requestStatuses.find("id", app.currentRequest._backup_.data.statusId).title.value }}</span>
                         <span class="right secondary-text">{{ "от " + (app.currentRequest.added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
                     </div>
                     <div class="row split-10">
@@ -40,7 +40,12 @@
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">Технические условия</div>
                             <div class="row" ng-show="app.currentRequest.tu.value === false">
-                                <label for="tu-uploader" class="label-button">
+                                <button class="button blue width-100"
+                                        disabled
+                                        ng-if="permissions.getByRuleCode('upload_tu').enabled.value === false">
+                                    Загрузить
+                                </button>
+                                <label for="tu-uploader" class="label-button" ng-if="permissions.getByRuleCode('upload_tu').enabled.value === true">
                                     Загрузить
                                     <input
                                             type="file"
@@ -59,7 +64,7 @@
                                     Скачать
                                 </a>
                             </div>
-                            <div class="row text-centered split-5" ng-show="app.currentRequest.tu.value === true">
+                            <div class="row text-centered split-5" ng-show="app.currentRequest.tu.value === true && permissions.getByRuleCode('upload_tu').enabled.value === true">
                                 <label for="tu-reuploader" class="label-button">
                                     Заменить
                                     <input
@@ -78,7 +83,12 @@
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">Генеральное соглашение</div>
                             <div class="row" ng-show="app.currentRequest.genSogl.value === false">
-                                <label for="gs-uploader" class="label-button">
+                                <button class="button blue width-100"
+                                        disabled
+                                        ng-if="permissions.getByRuleCode('upload_gen_sogl').enabled.value === false">
+                                    Загрузить
+                                </button>
+                                <label for="gs-uploader" class="label-button" ng-if="permissions.getByRuleCode('upload_gen_sogl').enabled.value === true">
                                     Загрузить
                                     <input
                                             type="file"
@@ -97,7 +107,7 @@
                                     Скачать
                                 </a>
                             </div>
-                            <div class="row text-centered split-5" ng-show="app.currentRequest.genSogl.value === true">
+                            <div class="row text-centered split-5" ng-show="app.currentRequest.genSogl.value === true && permissions.getByRuleCode('upload_gen_sogl').enabled.value === true">
                                 <label for="gs-reuploader" class="label-button">
                                     Заменить
                                     <input
@@ -115,7 +125,12 @@
                         <div class="width-33 padding-5">
                             <div class="row secondary-text split-10">ДОУД</div>
                             <div class="row" ng-show="app.currentRequest.doud.value === false">
-                                <label for="doud-uploader" class="label-button">
+                                <button class="button blue width-100"
+                                        disabled
+                                        ng-if="permissions.getByRuleCode('upload_doud').enabled.value === false">
+                                    Загрузить
+                                </button>
+                                <label for="doud-uploader" class="label-button" ng-if="permissions.getByRuleCode('upload_doud').enabled.value === true">
                                     Загрузить
                                     <input
                                             type="file"
@@ -134,7 +149,7 @@
                                     Скачать
                                 </a>
                             </div>
-                            <div class="row text-centered split-5" ng-show="app.currentRequest.doud.value === true">
+                            <div class="row text-centered split-5" ng-show="app.currentRequest.doud.value === true && permissions.getByRuleCode('upload_doud').enabled.value === true">
                                 <label for="doud-reuploader" class="label-button">
                                     Заменить
                                     <input

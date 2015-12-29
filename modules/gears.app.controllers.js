@@ -63,9 +63,10 @@ var appControllers = angular.module("gears.app.controllers", [])
      * RequestsController
      * Контроллер раздела журнала заявок
      */
-    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", "$contractors", "$factory", "$users", "$session", function ($log, $scope, $titles, $application, $modals, $contractors, $factory, $users, $session) {
+    .controller("RequestsController", ["$log", "$scope", "$titles", "$application", "$modals", "$contractors", "$factory", "$users", "$session", "$permissions", function ($log, $scope, $titles, $application, $modals, $contractors, $factory, $users, $session, $permissions) {
         $scope.app = $application;
         $scope.session = $session;
+        $scope.permissions = $permissions;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
         $scope.users = $users;
@@ -168,11 +169,6 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.editRequest = function (requestId, event) {
             event.stopPropagation();
             if (requestId !== undefined) {
-                //angular.forEach($titles.requests.items, function (request) {
-                //    if (request.id.value === requestId) {
-                //        $application.editableRequest = request;
-                //    }
-                //});
                 $modals.show({
                     width: 500,
                     position: "center",
@@ -180,6 +176,21 @@ var appControllers = angular.module("gears.app.controllers", [])
                     showFog: true,
                     closeButton: false,
                     template: "templates/modals/edit-request.html"
+                });
+            }
+        };
+
+
+        $scope.deleteRequest = function (requestId, event) {
+            event.stopPropagation();
+            if (requestId !== undefined) {
+                $modals.show({
+                    width: 500,
+                    position: "center",
+                    caption: "Удаление заявки",
+                    showFog: true,
+                    closeButton: true,
+                    template: "templates/modals/delete-request.html"
                 });
             }
         };
@@ -199,9 +210,10 @@ var appControllers = angular.module("gears.app.controllers", [])
     }])
 
 
-    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", "$location", function ($log, $scope, $titles, $application, $contractors, $factory, $location) {
+    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", "$location", "$permissions", function ($log, $scope, $titles, $application, $contractors, $factory, $location, $permissions) {
         $scope.titles = $titles;
         $scope.app = $application;
+        $scope.permissions = $permissions;
         $scope.contractors = $contractors;
 
 
