@@ -587,6 +587,10 @@ textarea {
 .secondary-text.italic {
   font-family: "Roboto Italic";
 }
+.secondary-text.small {
+  padding-top: 5px;
+  font-size: 13px;
+}
 /*****
 * PADDINGS
 *****/
