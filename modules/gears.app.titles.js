@@ -23,6 +23,7 @@ var titles = angular.module("gears.app.titles",[])
                 Title: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     title: new Field({ source: "TITUL_NAME", value: "", default_value: "", backupable: true, required: true }),
+                    requestId: new Field({ source: "REQUEST_ID", value: 0, default_value: 0, backupable: true }),
                     statusId: new Field({ source: "STATUS_ID", value: 0, default_value: 0, backupable: true }),
                     startPointId: new Field({ source: "START_POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     startNodeTypeId: new Field({ source: "START_OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
@@ -1218,6 +1219,35 @@ var titles = angular.module("gears.app.titles",[])
         });
     });
 
+
+
+
+titles.controller("TitleDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", "$location", "$permissions", function ($log, $scope, $titles, $application, $contractors, $factory, $location, $permissions) {
+    $scope.titles = $titles;
+    $scope.app = $application;
+    $scope.permissions = $permissions;
+    $scope.contractors = $contractors;
+
+
+    $scope.gotoRequest = function (requestId) {
+        if (requestId !== undefined) {
+            angular.forEach($titles.requests.items, function (request) {
+                if (request.id.value === requestId) {
+                    if (request._states_.selected() === true) {
+                        request._states_.selected(false);
+                        $application.currentRequest = undefined;
+                    } else {
+                        request._states_.selected(true);
+                        $application.currentRequest = request;
+                    }
+                } else {
+                    request._states_.selected(false);
+                }
+            });
+            $location.url("requests/");
+        }
+    };
+}]);
 
 
 

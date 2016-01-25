@@ -154,7 +154,7 @@ var appControllers = angular.module("gears.app.controllers", [])
                 position: "center",
                 caption: "Новая заявка",
                 showFog: true,
-                closeButton: true,
+                closeButton: false,
                 template: "templates/modals/new-request_.html",
                 onClose: function () {
                     $log.log("MODAL CLOSED");

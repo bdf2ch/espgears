@@ -1,3 +1,31 @@
-<div class="row height-100">
+<div class="width-100 height-100" ng-controller="TitleDetailsController">
+    <table class="column no-border width-100">
+        <tr class="column-content-container">
+            <td>
+                <div class="column-content y-scrollable padding-10">
 
+                    <div class="row split-10 padding-5">
+                        <span class="request-title left">{{ app.currentTitle._backup_.data.title }}</span>
+                        <span class="right secondary-text">{{ "от " + (titles.requests.find("id", app.currentTitle.requestId.value).added.value | timestamp:'DDMMMYYYYHHmm') }}</span>
+                    </div>
+                    <div class="row split-10">
+                        <div class="row padding-5 secondary-text">Текущий статус</div>
+                        <div class="row padding-5">{{ titles.statuses.find("id", app.currentTitle._backup_.data.statusId).title.value }}</div>
+                    </div>
+                    <div class="row split-10">
+                        <div class="row padding-5 secondary-text">Инвестор</div>
+                        <div class="row padding-5">{{ contractors.contractors.find("id", titles.requests.find("id", app.currentTitle.requestId.value).contractorId.value).title.value }}</div>
+                    </div>
+
+                    <div class="row split-10 width-33">
+                        <div class="row padding-5 secondary-text">Заявка</div>
+                        <div class="row padding-5">
+                            <button class="button blue big width-100" ng-click="gotoRequest(app.currentTitle.requestId.value)">Перейти к заявке</button>
+                        </div>
+                    </div>
+
+                </div>
+            </td>
+        </tr>
+    </table>
 </div>

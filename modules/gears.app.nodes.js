@@ -44,7 +44,11 @@ var nodes = angular.module("gears.app.nodes", [])
                     pointId: new Field({ source: "POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     titleId: new Field({ source: "TITULE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     titlePartId: new Field({ source: "TITULE_PART_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 })
+                    branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 }),
+                    geo: {
+                        x: new Field({ source: "" }),
+                        y: new Field({ source: "" })
+                    }
                 },
 
                 /**
