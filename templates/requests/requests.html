@@ -14,19 +14,19 @@
         <td>
             <div class="column-content y-scrollable padding-5">
 
-                <div class="service-message" ng-show="titles.requests._states_.loaded() == false">
+                <div class="service-message" ng-show="requests.requests._states_.loaded() == false">
                     <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                     <span>Загрузка...</span>
                 </div>
 
-                <div class="service-message" ng-show="titles.requests._states_.loaded() === true && titles.requests.size() === 0">
+                <div class="service-message" ng-show="requests.requests._states_.loaded() === true && requests.requests.size() === 0">
                     Заявки отсутствуют
                 </div>
 
                 <ul class="cards">
                     <li class="card"
                         ng-class="{'active': request._states_.selected() === true}"
-                        ng-repeat="request in titles.requests.items | orderBy:'id.value' track by $index"
+                        ng-repeat="request in requests.requests.items | orderBy:'id.value' track by $index"
                         ng-click="selectRequest(request.id.value)">
                         <img ng-src="resources/img/icons/request.png" alt="" class="card-img icon"/>
                         <div class="card-header">
@@ -108,7 +108,7 @@
                      ng-repeat="history in app.currentRequestHistory.items | orderBy:'timestamp.value' track by $index"
                      ng-class="{ 'added': history.statusId.value === 1, 'inner-expertise': history.statusId.value === 3, 'outer-expertise': history.statusId.value === 4, 'rejected': history.statusId.value === 7, 'approved': history.statusId.value === 6 }">
                     <div class="row request-status-header split-10">
-                        <span class="request-status-title left">{{ titles.requestStatuses.find("id", history.statusId.value).title.value }}</span>
+                        <span class="request-status-title left">{{ requests.requestStatuses.find("id", history.statusId.value).title.value }}</span>
                         <span class="secondary-text right">{{ history.timestamp.value | timestamp:"DDMMMYYYYHHmm" }}</span>
                     </div>
                     <div class="row request-status-comment split-10" ng-show="history.description.value !== undefined && history.description.value !== '' && history.description.value !== null">

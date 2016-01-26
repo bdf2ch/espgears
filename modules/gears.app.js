@@ -15,12 +15,14 @@ var application = angular.module("gears.app", [
         "gears.app.modal.controllers",
         "gears.app.filters",             // Подключаем модуль с фильтрами приложения
         "gears.app.titles",
+        "gears.app.requests",
         "gears.app.nodes",
         "gears.app.misc",
         "gears.app.contractors",
         "gears.app.users",
 
-        "gears.shp"
+        "gears.shp",
+        "gears.test"
     ])
     .config(function ($provide, $routeProvider) {
 
@@ -70,7 +72,7 @@ var application = angular.module("gears.app", [
          * $application
          * Сервис приложения
          */
-        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$misc", "$nodes", "$users", "$contractors", "$session", "$permissions", function ($log, $http, $factory, $titles, $misc, $nodes, $users, $contractors, $session, $permissions) {
+        $provide.factory("$application", ["$log", "$http", "$factory", "$titles", "$requests", "$misc", "$nodes", "$users", "$contractors", "$session", "$permissions", function ($log, $http, $factory, $titles, $requests, $misc, $nodes, $users, $contractors, $session, $permissions) {
             var application = {};
 
             application.title = "ЭСпРЭСО";
@@ -291,25 +293,25 @@ var application = angular.module("gears.app", [
                             }
 
                             if (data["requestTypes"] !== undefined) {
-                                $titles.requestTypes._states_.loaded(false);
+                                $requests.requestTypes._states_.loaded(false);
                                 angular.forEach(data["requestTypes"], function (requestType) {
                                     var temp_request_type = $factory({ classes: ["RequestType", "Model", "Backup", "States"], base_class: "RequestType" });
                                     temp_request_type._model_.fromJSON(requestType);
                                     temp_request_type._backup_.setup();
-                                    $titles.requestTypes.append(temp_request_type);
+                                    $requests.requestTypes.append(temp_request_type);
                                 });
-                                $titles.requestTypes._states_.loaded(true);
+                                $requests.requestTypes._states_.loaded(true);
                             }
 
                             if (data["requestStatuses"] !== undefined) {
-                                $titles.requestStatuses._states_.loaded(false);
+                                $requests.requestStatuses._states_.loaded(false);
                                 angular.forEach(data["requestStatuses"], function (requestStatus) {
                                     var temp_request_status = $factory({ classes: ["RequestStatus", "Model", "Backup", "States"], base_class: "RequestStatus" });
                                     temp_request_status._model_.fromJSON(requestStatus);
                                     temp_request_status._backup_.setup();
-                                    $titles.requestStatuses.append(temp_request_status);
+                                    $requests.requestStatuses.append(temp_request_status);
                                 });
-                                $titles.requestStatuses._states_.loaded(true);
+                                $requests.requestStatuses._states_.loaded(true);
                             }
 
                             if (data["requests"] !== undefined) {
@@ -317,7 +319,7 @@ var application = angular.module("gears.app", [
                                     var temp_request = $factory({ classes: ["Request", "Model", "Backup", "States"], base_class: "Request" });
                                     temp_request._model_.fromJSON(request);
                                     temp_request._backup_.setup();
-                                    $titles.requests.append(temp_request);
+                                    $requests.requests.append(temp_request);
                                 });
                             }
 
@@ -332,7 +334,7 @@ var application = angular.module("gears.app", [
                                 $titles.workingCommissions._states_.loaded(true);
                             }
 
-                            $titles.requests._states_.loaded(true);
+                            $requests.requests._states_.loaded(true);
 
                         }
                     }
