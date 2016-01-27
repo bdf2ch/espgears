@@ -1,3 +1,4 @@
+<!--
 <table class="column width-33">
     <tr class="column-header">
         <td class="caption width-100">
@@ -27,12 +28,6 @@
 
                 <div class="row split-20">
                     <ul class="list hover">
-                        <!--
-                        <div class="service-message" ng-show="titles.requests._states_.loaded() === false">
-                            <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
-                            <span>Загрузка...</span>
-                        </div>
-                        -->
                         <li ng-repeat="request in titles.requests.items"
                             ng-class="{'active': request._states_.selected() === true}"
                             ng-click="selectRequest(request.id.value)">
@@ -52,27 +47,6 @@
                                     </span>
                                 </div>
 
-                                <!--
-                                <div class="row split-5">
-                                    <span class="secondary-text">Инвестор: </span>
-                                    <span class="secondary-text dark">
-                                        {{ contractors.contractors.find("id", request.investorId.value).title.value }}
-                                    </span>
-                                </div>
-                                -->
-                                <!--
-                                <div class="row split-5">
-                                    <span class="secondary-text">Протяженность ВОЛС: </span>
-                                    <span class="secondary-text dark">{{ request.start.value + " - " + request.end.value }}</span>
-                                </div>
-                                -->
-
-                                <!--
-                                <div class="row split-5">
-                                    <span class="secondary-text">Протяженность ВОЛС: </span>
-                                    <span class="secondary-text dark">{{ request.start.value + " - " + request.end.value }}</span>
-                                </div>
-                                -->
 
                             </div>
 
@@ -101,4 +75,27 @@
         </td>
     </tr>
 </table>
+-->
+
+
+<div style="height: 300px;">
+
+    <columns>
+        <column width="20" caption="Группы">
+            <column-control control-class="button green round" caption="+" action="test()"></column-control>
+            <column-control control-class="button red round" caption="+" action="test()"></column-control>
+            fdsfsdsdf dsfds dsfsdsd
+        </column>
+        <column caption="Пользователи" width="60" maximize="1">
+            авпвап
+        </column>
+        <column width="20" caption="Тестовая колонка" maximize="1">
+            <column-control control-class="button blue round" caption="-"></column-control>
+            dsfdsfsdf
+        </column>
+    </columns>
+
+</div>
+
+
 

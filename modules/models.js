@@ -109,7 +109,7 @@ var test = angular.module("gears.test", [])
             service.create = function () {};
 
             return service;
-        }])
+        }]);
     })
     .run(function ($modules, $models, $log) {
         $modules.load($models);
@@ -125,3 +125,129 @@ var test = angular.module("gears.test", [])
 
         $log.log("mdl = ", user);
     });
+
+
+
+
+test.directive("columns", ["$log", function ($log) {
+    return {
+        restrict: "E",
+        transclude: true,
+        template: "<div class='gears-columns'>" +
+                      "<div class='gears-columns-row' ng-transclude></div>" +
+                  "</div>",
+        replace: true,
+        controller: function ($scope) {
+            var columns = $scope.columns = [];
+
+            this.add = function (column) {
+                column.columnId = columns.length + 1;
+                column.isMaximized = false;
+                column.isMinimized = false;
+                columns.push(column);
+                $log.info(columns);
+            };
+
+            this.maximize = function (id) {
+                if (id !== undefined) {
+                    var length = columns.length;
+                    for (var i = 0; i < length; i++) {
+                        if (columns[i].columnId === id) {
+                            columns[i].currentWidth = 100;
+                            columns[i].isMaximized = true;
+                        } else {
+                            columns[i].currentWidth = 0;
+                            columns[i].isMinimized = true;
+                        }
+                    }
+                }
+            };
+
+            this.restore = function () {
+                var length = columns.length;
+                for (var i = 0; i < length; i ++) {
+                    columns[i].currentWidth = columns[i].width;
+                    columns[i].isMaximized = false;
+                    columns[i].isMinimized = false;
+                }
+            };
+
+        },
+        link: function (scope, element, attrs, ctrl) {
+            $log.info("columns directive");
+        }
+    }
+}]);
+
+
+test.directive("column", ["$log", function ($log) {
+    return {
+        restrict: "E",
+        require: "^columns",
+        transclude: true,
+        template: "<div class='gears-columns-column' style='width: {{currentWidth}}%;'>" +
+                      "<div class='column-header' ng-show='isMinimized === false'>" +
+                      "<div class='left'>" +
+                          "<span class='header-caption' ng-show='showCaption === true'>{{ caption }}</span>" +
+                          "<button class='service-button' ng-show='showMaximizeButton === true && isMaximized === false' ng-click='max()' title='Развернуть колонку'>&harr;</button>" +
+                          "<button class='service-button' ng-show='isMaximized' ng-click='min()' title='Свернуть колонку'>&rarr;</button>" +
+                      "</div>" +
+                      "<div class='right'><button ng-repeat='control in controls' class='{{ control.controlClass }}'>{{ control.caption }}</button></div>" +
+                      "</div>" +
+                      "<div class='column-content' ng-show='isMinimized === false' ng-transclude></div>" +
+                  "</div>",
+        replace: true,
+        scope: {
+            caption: "@",
+            width: "@",
+            maximize: "@"
+        },
+        controller: function ($scope) {
+            var controls = $scope.controls = [];
+
+            this.addControl = function (control) {
+                if (control !== undefined) {
+                    controls.push(control);
+                }
+            };
+        },
+        link: function (scope, element, attrs, ctrl) {
+            var showCaption = scope.showCaption = false;
+            var showMaximizeButton = scope.showMaximizeButton = false;
+            var currentWidth = scope.currentWidth = parseInt(scope.width);
+
+
+            ctrl.add(scope);
+            if (scope.caption !== undefined && scope.caption !== "")
+                scope.showCaption = true;
+            if (scope.maximize !== undefined && scope.maximize === "1")
+                scope.showMaximizeButton = true;
+
+            scope.max = function () {
+                ctrl.maximize(scope.columnId);
+            };
+
+            scope.min = function () {
+                ctrl.restore();
+            };
+        }
+    }
+}]);
+
+
+test.directive("columnControl", [function () {
+    return {
+        restrict: "E",
+        require: "^column",
+        transclude: true,
+        scope: {
+            caption: "@",
+            action: "=",
+            controlClass: "@",
+            icon: "@"
+        },
+        link: function (scope, element, attrs, ctrl) {
+            ctrl.addControl(scope);
+        }
+    }
+}]);

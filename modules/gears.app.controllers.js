@@ -62,73 +62,7 @@ var appControllers = angular.module("gears.app.controllers", [])
 
 
 
-    .controller("RequestDetailsController", ["$log", "$scope", "$titles", "$application", "$contractors", "$factory", "$location", "$permissions", function ($log, $scope, $titles, $application, $contractors, $factory, $location, $permissions) {
-        $scope.titles = $titles;
-        $scope.app = $application;
-        $scope.permissions = $permissions;
-        $scope.contractors = $contractors;
 
-
-        $scope.gotoTitle = function (titleId) {
-            if (titleId !== undefined) {
-                /*
-                angular.forEach($titles.titles.items, function (title) {
-                    if (title.id.value === titleId) {
-                        if (title._states_.selected() === true) {
-                            title._states_.selected(false);
-                            $application.currentTitle = undefined;
-                        } else {
-                            title._states_.selected(true);
-                            $application.currentTitle = title;
-                        }
-                    } else {
-                        title._states_.selected(false);
-                    }
-                });
-                $location.url("titles/");
-                */
-            }
-        };
-
-        $scope.onBeforeUploadTU = function () {
-            $application.currentUploaderData["doc_type"] = "tu";
-            $log.log("doc_type = " + $application.currentUploaderData["doc_type"]);
-        };
-
-        $scope.onSuccessUploadTU = function (data) {
-            $log.log("tu = ", data);
-            if (data !== undefined)
-                $application.currentRequest.tu.value = true;
-        };
-
-        $scope.onBeforeUploadGS = function () {
-            $application.currentUploaderData["doc_type"] = "gs";
-            $log.log("doc_type = " + $application.currentUploaderData["doc_type"]);
-        };
-
-        $scope.onSuccessUploadGS = function (data) {
-            if (data !== undefined)
-                $application.currentRequest.genSogl.value = true;
-        };
-
-        $scope.onBeforeUploadDOUD = function () {
-            $application.currentUploaderData["doc_type"] = "doud";
-            $log.log("doc_type = " + $application.currentUploaderData["doc_type"]);
-        };
-
-        $scope.onSuccessUploadDOUD = function (data) {
-            $log.log("tu = ", data);
-            if (data !== undefined)
-                $application.currentRequest.doud.value = true;
-        };
-    }])
-
-
-    .controller("RequestDocumentsController", ["$log", "$scope", "$titles", "$application", "$users", function ($log, $scope, $titles, $application, $users) {
-        $scope.titles = $titles;
-        $scope.app = $application;
-        $scope.users = $users;
-    }])
 
 
      /**
