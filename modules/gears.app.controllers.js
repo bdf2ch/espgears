@@ -12,6 +12,12 @@ var appControllers = angular.module("gears.app.controllers", [])
         $scope.users = $users;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
+        $scope.log = $log;
+
+
+        $scope.tezt = function () {
+            $log.info("TEST BUTTON CLICKED");
+        };
 
 
         $scope.selectRequest = function (requestId) {

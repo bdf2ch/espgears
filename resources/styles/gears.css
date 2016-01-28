@@ -4,6 +4,7 @@
   display: table;
   width: 100%;
   height: 100%;
+  border-bottom: 1px solid #E3E3E3;
 }
 .gears-columns .gears-columns-row {
   position: relative;
@@ -14,6 +15,7 @@
 .gears-columns .gears-columns-column {
   position: relative;
   display: table-cell;
+  overflow: hidden;
   height: 100%;
   border-right: 1px solid #E3E3E3;
 }
@@ -68,4 +70,48 @@
   right: 0px;
   bottom: 0px;
   padding: 5px;
+  overflow: auto;
+}
+/********** GRID **********/
+.grid .grid-caption {
+  border-bottom: 1px dotted lightgray;
+  cursor: pointer;
+}
+.grid .grid-caption:hover {
+  border-bottom: 1px dotted black;
+}
+.grid .service-button {
+  width: 20px;
+  height: 20px;
+  margin-left: 5px;
+  padding: 2px;
+  vertical-align: bottom;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 14px;
+  color: darkgray;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.grid .service-button:hover {
+  color: black;
+}
+/********** TABZ **********/
+.tabz {
+  overflow: visible;
+}
+.tabz .tabs-container ul {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.tabz .tabs-container ul li {
+  display: inline-block;
+  float: left;
+}
+.tabz .tabs-container.top {
+  border-bottom: 1px solid lightgray;
+}
+.tabz .tabs-container.bottom {
+  border-top: 1px solid lightgray;
 }

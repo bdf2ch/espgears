@@ -116,14 +116,14 @@ var test = angular.module("gears.test", [])
 
 
 
-        var user = $models.add({ title: "User", controller: "test.php" })
-            ._field({ title: "id", source: "ID", value: 0, default_value: 1, backupable: true })
-            ._field({ title: "title", source: "TITLE", value: "", default_value: "", backupable: true, required: true })
-            ._action({ title: "Add" })
-            ._action({ title: "GetById", onComplete: function () { console.log("getById callback"); } });
-        user.GetById({ id: 15 });
+        //var user = $models.add({ title: "User", controller: "test.php" })
+        //    ._field({ title: "id", source: "ID", value: 0, default_value: 1, backupable: true })
+        //    ._field({ title: "title", source: "TITLE", value: "", default_value: "", backupable: true, required: true })
+        //    ._action({ title: "Add" })
+        //    ._action({ title: "GetById", onComplete: function () { console.log("getById callback"); } });
+        //user.GetById({ id: 15 });
 
-        $log.log("mdl = ", user);
+        //$log.log("mdl = ", user);
     });
 
 
@@ -145,7 +145,6 @@ test.directive("columns", ["$log", function ($log) {
                 column.isMaximized = false;
                 column.isMinimized = false;
                 columns.push(column);
-                $log.info(columns);
             };
 
             this.maximize = function (id) {
@@ -172,9 +171,6 @@ test.directive("columns", ["$log", function ($log) {
                 }
             };
 
-        },
-        link: function (scope, element, attrs, ctrl) {
-            $log.info("columns directive");
         }
     }
 }]);
@@ -192,7 +188,7 @@ test.directive("column", ["$log", function ($log) {
                           "<button class='service-button' ng-show='showMaximizeButton === true && isMaximized === false' ng-click='max()' title='Развернуть колонку'>&harr;</button>" +
                           "<button class='service-button' ng-show='isMaximized' ng-click='min()' title='Свернуть колонку'>&rarr;</button>" +
                       "</div>" +
-                      "<div class='right'><button ng-repeat='control in controls' class='{{ control.controlClass }}'>{{ control.caption }}</button></div>" +
+                      "<div class='right'><button ng-repeat='control in controls' class='{{ control.controlClass }}' ng-click='control.action()' title='{{ control.title }}'>{{ control.caption }}</button></div>" +
                       "</div>" +
                       "<div class='column-content' ng-show='isMinimized === false' ng-transclude></div>" +
                   "</div>",
@@ -242,12 +238,174 @@ test.directive("columnControl", [function () {
         transclude: true,
         scope: {
             caption: "@",
-            action: "=",
+            action: "&",
             controlClass: "@",
-            icon: "@"
+            icon: "@",
+            title: "@"
         },
         link: function (scope, element, attrs, ctrl) {
             ctrl.addControl(scope);
+        }
+    }
+}]);
+
+
+/**
+ * GRID
+ * Таблица данных
+ */
+test.directive("grid", ["$log", "$filter", function ($log, $filter) {
+    return {
+        restrict: "E",
+        scope: {
+            source: "=",
+            fields: "@",
+            captions: "@",
+            sortable: "@"
+        },
+        template: "<table class='grid'>" +
+                      "<thead ng-if='fieldCaptions.length > 0'>" +
+                          "<th ng-repeat='caption in fieldCaptions'><span class='grid-caption' ng-click='select($index)'>{{ caption }}</span>" +
+                              "<span class='service-button' ng-if='isSortable === true' ng-show='sorting[$index] === true && descending[$index] === false' ng-click='sort($index)' title='По убыванию'>&darr;</span>" +
+                              "<span class='service-button' ng-if='isSortable === true' ng-show='sorting[$index] === true && descending[$index] === true' ng-click='sort($index)' title='По возрастанию'>&uarr;</span>" +
+                          "</th>" +
+                      "</thead>" +
+                      "<tbody>" +
+                          "<tr ng-repeat='row in source' ng-init='rowId = $index'>" +
+                              "<td ng-repeat='field in dataFields' ng-init='val = check(rowId, field)'><span ng-show='isBool(val) === false'>{{ val }}</span>" +
+                                  "<input type='checkbox' ng-if='isBool(val) === true' ng-checked='val' disabled/>" +
+                              "</td>" +
+                          "</tr>" +
+                      "</tbody>" +
+                  "</table>",
+        replace: true,
+        link: function (scope, element, attrs, ctrl) {
+            var dataFields = scope.dataFields = [];
+            var fieldCaptions = scope.fieldCaptions = [];
+            var isSortable = scope.isSortable = false;
+            var sorting = scope.sorting = [];
+            var descending = scope.descending = [];
+
+            scope.isBool = function (value) {
+                if (value !== undefined) {
+                    var result = typeof value === "boolean" ? true : false;
+                    return result;
+                }
+            };
+
+            scope.check = function (index, field) {
+                if (index !== undefined && field !== undefined) {
+                    if (scope.source[index][field] !== undefined) {
+                        var result = scope.source[index][field].constructor === Field ? scope.source[index][field].value : scope.source[index][field];
+                        return result;
+                    } else
+                        return "";
+                }
+            };
+
+            scope.select = function (index) {
+                if (index !== undefined) {
+                    for (var i = 0; i < scope.sorting.length; i++) {
+                        scope.sorting[i] = i === index ? true : false;
+                    }
+                }
+            };
+
+            scope.sort = function (index) {
+                if (index !== undefined) {
+                    var condition = scope.dataFields[index];
+                    condition = scope.descending[index] === true ? "+" + condition : "-" + condition;
+                    for (var i = 0; i < scope.source.length; i++) {
+                        if (scope.source[i][scope.dataFields[index]] !== undefined) {
+                            if (scope.source[i][scope.dataFields[index]].constructor === Field)
+                                condition += ".value";
+                            break;
+                        }
+                    }
+                    var orderBy = $filter('orderBy');
+                    scope.source = orderBy(scope.source, condition);
+                    scope.descending[index] = !scope.descending[index];
+                }
+            };
+
+
+            if (scope.source !== undefined && scope.source !== "") {
+                if (scope.fields !== undefined && scope.fields !== "") {
+                    scope.dataFields = scope.fields.replace(/ /g, "").split(";");
+                    for (var i = 0; i < scope.dataFields.length; i++) {
+                        scope.sorting[i] = i === 0 ? true : false;
+                        scope.descending[i] = true;
+                    }
+                    if (scope.captions !== undefined && scope.captions !== "")
+                        scope.fieldCaptions = scope.captions.split(";");
+                    if (scope.sortable !== undefined) {
+                        if (!isNaN(scope.sortable))
+                            scope.isSortable = parseInt(scope.sortable) === 1 ? true : false;
+                        else
+                            $log.error("gears.ui.grid: Значение атрибута 'sortable' должно быть целым число (0 или 1)");
+                    }
+                }
+            } else
+                $log.error("gears.ui.grid: Не задан источник данных - атрибут 'source'");
+
+
+        }
+    }
+}]);
+
+
+
+
+test.directive("tabz", ["$log", function ($log) {
+    return {
+        restrict: "E",
+        scope: {
+            tabsPosition: "@"
+        },
+        transclude: true,
+        template: "<div class='tabz'>" +
+                      "<div class='tabs-container top' ng-if='topPosition === true'><ul ng-transclude></ul></div>" +
+                      "<div class='tab-content'></div>" +
+                      "<div class='tabs-container bottom' ng-if='topPosition === false'><ul ng-transclude></ul></div>" +
+                  "</div>",
+        replace: true,
+        controller: function ($scope) {
+            $log.info("tabz");
+            $scope.topPosition = true;
+
+            if ($scope.tabsPosition !== undefined && $scope.tabsPosition !== "") {
+                switch ($scope.tabsPosition) {
+                    case "top":
+                        $scope.topPosition = true;
+                        break;
+                    case "bottom":
+                        $scope.topPosition = false;
+                        break;
+                    default:
+                        $scope.topPosition = true;
+                        break;
+                }
+            }
+        }
+    }
+}]);
+
+
+test.directive("tab", ["$log", function ($log) {
+    return {
+        restrict: "E",
+        require: "^tabz",
+        scope: {
+            caption: "@",
+            templateUrl: "@"
+        },
+        template: "<li>{{ caption }}</li>",
+        link: function (scope, element, attrs, ctrl) {
+            $log.info("tab");
+
+            if (scope.caption !== undefined && scope.caption !== "") {
+
+            }
         }
     }
 }]);
