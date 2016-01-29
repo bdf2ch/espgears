@@ -250,6 +250,8 @@ test.directive("columnControl", [function () {
 }]);
 
 
+
+
 /**
  * GRID
  * Таблица данных
@@ -365,13 +367,15 @@ test.directive("tabz", ["$log", function ($log) {
         transclude: true,
         template: "<div class='tabz'>" +
                       "<div class='tabs-container top' ng-if='topPosition === true'><ul ng-transclude></ul></div>" +
-                      "<div class='tab-content'></div>" +
+                      "<div class='tab-content' ng-class='{ \"top\": topPosition === true, \"bottom\": topPosition === false}' ng-include='currentTemplateUrl'></div>" +
                       "<div class='tabs-container bottom' ng-if='topPosition === false'><ul ng-transclude></ul></div>" +
                   "</div>",
         replace: true,
-        controller: function ($scope) {
+        controller: function ($scope, $element) {
             $log.info("tabz");
-            $scope.topPosition = true;
+            $scope.tabs = [];
+            this.topPosition = $scope.topPosition = true;
+            $scope.currentTemplateUrl = "";
 
             if ($scope.tabsPosition !== undefined && $scope.tabsPosition !== "") {
                 switch ($scope.tabsPosition) {
@@ -386,25 +390,71 @@ test.directive("tabz", ["$log", function ($log) {
                         break;
                 }
             }
+
+            this.add = function (tab) {
+                if (tab !== undefined) {
+                    tab.tabId = $scope.tabs.length;
+                    $scope.tabs.push(tab);
+                    if ($scope.tabs[0].active === false) {
+                        $scope.tabs[0].active = true;
+                        $scope.currentTemplateUrl = $scope.tabs[0].templateUrl;
+                    }
+                    $log.info($scope.tabs);
+                }
+            };
+
+            this.select = function (id) {
+                if (id !== undefined) {
+                    var length = $scope.tabs.length;
+                    for (var i = 0; i < length; i++) {
+                        if ($scope.tabs[i].tabId === id) {
+                            $scope.tabs[i].active = true;
+                            $scope.currentTemplateUrl = $scope.tabs[i].templateUrl;
+                        } else {
+                            $scope.tabs[i].active = false;
+                        }
+                    }
+                }
+            };
         }
     }
 }]);
 
 
+
+
+
+/********* TABS ********/
 test.directive("tab", ["$log", function ($log) {
     return {
         restrict: "E",
         require: "^tabz",
+        transclude: true,
         scope: {
             caption: "@",
-            templateUrl: "@"
+            templateUrl: "@",
+            title: "@"
         },
-        template: "<li>{{ caption }}</li>",
+        template: "<li ng-class='{ \"active\": active === true, \"top\": topPosition === true, \"bottom\": topPosition === false }' ng-click='select()' title='{{ title }}'>{{ caption }}<div ng-transclude></div></li>",
         link: function (scope, element, attrs, ctrl) {
             $log.info("tab");
+            scope.active = false;
+            scope.topPosition = ctrl.topPosition;
+            ctrl.add(scope);
+
+
+            $log.info(angular.element(element).innerHTML);
 
             if (scope.caption !== undefined && scope.caption !== "") {
 
+            }
+
+            if (scope.templateUrl !== undefined && scope.templateUrl !== "") {
+
+            }
+
+            scope.select = function () {
+                ctrl.select(scope.tabId);
             }
         }
     }

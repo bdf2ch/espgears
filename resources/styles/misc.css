@@ -1046,6 +1046,9 @@ textarea {
   margin-left: 70px;
   padding-top: 5px;
 }
+.table {
+  border-spacing: 0px;
+}
 .table caption {
   padding: 10px;
   text-align: left;
@@ -1059,6 +1062,7 @@ textarea {
 }
 .table td {
   padding: 10px;
+  text-align: left;
 }
 .table.stripped tr:nth-child(even) {
   background: #F5F5F5;

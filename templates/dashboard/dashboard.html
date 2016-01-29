@@ -78,36 +78,50 @@
 -->
 
 
-<div style="height: 50%;">
+<div style="height: 100%;">
 
     <columns>
         <column width="20" caption="Группы">
             <column-control control-class="button green round" caption="+" action="log.error('TEST')" title="Зеленая кнопочка"></column-control>
             <column-control control-class="button red round" caption="+" action="tezt()" title="Краснавя кнопочка"></column-control>
+            <tabz tabs-position="top">
+                <tab caption="tab1" title="first tab title" template-url="templates/modals/new-contractor.html"></tab>
+                <tab caption="tab2" title="second tab title" template-url="templates/modals/new-power-line.html"></tab>
+                <tab caption="tab3" title="third tab title"></tab>
+            </tabz>
         </column>
         <column caption="Титулы" width="60" maximize="1">
-            <grid class="table stripped hover width-100"
-                  source="users.users.items"
-                  fields="id; fio; email; phone; position; isDeleted"
-                  captions="#; ФИО; e-mail; Телефон; Должность; Удален"
-                  sortable="1">
-            </grid>
+            <div class="padding-5">
+                <grid class="table stripped hover width-100"
+                      source="users.users.items"
+                      fields="id; fio; email; phone; position; isDeleted"
+                      captions="#; ФИО; e-mail; Телефон; Должность; Удален"
+                      sortable="1">
+                </grid>
+            </div>
         </column>
         <column width="20" caption="Тестовая колонка" maximize="1">
             <column-control control-class="button blue round" caption="-" title="Синяя кнопочка"></column-control>
+            <tabz tabs-position="bottom">
+                <tab caption="tab1" title="first tab title" template-url="templates/modals/new-user.html"></tab>
+                <tab caption="tab2" title="second tab title"></tab>
+                <tab caption="tab3" title="third tab title"></tab>
+            </tabz>
         </column>
     </columns>
 
 </div>
 
 
-
+<!--
 <div style="height: 50%; margin-top: 50px;">
     <tabz tabs-position="top">
-        <tab caption="tab1"></tab>
-        <tab caption="tab2"></tab>
+        <tab caption="tab1" title="first tab title"></tab>
+        <tab caption="tab2" title="second tab title"></tab>
+        <tab caption="tab3" title="third tab title"></tab>
     </tabz>
 </div>
+-->
 
 
 

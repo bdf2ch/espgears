@@ -69,7 +69,6 @@
   left: 0px;
   right: 0px;
   bottom: 0px;
-  padding: 5px;
   overflow: auto;
 }
 /********** GRID **********/
@@ -99,19 +98,105 @@
 }
 /********** TABZ **********/
 .tabz {
-  overflow: visible;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  float: left;
+}
+.tabz .tabs-container {
+  position: absolute;
+  height: 35px;
 }
 .tabz .tabs-container ul {
+  height: 35px;
+  vertical-align: bottom;
   margin-top: 0px;
   margin-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 5px;
+  box-sizing: border-box;
 }
 .tabz .tabs-container ul li {
   display: inline-block;
   float: left;
+  vertical-align: bottom;
+  height: 25px;
+  margin-right: 5px;
+  margin-top: 5px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-left: 8px;
+  padding-right: 8px;
+  box-sizing: border-box;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: gray;
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  cursor: pointer;
+  background: #ffffff;
+}
+.tabz .tabs-container ul li:hover {
+  color: black;
 }
 .tabz .tabs-container.top {
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: -1px;
   border-bottom: 1px solid lightgray;
+  background-image: -moz-linear-gradient(top, #ffffff, #fafafa);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#fafafa));
+  background-image: -webkit-linear-gradient(top, #ffffff, #fafafa);
+  background-image: -o-linear-gradient(top, #ffffff, #fafafa);
+  background-image: linear-gradient(to bottom, #ffffff, #fafafa);
+}
+.tabz .tabs-container.top li {
+  border-top: 1px solid lightgray;
+}
+.tabz .tabs-container.top li.active {
+  height: 30px;
+  margin-top: 1px;
+  color: black;
+  border-bottom: 1px solid white;
 }
 .tabz .tabs-container.bottom {
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   border-top: 1px solid lightgray;
+  background-image: -moz-linear-gradient(top, #fafafa, #ffffff);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fafafa), to(#ffffff));
+  background-image: -webkit-linear-gradient(top, #fafafa, #ffffff);
+  background-image: -o-linear-gradient(top, #fafafa, #ffffff);
+  background-image: linear-gradient(to bottom, #fafafa, #ffffff);
+}
+.tabz .tabs-container.bottom li {
+  margin-top: -5px;
+  border-bottom: 1px solid lightgray;
+}
+.tabz .tabs-container.bottom li.active {
+  height: 30px;
+  margin-top: -6px;
+  color: black;
+  border-top: 1px solid white;
+}
+.tabz .tab-content {
+  position: absolute;
+  overflow: auto;
+}
+.tabz .tab-content.top {
+  top: 35px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+}
+.tabz .tab-content.bottom {
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 35px;
 }
