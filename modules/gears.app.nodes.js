@@ -46,8 +46,8 @@ var nodes = angular.module("gears.app.nodes", [])
                     titlePartId: new Field({ source: "TITULE_PART_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 }),
                     geo: {
-                        x: new Field({ source: "" }),
-                        y: new Field({ source: "" })
+                        latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true }),
+                        longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true })
                     }
                 },
 
@@ -66,6 +66,10 @@ var nodes = angular.module("gears.app.nodes", [])
                     branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 }),
                     display: "",
                     search: "",
+                    geo: {
+                        latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true }),
+                        longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true })
+                    },
 
                     _init_: function () {
                         this.display = "#" + this.number.value;
@@ -234,7 +238,9 @@ var nodes = angular.module("gears.app.nodes", [])
                             nodeTypeId: node.nodeTypeId.value,
                             number: node.number.value,
                             powerLineId: node.powerLineId.value,
-                            pylonTypeId: node.pylonTypeId.value
+                            pylonTypeId: node.pylonTypeId.value,
+                            latitude: node.geo.latitude.value,
+                            longitude: node.geo.longitude.value
                         }
                     };
                     $http.post("serverside/controllers/nodes.php", params)

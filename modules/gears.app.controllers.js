@@ -7,12 +7,13 @@ var appControllers = angular.module("gears.app.controllers", [])
      * DashboardController
      * Контроллер стартовой страницы
      */
-    .controller("DashboardController", ["$log", "$scope", "$location", "$application", "$users", "$modals", "$titles", "$contractors", function ($log, $scope, $location, $application, $users, $modals, $titles, $contractors) {
+    .controller("DashboardController", ["$log", "$scope", "$location", "$application", "$users", "$modals", "$titles", "$contractors", "$columns", function ($log, $scope, $location, $application, $users, $modals, $titles, $contractors, $columns) {
         $scope.app = $application;
         $scope.users = $users;
         $scope.titles = $titles;
         $scope.contractors = $contractors;
         $scope.log = $log;
+        $scope.columns = $columns;
 
 
         $scope.tezt = function () {

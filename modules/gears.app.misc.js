@@ -221,6 +221,8 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
     $scope.pylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
     $scope.search = "";
 
+
+
     $scope.selectPowerLine = function (powerLineId) {
         if (powerLineId !== undefined) {
             angular.forEach($misc.powerLines.items, function (line) {
@@ -310,6 +312,10 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
             angular.forEach(data, function (pylon) {
                 var temp_pylon = $nodes.parseNode(pylon);
                 $application.currentPowerLineNodes.append(temp_pylon);
+                var marker = new google.maps.Marker({
+                    position: [temp_pylon.geo.latitude.value, temp_pylon.geo.longitude.value],
+                    map: $application.powerLinesMap
+                });
             });
             $application.currentPowerLineNodes._states_.loaded(true);
         }
@@ -404,6 +410,24 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
                 }
             });
         }
+    };
+
+
+    $scope.init = function () {
+        $log.info("HELLO");
+        $application.powerLinesMap = new google.maps.Map(document.getElementById('powerLinesMap'), {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 8
+        });
+    };
+
+
+    $scope.refreshMap = function () {
+        $log.info("REFRESH");
+        //google.maps.event.trigger($application.powerLinesMap, 'resize');
+        google.maps.event.addListener($application.powerLinesMap, "idle", function(){
+            google.maps.event.trigger($application.powerLinesMap, 'resize');
+        });
     };
 }]);
 
@@ -616,4 +640,18 @@ misc.controller("AddConnectionNodeModalController", ["$log", "$scope", "$misc", 
         $scope.newConnectionNodeTypeId = 0;
         $scope.newConnectionNode = undefined;
     };
+}]);
+
+
+
+misc.controller("PowerLinesMapController", ["$log", "$scope", "$application", function ($log, $scope, $application) {
+    $log.log("map controller");
+
+    //if ($application.powerLinesMap === undefined) {
+        $application.powerLinesMap = new google.maps.Map(document.getElementById('powerLinesMap'), {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 8
+        });
+    //}
+
 }]);

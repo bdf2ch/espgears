@@ -1,6 +1,6 @@
 <?php
     //if (!$_COOKIE["user"])
-    //            die("Неавторизованный доступ!");
+    //            die("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
     //else {
         include "../config.php";
         $postdata = json_decode(file_get_contents('php://input'));
@@ -8,43 +8,43 @@
         $action = $postdata -> action;
         $result = array();
 
-        /* Подключение к БД */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ */
         $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
         if (!$connection){
             oci_close($connection);
             print_r(oci_error());
-            die('Не удалось подключиться к БД');
+            die('пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ');
         } else {
             switch ($action) {
-                /* Возвращает все типы узлов */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
                 case "getNodeTypes":
                     get_node_types();
                     break;
-                /* Возвращает опоры по идентификатору линии */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
                 case "getPylonsByPowerLineId":
                     get_pylons_by_power_line_id($postdata);
                     break;
-                /* Получает узлы, вхоядящие в состав путей, исходящих из заданного узла */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
                 case "getBranches":
                     get_branches($postdata);
                     break;
-                /* Добавление узла в сеть */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ */
                 case "addNode":
                     add_node($postdata);
                     break;
-                /* Редактирование опоры */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
                 case "editNode":
                     edit_node($postdata);
                     break;
-                /* Возвращает узлы коннекторы, расположенные на базовом узле */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
                 case "getConnectionNodesByBaseNodeId":
                     get_connection_nodes_by_base_node_id($postdata);
                     break;
-                /* Добавляет узел-коннектор к базовому узлу */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
                 case "addConnectionNode":
                     add_connection_node($postdata);
                     break;
-                /* Удаляет узел-коннектор */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
                 case "deleteConnectionNode":
                     delete_connection_node($postdata);
                     break;
@@ -81,11 +81,11 @@
             }
         }
 
-        // Освобождение ресурсов
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         oci_free_statement($statement);
         oci_free_statement($cursor);
 
-        // Возврат результата
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         echo json_encode($result);
     };
 
@@ -123,16 +123,16 @@
             }
         }
 
-        // Освобождение ресурсов
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         oci_free_statement($statement);
         oci_free_statement($cursor);
 
-        // Возврат результата
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         echo json_encode($result);
     };
 
 
-    /* Получает узлы, вхоядящие в состав путей, исходящих из заданного узла */
+    /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
     function get_branches ($postdata) {
         global $connection;
         $titleId = $postdata -> data -> titleId;
@@ -188,11 +188,11 @@
             }
         }
 
-        // Освобождение ресурсов
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         oci_free_statement($statement);
         oci_free_statement($cursor);
 
-        // Возврат результата
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         echo json_encode($result);
     };
 
@@ -200,7 +200,7 @@
 
 
 
-/* Добавление узла в сеть*/
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ*/
 function add_node ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -209,10 +209,12 @@ function add_node ($postdata) {
     $number = $postdata -> data -> number;
     $powerLineId = $postdata -> data -> powerLineId;
     $pylonTypeId = $postdata -> data -> pylonTypeId;
+    $latitude = $postdata -> data -> latitude;
+    $longitude = $postdata -> data -> longitude;
     $pylonSchemeTypeId = 0;
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_ADD_NODE(:n_node_type_id, :n_point_id, :n_pylon_type_id, :n_pylon_scheme_type_id, :n_power_line_id, :n_pylon_number, :n_node); end;")) {
+    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_ADD_NODE(:n_node_type_id, :n_point_id, :n_pylon_type_id, :n_pylon_scheme_type_id, :n_power_line_id, :n_pylon_number, :n_latitude, :n_longitude, :n_node); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -247,6 +249,16 @@ function add_node ($postdata) {
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
+        if (!oci_bind_by_name($statement, ":n_latitude", $latitude, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_longitude", $longitude, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
         if (!oci_bind_by_name($statement, ":n_node", $cursor, -1, OCI_B_CURSOR)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
@@ -267,16 +279,16 @@ function add_node ($postdata) {
         }
     }
 
-    // Освобождение ресурсов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     oci_free_statement($statement);
     oci_free_statement($cursor);
-    // Возврат результата
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     echo json_encode($result);
 };
 
 
 
-/* Редактирование опоры */
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 function edit_node ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -343,15 +355,15 @@ function edit_node ($postdata) {
         }
     }
 
-    // Освобождение ресурсов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     oci_free_statement($statement);
     oci_free_statement($cursor);
-    // Возврат результата
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     echo json_encode($result);
 };
 
 
-/* Возвращает узлы-коннекторы, расположенные на базовом узле */
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
 function get_connection_nodes_by_base_node_id ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -384,16 +396,16 @@ function get_connection_nodes_by_base_node_id ($postdata) {
         }
     }
 
-    // Освобождение ресурсов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     oci_free_statement($statement);
     oci_free_statement($cursor);
 
-    // Возврат результата
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     echo json_encode($result);
 };
 
 
-/* Добавление узла-коннектора к базовому узлу */
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
 function add_connection_node ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -448,16 +460,16 @@ function add_connection_node ($postdata) {
         }
     }
 
-    // Освобождение ресурсов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     oci_free_statement($statement);
     oci_free_statement($cursor);
-    // Возврат результата
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     echo json_encode($result);
 };
 
 
 
-/* Удаление узла-коннектора */
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ */
 function delete_connection_node ($postdata) {
     global $connection;
     $connectionNodeId = $postdata -> data -> connectionNodeId;
@@ -490,9 +502,9 @@ function delete_connection_node ($postdata) {
 
     }
 
-    // Освобождение ресурсов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     oci_free_statement($statement);
-    // Возврат результата
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     echo json_encode($result);
 
 };

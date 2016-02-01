@@ -110,10 +110,119 @@ var test = angular.module("gears.test", [])
 
             return service;
         }]);
+
+
+
+        $provide.factory("$columns", ["$log", function ($log) {
+            var service = {};
+
+            var items = []; // Массив с контейнерами колонок
+
+
+            /**
+             * Регистрирует контейнер колонок
+             * @param columns {} - Контейнер колонок
+             * @returns {boolean} - Возвращает true в случае успеха, false - в противном случае
+             */
+            service.register = function (columns) {
+                if (columns !== undefined) {
+                    items.push(columns);
+                    return true;
+                } else {
+                    $log.error("$columns: Не указаны параметры при регистрации контейнера колонок");
+                    return false;
+                }
+            };
+
+
+            /**
+             * Разварачивает колонку на всю ширину контейера
+             * @param columnsId {String} - Идентификатор контейнера колонок
+             * @param columnId {String} - Идентификатор колонки
+             * @returns {boolean} - Возвращает true в случае успеха, иначе - false
+             */
+            service.maximize = function (columnsId, columnId) {
+                if (columnsId !== undefined && columnId !== undefined) {
+                    var length = items.length;
+                    var columns_index = -1;
+                    var column_index = -1;
+                    for (var i = 0; i < length; i++) {
+                        if (items[i].columnsId === columnsId) {
+                            columns_index = i;
+                            var columns_length = items[i].columns.length;
+                            for (var y = 0; y < columns_length; y++) {
+                                if (items[i].columns[y].columnId === columnId) {
+                                    column_index = y;
+                                }
+                            }
+                        }
+                    }
+                    if (columns_index != -1) {
+                        if (column_index != -1) {
+                            for (var x = 0; x < columns_length; x ++) {
+                                var column = items[columns_index].columns[x];
+                                if (column.columnId === columnId) {
+                                    column.isMaximized = true;
+                                    column.isMinimized = false;
+                                    column.currentWidth = 100;
+                                } else {
+                                    column.isMaximized = false;
+                                    column.isMinimized = true;
+                                    column.currentWidth = 0;
+                                }
+                            }
+                        }  else {
+                            $log.error("$columns: Колонка с идентификатором '" + columnId + "' не найдена");
+                            return false;
+                        }
+                    } else {
+                        $log.error("$models: Контейнер колонок с идентификатором '" + columnsId + "' не найден");
+                        return false;
+                    }
+                } else {
+                    $log.error("$columns: Не указаны параметры при разворачивании колонки");
+                    return false;
+                }
+            };
+
+
+            /**
+             * Восстанавливает первоначальную ширину колонок
+             * @param columnsId {String} - Идентификатор контейнера колонок
+             * @returns {boolean} - Возвращает true в случае успеха, false - в противном случае
+             */
+            service.restore = function (columnsId) {
+                if (columnsId !== undefined) {
+                    var length = items.length;
+                    var container_found = false;
+                    for (var i = 0; i < length; i ++) {
+                        if (items[i].columnsId === columnsId) {
+                            container_found = true;
+                            var columns_length = items[i].columns.length;
+                            for (var x = 0; x < columns_length; x++) {
+                                var column = items[i].columns[x];
+                                column.isMaximized = false;
+                                column.isMinimized = false;
+                                column.currentWidth = column.width;
+                            }
+                        }
+                    }
+                    if (container_found === false) {
+                        $log.error("$columns: Контейнер колонок с идентификатором '" + columnsId + "' не найден");
+                        return false;
+                    }
+                } else {
+                    $log.error("$columns: Не заданы параметры при восстановлении ширины колонок");
+                    return false;
+                }
+            };
+
+            return service;
+        }]);
     })
     .run(function ($modules, $models, $log) {
         $modules.load($models);
-
+        $log.log("TEST MODULE LOADED");
 
 
         //var user = $models.add({ title: "User", controller: "test.php" })
@@ -129,19 +238,28 @@ var test = angular.module("gears.test", [])
 
 
 
-test.directive("columns", ["$log", function ($log) {
+
+
+
+
+/********** COLUMNS **********/
+
+test.directive("columns", ["$log", "$columns", function ($log, $columns) {
     return {
         restrict: "E",
         transclude: true,
-        template: "<div class='gears-columns'>" +
-                      "<div class='gears-columns-row' ng-transclude></div>" +
-                  "</div>",
+        scope: {
+            columnsId: "@"
+        },
+        template:
+            "<div class='gears-columns'>" +
+                "<div class='gears-columns-row' ng-transclude></div>" +
+            "</div>",
         replace: true,
         controller: function ($scope) {
             var columns = $scope.columns = [];
 
             this.add = function (column) {
-                column.columnId = columns.length + 1;
                 column.isMaximized = false;
                 column.isMinimized = false;
                 columns.push(column);
@@ -154,6 +272,8 @@ test.directive("columns", ["$log", function ($log) {
                         if (columns[i].columnId === id) {
                             columns[i].currentWidth = 100;
                             columns[i].isMaximized = true;
+                            if (columns[i].onMaximize !== undefined && typeof columns[i].onMaximize === "function")
+                                columns[i].onMaximize();
                         } else {
                             columns[i].currentWidth = 0;
                             columns[i].isMinimized = true;
@@ -171,9 +291,13 @@ test.directive("columns", ["$log", function ($log) {
                 }
             };
 
+            $columns.register($scope);
+
         }
     }
 }]);
+
+
 
 
 test.directive("column", ["$log", function ($log) {
@@ -194,9 +318,11 @@ test.directive("column", ["$log", function ($log) {
                   "</div>",
         replace: true,
         scope: {
+            columnId: "@",
             caption: "@",
             width: "@",
-            maximize: "@"
+            maximizable: "@",
+            onMaximize: "&"
         },
         controller: function ($scope) {
             var controls = $scope.controls = [];
@@ -213,22 +339,30 @@ test.directive("column", ["$log", function ($log) {
             var currentWidth = scope.currentWidth = parseInt(scope.width);
 
 
-            ctrl.add(scope);
+
             if (scope.caption !== undefined && scope.caption !== "")
                 scope.showCaption = true;
-            if (scope.maximize !== undefined && scope.maximize === "1")
+            if (scope.maximizable !== undefined && scope.maximizable === "1")
                 scope.showMaximizeButton = true;
+            else {
+                scope.showMaximizeButton = false;
+            }
 
             scope.max = function () {
                 ctrl.maximize(scope.columnId);
+                //if (scope.onMaximize !== undefined)
+                //    scope.onMaximize();
             };
 
             scope.min = function () {
                 ctrl.restore();
             };
+
+            ctrl.add(scope);
         }
     }
 }]);
+
 
 
 test.directive("columnControl", [function () {
@@ -241,7 +375,8 @@ test.directive("columnControl", [function () {
             action: "&",
             controlClass: "@",
             icon: "@",
-            title: "@"
+            title: "@",
+            ngShow: "&"
         },
         link: function (scope, element, attrs, ctrl) {
             ctrl.addControl(scope);
@@ -372,7 +507,7 @@ test.directive("tabz", ["$log", function ($log) {
                   "</div>",
         replace: true,
         controller: function ($scope, $element) {
-            $log.info("tabz");
+            //$log.info("tabz");
             $scope.tabs = [];
             this.topPosition = $scope.topPosition = true;
             $scope.currentTemplateUrl = "";
@@ -399,7 +534,7 @@ test.directive("tabz", ["$log", function ($log) {
                         $scope.tabs[0].active = true;
                         $scope.currentTemplateUrl = $scope.tabs[0].templateUrl;
                     }
-                    $log.info($scope.tabs);
+                    //$log.info($scope.tabs);
                 }
             };
 
@@ -437,13 +572,13 @@ test.directive("tab", ["$log", function ($log) {
         },
         template: "<li ng-class='{ \"active\": active === true, \"top\": topPosition === true, \"bottom\": topPosition === false }' ng-click='select()' title='{{ title }}'>{{ caption }}<div ng-transclude></div></li>",
         link: function (scope, element, attrs, ctrl) {
-            $log.info("tab");
+            //$log.info("tab");
             scope.active = false;
             scope.topPosition = ctrl.topPosition;
             ctrl.add(scope);
 
 
-            $log.info(angular.element(element).innerHTML);
+            //$log.info(angular.element(element).innerHTML);
 
             if (scope.caption !== undefined && scope.caption !== "") {
 
