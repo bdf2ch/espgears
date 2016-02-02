@@ -220,6 +220,7 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
     $scope.app = $application;
     $scope.pylons = $factory({ classes: ["Collection", "States"], base_class: "Collection" });
     $scope.search = "";
+    $scope.markers = [];
 
 
 
@@ -231,6 +232,14 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
                         line._states_.selected(false);
                         $application.currentPowerLine = undefined;
                         $application.currentPowerLineNodes.clear();
+                        angular.forEach($application.powerLinesMapMarkers, function (marker) {
+                            marker.setMap(null);
+                        });
+                        angular.forEach($application.powerLinesMapLinks, function (link) {
+                            link.setMap(null);
+                        });
+                        $application.powerLinesMapMarkers.splice(0, $application.powerLinesMapMarkers.length);
+                        $application.powerLinesMapLinks.splice(0, $application.powerLinesMapLinks.length);
                     } else {
                         line._states_.selected(true);
                         $application.currentPowerLine = line;
@@ -238,6 +247,14 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
                         $application.currentPowerLineNodes._states_.loaded(false);
                         $application.currentPowerLineNodes.clear();
                         $application.currentPowerLineNodeConnectionNodes.clear();
+                        angular.forEach($application.powerLinesMapMarkers, function (marker) {
+                            marker.setMap(null);
+                        });
+                        angular.forEach($application.powerLinesMapLinks, function (link) {
+                            link.setMap(null);
+                        });
+                        $application.powerLinesMapMarkers.splice(0, $application.powerLinesMapMarkers.length);
+                        $application.powerLinesMapLinks.splice(0, $application.powerLinesMapLinks.length);
                         $nodes.getPylonsByPowerLineId(powerLineId, $scope.onSuccessGetPylons)
                     }
                 } else {
@@ -309,14 +326,99 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
 
     $scope.onSuccessGetPylons = function (data) {
         if (data !== undefined) {
-            angular.forEach(data, function (pylon) {
-                var temp_pylon = $nodes.parseNode(pylon);
-                $application.currentPowerLineNodes.append(temp_pylon);
-                var marker = new google.maps.Marker({
-                    position: [temp_pylon.geo.latitude.value, temp_pylon.geo.longitude.value],
-                    map: $application.powerLinesMap
+            var minLat = 0;
+            var maxLat = 0;
+            var minLng = 0;
+            var maxLng = 0;
+
+            angular.forEach(data, function (node) {
+                var temp_node = $nodes.parseNode(node);
+                $application.currentPowerLineNodes.append(temp_node);
+                var title = "";
+                var content = "";
+                switch (temp_node.__class__) {
+                    case "Pylon":
+                        title = "Опора #" + temp_node.number.value;
+                        content = "<b>Опора #" + temp_node.number.value + "</b><br/><span class='secondary-text'>Тип опоры: ";
+                        if (temp_node.pylonTypeId.value === 0)
+                            content = content + "не указан</span>";
+                        else
+                            content = content + $misc.pylonTypes.find("id", temp_node.pylonTypeId.value).title.value + "</span>";
+                        break;
+                }
+                var infowindow = new google.maps.InfoWindow({
+                    content: content
                 });
+                var image = {
+                    url: 'resources/img/icons/pylon.png',
+                    // This marker is 20 pixels wide by 32 pixels high.
+                    //size: new google.maps.Size(20, 32),
+                    // The origin for this image is (0, 0).
+                    origin: new google.maps.Point(0, 0),
+                    // The anchor for this image is the base of the flagpole at (0, 32).
+                    anchor: new google.maps.Point(20, 20)
+                };
+
+                var marker = new google.maps.Marker({
+                    position: { lat: parseFloat(node["LATITUDE"]), lng: parseFloat(node["LONGITUDE"])},
+                    map: $application.powerLinesMap,
+                    title: title,
+                    icon: image
+                });
+
+                $application.powerLinesMapMarkers.push(marker);
+
+                $log.info("MARKER = ", marker);
+                marker.addListener('click', function() {
+                    $application.powerLinesMap.setCenter(marker.getPosition());
+                    infowindow.open($application.powerLinesMap, marker);
+                });
+
+
+
             });
+
+            for (var i = 0; i < $application.powerLinesMapMarkers.length; i++) {
+                if ($application.powerLinesMapMarkers[i + 1] !== undefined) {
+                    var link = new google.maps.Polyline({
+                        path: [$application.powerLinesMapMarkers[i].getPosition(), $application.powerLinesMapMarkers[i+1].getPosition()],
+                        geodesic: true,
+                        strokeColor: '#FF0000',
+                        strokeOpacity: 1.0,
+                        strokeWeight: 2
+                    });
+                    link.setMap($application.powerLinesMap);
+                    $application.powerLinesMapLinks.push(link);
+                }
+
+                minLat = $application.powerLinesMapMarkers[0].getPosition().lat();
+                minLng = $application.powerLinesMapMarkers[i].getPosition().lng();
+                var tempLat = $application.powerLinesMapMarkers[i].getPosition().lat();
+                var tempLng = $application.powerLinesMapMarkers[i].getPosition().lng();
+                if (tempLat < minLat)
+                    minLat = tempLat;
+                if (tempLat > maxLat)
+                    maxLat = tempLat;
+                if (tempLng < minLng)
+                    minLng = tempLng;
+                if (tempLng > maxLng)
+                    maxLng = tempLng;
+            }
+
+            $log.info("min lat = ", minLat, ", max lat = ", maxLat, ", min lng = ", minLng, ", max lng = ", maxLng);
+            $application.powerLinesMap.fitBounds(
+                new google.maps.LatLngBounds(
+                    {
+                        lat: $application.powerLinesMapMarkers[0].getPosition().lat(),
+                        lng: $application.powerLinesMapMarkers[0].getPosition().lng()
+                    },
+                    {
+                        lat: $application.powerLinesMapMarkers[$application.powerLinesMapMarkers.length-1].getPosition().lat(),
+                        lng: $application.powerLinesMapMarkers[$application.powerLinesMapMarkers.length-1].getPosition().lng()
+                    }
+                ));
+
+
             $application.currentPowerLineNodes._states_.loaded(true);
         }
     };
@@ -414,10 +516,9 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
 
 
     $scope.init = function () {
-        $log.info("HELLO");
         $application.powerLinesMap = new google.maps.Map(document.getElementById('powerLinesMap'), {
             center: {lat: -34.397, lng: 150.644},
-            zoom: 8
+            zoom: 10
         });
     };
 
@@ -428,6 +529,10 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
         google.maps.event.addListener($application.powerLinesMap, "idle", function(){
             google.maps.event.trigger($application.powerLinesMap, 'resize');
         });
+    };
+
+    $scope.min = function () {
+        $log.info("MINIMIZED");
     };
 }]);
 
@@ -523,6 +628,35 @@ misc.controller("AddPowerLineNodeModalController", ["$log", "$scope", "$misc", "
         $scope.newNode._model_.reset();
         var temp_node = $nodes.parseNode(data);
         $application.currentPowerLineNodes.append(temp_node);
+        var title = "";
+        var content = "";
+        switch (temp_node.__class__) {
+            case "Pylon":
+                title = "Опора #" + temp_node.number.value;
+                content = "<b>Опора #" + temp_node.number.value + "</b><br/><span class='secondary-text'>Тип опоры: ";
+                if (temp_node.pylonTypeId.value === 0)
+                    content = content + "не указан</span>";
+                else
+                    content = content + $misc.pylonTypes.find("id", temp_node.pylonTypeId.value).title.value + "</span>";
+                break;
+        }
+        var infowindow = new google.maps.InfoWindow({
+            content: content
+        });
+        var image = {
+            url: 'resources/img/icons/pylon.png'
+        };
+        var marker = new google.maps.Marker({
+            position: { lat: parseFloat(data["LATITUDE"]), lng: parseFloat(data["LONGITUDE"])},
+            map: $application.powerLinesMap,
+            title: title,
+            icon: image
+        });
+        marker.addListener('click', function() {
+            infowindow.open($application.powerLinesMap, marker);
+            $application.powerLinesMap.setCenter(marker.getPosition());
+        });
+        $application.powerLinesMapMarkers.push(marker);
     };
 
 

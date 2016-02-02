@@ -288,6 +288,8 @@ test.directive("columns", ["$log", "$columns", function ($log, $columns) {
                     columns[i].currentWidth = columns[i].width;
                     columns[i].isMaximized = false;
                     columns[i].isMinimized = false;
+                    if (columns[i].onMinimize !== undefined && typeof columns[i].onMinimize === "function")
+                        columns[i].onMinimize();
                 }
             };
 
@@ -312,7 +314,7 @@ test.directive("column", ["$log", function ($log) {
                           "<button class='service-button' ng-show='showMaximizeButton === true && isMaximized === false' ng-click='max()' title='Развернуть колонку'>&harr;</button>" +
                           "<button class='service-button' ng-show='isMaximized' ng-click='min()' title='Свернуть колонку'>&rarr;</button>" +
                       "</div>" +
-                      "<div class='right'><button ng-repeat='control in controls' class='{{ control.controlClass }}' ng-click='control.action()' title='{{ control.title }}'>{{ control.caption }}</button></div>" +
+                      "<div class='right'><button ng-repeat='control in controls' ng-show='control.isVisible' class='{{ control.controlClass }}' ng-click='control.action()' title='{{ control.title }}'>{{ control.caption }}</button></div>" +
                       "</div>" +
                       "<div class='column-content' ng-show='isMinimized === false' ng-transclude></div>" +
                   "</div>",
@@ -322,7 +324,8 @@ test.directive("column", ["$log", function ($log) {
             caption: "@",
             width: "@",
             maximizable: "@",
-            onMaximize: "&"
+            onMaximize: "&",
+            onMinimize: "&"
         },
         controller: function ($scope) {
             var controls = $scope.controls = [];
@@ -350,8 +353,6 @@ test.directive("column", ["$log", function ($log) {
 
             scope.max = function () {
                 ctrl.maximize(scope.columnId);
-                //if (scope.onMaximize !== undefined)
-                //    scope.onMaximize();
             };
 
             scope.min = function () {
@@ -365,7 +366,7 @@ test.directive("column", ["$log", function ($log) {
 
 
 
-test.directive("columnControl", [function () {
+test.directive("columnControl", ["$log", function ($log) {
     return {
         restrict: "E",
         require: "^column",
@@ -376,10 +377,20 @@ test.directive("columnControl", [function () {
             controlClass: "@",
             icon: "@",
             title: "@",
-            ngShow: "&"
+            ngShow: "="
         },
         link: function (scope, element, attrs, ctrl) {
+            //scope.ngShow = scope.ngShow === undefined ? true : scope.ngShow;
+            scope.isVisible = scope.ngShow !== undefined ? scope.ngShow : true;
+
+            scope.$watch("ngShow", function (value) {
+                if (value !== undefined)
+                    scope.isVisible = value;
+            });
+
+            //$log.info("visible = ", scope.visible);
             ctrl.addControl(scope);
+            //$log.info("ngShow = ", scope.ngShow);
         }
     }
 }]);

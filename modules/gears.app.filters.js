@@ -244,8 +244,66 @@ var AppFilters = angular.module("gears.app.filters", [])
         }]);
 
 
+        /**
+         * coordinate
+         * Фильтр ввода координат объекта
+         */
+        $filterProvider.register("coordinate", ["$log", function ($log) {
+            return function (input) {
+                var index = input.indexOf(",");
+                if (index !== -1)
+                    return input.replace(",", ".");
+            }
+        }]);
+
+
     })
     .run(function () {
 
     }
 );
+
+
+AppFilters.directive("coordinate", ["$log", function ($log) {
+    return {
+        restrict: "A",
+        require: "ngModel",
+        scope: {
+            //ngModel: "="
+        },
+        link: function (scope, element, attrs, ctrl) {
+
+            //scope.$watch("ngModel", function (val) {
+            //    ctrl.$setViewValue(val);
+            //});
+
+
+            ctrl.$formatters.push(function (val) {
+                if (val !== undefined) {
+                    $log.log("model value = ", val);
+                    //var strVal = val.toString();
+                    //var index = strVal.indexOf(",");
+                    //if (index !== -1)
+                    //    return strVal.replace(",", ".");
+                    //$log.log("parsed value = ", parseFloat(val));
+                    //return parseFloat(val);
+                } else
+                    return 0;
+            });
+
+            /* from view to model */
+            ctrl.$parsers.push(function (val) {
+                if (val !== undefined) {
+                    $log.log("parser value = ", val);
+                    var strVal = val.toString();
+                    var index = strVal.indexOf(",");
+                    if (index !== -1) {
+                        return strVal.replace(",", ".");
+                        $log.log("comma found");
+                    } else return "nothing";
+                }
+
+            })
+        }
+    }
+}]);

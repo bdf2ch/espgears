@@ -17,6 +17,7 @@ function Field (parameters) {
     this.required = false;      // Флаг, является ли поле обязательным для заполнения
     this.title = "";
     this.isValid = false;
+    this.raw = false;
 
     if (parameters !== undefined) {
         for (var param in parameters) {
@@ -354,10 +355,16 @@ var gears = angular.module("gears", [])
                                         if (JSONdata[data] !== "") {
                                             if (isNaN(JSONdata[data]) === false) {
                                                 if (JSONdata[data] !== null) {
-                                                    if (JSONdata[data].constructor === Boolean) {
+                                                    if (this.__instance__[prop].raw === false) {
+                                                        //$log.log(prop + " is not raw");
+                                                        if (JSONdata[data].constructor === Boolean) {
+                                                            this.__instance__[prop].value = JSONdata[data];
+                                                        } else
+                                                            this.__instance__[prop].value = parseInt(JSONdata[data]);
+                                                    } else {
+                                                        $log.log(prop + " is raw");
                                                         this.__instance__[prop].value = JSONdata[data];
-                                                    } else
-                                                        this.__instance__[prop].value = parseInt(JSONdata[data]);
+                                                    }
                                                 }
                                             } else {
                                                 this.__instance__[prop].value = JSONdata[data];

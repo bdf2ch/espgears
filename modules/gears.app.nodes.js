@@ -30,7 +30,7 @@ var nodes = angular.module("gears.app.nodes", [])
                         this.isBasicNode.value = this.isBasicNode.value === 1 ? true : false;
                         this.isAllowConnection.value = this.isAllowConnection.value === 1 ? true : false;
 
-                        $log.log(this.title.value + " isBasic = ", this.isBasicNode.value);
+                        //$log.log(this.title.value + " isBasic = ", this.isBasicNode.value);
                     }
                 },
 
@@ -45,10 +45,8 @@ var nodes = angular.module("gears.app.nodes", [])
                     titleId: new Field({ source: "TITULE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     titlePartId: new Field({ source: "TITULE_PART_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 }),
-                    geo: {
-                        latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true }),
-                        longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true })
-                    }
+                    latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true, raw: true }),
+                    longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true, raw: true })
                 },
 
                 /**
@@ -66,14 +64,13 @@ var nodes = angular.module("gears.app.nodes", [])
                     branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 }),
                     display: "",
                     search: "",
-                    geo: {
-                        latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true }),
-                        longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true })
-                    },
+                    latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true }),
+                    longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true }),
 
                     _init_: function () {
                         this.display = "#" + this.number.value;
                         this.search = "#" + this.number.value.toString();
+                        this.latitude
                     }
                 },
 
@@ -239,8 +236,8 @@ var nodes = angular.module("gears.app.nodes", [])
                             number: node.number.value,
                             powerLineId: node.powerLineId.value,
                             pylonTypeId: node.pylonTypeId.value,
-                            latitude: node.geo.latitude.value,
-                            longitude: node.geo.longitude.value
+                            latitude: node.latitude.value,
+                            longitude: node.longitude.value
                         }
                     };
                     $http.post("serverside/controllers/nodes.php", params)

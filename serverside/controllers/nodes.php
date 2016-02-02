@@ -8,43 +8,43 @@
         $action = $postdata -> action;
         $result = array();
 
-        /* ����������� � �� */
+
         $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
         if (!$connection){
             oci_close($connection);
             print_r(oci_error());
-            die('�� ������� ������������ � ��');
+            die("dasdas");
         } else {
             switch ($action) {
-                /* ���������� ��� ���� ����� */
+
                 case "getNodeTypes":
                     get_node_types();
                     break;
-                /* ���������� ����� �� �������������� ����� */
+
                 case "getPylonsByPowerLineId":
                     get_pylons_by_power_line_id($postdata);
                     break;
-                /* �������� ����, ��������� � ������ �����, ��������� �� ��������� ���� */
+
                 case "getBranches":
                     get_branches($postdata);
                     break;
-                /* ���������� ���� � ���� */
+
                 case "addNode":
                     add_node($postdata);
                     break;
-                /* �������������� ����� */
+
                 case "editNode":
                     edit_node($postdata);
                     break;
-                /* ���������� ���� ����������, ������������� �� ������� ���� */
+
                 case "getConnectionNodesByBaseNodeId":
                     get_connection_nodes_by_base_node_id($postdata);
                     break;
-                /* ��������� ����-��������� � �������� ���� */
+
                 case "addConnectionNode":
                     add_connection_node($postdata);
                     break;
-                /* ������� ����-��������� */
+
                 case "deleteConnectionNode":
                     delete_connection_node($postdata);
                     break;
@@ -200,7 +200,6 @@
 
 
 
-/* ���������� ���� � ����*/
 function add_node ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -279,16 +278,14 @@ function add_node ($postdata) {
         }
     }
 
-    // ������������ ��������
     oci_free_statement($statement);
     oci_free_statement($cursor);
-    // ������� ����������
+
     echo json_encode($result);
 };
 
 
 
-/* �������������� ����� */
 function edit_node ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -355,15 +352,12 @@ function edit_node ($postdata) {
         }
     }
 
-    // ������������ ��������
     oci_free_statement($statement);
     oci_free_statement($cursor);
-    // ������� ����������
     echo json_encode($result);
 };
 
 
-/* ���������� ����-����������, ������������� �� ������� ���� */
 function get_connection_nodes_by_base_node_id ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -396,16 +390,13 @@ function get_connection_nodes_by_base_node_id ($postdata) {
         }
     }
 
-    // ������������ ��������
     oci_free_statement($statement);
     oci_free_statement($cursor);
-
-    // ������� ����������
     echo json_encode($result);
 };
 
 
-/* ���������� ����-���������� � �������� ���� */
+
 function add_connection_node ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -460,10 +451,8 @@ function add_connection_node ($postdata) {
         }
     }
 
-    // ������������ ��������
     oci_free_statement($statement);
     oci_free_statement($cursor);
-    // ������� ����������
     echo json_encode($result);
 };
 
@@ -475,38 +464,30 @@ function delete_connection_node ($postdata) {
     $connectionNodeId = $postdata -> data -> connectionNodeId;
     $result = "fail";
 
-
     if (!$statement = oci_parse($connection, "begin PKG_NODES.P_DELETE_CONNECTION_NODE(:n_node_id, :answer); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
     } else {
-
         if (!oci_bind_by_name($statement, ":n_node_id", $connectionNodeId, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-
         if (!oci_bind_by_name($statement, ":answer", $result, 50, SQLT_CHR)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-
         if (!oci_execute($statement)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         }
-
     }
 
-    // ������������ ��������
     oci_free_statement($statement);
-    // ������� ����������
     echo json_encode($result);
-
 };
 
 ?>
