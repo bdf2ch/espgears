@@ -54,18 +54,18 @@ var nodes = angular.module("gears.app.nodes", [])
                  * Набор свойст, описывающих опору
                  */
                 Pylon: {
-                    id: new Field({ source: "NODE_ID", value: 0, default_value: 0 }),
-                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
-                    pointId: new Field({ source: "POINT_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    pylonTypeId: new Field({ source: "PYLON_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    pylonSchemeTypeId: new Field({ source: "PYLON_SCHEME_TYPE_ID", value: 0, default_value: 0, backupable: true }),
-                    powerLineId: new Field({ source: "POWER_LINE_ID", value: 0, default_value: 0, backupable: true, required: true }),
-                    number: new Field({ source: "PYLON_NUMBER", value: 0, default_value: 0, backupable: true, required: true }),
-                    branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0 }),
+                    id: new Field({ source: "NODE_ID", value: 0, default_value: 0, type: "integer" }),
+                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true, type: "integer" }),
+                    pointId: new Field({ source: "POINT_ID", value: 0, default_value: 0, backupable: true, required: true, type: "integer" }),
+                    pylonTypeId: new Field({ source: "PYLON_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true, type: "integer" }),
+                    pylonSchemeTypeId: new Field({ source: "PYLON_SCHEME_TYPE_ID", value: 0, default_value: 0, backupable: true, type: "integer" }),
+                    powerLineId: new Field({ source: "POWER_LINE_ID", value: 0, default_value: 0, backupable: true, required: true, type: "integer" }),
+                    number: new Field({ source: "PYLON_NUMBER", value: 0, default_value: 0, backupable: true, required: true, type: "integer" }),
+                    branchesCount: new Field({ source: "OUT_PATHS", value: 0, default_value: 0, type: "integer" }),
                     display: "",
                     search: "",
-                    latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true }),
-                    longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true }),
+                    latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true, type: "float" }),
+                    longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true, type: "float" }),
 
                     _init_: function () {
                         this.display = "#" + this.number.value;
@@ -267,7 +267,9 @@ var nodes = angular.module("gears.app.nodes", [])
                             nodeTypeId: node.nodeTypeId.value,
                             number: node.__class__ === "Pylon" ? node.number.value : undefined,
                             powerLineId: node.__class__ === "Pylon" ? node.powerLineId.value : undefined,
-                            pylonTypeId: node.__class__ === "Pylon" ? node.pylonTypeId.value : undefined
+                            pylonTypeId: node.__class__ === "Pylon" ? node.pylonTypeId.value : undefined,
+                            latitude: node.latitude.value,
+                            longitude: node.longitude.value
                         }
                     };
                     $http.post("serverside/controllers/nodes.php", params)

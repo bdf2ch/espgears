@@ -16,7 +16,7 @@ var AppFilters = angular.module("gears.app.filters", [])
             return function (input) {
                 var result = [];
                 angular.forEach(input, function (type) {
-                    $log.log("type = ", type);
+                    //$log.log("type = ", type);
                     if (type.isBasicNode.value === true) {
                         result.push(type);
                     }

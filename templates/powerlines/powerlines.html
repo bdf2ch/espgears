@@ -224,7 +224,7 @@
 
 <columns columns-id="powerlines">
     <column column-id="power-lines" caption="Линии" width="20">
-        <column-control control-class="button green round" caption="+" action="addPowerLine" title="Добавить линию"></column-control>
+        <column-control control-class="button green round" caption="+" action="addPowerLine()" title="Добавить линию"></column-control>
 
         <div class="padding-5">
             <div class="service-message" ng-show="misc.powerLines._states_.loaded() === false">
@@ -254,7 +254,7 @@
         </div>
     </column>
 
-    <column column-id="nodes" caption="Объекты" width="20">
+    <column column-id="nodes" caption="Объекты на линии" width="20">
         <column-control control-class="button green round" caption="+" action="addNode()" title="Добавить объект" ng-show="app.currentPowerLine !== undefined"></column-control>
         <div class="padding-5">
             <div class="service-message" ng-show="app.currentPowerLineNodes._states_.loaded() === false">
@@ -271,6 +271,7 @@
                 <li class="card"
                     ng-class="{'active': node._states_.selected() === true}"
                     ng-repeat="node in app.currentPowerLineNodes.items | filter: {search: search} track by $index"
+                    id="{{ 'powerline_node_' + node.id.value }}"
                     ng-click="selectNode(node.id.value)">
                     <img src="../resources/img/icons/pylon.png" class="card-img icon" ng-show="node.__class__ === 'Pylon'"/>
                     <div class="card-header">
@@ -295,12 +296,26 @@
         </div>
 
     </column>
-    <column column-id="objects" caption="Оборудование" width="20">
-
+    <column column-id="objects" caption="Оборудование на объекте" width="20">
+        <column-control control-class="button green round" caption="+" action="addNode()" title="Добавить оборудование" ng-show="app.currentPowerLineNode !== undefined"></column-control>
+        <div class="service-message" ng-show="app.currentPowerLineNodeConnectionNodes._states_.loaded() === false">
+            <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+            <span>Загрузка...</span>
+        </div>
+        <div class="service-message" ng-show="app.currentPowerLineNode === undefined">
+            Выберите объект
+        </div>
+        <div class="service-message" ng-show="app.currentPowerLineNode !== undefined && app.currentPowerLineNodeConnectionNodes._states_.loaded() === true">
+            Для выбранного объекта оборудование не найдено
+        </div>
     </column>
+
+
     <column column-id="map" caption="Карта" width="60" maximizable="1" on-maximize="refreshMap()" on-minimize="min()">
         <div id="powerLinesMap" style="position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;" ng-init="init()"></div>
     </column>
+
+
 </columns>
 
 

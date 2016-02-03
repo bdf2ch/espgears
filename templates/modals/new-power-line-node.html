@@ -40,7 +40,7 @@
                 ng-options="type.id.value as type.title.value for type in misc.pylonTypes.items">
         </select>
     </div>
-    <div class="row height-100 padding-10">
+    <div class="row height-100 padding-10" ng-show="newNodeTypeId !== 0">
         <div class="width-45">
             <label for="node-latitude">Широта</label>
             <input type="text" class="width-100" name="node-latitude" id="node-latitude" ng-model="newNode.latitude.value">

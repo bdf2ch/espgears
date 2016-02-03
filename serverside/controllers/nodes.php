@@ -295,9 +295,11 @@ function edit_node ($postdata) {
     $powerLineId = $postdata -> data -> powerLineId;
     $pylonTypeId = $postdata -> data -> pylonTypeId;
     $pylonSchemeTypeId = 0;
+    $latitude = $postdata -> data -> latitude;
+    $longitude = $postdata -> data -> longitude;
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_EDIT_NODE(:node_id, :node_type_id, :pylon_number, :power_line_id, :pylon_type_id, :pylon_scheme_type_id, :edited_node); end;")) {
+    if (!$statement = oci_parse($connection, "begin PKG_NODES.P_EDIT_NODE(:node_id, :node_type_id, :pylon_number, :power_line_id, :pylon_type_id, :pylon_scheme_type_id, :n_latitude, :n_longitude, :edited_node); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -328,6 +330,16 @@ function edit_node ($postdata) {
             echo(json_encode($result));
         }
         if (!oci_bind_by_name($statement, ":pylon_scheme_type_id", $pylonSchemeTypeId, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_latitude", $latitude, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":n_longitude", $longitude, -1, OCI_DEFAULT)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));

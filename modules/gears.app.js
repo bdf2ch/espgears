@@ -101,9 +101,17 @@ var application = angular.module("gears.app", [
             application.currentPowerLineConnectionNode = undefined;
             application.currentWorkingCommission = undefined;
             application.currentUploaderData = {};
-            application.powerLinesMap = undefined;
-            application.powerLinesMapMarkers = [];
-            application.powerLinesMapLinks = [];
+
+            application.powerLinesMap = {
+                map: {},
+                markers: [],
+                links: [],
+                windows: []
+            };
+
+            //application.powerLinesMap = undefined;
+            //application.powerLinesMapMarkers = [];
+            //application.powerLinesMapLinks = [];
 
             application.init = function () {
                 var params = {

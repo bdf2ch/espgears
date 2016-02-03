@@ -18,6 +18,7 @@ function Field (parameters) {
     this.title = "";
     this.isValid = false;
     this.raw = false;
+    this.type = undefined;
 
     if (parameters !== undefined) {
         for (var param in parameters) {
@@ -349,32 +350,81 @@ var gears = angular.module("gears", [])
                         fromJSON: function (JSONdata) {
                             var result = 0;
                             for (var data in JSONdata) {
+
                                 for (var prop in this.__instance__) {
-                                    if (this.__instance__[prop].constructor === Field &&
-                                        this.__instance__[prop].source === data) {
+
+                                    if (this.__instance__[prop].constructor === Field && this.__instance__[prop].source === data) {
+
                                         if (JSONdata[data] !== "") {
-                                            if (isNaN(JSONdata[data]) === false) {
-                                                if (JSONdata[data] !== null) {
-                                                    if (this.__instance__[prop].raw === false) {
-                                                        //$log.log(prop + " is not raw");
+
+                                            if (this.__instance__[prop].type !== undefined) {
+                                                switch (this.__instance__[prop].type) {
+                                                    case "string":
+                                                        //$log.info("string attached to " + data);
+                                                        this.__instance__[prop].value = JSONdata[data].toString();
+                                                        break;
+                                                    case "integer":
+                                                        //$log.info("integer attached to " + data);
+                                                        if (!isNaN(JSONdata[data])) {
+                                                            this.__instance__[prop].value = parseInt(JSONdata[data]);
+                                                        } else {
+                                                            $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                            this.__instance__[prop].value = 0;
+                                                        }
+                                                        break;
+                                                    case "float":
+                                                        if (!isNaN(JSONdata[data])) {
+                                                            this.__instance__[prop].value = parseFloat(JSONdata[data]);
+                                                            //$log.info("float attached to " + data + ", " + this.__instance__[prop].value);
+                                                        } else {
+                                                            $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
+                                                            this.__instance__[prop].value = 0.0;
+                                                        }
+                                                        break;
+                                                    case "boolean":
+                                                        //$log.info("boolean attached to " + data);
+                                                        if (!isNaN(JSONdata[data])) {
+                                                            var value = parseInt(JSONdata[data]);
+                                                            if (value === 1 || value === 0) {
+                                                                this.__instance__[prop].value = value === 1 ? true : false;
+                                                            } else {
+                                                                $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                                this.__instance__[prop].value = false;
+                                                            }
+                                                        } else {
+                                                            var value = JSONdata[data].toString().toLowerCase();
+                                                            if (value === "true" || value === "false") {
+                                                                this.__instance__[prop].value = value === "true" ? true : false;
+                                                            } else {
+                                                                $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является интрепретируемым в логическое значение, свойству объекта присвоен false");
+                                                                this.__instance__[prop].value = false;
+                                                            }
+                                                        }
+                                                        break;
+                                                }
+                                            } else {
+                                                /* Для совместимости */
+                                                if (isNaN(JSONdata[data]) === false) {
+                                                    if (JSONdata[data] !== null) {
+
                                                         if (JSONdata[data].constructor === Boolean) {
                                                             this.__instance__[prop].value = JSONdata[data];
                                                         } else
                                                             this.__instance__[prop].value = parseInt(JSONdata[data]);
-                                                    } else {
-                                                        $log.log(prop + " is raw");
-                                                        this.__instance__[prop].value = JSONdata[data];
+
                                                     }
+                                                } else {
+                                                    this.__instance__[prop].value = JSONdata[data];
                                                 }
-                                            } else {
-                                                this.__instance__[prop].value = JSONdata[data];
                                             }
                                         } else
                                             this.__instance__[prop].value = "";
 
                                         result++;
                                     }
+
                                 }
+
                             }
                             if (this.__instance__["onInitModel"] !== undefined) {
                                 if (this.__instance__["onInitModel"].constructor === Function) {

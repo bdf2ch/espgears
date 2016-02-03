@@ -217,6 +217,45 @@ var test = angular.module("gears.test", [])
                 }
             };
 
+
+            service.scrollTo = function (columnsId, columnId, anchor) {
+                if (columnsId !== undefined && columnId !== undefined && anchor !== undefined) {
+                    var length = items.length;
+                    var columns_index = -1;
+                    var column_index = -1;
+                    for (var i = 0; i < length; i++) {
+                        if (items[i].columnsId === columnsId) {
+                            columns_index = i;
+                            var columns_length = items[i].columns.length;
+                            for (var y = 0; y < columns_length; y++) {
+                                if (items[i].columns[y].columnId === columnId) {
+                                    column_index = y;
+                                }
+                            }
+                        }
+                    }
+                    if (columns_index != -1) {
+                        if (column_index != -1) {
+                            var column = items[columns_index].columns[column_index];
+                            if (column.scroll(anchor) === false) {
+                                $log.error("$columns: Элемент с идентификатором '" + anchor + "' не найден при прокручивании содержимого колонки");
+                                return false
+                            } else
+                                return true;
+                        }  else {
+                            $log.error("$columns: Колонка с идентификатором '" + columnId + "' не найдена");
+                            return false;
+                        }
+                    } else {
+                        $log.error("$models: Контейнер колонок с идентификатором '" + columnsId + "' не найден");
+                        return false;
+                    }
+                } else {
+                    $log.error("$columns: Не указаны параметры при прокручивании содержимого колонки");
+                    return false;
+                }
+            };
+
             return service;
         }]);
     })
@@ -341,15 +380,20 @@ test.directive("column", ["$log", function ($log) {
             var showMaximizeButton = scope.showMaximizeButton = false;
             var currentWidth = scope.currentWidth = parseInt(scope.width);
 
+            scope.showCaption = scope.caption !== undefined && scope.caption !== "" ? true : false;
+            scope.showMaximizeButton = scope.maximizable !== undefined && scope.maximizable === "1" ? true : false;
 
-
-            if (scope.caption !== undefined && scope.caption !== "")
-                scope.showCaption = true;
-            if (scope.maximizable !== undefined && scope.maximizable === "1")
-                scope.showMaximizeButton = true;
-            else {
-                scope.showMaximizeButton = false;
-            }
+            scope.scroll = function (anchor) {
+                if (anchor !== undefined) {
+                    var column_content = angular.element(element).children()[1];
+                    var anchor_element = document.getElementById(anchor);
+                    if (anchor_element !== undefined && anchor_element !== null) {
+                        column_content.scrollTop = anchor_element.offsetTop - 5;
+                        return true;
+                    } else
+                        return false;
+                }
+            };
 
             scope.max = function () {
                 ctrl.maximize(scope.columnId);
@@ -380,17 +424,12 @@ test.directive("columnControl", ["$log", function ($log) {
             ngShow: "="
         },
         link: function (scope, element, attrs, ctrl) {
-            //scope.ngShow = scope.ngShow === undefined ? true : scope.ngShow;
             scope.isVisible = scope.ngShow !== undefined ? scope.ngShow : true;
-
             scope.$watch("ngShow", function (value) {
                 if (value !== undefined)
                     scope.isVisible = value;
             });
-
-            //$log.info("visible = ", scope.visible);
             ctrl.addControl(scope);
-            //$log.info("ngShow = ", scope.ngShow);
         }
     }
 }]);

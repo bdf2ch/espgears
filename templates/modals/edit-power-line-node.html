@@ -33,6 +33,29 @@
                 ng-options="type.id.value as type.title.value for type in misc.pylonTypes.items">
         </select>
     </div>
+    <div class="row height-100 padding-10">
+        <div class="width-45">
+            <label for="node-latitude">Широта</label>
+            <input type="text"
+                   class="width-100"
+                   name="node-latitude"
+                   id="node-latitude"
+                   ng-model="app.currentPowerLineNode.latitude.value"
+                   ng-change="app.currentPowerLineNode._states_.changed(true)"
+                   ng-disabled="app.currentPowerLineNode._states_.loading() === true">
+        </div>
+        <div class="width-10">&nbsp;</div>
+        <div class="width-45">
+            <label for="node-latitude">Долгота</label>
+            <input type="text"
+                   class="width-100"
+                   name="node-longitude"
+                   id="node-longitude"
+                   ng-model="app.currentPowerLineNode.longitude.value"
+                   ng-change="app.currentPowerLineNode._states_.changed(true)"
+                   ng-disabled="app.currentPowerLineNode._states_.loading() === true">
+        </div>
+    </div>
     <div class="row padding-10">
         <div class="width-50">
             <button class="button green square width-100"
