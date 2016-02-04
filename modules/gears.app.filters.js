@@ -268,42 +268,23 @@ AppFilters.directive("coordinate", ["$log", function ($log) {
     return {
         restrict: "A",
         require: "ngModel",
-        scope: {
-            //ngModel: "="
-        },
         link: function (scope, element, attrs, ctrl) {
-
-            //scope.$watch("ngModel", function (val) {
-            //    ctrl.$setViewValue(val);
-            //});
-
-
             ctrl.$formatters.push(function (val) {
-                if (val !== undefined) {
-                    $log.log("model value = ", val);
-                    //var strVal = val.toString();
-                    //var index = strVal.indexOf(",");
-                    //if (index !== -1)
-                    //    return strVal.replace(",", ".");
-                    //$log.log("parsed value = ", parseFloat(val));
-                    //return parseFloat(val);
-                } else
-                    return 0;
+                if (val !== undefined)
+                    return val.toString().replace( /,/g, ".");
+                else
+                    return "";
             });
 
             /* from view to model */
             ctrl.$parsers.push(function (val) {
                 if (val !== undefined) {
+                    $log.log("value type = ", typeof val);
                     $log.log("parser value = ", val);
-                    var strVal = val.toString();
-                    var index = strVal.indexOf(",");
-                    if (index !== -1) {
-                        return strVal.replace(",", ".");
-                        $log.log("comma found");
-                    } else return "nothing";
+                    var temp = val.replace( /,/g, "." );
+                    return +parseFloat(temp).toFixed(6);
                 }
-
-            })
+            });
         }
     }
 }]);

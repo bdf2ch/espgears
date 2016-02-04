@@ -240,6 +240,7 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
                         });
                         $application.powerLinesMap.markers.splice(0, $application.powerLinesMap.markers.length);
                         $application.powerLinesMap.links.splice(0, $application.powerLinesMap.links.length);
+                        $application.currentPowerLineNode = undefined;
                     } else {
                         line._states_.selected(true);
                         $application.currentPowerLine = line;
@@ -582,7 +583,7 @@ misc.controller("EditPowerLineModalController", ["$log", "$scope", "$misc", "$ap
  * AddPowerLineNodeModalController
  * Контроллер модального окна добавления опоры в линию
  */
-misc.controller("AddPowerLineNodeModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$nodes", function ($log, $scope, $misc, $factory, $application, $modals, $nodes) {
+misc.controller("AddPowerLineNodeModalController", ["$log", "$scope", "$misc", "$factory", "$application", "$modals", "$nodes", "$columns", function ($log, $scope, $misc, $factory, $application, $modals, $nodes, $columns) {
     $scope.misc = $misc;
     $scope.app = $application;
     $scope.nodes = $nodes;
@@ -653,8 +654,39 @@ misc.controller("AddPowerLineNodeModalController", ["$log", "$scope", "$misc", "
         });
         marker.nodeId = temp_node.id.value;
         marker.addListener('click', function() {
-            infowindow.open($application.powerLinesMap.map, marker);
-            $application.powerLinesMap.map.setCenter(marker.getPosition());
+            //infowindow.open($application.powerLinesMap.map, marker);
+            //$application.powerLinesMap.map.setCenter(marker.getPosition());
+
+            angular.forEach($application.currentPowerLineNodes.items, function (node) {
+                if (node.id.value === temp_node.id.value) {
+                    if (node._states_.selected() === true) {
+                        node._states_.selected(false);
+                        $application.currentPowerLineNode = undefined;
+                        $application.currentPowerLineNodeConnectionNodes.clear();
+                    } else {
+                        node._states_.selected(true);
+                        $application.currentPowerLineNode = node;
+                        $application.currentPowerLineNodeConnectionNodes.clear();
+                        $application.currentPowerLineNodeConnectionNodes._states_.loaded(false);
+                        angular.forEach($application.powerLinesMap.markers, function (marker) {
+                            if (marker.nodeId === temp_node.id.value) {
+                                $application.powerLinesMap.map.setCenter(marker.getPosition());
+                                $application.powerLinesMap.map.setZoom(16);
+                                angular.forEach($application.powerLinesMap.windows, function (window) {
+                                    if (window.nodeId === temp_node.id.value) {
+                                        window.open($application.powerLinesMap.map, marker);
+                                    }
+                                });
+                            }
+                        });
+                        $nodes.getConnectionNodesByBaseNodeId(temp_node.id.value, $scope.onSuccessGetConnectionNodes);
+                    }
+                } else {
+                    node._states_.selected(false);
+                }
+            });
+            $columns.scrollTo("powerlines", "nodes", "powerline_node_" + temp_node.id.value);
+
         });
         $application.powerLinesMap.markers.push(marker);
 
@@ -670,6 +702,17 @@ misc.controller("AddPowerLineNodeModalController", ["$log", "$scope", "$misc", "
             $application.powerLinesMap.links.push(link);
         }
 
+    };
+
+    $scope.onSuccessGetConnectionNodes = function (data) {
+        if (data !== undefined) {
+            angular.forEach(data, function (connector) {
+                var temp_connector = $nodes.parseNode(connector);
+                $application.currentPowerLineNodeConnectionNodes.append(temp_connector);
+            });
+            $application.currentPowerLineNodeConnectionNodes._states_.loaded(true);
+            $log.log($scope.app.currentPowerLineNodeConnectionNodes.items);
+        }
     };
 
 
@@ -718,7 +761,7 @@ misc.controller("EditPowerLineNodeModalController", ["$log", "$scope", "$misc", 
     $scope.onSuccessEditNode = function (data) {
         $application.currentPowerLineNode._states_.loaded(true);
         $application.currentPowerLineNode._states_.loading(false);
-        $application.currentPowerLineNode._backup_.setup();
+
         $modals.close();
 
         var temp_node = $nodes.parseNode(data);
@@ -727,7 +770,6 @@ misc.controller("EditPowerLineNodeModalController", ["$log", "$scope", "$misc", 
 
 
 
-        ***************************************
         var title = "";
         var content = "";
         switch (temp_node.__class__) {
@@ -741,7 +783,6 @@ misc.controller("EditPowerLineNodeModalController", ["$log", "$scope", "$misc", 
                 break;
         }
 
-        ***********************
 
 
 
@@ -755,9 +796,29 @@ misc.controller("EditPowerLineNodeModalController", ["$log", "$scope", "$misc", 
         });
         angular.forEach($application.powerLinesMap.windows, function (window) {
             if (window.nodeId === temp_node.id.value) {
-                window.setContent();
+                window.setContent(content);
             }
         });
+
+        $log.log("old lat = ", $application.currentPowerLineNode._backup_.data.latitude, ", old lng = ", $application.currentPowerLineNode._backup_.data.longitude);
+        angular.forEach($application.powerLinesMap.links, function (link) {
+            var path = link.getPath().getArray();
+            $log.log("start = ", path[0].lat(), ", ", path[0].lng(), "; end = ", +path[1].lat().toFixed(6), ", ", +path[1].lng().toFixed(6));
+            //var new_path = [];
+            if (+path[1].lat().toFixed(6) === $application.currentPowerLineNode._backup_.data.latitude && +path[1].lng().toFixed(6) === $application.currentPowerLineNode._backup_.data.longitude) {
+                $log.log("IN link found");
+                var new_path = [new google.maps.LatLng({ lat: path[0].lat(), lng: path[0].lng() }), new google.maps.LatLng({ lat: temp_node.latitude.value, lng: temp_node.longitude.value })];
+                link.setPath(new google.maps.MVCArray(new_path));
+            }
+
+            if (+path[0].lat().toFixed(6) === $application.currentPowerLineNode._backup_.data.latitude && +path[0].lng().toFixed(6) === $application.currentPowerLineNode._backup_.data.longitude) {
+                $log.log("OUT link found");
+                var new_path = [new google.maps.LatLng({ lat: temp_node.latitude.value, lng: temp_node.longitude.value }), new google.maps.LatLng({ lat: path[1].lat(), lng: path[1].lng() })];
+                link.setPath(new google.maps.MVCArray(new_path));
+            }
+        });
+        $application.currentPowerLineNode._backup_.setup();
+        $log.log("backuped node = ", $application.currentPowerLineNode);
     };
 }]);
 
@@ -795,10 +856,11 @@ misc.controller("AddConnectionNodeModalController", ["$log", "$scope", "$misc", 
         if ($scope.newConnectionNodeTypeId === 0) {
             $scope.errors.push("Вы не выбрали тип оборудования");
         }
-        if ($scope.newConnectionNodeTypeId === 2) {
-            if ($scope.newConnectionNode.anchorTypeId.value === 0)
-                $scope.errors.push("Вы не выбрали тип крепления");
-        }
+
+        //if ($scope.newConnectionNodeTypeId === 2) {
+        //    if ($scope.newConnectionNode.anchorTypeId.value === 0)
+        //        $scope.errors.push("Вы не выбрали тип крепления");
+        //}
         if ($scope.errors.length === 0) {
             $nodes.addConnectionNode(
                 $scope.newConnectionNode,

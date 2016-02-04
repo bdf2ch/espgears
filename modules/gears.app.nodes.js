@@ -87,13 +87,24 @@ var nodes = angular.module("gears.app.nodes", [])
 
                 /**
                  * Anchor
-                 * набор свойств и методов, описывающих крепление
+                 * Набор свойств и методов, описывающих крепление
                  */
                 Anchor: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     anchorTypeId: new Field({ source: "ANCHOR_TYPE_ID", value: 0, default_value: 0, backupable: true }),
                     nodeId: new Field({ source: "BASE_NODE_ID", value: 0, default_value: 0, backupable: true })
+                },
+
+                /**
+                 * Union
+                 * Набор свойств и методов, описывающих муфту
+                 */
+                Union: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, type: "integer", backupable: true }),
+                    nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, type: "integer", backupable: true }),
+                    unionTypeId: new Field({ source: "UNION_TYPE_ID", value: 0, default_value: 0, type: "integer", backupable: true }),
+                    nodeId: new Field({ source: "BASE_NODE_ID", value: 0, default_value: 0, type: "integer", backupable: true })
                 }
             };
 
@@ -186,7 +197,12 @@ var nodes = angular.module("gears.app.nodes", [])
                                 result = $factory({ classes: ["Anchor", "Model", "Backup", "States"], base_class: "Anchor" });
                                 result._model_.fromJSON(node);
                                 result._backup_.setup();
-
+                                break;
+                            case 3:
+                                result = $factory({ classes: ["Union", "Model", "Backup", "States"], base_class: "Union" });
+                                result._model_.fromJSON(node);
+                                result._backup_.setup();
+                                break;
                         }
                         if (node["PATH_ID"] !== undefined && node["PATH_ID"] !== null)
                             result.branchId = parseInt(node["PATH_ID"]);

@@ -42,7 +42,8 @@
                    id="node-latitude"
                    ng-model="app.currentPowerLineNode.latitude.value"
                    ng-change="app.currentPowerLineNode._states_.changed(true)"
-                   ng-disabled="app.currentPowerLineNode._states_.loading() === true">
+                   ng-disabled="app.currentPowerLineNode._states_.loading() === true"
+                   coordinate>
         </div>
         <div class="width-10">&nbsp;</div>
         <div class="width-45">
@@ -53,7 +54,8 @@
                    id="node-longitude"
                    ng-model="app.currentPowerLineNode.longitude.value"
                    ng-change="app.currentPowerLineNode._states_.changed(true)"
-                   ng-disabled="app.currentPowerLineNode._states_.loading() === true">
+                   ng-disabled="app.currentPowerLineNode._states_.loading() === true"
+                   coordinate>
         </div>
     </div>
     <div class="row padding-10">

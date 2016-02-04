@@ -374,8 +374,7 @@ var gears = angular.module("gears", [])
                                                         break;
                                                     case "float":
                                                         if (!isNaN(JSONdata[data])) {
-                                                            this.__instance__[prop].value = parseFloat(JSONdata[data]);
-                                                            //$log.info("float attached to " + data + ", " + this.__instance__[prop].value);
+                                                            this.__instance__[prop].value = +parseFloat(JSONdata[data]).toFixed(6);
                                                         } else {
                                                             $log.error("$classes [Model]: Значение поля '" + data + "' в наборе JSON-данных не является числовым значением, свойству объекта присвоен 0");
                                                             this.__instance__[prop].value = 0.0;
@@ -622,9 +621,27 @@ var gears = angular.module("gears", [])
                         setup: function () {
                             var result = 0;
                             for (var prop in this.__instance__) {
-                                if (this.__instance__[prop].constructor === Field && this.__instance__[prop].backupable === true) {
-                                    this.data[prop] = this.__instance__[prop].value;
-                                    result++;
+                                if (this.__instance__[prop].constructor === Field && this.__instance__[prop].backupable !== undefined && this.__instance__[prop].backupable === true) {
+
+                                    if (this.__instance__[prop].type !== undefined) {
+                                        switch (this.__instance__[prop].type) {
+                                            case "string":
+                                                this.data[prop] = this.__instance__[prop].value.toString();
+                                                break;
+                                            case "integer":
+                                                this.data[prop] = parseInt(this.__instance__[prop].value);
+                                                break;
+                                            case "float":
+                                                this.data[prop] = +parseFloat(this.__instance__[prop].value).toFixed(6);
+                                                break;
+                                            case "boolean":
+                                                this.data[prop] = this.__instance__[prop].value;
+                                                break;
+                                        }
+                                    } else {
+                                        this.data[prop] = this.__instance__[prop].value;
+                                        result++;
+                                    }
                                 }
                             }
                             if (this.__instance__._init_ !== undefined)

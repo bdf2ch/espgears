@@ -43,12 +43,22 @@
     <div class="row height-100 padding-10" ng-show="newNodeTypeId !== 0">
         <div class="width-45">
             <label for="node-latitude">Широта</label>
-            <input type="text" class="width-100" name="node-latitude" id="node-latitude" ng-model="newNode.latitude.value">
+            <input type="text"
+                   class="width-100"
+                   name="node-latitude"
+                   id="node-latitude"
+                   ng-model="newNode.latitude.value"
+                   coordinate>
         </div>
         <div class="width-10">&nbsp;</div>
         <div class="width-45">
             <label for="node-latitude">Долгота</label>
-            <input type="text" class="width-100" name="node-longitude" id="node-longitude" ng-model="newNode.longitude.value">
+            <input type="text"
+                   class="width-100"
+                   name="node-longitude"
+                   id="node-longitude"
+                   ng-model="newNode.longitude.value"
+                   coordinate>
         </div>
     </div>
     <div class="row padding-10">
