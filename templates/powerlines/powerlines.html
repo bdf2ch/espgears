@@ -314,12 +314,14 @@
             <ul class="cards">
                 <li class="card"
                     ng-class="{'active': connector._states_.selected() === true}"
-                    ng-repeat="connector in app.currentPowerLineNodeConnectionNodes.items track by $index"
+                    ng-repeat="connector in app.currentPowerLineNodeConnectionNodes.items | orderBy: 'nodeTypeId.value' track by $index"
                     id="{{ 'connection_node_' + connector.id.value }}"
                     ng-click="selectConnectionNode(connector.id.value)">
                     <img src="../resources/img/icons/anchor.png" class="card-img icon" ng-show="connector.__class__ === 'Anchor'"/>
+                    <img src="../resources/img/icons/union.png" class="card-img icon" ng-show="connector.__class__ === 'Union'"/>
                     <div class="card-header">
                         <span class="primary-text" ng-show="connector.__class__ === 'Anchor'">Крепление</span>
+                        <span class="primary-text" ng-show="connector.__class__ === 'Union'">Муфта</span>
                         <div class="right" ng-show="app.currentPowerLineConnectionNode.id.value === connector.id.value">
                             <button class="button round blue" title="Редактировать" ng-click="editConnectionNode($event)">
                                 <img src="resources/img/icons/edit.png" alt=""/>
@@ -333,6 +335,13 @@
                         </span>
                         <span class="secondary-text" ng-show="connector.__class__ === 'Anchor' && connector.anchorTypeId.value === 0">
                             Тип крепления: не указан &nbsp; &nbsp; &nbsp;
+                        </span>
+
+                        <span class="secondary-text" ng-show="connector.__class__ === 'Union' && connector.unionTypeId.value !== 0">
+                            {{ "Тип муфты: " + misc.unionTypes.find("id", connector._backup_.data.anchorTypeId)._backup_.data.title }} &nbsp; &nbsp; &nbsp;
+                        </span>
+                        <span class="secondary-text" ng-show="connector.__class__ === 'Union' && connector.unionTypeId.value === 0">
+                            Тип муфты: не указан &nbsp; &nbsp; &nbsp;
                         </span>
                     </div>
                 </li>

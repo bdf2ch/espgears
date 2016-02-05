@@ -65,6 +65,10 @@ var application = angular.module("gears.app", [
                 templateUrl: "templates/users/new-user.html",
                 controller: "AddUserController"
             })
+            .when("/equipment", {
+                templateUrl: "templates/equipment/equipment.html",
+                controller: "EquipmentController"
+            })
             .otherwise({ redirectTo: '/titles' });
 
 
@@ -107,6 +111,10 @@ var application = angular.module("gears.app", [
                 markers: [],
                 links: [],
                 windows: []
+            };
+
+            application.equipment = {
+                currentAnchorType: undefined
             };
 
             //application.powerLinesMap = undefined;
@@ -403,6 +411,28 @@ var application = angular.module("gears.app", [
             controller: "ContractorsController",
             icon: "resources/img/icons/contractor-type.png",
             order: 3
+        }, "utilities");
+
+        $menu.add({
+            id: "powerlines",
+            title: "Справочник ЭСО",
+            description: "Справочник линий и электросетевых объектов",
+            url: "#/powerlines",
+            template: "templates/powerlines/powerlines.html",
+            controller: "PowerLinesController",
+            icon: "resources/img/icons/powerlines.png",
+            order: 1
+        }, "utilities");
+
+        $menu.add({
+            id: "equipment",
+            title: "Справочник оборудования",
+            description: "Справочник оборудования",
+            url: "#/equipment",
+            template: "templates/equipment/equipment.html",
+            controller: "EquipmentController",
+            icon: "resources/img/icons/powerlines.png",
+            order: 1
         }, "utilities");
 
     }

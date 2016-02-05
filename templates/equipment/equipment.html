@@ -1,0 +1,49 @@
+<columns columns-id="equipment">
+
+    <column column-id="pylon-types" width="20" caption="Типы опор">
+        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+    </column>
+
+    <column column-id="cable-types" width="20" caption="Типы кабеля">
+        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+    </column>
+
+    <column column-id="anchor-types" width="20" caption="Типы креплений">
+        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+
+        <div class="padding-5">
+            <div class="service-message" ng-show="misc.anchorTypes._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                <span>Загрузка...</span>
+            </div>
+            <ul class="cards">
+                <li class="card"
+                    ng-repeat="anchorType in misc.anchorTypes.items | orderBy:'_backup_.data.title' track by $id(anchorType)"
+                    ng-class="{'active': anchorType._states_.selected() === true}"
+                    ng-click="selectAnchorType(anchorType.id.value)">
+                    <img src="../resources/img/icons/anchor.png" alt="" class="card-img icon"/>
+                    <div class="card-header">
+                        {{ anchorType._backup_.data.title }}
+                        <div class="right" ng-show="app.equipment.currentAnchorType !== undefined && app.equipment.currentAnchorType.id.value === anchorType.id.value">
+                            <button class="button round blue" title="Редактировать" ng-click="editAnchorType($event)">
+                                <img src="resources/img/icons/edit.png" alt=""/>
+                            </button>
+                            <button class="button round red" title="Удалить">&times;</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <span class="secondary-text">sdsad</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </column>
+
+    <column column-id="union-types" width="20" caption="Типы муфт">
+        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+    </column>
+
+    <column column-id="vibro-types" width="20" caption="Типы виброгасителей">
+        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+    </column>
+</columns>

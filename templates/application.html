@@ -3,7 +3,7 @@
 <html lang="en" ng-app="gears.app">
 <head>
     <meta charset="UTF-8">
-    <title>АИС ВОЛС</title>
+    <title>{{ "АИС ВОЛС - " + menu.current().title }}</title>
     <link rel="stylesheet" href="resources/styles/misc.css"/>
     <link rel="stylesheet" href="resources/styles/espreso.css"/>
     <link rel="stylesheet" href="resources/styles/gears.css">
@@ -179,7 +179,9 @@
     <script src="modules/gears.app.misc.js"></script>
     <script src="modules/gears.app.contractors.js"></script>
     <script src="modules/gears.app.users.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNLeGkJidVGnhjur-EOVuBWznB29Z9RD4&region=RU"></script>
+
 
     <script src="libs/gearsjs/gears.shop.js"></script>
     <script src="modules/models.js"></script>

@@ -66,6 +66,7 @@ var nodes = angular.module("gears.app.nodes", [])
                     search: "",
                     latitude: new Field({ source: "LATITUDE", value: 0, default_value: 0, backupable: true, type: "float" }),
                     longitude: new Field({ source: "LONGITUDE", value: 0, default_value: 0, backupable: true, type: "float" }),
+                    position: new Field({ source: "POSITION", value: 0, default_value: 0, backupable: true, type: "integer" }),
 
                     _init_: function () {
                         this.display = "#" + this.number.value;
@@ -82,7 +83,8 @@ var nodes = angular.module("gears.app.nodes", [])
                     id: new Field({ source: "OBJECT_ID", value: 0, default_value: 0 }),
                     nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, backupable: true, required: true }),
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
-                    voltage: new Field({ source: "VOLTAGE", value: 0, default_value: 0, backupable: true, required: true })
+                    voltage: new Field({ source: "VOLTAGE", value: 0, default_value: 0, backupable: true, required: true }),
+                    position: new Field({ source: "POSITION", value: 0, default_value: 0, backupable: true, type: "integer" })
                 },
 
                 /**

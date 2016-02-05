@@ -203,7 +203,7 @@ var misc = angular.module("gears.app.misc", [])
             return misc;
         }]);
     })
-    .run(function ($modules, $misc) {
+    .run(function ($modules, $misc, $menu) {
         $modules.load($misc);
         //$misc.getPowerLines();
         //$misc.getCableTypes();
@@ -232,6 +232,7 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
                         line._states_.selected(false);
                         $application.currentPowerLine = undefined;
                         $application.currentPowerLineNodes.clear();
+                        $application.currentPowerLineNodeConnectionNodes.clear();
                         angular.forEach($application.powerLinesMap.markers, function (marker) {
                             marker.setMap(null);
                         });
@@ -537,6 +538,16 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
 
 
 
+misc.controller("EquipmentController", ["$log", "$scope", "$misc", "$application", function ($log, $scope, $misc, $application) {
+    $scope.app = $application;
+    $scope.misc = $misc;
+
+
+}]);
+
+
+
+/********** MODAL CONTROLLERS ********/
 
 /**
  * EditPowerLineModalController
