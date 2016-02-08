@@ -2,10 +2,64 @@
 
     <column column-id="pylon-types" width="20" caption="Типы опор">
         <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+
+        <div class="padding-5">
+            <div class="service-message" ng-show="misc.pylonTypes._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                <span>Загрузка...</span>
+            </div>
+            <ul class="cards">
+                <li class="card"
+                    ng-repeat="pylonType in misc.pylonTypes.items | orderBy:'_backup_.data.title' track by $id(pylonType)"
+                    ng-class="{'active': pylonType._states_.selected() === true}"
+                    ng-click="selectPylonType(pylonType.id.value)">
+                    <img src="../resources/img/icons/pylon.png" alt="" class="card-img icon"/>
+                    <div class="card-header">
+                        {{ pylonType._backup_.data.title }}
+                        <div class="right" ng-show="app.equipment.currentPylonType !== undefined && app.equipment.currentPylonType.id.value === pylonType.id.value">
+                            <button class="button round blue" title="Редактировать" ng-click="editPylonType($event)">
+                                <img src="resources/img/icons/edit.png" alt=""/>
+                            </button>
+                            <button class="button round red" title="Удалить">&times;</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <span class="secondary-text">sdsad</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </column>
 
     <column column-id="cable-types" width="20" caption="Типы кабеля">
         <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+
+        <div class="padding-5">
+            <div class="service-message" ng-show="misc.cableTypes._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                <span>Загрузка...</span>
+            </div>
+            <ul class="cards">
+                <li class="card"
+                    ng-repeat="cableType in misc.cableTypes.items | orderBy:'_backup_.data.title' track by $id(cableType)"
+                    ng-class="{'active': cableType._states_.selected() === true}"
+                    ng-click="selectCableType(cableType.id.value)">
+                    <img src="../resources/img/icons/anchor.png" alt="" class="card-img icon"/>
+                    <div class="card-header">
+                        {{ cableType._backup_.data.title }}
+                        <div class="right" ng-show="app.equipment.currentCableType !== undefined && app.equipment.currentCableType.id.value === cableType.id.value">
+                            <button class="button round blue" title="Редактировать" ng-click="editCableType($event)">
+                                <img src="resources/img/icons/edit.png" alt=""/>
+                            </button>
+                            <button class="button round red" title="Удалить">&times;</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <span class="secondary-text">sdsad</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </column>
 
     <column column-id="anchor-types" width="20" caption="Типы креплений">
@@ -41,6 +95,33 @@
 
     <column column-id="union-types" width="20" caption="Типы муфт">
         <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+
+        <div class="padding-5">
+            <div class="service-message" ng-show="misc.unionTypes._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                <span>Загрузка...</span>
+            </div>
+            <ul class="cards">
+                <li class="card"
+                    ng-repeat="unionType in misc.unionTypes.items | orderBy:'_backup_.data.title' track by $id(unionType)"
+                    ng-class="{'active': unionType._states_.selected() === true}"
+                    ng-click="selectUnionType(unionType.id.value)">
+                    <img src="../resources/img/icons/anchor.png" alt="" class="card-img icon"/>
+                    <div class="card-header">
+                        {{ unionType._backup_.data.title }}
+                        <div class="right" ng-show="app.equipment.currentUnionType !== undefined && app.equipment.currentUnionType.id.value === unionType.id.value">
+                            <button class="button round blue" title="Редактировать" ng-click="editUnionType($event)">
+                                <img src="resources/img/icons/edit.png" alt=""/>
+                            </button>
+                            <button class="button round red" title="Удалить">&times;</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <span class="secondary-text">sdsad</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </column>
 
     <column column-id="vibro-types" width="20" caption="Типы виброгасителей">
