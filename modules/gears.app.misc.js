@@ -39,8 +39,8 @@ var misc = angular.module("gears.app.misc", [])
                  */
                 CableType: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
-                    title: new Field({ source: "NAME", value: "", default_value: "", backupable: true, required: true }),
-                    fullTitle: new Field({ source: "FULL_NAME", value: "", default_value: "", backupable: true, required: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true }),
+                    fullTitle: new Field({ source: "FULL_TITLE", value: "", default_value: "", backupable: true, required: true }),
                     capacity: new Field({ source: "CAPACITY", value: 0, default_value: 0, backupable: true, required: true }),
                     colorCode: new Field({ source: "COLOR_CODE", value: 0, default_value: 0, backupable: true, required: true })
                 },
@@ -51,7 +51,7 @@ var misc = angular.module("gears.app.misc", [])
                  */
                 PylonType: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
-                    title: new Field({ source: "NAME", value: "", default_value: "", backupable: true, required: true })
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
                 },
 
                 /**
@@ -200,14 +200,242 @@ var misc = angular.module("gears.app.misc", [])
                 );
             };
 
+            misc.addPylonType = function (pylonType, callback) {
+                if (pylonType !== undefined) {
+                    var params = {
+                        action: "addPylonType",
+                        data: {
+                            title: pylonType.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.editPylonType = function (pylonType, callback) {
+                if (pylonType !== undefined) {
+                    var params = {
+                        action: "editPylonType",
+                        data: {
+                            id: pylonType.id.value,
+                            title: pylonType.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.deletePylonType = function (pylonTypeId, callback) {
+                if (pylonTypeId !== undefined) {
+                    var params = {
+                        action: "deletePylonType",
+                        data: {
+                            id: pylonTypeId
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.addCableType = function (cableType, callback) {
+                if (cableType !== undefined) {
+                    var params = {
+                        action: "addCableType",
+                        data: {
+                            title: cableType.title.value,
+                            fullTitle: cableType.fullTitle.value,
+                            capacity: cableType.capacity.value,
+                            colorCode: cableType.colorCode.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.editCableType = function (cableType, callback) {
+                if (cableType !== undefined) {
+                    var params = {
+                        action: "editCableType",
+                        data: {
+                            id: cableType.id.value,
+                            title: cableType.title.value,
+                            fullTitle: cableType.fullTitle.value,
+                            capacity: cableType.capacity.value,
+                            colorCode: cableType.colorCode.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.deleteCableType = function (cableTypeId, callback) {
+                if (cableTypeId !== undefined) {
+                    var params = {
+                        action: "deleteCableType",
+                        data: {
+                            id: cableTypeId
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.addAnchorType = function (anchorType, callback) {
+                if (anchorType !== undefined) {
+                    var params = {
+                        action: "addAnchorType",
+                        data: {
+                            title: anchorType.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.editAnchorType = function (anchorType, callback) {
+                if (anchorType !== undefined) {
+                    var params = {
+                        action: "editAnchorType",
+                        data: {
+                            id: anchorType.id.value,
+                            title: anchorType.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.deleteAnchorType = function (anchorTypeId, callback) {
+                if (anchorTypeId !== undefined) {
+                    var params = {
+                        action: "deleteAnchorType",
+                        data: {
+                            id: anchorTypeId
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+
             return misc;
         }]);
     })
     .run(function ($modules, $misc, $menu) {
         $modules.load($misc);
-        //$misc.getPowerLines();
-        //$misc.getCableTypes();
         $misc.powerLines._states_.loaded(false);
+        $misc.pylonTypes._states_.loaded(false);
+        $misc.cableTypes._states_.loaded(false);
+        $misc.anchorTypes._states_.loaded(false);
+        $misc.vibroTypes._states_.loaded(false);
     }
 );
 
@@ -538,11 +766,169 @@ misc.controller("PowerLinesController", ["$log", "$scope", "$misc", "$applicatio
 
 
 
-misc.controller("EquipmentController", ["$log", "$scope", "$misc", "$application", function ($log, $scope, $misc, $application) {
+misc.controller("EquipmentController", ["$log", "$scope", "$misc", "$application", "$modals", function ($log, $scope, $misc, $application, $modals) {
     $scope.app = $application;
     $scope.misc = $misc;
 
+    $scope.selectPylonType = function (typeId) {
+        if (typeId !== undefined) {
+            angular.forEach($misc.pylonTypes.items, function (pylonType) {
+                if (pylonType.id.value === typeId) {
+                    if (pylonType._states_.selected() === true) {
+                        pylonType._states_.selected(false);
+                        $application.equipment.currentPylonType = undefined;
+                    } else {
+                        pylonType._states_.selected(true);
+                        $application.equipment.currentPylonType = pylonType;
+                    }
+                } else {
+                    pylonType._states_.selected(false);
+                }
+            });
+        }
+    };
 
+    $scope.selectCableType = function (typeId) {
+        if (typeId !== undefined) {
+            angular.forEach($misc.cableTypes.items, function (cableType) {
+                if (cableType.id.value === typeId) {
+                    if (cableType._states_.selected() === true) {
+                        cableType._states_.selected(false);
+                        $application.equipment.currentCableType = undefined;
+                    } else {
+                        cableType._states_.selected(true);
+                        $application.equipment.currentCableType = cableType;
+                    }
+                } else {
+                    cableType._states_.selected(false);
+                }
+            });
+        }
+    };
+
+    $scope.selectAnchorType = function (typeId) {
+        if (typeId !== undefined) {
+            angular.forEach($misc.anchorTypes.items, function (anchorType) {
+                if (anchorType.id.value === typeId) {
+                    if (anchorType._states_.selected() === true) {
+                        anchorType._states_.selected(false);
+                        $application.equipment.currentAnchorType = undefined;
+                    } else {
+                        anchorType._states_.selected(true);
+                        $application.equipment.currentAnchorType = anchorType;
+                    }
+                } else {
+                    anchorType._states_.selected(false);
+                }
+            });
+        }
+    };
+
+
+    $scope.addPylonType = function () {
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Новый тип опоры",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/new-pylon-type.html"
+        });
+    };
+
+    $scope.editPylonType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Редактирование типа опоры",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/edit-pylon-type.html"
+        });
+    };
+
+    $scope.deletePylonType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Удаление типа опоры",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/delete-pylon-type.html"
+        });
+    };
+
+    $scope.addCableType = function () {
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Новый тип кабеля",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/new-cable-type.html"
+        });
+    };
+
+    $scope.editCableType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Редактирование типа кабеля",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/edit-cable-type.html"
+        });
+    };
+
+    $scope.deleteCableType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Удаление типа кабеля",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/delete-cable-type.html"
+        });
+    };
+
+    $scope.addAnchorType = function () {
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Новый тип крепления",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/new-anchor-type.html"
+        });
+    };
+
+    $scope.editAnchorType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Редактирование типа крепления",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/edit-anchor-type.html"
+        });
+    };
+
+    $scope.deleteAnchorType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Удаление типа крепления",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/delete-anchor-type.html"
+        });
+    };
 }]);
 
 
@@ -912,4 +1298,325 @@ misc.controller("PowerLinesMapController", ["$log", "$scope", "$application", fu
         });
     //}
 
+}]);
+
+
+
+
+
+/**
+ * AddPylonTypeModalController
+ * Контроллер модального окна добавления типа опоры
+ */
+misc.controller("AddPylonTypeModalController", ["$log", "$scope", "$misc", "$factory", "$modals", function ($log, $scope, $misc, $factory, $modals) {
+    $scope.misc = $misc;
+    $scope.newPylonType = $factory({ classes: ["PylonType", "Model", "Backup", "States"], base_class: "PylonType" });
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($scope.newPylonType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа опоры");
+        if ($scope.errors.length === 0 ) {
+            $misc.addPylonType($scope.newPylonType, $scope.onSuccessAddPylonType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+        $scope.newPylonType._model_.reset();
+        $scope.errors.splice(0, $scope.errors.length);
+    };
+
+    $scope.onSuccessAddPylonType = function (data) {
+        if (data !== undefined) {
+            var tempPylonType = $factory({ classes: ["PylonType", "Model", "Backup", "States"], base_class: "PylonType" });
+            tempPylonType._model_.fromJSON(data);
+            tempPylonType._backup_.setup();
+            $misc.pylonTypes.append(tempPylonType);
+            $scope.newPylonType._model_.reset();
+            $modals.close();
+        }
+    };
+}]);
+
+
+
+
+
+/**
+ * EditPylonTypeModalController
+ * Контроллер модального окна редактирования типа опоры
+ */
+misc.controller("EditPylonTypeModalController", ["$log", "$scope", "$misc", "$modals", "$factory", "$application", function ($log, $scope, $misc, $modals, $factory, $application) {
+    $scope.misc = $misc;
+    $scope.app = $application;
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($application.equipment.currentPylonType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа опоры");
+        if ($scope.errors.length === 0) {
+            $misc.editPylonType($application.equipment.currentPylonType, $scope.onSuccessEditPylonType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $application.equipment.currentPylonType._backup_.restore();
+        $application.equipment.currentPylonType._states_.changed(false);
+        $scope.errors.splice(0, $scope.errors. length);
+        $modals.close();
+    };
+
+    $scope.onSuccessEditPylonType = function (data) {
+        if (data !== undefined) {
+            $application.equipment.currentPylonType._backup_.setup();
+            $application.equipment.currentPylonType._states_.changed(false);
+            $modals.close();
+        }
+    };
+
+}]);
+
+
+
+
+
+/**
+ * DeletePylonTypeModalController
+ * Контроллер модального окна удаления типа опоры
+ */
+misc.controller("DeletePylonTypeModalController", ["$log", "$scope", "$misc", "$application", "$modals", function ($log, $scope, $misc, $application, $modals) {
+    $scope.app = $application;
+
+    $scope.delete = function () {
+        $misc.deletePylonType($application.equipment.currentPylonType.id.value, $scope.onSuccessDeletePylonType);
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+    };
+
+    $scope.onSuccessDeletePylonType = function (data) {
+        if (data !== undefined && JSON.parse(data) === "success") {
+            $misc.pylonTypes.delete("id", $application.equipment.currentPylonType.id.value);
+            $application.equipment.currentPylonType = undefined;
+            $modals.close();
+        }
+    };
+}]);
+
+
+
+
+
+/**
+ * AddCableTypeModalController
+ * Контроллер модального окна добавления типа кабеля
+ */
+misc.controller("AddCableTypeModalController", ["$log", "$scope", "$misc", "$factory", "$modals", function ($log, $scope, $misc, $factory, $modals) {
+    $scope.misc = $misc;
+    $scope.newCableType = $factory({ classes: ["CableType", "Model", "Backup", "States"], base_class: "CableType" });
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($scope.newCableType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа кабеля");
+        if ($scope.errors.length === 0 ) {
+            $misc.addCableType($scope.newCableType, $scope.onSuccessAddCableType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+        $scope.newCableType._model_.reset();
+        $scope.errors.splice(0, $scope.errors.length);
+    };
+
+    $scope.onSuccessAddCableType = function (data) {
+        if (data !== undefined) {
+            var tempCableType = $factory({ classes: ["CableType", "Model", "Backup", "States"], base_class: "CableType" });
+            tempCableType._model_.fromJSON(data);
+            tempCableType._backup_.setup();
+            $misc.cableTypes.append(tempCableType);
+            $scope.newCableType._model_.reset();
+            $modals.close();
+        }
+    };
+}]);
+
+
+
+
+
+/**
+ * EditCableTypeModalController
+ * Контроллер модального окна редактирования типа кабеля
+ */
+misc.controller("EditCableTypeModalController", ["$log", "$scope", "$misc", "$modals", "$factory", "$application", function ($log, $scope, $misc, $modals, $factory, $application) {
+    $scope.misc = $misc;
+    $scope.app = $application;
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($application.equipment.currentCableType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа кабеля");
+        if ($scope.errors.length === 0) {
+            $misc.editCableType($application.equipment.currentCableType, $scope.onSuccessEditCableType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $application.equipment.currentCableType._backup_.restore();
+        $application.equipment.currentCableType._states_.changed(false);
+        $scope.errors.splice(0, $scope.errors. length);
+        $modals.close();
+    };
+
+    $scope.onSuccessEditCableType = function (data) {
+        if (data !== undefined) {
+            $application.equipment.currentCableType._backup_.setup();
+            $application.equipment.currentCableType._states_.changed(false);
+            $modals.close();
+        }
+    };
+
+}]);
+
+
+
+
+
+/**
+ * DeleteCableTypeModalController
+ * Контроллер модального окна удаления типа кабеля
+ */
+misc.controller("DeleteCableTypeModalController", ["$log", "$scope", "$misc", "$application", "$modals", function ($log, $scope, $misc, $application, $modals) {
+    $scope.app = $application;
+
+    $scope.delete = function () {
+        $misc.deleteCableType($application.equipment.currentCableType.id.value, $scope.onSuccessDeleteCableType);
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+    };
+
+    $scope.onSuccessDeleteCableType = function (data) {
+        if (data !== undefined && JSON.parse(data) === "success") {
+            $misc.cableTypes.delete("id", $application.equipment.currentCableType.id.value);
+            $application.equipment.currentCableType = undefined;
+            $modals.close();
+        }
+    };
+}]);
+
+
+
+
+
+/**
+ * AddAnchorTypeModalController
+ * Контроллер модального окна добавления типа крепления
+ */
+misc.controller("AddAnchorTypeModalController", ["$log", "$scope", "$misc", "$factory", "$modals", function ($log, $scope, $misc, $factory, $modals) {
+    $scope.misc = $misc;
+    $scope.newAnchorType = $factory({ classes: ["AnchorType", "Model", "Backup", "States"], base_class: "AnchorType" });
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($scope.newAnchorType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа крепления");
+        if ($scope.errors.length === 0 ) {
+            $misc.addAnchorType($scope.newAnchorType, $scope.onSuccessAddAnchorType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+        $scope.newAnchorType._model_.reset();
+        $scope.errors.splice(0, $scope.errors.length);
+    };
+
+    $scope.onSuccessAddAnchorType = function (data) {
+        if (data !== undefined) {
+            var tempAnchorType = $factory({ classes: ["AnchorType", "Model", "Backup", "States"], base_class: "AnchorType" });
+            tempAnchorType._model_.fromJSON(data);
+            tempAnchorType._backup_.setup();
+            $misc.anchorTypes.append(tempAnchorType);
+            $scope.newAnchorType._model_.reset();
+            $modals.close();
+        }
+    };
+}]);
+
+
+
+
+
+/**
+ * EditAnchorTypeModalController
+ * Контроллер модального окна редактирования типа крепления
+ */
+misc.controller("EditAnchorTypeModalController", ["$log", "$scope", "$misc", "$modals", "$factory", "$application", function ($log, $scope, $misc, $modals, $factory, $application) {
+    $scope.misc = $misc;
+    $scope.app = $application;
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($application.equipment.currentAnchorType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа крепления");
+        if ($scope.errors.length === 0) {
+            $misc.editAnchorType($application.equipment.currentAnchorType, $scope.onSuccessEditAnchorType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $application.equipment.currentAnchorType._backup_.restore();
+        $application.equipment.currentAnchorType._states_.changed(false);
+        $scope.errors.splice(0, $scope.errors. length);
+        $modals.close();
+    };
+
+    $scope.onSuccessEditAnchorType = function (data) {
+        if (data !== undefined) {
+            $application.equipment.currentAnchorType._backup_.setup();
+            $application.equipment.currentAnchorType._states_.changed(false);
+            $modals.close();
+        }
+    };
+
+}]);
+
+
+
+
+
+/**
+ * DeleteAnchorTypeModalController
+ * Контроллер модального окна удаления типа крепления
+ */
+misc.controller("DeleteAnchorTypeModalController", ["$log", "$scope", "$misc", "$application", "$modals", function ($log, $scope, $misc, $application, $modals) {
+    $scope.app = $application;
+
+    $scope.delete = function () {
+        $misc.deleteAnchorType($application.equipment.currentAnchorType.id.value, $scope.onSuccessDeleteAnchorType);
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+    };
+
+    $scope.onSuccessDeleteAnchorType = function (data) {
+        if (data !== undefined && JSON.parse(data) === "success") {
+            $misc.anchorTypes.delete("id", $application.equipment.currentAnchorType.id.value);
+            $application.equipment.currentAnchorType = undefined;
+            $modals.close();
+        }
+    };
 }]);

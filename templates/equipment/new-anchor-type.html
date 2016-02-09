@@ -1,0 +1,25 @@
+<div ng-controller="AddAnchorTypeModalController">
+    <div class="row height-100 padding-10">
+        <label for="anchor-type-title">Наименование типа крепления</label>
+        <input type="text"
+               name="anchor-type-title"
+               id="anchor-type-title"
+               class="width-100"
+               placeholder="Наименование типа крепления"
+               ng-disabled="newAnchorType._states_.loading() === true"
+               ng-model="newAnchorType.title.value"/>
+    </div>
+    <div class="row padding-10">
+        <div class="width-50">
+            <button class="button green square width-100" ng-disabled="newAnchorType._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="button red square width-100" ng-disabled="newAnchorType._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

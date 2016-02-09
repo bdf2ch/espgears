@@ -1,0 +1,25 @@
+<div ng-controller="AddPylonTypeModalController">
+    <div class="row height-100 padding-10">
+        <label for="power-line-title">Наименование типа опоры</label>
+        <input type="text"
+               name="power-line-title"
+               id="power-line-title"
+               class="width-100"
+               placeholder="Наименование типа опоры"
+               ng-disabled="newPylonType._states_.loading() === true"
+               ng-model="newPylonType.title.value"/>
+    </div>
+    <div class="row padding-10">
+        <div class="width-50">
+            <button class="button green square width-100" ng-disabled="newPylonType._states_.loading() === true" ng-click="validate()">Добавить</button>
+        </div>
+        <div class="50">
+            <button class="button red square width-100" ng-disabled="newPylonType._states_.loading() === true" ng-click="cancel()">Отмена</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="modal-messages-container" ng-show="errors.length > 0">
+            <div class="message" ng-repeat="error in errors track by $id(error)">{{ error }}</div>
+        </div>
+    </div>
+</div>

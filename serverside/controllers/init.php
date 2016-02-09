@@ -409,7 +409,7 @@
         $result -> contractors = $contractors;
 
         /* ��������� ������ ���� ����� ���� */
-        if (!$statement = oci_parse($connection, "begin PKG_PYLON_TYPES.P_GET_PYLON_TYPES(:pylon_types); end;")) {
+        if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_PYLON_TYPES(:pylon_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -438,7 +438,7 @@
 
 
         /* ��������� ������ ����� ������ */
-        if (!$statement = oci_parse($connection, "begin PKG_CABLE_TYPES.P_GET_CABLE_TYPES(:cable_types); end;")) {
+        if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_CABLE_TYPES(:cable_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -466,7 +466,7 @@
         $result -> cableTypes = $cableTypes;
 
         /* ��������� ������ ����� ��������� */
-        if (!$statement = oci_parse($connection, "begin PKG_ANCHOR_TYPES.P_GET_ANCHOR_TYPES(:anchor_types); end;")) {
+        if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_ANCHOR_TYPES(:anchor_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));

@@ -114,12 +114,13 @@ var application = angular.module("gears.app", [
             };
 
             application.equipment = {
-                currentAnchorType: undefined
+                currentPylonType: undefined,
+                currentCableType: undefined,
+                currentAnchorType: undefined,
+                currentUnionType: undefined,
+                currentVibroType: undefined
             };
 
-            //application.powerLinesMap = undefined;
-            //application.powerLinesMapMarkers = [];
-            //application.powerLinesMapLinks = [];
 
             application.init = function () {
                 var params = {
@@ -431,7 +432,7 @@ var application = angular.module("gears.app", [
             url: "#/equipment",
             template: "templates/equipment/equipment.html",
             controller: "EquipmentController",
-            icon: "resources/img/icons/powerlines.png",
+            icon: "resources/img/icons/equipment.png",
             order: 1
         }, "utilities");
 

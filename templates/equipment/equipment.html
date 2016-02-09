@@ -1,13 +1,17 @@
 <columns columns-id="equipment">
 
     <column column-id="pylon-types" width="20" caption="Типы опор">
-        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+        <column-control control-class="button round green" caption="+" title="Добавить" action="addPylonType()"></column-control>
 
         <div class="padding-5">
             <div class="service-message" ng-show="misc.pylonTypes._states_.loaded() === false">
                 <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                 <span>Загрузка...</span>
             </div>
+            <div class="service-message" ng-show="misc.pylonTypes._states_.loaded() === true && misc.pylonTypes.size() === 0">
+                Типы опор отсутствуют
+            </div>
+
             <ul class="cards">
                 <li class="card"
                     ng-repeat="pylonType in misc.pylonTypes.items | orderBy:'_backup_.data.title' track by $id(pylonType)"
@@ -20,7 +24,7 @@
                             <button class="button round blue" title="Редактировать" ng-click="editPylonType($event)">
                                 <img src="resources/img/icons/edit.png" alt=""/>
                             </button>
-                            <button class="button round red" title="Удалить">&times;</button>
+                            <button class="button round red" title="Удалить" ng-click="deletePylonType($event)">&times;</button>
                         </div>
                     </div>
                     <div class="card-content">
@@ -32,26 +36,29 @@
     </column>
 
     <column column-id="cable-types" width="20" caption="Типы кабеля">
-        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+        <column-control control-class="button round green" caption="+" title="Добавить" action="addCableType()"></column-control>
 
         <div class="padding-5">
             <div class="service-message" ng-show="misc.cableTypes._states_.loaded() === false">
                 <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                 <span>Загрузка...</span>
             </div>
+            <div class="service-message" ng-show="misc.cableTypes._states_.loaded() === true && misc.cableTypes.size() === 0">
+                Типы кабеля отсутствуют
+            </div>
             <ul class="cards">
                 <li class="card"
                     ng-repeat="cableType in misc.cableTypes.items | orderBy:'_backup_.data.title' track by $id(cableType)"
                     ng-class="{'active': cableType._states_.selected() === true}"
                     ng-click="selectCableType(cableType.id.value)">
-                    <img src="../resources/img/icons/anchor.png" alt="" class="card-img icon"/>
+                    <img src="../resources/img/icons/cable.png" alt="" class="card-img icon"/>
                     <div class="card-header">
                         {{ cableType._backup_.data.title }}
                         <div class="right" ng-show="app.equipment.currentCableType !== undefined && app.equipment.currentCableType.id.value === cableType.id.value">
                             <button class="button round blue" title="Редактировать" ng-click="editCableType($event)">
                                 <img src="resources/img/icons/edit.png" alt=""/>
                             </button>
-                            <button class="button round red" title="Удалить">&times;</button>
+                            <button class="button round red" title="Удалить" ng-click="deleteCableType($event)">&times;</button>
                         </div>
                     </div>
                     <div class="card-content">
@@ -63,13 +70,17 @@
     </column>
 
     <column column-id="anchor-types" width="20" caption="Типы креплений">
-        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+        <column-control control-class="button round green" caption="+" title="Добавить" action="addAnchorType()"></column-control>
 
         <div class="padding-5">
             <div class="service-message" ng-show="misc.anchorTypes._states_.loaded() === false">
                 <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                 <span>Загрузка...</span>
             </div>
+            <div class="service-message" ng-show="misc.anchorTypes._states_.loaded() === true && misc.anchorTypes.size() === 0">
+                Типы креплений отсутствуют
+            </div>
+
             <ul class="cards">
                 <li class="card"
                     ng-repeat="anchorType in misc.anchorTypes.items | orderBy:'_backup_.data.title' track by $id(anchorType)"
@@ -82,7 +93,7 @@
                             <button class="button round blue" title="Редактировать" ng-click="editAnchorType($event)">
                                 <img src="resources/img/icons/edit.png" alt=""/>
                             </button>
-                            <button class="button round red" title="Удалить">&times;</button>
+                            <button class="button round red" title="Удалить" ng-click="deleteAnchorType($event)">&times;</button>
                         </div>
                     </div>
                     <div class="card-content">
@@ -101,6 +112,10 @@
                 <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
                 <span>Загрузка...</span>
             </div>
+            <div class="service-message" ng-show="misc.unionTypes._states_.loaded() === true && misc.unionTypes.size() === 0">
+                Типы муфт отсутствуют
+            </div>
+
             <ul class="cards">
                 <li class="card"
                     ng-repeat="unionType in misc.unionTypes.items | orderBy:'_backup_.data.title' track by $id(unionType)"

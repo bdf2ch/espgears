@@ -1,7 +1,7 @@
 <?php
 
     //if (!$_COOKIE["user"])
-    //    die("Неавторизованный доступ!");
+    //    die("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!");
     //else {
         include "../config.php";
         include "../core.php";
@@ -9,7 +9,7 @@
 
         $action = $postdata -> action;
 
-        /* Подключение к БД */
+        /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅ */
         $connection = oci_connect($db_user, $db_password, $db_host, 'AL32UTF8');
         if (!$connection){
             $error = oci_error();
@@ -17,25 +17,52 @@
             echo(json_encode($result));
         } else {
             switch ($action) {
-                /* Возвращает все линии */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
                 case "getPowerLines":
                     get_power_lines();
                     break;
-                /* Добавление линии */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
                 case "addPowerLine":
                     add_power_line($postdata);
                     break;
-                /* Редактирование линии */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
                 case "editPowerLine":
                     edit_power_line($postdata);
                     break;
-                /* Возвращает все типы кабеля */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ */
                 case "getCableTypes":
                     get_cable_types();
                     break;
-                /* Получение списка всех типов опор */
+                /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ */
                 case "getPylonTypes":
                     get_pylon_types();
+                    break;
+                case "addPylonType":
+                    add_pylon_type($postdata);
+                    break;
+                case "editPylonType":
+                    edit_pylon_type($postdata);
+                    break;
+                case "deletePylonType":
+                    delete_pylon_type($postdata);
+                    break;
+                case "addCableType":
+                    add_cable_type($postdata);
+                    break;
+                case "editCableType":
+                    edit_cable_type($postdata);
+                    break;
+                case "deleteCableType":
+                    delete_cable_type($postdata);
+                    break;
+                case "addAnchorType":
+                    add_anchor_type($postdata);
+                    break;
+                case "editAnchorType":
+                    edit_anchor_type($postdata);
+                    break;
+                case "deleteAnchorType":
+                    delete_anchor_type($postdata);
                     break;
             }
             oci_close($connection);
@@ -75,72 +102,69 @@ function get_power_lines () {
         }
     }
 
-    // Освобождение ресурсов
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     oci_free_statement($statement);
     oci_free_statement($cursor);
 
-    // Возврат результата
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     echo json_encode($result);
 };
 
 
 
 
-    /* Добавление линии */
-    function add_power_line ($postdata) {
-        global $connection;
-        $cursor = oci_new_cursor($connection);
-        $title = $postdata -> data -> title;
-        $voltage = $postdata -> data -> voltage;
-        $result = array();
+/* Р”РѕР±Р°РІР»РµРЅРёРµ Р»РёРЅРёРё */
+function add_power_line ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $title = $postdata -> data -> title;
+    $voltage = $postdata -> data -> voltage;
+    $result = array();
 
-        if (!$statement = oci_parse($connection, "begin pkg_power_lines.p_insert_power_line(:title, :voltage, :new_line ); end;")) {
+    if (!$statement = oci_parse($connection, "begin pkg_power_lines.p_insert_power_line(:title, :voltage, :new_line ); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":voltage", $voltage, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":new_line", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
         } else {
-            if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
-                $error = oci_error();
-                $result = new DBError($error["code"], $error["message"]);
-                echo(json_encode($result));
-            }
-            if (!oci_bind_by_name($statement, ":voltage", $voltage, -1, OCI_DEFAULT)) {
-                $error = oci_error();
-                $result = new DBError($error["code"], $error["message"]);
-                echo(json_encode($result));
-            }
-            if (!oci_bind_by_name($statement, ":new_line", $cursor, -1, OCI_B_CURSOR)) {
-                $error = oci_error();
-                $result = new DBError($error["code"], $error["message"]);
-                echo(json_encode($result));
-            }
-            if (!oci_execute($statement)) {
+            if (!oci_execute($cursor)) {
                 $error = oci_error();
                 $result = new DBError($error["code"], $error["message"]);
                 echo(json_encode($result));
             } else {
-                if (!oci_execute($cursor)) {
-                    $error = oci_error();
-                    $result = new DBError($error["code"], $error["message"]);
-                    echo(json_encode($result));
-                } else {
-                    $result = oci_fetch_assoc($cursor);
-                }
+                $result = oci_fetch_assoc($cursor);
             }
         }
+    }
 
-        /* Освобождение ресурсов */
-        oci_free_statement($statement);
-        oci_free_statement($cursor);
-
-        /* Возврат результата */
-        echo json_encode($result);
-    };
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
 
 
 
 
-/* Редактирование линии */
+/* пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ */
 function edit_power_line ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -188,11 +212,8 @@ function edit_power_line ($postdata) {
             }
     }
 
-    /* Освобождение ресурсов */
     oci_free_statement($statement);
     oci_free_statement($cursor);
-
-    /* Возврат результата */
     echo json_encode($result);
 };
 
@@ -205,7 +226,7 @@ function get_cable_types () {
     $cursor = oci_new_cursor($connection);
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin PKG_CABLE_TYPES.P_GET_CABLE_TYPES(:cable_types); end;")) {
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_CABLE_TYPES(:cable_types); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -231,12 +252,9 @@ function get_cable_types () {
         }
     }
 
-        // Освобождение ресурсов
-        oci_free_statement($statement);
-        oci_free_statement($cursor);
-
-        // Возврат результата
-        echo json_encode($result);
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
 };
 
 
@@ -247,7 +265,7 @@ function get_pylon_types () {
     $cursor = oci_new_cursor($connection);
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin PKG_PYLON_TYPES.P_GET_PYLON_TYPES(:pylon_types); end;")) {
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_PYLON_TYPES(:pylon_types); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -273,10 +291,430 @@ function get_pylon_types () {
         }
     }
 
-    // Освобождение ресурсов
     oci_free_statement($statement);
     oci_free_statement($cursor);
-    // Возврат результата
+    echo json_encode($result);
+};
+
+
+
+/* Р”РѕР±Р°РІР»РµРЅРёРµ С‚РёРїР° РѕРїРѕСЂС‹ */
+function add_pylon_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $title = $postdata -> data -> title;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_ADD_PYLON_TYPE(:title, :new_pylon_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":new_pylon_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РёРїР° РѕРїРѕСЂС‹ */
+function edit_pylon_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $id = $postdata -> data -> id;
+    $title = $postdata -> data -> title;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_EDIT_PYLON_TYPE(:id, :title, :edited_pylon_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":edited_pylon_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* РЈРґР°Р»РµРЅРёРµ С‚РёРїР° РѕРїРѕСЂС‹ */
+function delete_pylon_type ($postdata) {
+    global $connection;
+    $id = $postdata -> data -> id;
+    $result = "fail";
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_DELETE_PYLON_TYPE(:id, :answer); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":answer", $result, 50, SQLT_CHR)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* Р”РѕР±Р°РІР»РµРЅРёРµ С‚РёРїР° РєР°Р±РµР»СЏ */
+function add_cable_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $title = $postdata -> data -> title;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_ADD_CABLE_TYPE(:title, :full_title, :capacity, :color_code, :new_cable_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":full_title", $full_title, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":capacity", $capacity, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":color_code", $color_code, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":new_cable_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РёРїР° РєР°Р±РµР»СЏ */
+function edit_cable_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $id = $postdata -> data -> id;
+    $title = $postdata -> data -> title;
+    $full_title = $postdata -> data -> fullTitle;
+    $capacity = $postdata -> data -> capacity;
+    $color_code = $postdata -> data -> colorCode;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_EDIT_CABLE_TYPE(:id, :title, :full_title, :capacity, :color_code, :edited_cable_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":full_title", $full_title, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":capacity", $capacity, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":color_code", $color_code, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":edited_cable_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* РЈРґР°Р»РµРЅРёРµ С‚РёРїР° РєР°Р±РµР»СЏ */
+function delete_cable_type ($postdata) {
+    global $connection;
+    $id = $postdata -> data -> id;
+    $result = "fail";
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_DELETE_CABLE_TYPE(:id, :answer); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":answer", $result, 50, SQLT_CHR)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* Р”РѕР±Р°РІР»РµРЅРёРµ С‚РёРїР° РєСЂРµРїР»РµРЅРёСЏ */
+function add_anchor_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $title = $postdata -> data -> title;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_ADD_ANCHOR_TYPE(:title, :new_anchor_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":new_anchor_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+
+
+/* Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ С‚РёРїР° РєСЂРµРїР»РµРЅРёСЏ */
+function edit_anchor_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $id = $postdata -> data -> id;
+    $title = $postdata -> data -> title;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_EDIT_ANCHOR_TYPE(:id, :title, :edited_anchor_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":edited_anchor_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* РЈРґР°Р»РµРЅРёРµ С‚РёРїР° РєСЂРµРїР»РµРЅРёСЏ */
+function delete_anchor_type ($postdata) {
+    global $connection;
+    $id = $postdata -> data -> id;
+    $result = "fail";
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_DELETE_ANCHOR_TYPE(:id, :answer); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":answer", $result, 50, SQLT_CHR)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
     echo json_encode($result);
 };
 
