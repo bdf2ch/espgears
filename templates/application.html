@@ -25,13 +25,13 @@
                            ng-show="menuItem.url !== ''"
                            ng-class="{ 'active': menuItem.active === true }"
                            title="{{ menuItem.description }}">
-                            <img src="{{ menuItem.icon }}" alt=""/>
+                            <img ng-src="{{ menuItem.icon }}" alt=""/>
                             {{ menuItem.title }}
                         </a>
                         <a ng-show="menuItem.url === ''"
                            ng-class="{ 'active': menuItem.childActive === true }"
                            title="{{ menuItem.description }}">
-                            <img src="{{ menuItem.icon }}" alt=""/>
+                            <img ng-src="{{ menuItem.icon }}" alt=""/>
                             {{ menuItem.title }}
                             <span class="menu-item-arrow-down" ng-show="menuItem.submenu.length > 0">▼</span>
                         </a>
@@ -40,7 +40,7 @@
                                  ng-if="permissions.getByRuleCode(subMenuItem.id).enabled.value === true"
                                  ng-repeat="subMenuItem in menuItem.submenu | orderBy:'order' track by $index">
                                 <a href="{{ subMenuItem.url }}" ng-show="subMenuItem.url !== ''" ng-class="{ 'active': subMenuItem.active === true }" title="{{ subMenuItem.description }}">
-                                    <img src="{{ subMenuItem.icon }}" alt=""/>
+                                    <img ng-src="{{ subMenuItem.icon }}" alt=""/>
                                     {{ subMenuItem.title }}
                                 </a>
                             </div>
