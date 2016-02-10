@@ -62,7 +62,8 @@
                         </div>
                     </div>
                     <div class="card-content">
-                        <span class="secondary-text">sdsad</span>
+                        <span class="secondary-text" ng-show="cableType._backup_.data.capacity !== 0">{{ "Емкость кабеля: " + cableType._backup_.data.capacity + " ОВ" }}</span>
+                        <span class="secondary-text" ng-show="cableType._backup_.data.capacity === 0">Емкость кабеля: не указана</span>
                     </div>
                 </li>
             </ul>
@@ -140,6 +141,36 @@
     </column>
 
     <column column-id="vibro-types" width="20" caption="Типы виброгасителей">
-        <column-control control-class="button round green" caption="+" title="Добавить"></column-control>
+        <column-control control-class="button round green" caption="+" title="Добавить" action="addVibroType()"></column-control>
+
+        <div class="padding-5">
+            <div class="service-message" ng-show="misc.vibroTypes._states_.loaded() === false">
+                <img class="loading" src="resources/img/loader.gif" alt="Загрузка"/>
+                <span>Загрузка...</span>
+            </div>
+            <div class="service-message" ng-show="misc.vibroTypes._states_.loaded() === true && misc.vibroTypes.size() === 0">
+                Типы виброгасетелей отсутствуют
+            </div>
+            <ul class="cards">
+                <li class="card"
+                    ng-repeat="vibroType in misc.vibroTypes.items | orderBy:'_backup_.data.title' track by $id(vibroType)"
+                    ng-class="{'active': vibroType._states_.selected() === true}"
+                    ng-click="selectVibroType(vibroType.id.value)">
+                    <img src="../resources/img/icons/vibro.png" alt="" class="card-img icon"/>
+                    <div class="card-header">
+                        {{ vibroType._backup_.data.title }}
+                        <div class="right" ng-show="app.equipment.currentVibroType !== undefined && app.equipment.currentVibroType.id.value === vibroType.id.value">
+                            <button class="button round blue" title="Редактировать" ng-click="editVibroType($event)">
+                                <img src="resources/img/icons/edit.png" alt=""/>
+                            </button>
+                            <button class="button round red" title="Удалить" ng-click="deleteVibroType($event)">&times;</button>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <span class="secondary-text">dsfdsf</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
     </column>
 </columns>

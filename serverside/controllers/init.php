@@ -20,6 +20,7 @@
     $pylonTypes = array();
     $cableTypes = array();
     $anchorTypes = array();
+    $vibroTypes = array();
 
     $requestTypes = array();
     $requestStatuses = array();
@@ -492,6 +493,36 @@
             }
         }
         $result -> anchorTypes = $anchorTypes;
+
+
+        /* Получение всех типов виброгасителя */
+        if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_VIBRO_TYPES(:vibro_types); end;")) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_bind_by_name($statement, ":vibro_types", $cursor, -1, OCI_B_CURSOR)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            }
+            if (!oci_execute($statement)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                if (!oci_execute($cursor)) {
+                    $error = oci_error();
+                    $result = new DBError($error["code"], $error["message"]);
+                    echo(json_encode($result));
+                } else {
+                    while ($vibro_type = oci_fetch_assoc($cursor))
+                        array_push($vibroTypes, $vibro_type);
+                }
+            }
+        }
+        $result -> vibroTypes = $vibroTypes;
+
 
         /* ��������� ������ ���� ����� ������ */
         if (!$statement = oci_parse($connection, "begin pkg_titules.p_get_request_types(:data); end;")) {

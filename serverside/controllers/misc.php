@@ -64,6 +64,15 @@
                 case "deleteAnchorType":
                     delete_anchor_type($postdata);
                     break;
+                case "addVibroType":
+                    add_vibro_type($postdata);
+                    break;
+                case "editVibroType":
+                    edit_vibro_type($postdata);
+                    break;
+                case "deleteVibroType":
+                    delete_vibro_type($postdata);
+                    break;
             }
             oci_close($connection);
         }
@@ -432,6 +441,7 @@ function add_cable_type ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
     $title = $postdata -> data -> title;
+    $capacity = $postdata -> data -> capacity;
     $result = array();
 
     if (!$statement = oci_parse($connection, "begin PKG_MISC.P_ADD_CABLE_TYPE(:title, :full_title, :capacity, :color_code, :new_cable_type); end;")) {
@@ -692,6 +702,135 @@ function delete_anchor_type ($postdata) {
     $result = "fail";
 
     if (!$statement = oci_parse($connection, "begin PKG_MISC.P_DELETE_ANCHOR_TYPE(:id, :answer); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":answer", $result, 50, SQLT_CHR)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* Добавление типа виброгасителя */
+function add_vibro_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $title = $postdata -> data -> title;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_ADD_VIBRO_TYPE(:title, :new_vibro_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":new_vibro_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* Редактирование типа виброгасителя */
+function edit_vibro_type ($postdata) {
+    global $connection;
+    $cursor = oci_new_cursor($connection);
+    $id = $postdata -> data -> id;
+    $title = $postdata -> data -> title;
+    $result = array();
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_EDIT_VIBRO_TYPE(:id, :title, :edited_vibro_type); end;")) {
+        $error = oci_error();
+        $result = new DBError($error["code"], $error["message"]);
+        echo(json_encode($result));
+    } else {
+        if (!oci_bind_by_name($statement, ":id", $id, -1, OCI_DEFAULT)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":title", $title, -1, OCI_DEFAULT)) {
+           $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_bind_by_name($statement, ":edited_vibro_type", $cursor, -1, OCI_B_CURSOR)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        }
+        if (!oci_execute($statement)) {
+            $error = oci_error();
+            $result = new DBError($error["code"], $error["message"]);
+            echo(json_encode($result));
+        } else {
+            if (!oci_execute($cursor)) {
+                $error = oci_error();
+                $result = new DBError($error["code"], $error["message"]);
+                echo(json_encode($result));
+            } else {
+                $result = oci_fetch_assoc($cursor);
+            }
+        }
+    }
+
+    oci_free_statement($statement);
+    oci_free_statement($cursor);
+    echo json_encode($result);
+};
+
+
+
+/* Удаление типа виброгасителя */
+function delete_vibro_type ($postdata) {
+    global $connection;
+    $id = $postdata -> data -> id;
+    $result = "fail";
+
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_DELETE_VIBRO_TYPE(:id, :answer); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));

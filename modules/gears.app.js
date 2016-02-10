@@ -312,6 +312,17 @@ var application = angular.module("gears.app", [
                                 $misc.anchorTypes._states_.loaded(true);
                             }
 
+                            if (data["vibroTypes"] !== undefined) {
+                                $misc.vibroTypes._states_.loaded(false);
+                                angular.forEach(data["vibroTypes"], function (vibro_type) {
+                                    var temp_vibro_type = $factory({ classes: ["VibroType", "Model", "Backup", "States"], base_class: "VibroType" });
+                                    temp_vibro_type._model_.fromJSON(vibro_type);
+                                    temp_vibro_type._backup_.setup();
+                                    $misc.vibroTypes.append(temp_vibro_type);
+                                });
+                                $misc.vibroTypes._states_.loaded(true);
+                            }
+
                             if (data["requestTypes"] !== undefined) {
                                 $requests.requestTypes._states_.loaded(false);
                                 angular.forEach(data["requestTypes"], function (requestType) {
@@ -406,7 +417,7 @@ var application = angular.module("gears.app", [
         $menu.add({
             id: "contractors",
             title: "Справочник контрагентов",
-            description: "Контрагенты и типы контрагентов",
+            description: "Справочник контрагентов и типов контрагентов",
             url: "#/contractors",
             template: "templates/contractors/contractors.html",
             controller: "ContractorsController",

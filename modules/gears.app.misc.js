@@ -61,6 +61,15 @@ var misc = angular.module("gears.app.misc", [])
                 AnchorType: {
                     id: new Field({ source: "ID", value: 0, default_value: 0 }),
                     title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, required: true })
+                },
+
+                /**
+                 * VibroType
+                 * Набор свойств и методов, описывающих тип виброгасителя
+                 */
+                VibroType: {
+                    id: new Field({ source: "ID", value: 0, default_value: 0, type: "integer", backupable: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", type: "string", backupable: true })
                 }
             };
 
@@ -407,6 +416,79 @@ var misc = angular.module("gears.app.misc", [])
                         action: "deleteAnchorType",
                         data: {
                             id: anchorTypeId
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.addVibroType = function (vibroType, callback) {
+                if (vibroType !== undefined) {
+                    var params = {
+                        action: "addVibroType",
+                        data: {
+                            title: vibroType.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.editVibroType = function (vibroType, callback) {
+                if (vibroType !== undefined) {
+                    var params = {
+                        action: "editVibroType",
+                        data: {
+                            id: vibroType.id.value,
+                            title: vibroType.title.value
+                        }
+                    };
+                    $http.post("serverside/controllers/misc.php", params)
+                        .success(function (data) {
+                            if (data !== undefined) {
+                                if (data["error_code"] !== undefined) {
+                                    var db_error = $factory({ classes: ["DBError"], base_class: "DBError" });
+                                    db_error.init(data);
+                                    db_error.display();
+                                } else {
+                                    if (callback !== undefined)
+                                        callback(data);
+                                }
+                            }
+                        });
+                }
+            };
+
+            misc.deleteVibroType = function (vibroTypeId, callback) {
+                if (vibroTypeId !== undefined) {
+                    var params = {
+                        action: "deleteVibroType",
+                        data: {
+                            id: vibroTypeId
                         }
                     };
                     $http.post("serverside/controllers/misc.php", params)
@@ -824,6 +906,24 @@ misc.controller("EquipmentController", ["$log", "$scope", "$misc", "$application
         }
     };
 
+    $scope.selectVibroType = function (typeId) {
+        if (typeId !== undefined) {
+            angular.forEach($misc.vibroTypes.items, function (vibroType) {
+                if (vibroType.id.value === typeId) {
+                    if (vibroType._states_.selected() === true) {
+                        vibroType._states_.selected(false);
+                        $application.equipment.currentVibroType = undefined;
+                    } else {
+                        vibroType._states_.selected(true);
+                        $application.equipment.currentVibroType = vibroType;
+                    }
+                } else {
+                    vibroType._states_.selected(false);
+                }
+            });
+        }
+    };
+
 
     $scope.addPylonType = function () {
         $modals.show({
@@ -927,6 +1027,41 @@ misc.controller("EquipmentController", ["$log", "$scope", "$misc", "$application
             showFog: true,
             closeButton: false,
             template: "templates/equipment/delete-anchor-type.html"
+        });
+    };
+
+    $scope.addVibroType = function () {
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Новый тип виброгасителя",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/new-vibro-type.html"
+        });
+    };
+
+    $scope.editVibroType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Редактирование типа виброгасителя",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/edit-vibro-type.html"
+        });
+    };
+
+    $scope.deleteVibroType = function (event) {
+        event.stopPropagation();
+        $modals.show({
+            width: 400,
+            position: "center",
+            caption: "Удаление типа виброгасителя",
+            showFog: true,
+            closeButton: false,
+            template: "templates/equipment/delete-vibro-type.html"
         });
     };
 }]);
@@ -1616,6 +1751,114 @@ misc.controller("DeleteAnchorTypeModalController", ["$log", "$scope", "$misc", "
         if (data !== undefined && JSON.parse(data) === "success") {
             $misc.anchorTypes.delete("id", $application.equipment.currentAnchorType.id.value);
             $application.equipment.currentAnchorType = undefined;
+            $modals.close();
+        }
+    };
+}]);
+
+
+
+
+
+
+/**
+ * AddVibroTypeModalController
+ * Контроллер модального окна добавления типа виброгасителя
+ */
+misc.controller("AddVibroTypeModalController", ["$log", "$scope", "$misc", "$factory", "$modals", function ($log, $scope, $misc, $factory, $modals) {
+    $scope.misc = $misc;
+    $scope.newVibroType = $factory({ classes: ["VibroType", "Model", "Backup", "States"], base_class: "VibroType" });
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($scope.newVibroType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа виброгасителя");
+        if ($scope.errors.length === 0 ) {
+            $misc.addVibroType($scope.newVibroType, $scope.onSuccessAddVibroType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+        $scope.newVibroType._model_.reset();
+        $scope.errors.splice(0, $scope.errors.length);
+    };
+
+    $scope.onSuccessAddVibroType = function (data) {
+        if (data !== undefined) {
+            var tempVibroType = $factory({ classes: ["VibroType", "Model", "Backup", "States"], base_class: "VibroType" });
+            tempVibroType._model_.fromJSON(data);
+            tempVibroType._backup_.setup();
+            $misc.vibroTypes.append(tempVibroType);
+            $scope.newVibroType._model_.reset();
+            $modals.close();
+        }
+    };
+}]);
+
+
+
+
+
+/**
+ * EditVibroTypeModalController
+ * Контроллер модального окна редактирования типа виброгасителя
+ */
+misc.controller("EditVibroTypeModalController", ["$log", "$scope", "$misc", "$modals", "$factory", "$application", function ($log, $scope, $misc, $modals, $factory, $application) {
+    $scope.misc = $misc;
+    $scope.app = $application;
+    $scope.errors = [];
+
+    $scope.validate = function () {
+        $scope.errors.splice(0, $scope.errors.length);
+        if ($application.equipment.currentVibroType.title.value === "")
+            $scope.errors.push("Вы не указали наименование типа виброгасителя");
+        if ($scope.errors.length === 0) {
+            $misc.editVibroType($application.equipment.currentVibroType, $scope.onSuccessEditVibroType);
+        }
+    };
+
+    $scope.cancel = function () {
+        $application.equipment.currentVibroType._backup_.restore();
+        $application.equipment.currentVibroType._states_.changed(false);
+        $scope.errors.splice(0, $scope.errors. length);
+        $modals.close();
+    };
+
+    $scope.onSuccessEditVibroType = function (data) {
+        if (data !== undefined) {
+            $application.equipment.currentVibroType._backup_.setup();
+            $application.equipment.currentVibroType._states_.changed(false);
+            $modals.close();
+        }
+    };
+
+}]);
+
+
+
+
+
+/**
+ * DeleteVibroTypeModalController
+ * Контроллер модального окна удаления типа виброгасителя
+ */
+misc.controller("DeleteVibroTypeModalController", ["$log", "$scope", "$misc", "$application", "$modals", function ($log, $scope, $misc, $application, $modals) {
+    $scope.app = $application;
+
+    $scope.delete = function () {
+        $misc.deleteVibroType($application.equipment.currentVibroType.id.value, $scope.onSuccessDeleteVibroType);
+    };
+
+    $scope.cancel = function () {
+        $modals.close();
+    };
+
+    $scope.onSuccessDeleteVibroType = function (data) {
+        if (data !== undefined && JSON.parse(data) === "success") {
+            $misc.vibroTypes.delete("id", $application.equipment.currentVibroType.id.value);
+            $application.equipment.currentVibroType = undefined;
             $modals.close();
         }
     };

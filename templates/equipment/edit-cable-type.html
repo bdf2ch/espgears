@@ -10,6 +10,17 @@
                ng-change="app.equipment.currentCableType._states_.changed(true)"
                ng-model="app.equipment.currentCableType.title.value"/>
     </div>
+    <div class="row height-100 padding-10">
+        <label for="cable-capacity">Емкость кабеля</label>
+        <input type="text"
+               name="cable-capacity"
+               id="cable-capacity"
+               class="width-100"
+               placeholder="Емкость кабеля"
+               ng-disabled="app.equipment.currentCableType._states_.loading() === true"
+               ng-change="app.equipment.currentCableType._states_.changed(true)"
+               ng-model="app.equipment.currentCableType.capacity.value"/>
+    </div>
     <div class="row padding-10">
         <div class="width-50">
             <button class="button green square width-100"

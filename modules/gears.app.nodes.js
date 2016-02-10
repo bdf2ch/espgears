@@ -106,6 +106,7 @@ var nodes = angular.module("gears.app.nodes", [])
                     id: new Field({ source: "ID", value: 0, default_value: 0, type: "integer", backupable: true }),
                     nodeTypeId: new Field({ source: "OBJECT_TYPE_ID", value: 0, default_value: 0, type: "integer", backupable: true }),
                     unionTypeId: new Field({ source: "UNION_TYPE_ID", value: 0, default_value: 0, type: "integer", backupable: true }),
+                    number: new Field({ source: "UNION_NUMBER", value: "", default_value: "", type: "string", backupable: true }),
                     nodeId: new Field({ source: "BASE_NODE_ID", value: 0, default_value: 0, type: "integer", backupable: true })
                 }
             };
