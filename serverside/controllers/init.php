@@ -178,8 +178,8 @@
         }
         $result -> titleContractors = $titleContractors;
 
-        /* ��������� ������ ���� ����� */
-        if (!$statement = oci_parse($connection, "begin PKG_POWER_LINES.P_GET_POWER_LINES(:power_lines); end;")) {
+        /* Получение списка линий */
+        if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_POWER_LINES(:power_lines); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -353,8 +353,9 @@
         }
         $result -> userPermissions = $user_permissions;
 
-        /* ��������� ������ ���� ����� ������������ */
-        if (!$statement = oci_parse($connection, "begin pkg_contractor_types.p_get_contractor_types(:contractor_types); end;")) {
+
+        /* Получение типов контрагентов */
+        if (!$statement = oci_parse($connection, "begin PKG_CONTRACTORS.P_GET_CONTRACTOR_TYPES(:contractor_types); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -380,6 +381,7 @@
             }
         }
         $result -> contractorTypes = $contractorTypes;
+
 
         /* ��������� ������ ���� ������������ */
         if (!$statement = oci_parse($connection, "begin pkg_contractors.p_get_contractors(:contractors); end;")) {

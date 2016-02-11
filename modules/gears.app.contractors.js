@@ -21,10 +21,10 @@ var contractors = angular.module("gears.app.contractors", [])
                  * Набор свойств, описывающих контрагента
                  */
                 Contractor: {
-                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
-                    contractorTypeId: new Field({ source: "CONTRACTOR_TYPE_ID", value: 1, default_value: 1, backupable: true, required: true }),
-                    title: new Field({ source: "NAME", value: "", default_value: "", backupable: true, required: true }),
-                    fullTitle: new Field({ source: "FULL_NAME", value: "", default_value: "", backupable: true })
+                    id: new Field({ source: "ID", value: 0, default_value: 0, type: "integer" }),
+                    contractorTypeId: new Field({ source: "CONTRACTOR_TYPE_ID", value: 1, default_value: 1, type: "integer", backupable: true, required: true }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", backupable: true, type: "string", required: true }),
+                    fullTitle: new Field({ source: "FULL_TITLE", value: "", default_value: "", type: "string", backupable: true })
                 },
 
                 /**
@@ -32,8 +32,8 @@ var contractors = angular.module("gears.app.contractors", [])
                  * Набор свойст, описывающих тип контрагента
                  */
                 ContractorType: {
-                    id: new Field({ source: "ID", value: 0, default_value: 0 }),
-                    title: new Field({ source: "NAME", value: "", default_value: "", backupable: true, required: true })
+                    id: new Field({ source: "ID", value: 0, default_value: 0, type: "integer" }),
+                    title: new Field({ source: "TITLE", value: "", default_value: "", type: "string", backupable: true, required: true })
                 }
             };
 
@@ -219,7 +219,7 @@ var contractors = angular.module("gears.app.contractors", [])
                         action: "editContractor",
                         data: {
                             contractorId: contractor.id.value,
-                            contractorTypeId: contractor.id.value,
+                            contractorTypeId: contractor.contractorTypeId.value,
                             title: contractor.title.value,
                             fullTitle: contractor.fullTitle.value
                         }

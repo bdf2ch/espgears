@@ -106,7 +106,7 @@
         $title = $postdata -> data -> title;
         $result = array();
 
-        if (!$statement = oci_parse($connection, "begin pkg_contractor_types.p_insert_contractor_type(:title, :new_type); end;")) {
+        if (!$statement = oci_parse($connection, "begin PKG_CONTRACTORS.P_ADD_CONTRACTOR_TYPE(:title, :new_type); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -155,7 +155,7 @@
         $title = $postdata -> data -> title;
         $result = array();
 
-        if (!$statement = oci_parse($connection, "begin pkg_contractor_types.p_edit_contractor_type(:type_id, :title, :edited_type ); end;")) {
+        if (!$statement = oci_parse($connection, "begin PKG_CONTRACTORS.P_EDIT_CONTRACTOR_TYPE(:type_id, :title, :edited_type ); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -206,7 +206,7 @@
         $typeId = $postdata -> data -> typeId;
         $moment = 0;
 
-        if (!$statement = oci_parse($connection, "begin pkg_contractor_types.p_delete_contractor_type(:type_id, :moment); end;")) {
+        if (!$statement = oci_parse($connection, "begin PKG_CONTRACTORS.P_DELETE_CONTRACTOR_TYPE(:type_id, :moment); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));
@@ -290,7 +290,7 @@
         $fullTitle = $postdata -> data -> fullTitle;
         $result = array();
 
-        if (!$statement = oci_parse($connection, "begin pkg_contractors.p_insert_contractor(:type_id, :title, :full_title, :new_contractor); end;")) {
+        if (!$statement = oci_parse($connection, "begin pkg_contractors.p_add_contractor(:type_id, :title, :full_title, :new_contractor); end;")) {
             $error = oci_error();
             $result = new DBError($error["code"], $error["message"]);
             echo(json_encode($result));

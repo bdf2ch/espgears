@@ -85,7 +85,7 @@ function get_power_lines () {
     $cursor = oci_new_cursor($connection);
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin PKG_POWER_LINES.P_GET_POWER_LINES(:power_lines); end;")) {
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_GET_POWER_LINES(:power_lines); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -130,7 +130,7 @@ function add_power_line ($postdata) {
     $voltage = $postdata -> data -> voltage;
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin pkg_power_lines.p_insert_power_line(:title, :voltage, :new_line ); end;")) {
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_ADD_POWER_LINE(:title, :voltage, :new_line ); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
@@ -173,7 +173,7 @@ function add_power_line ($postdata) {
 
 
 
-/* �������������� ����� */
+/* Изменение линии */
 function edit_power_line ($postdata) {
     global $connection;
     $cursor = oci_new_cursor($connection);
@@ -182,7 +182,7 @@ function edit_power_line ($postdata) {
     $voltage = $postdata -> data -> voltage;
     $result = array();
 
-    if (!$statement = oci_parse($connection, "begin pkg_power_lines.p_edit_power_line(:power_line_id, :title, :voltage, :edited_power_line ); end;")) {
+    if (!$statement = oci_parse($connection, "begin PKG_MISC.P_EDIT_POWER_LINE(:power_line_id, :title, :voltage, :edited_power_line ); end;")) {
         $error = oci_error();
         $result = new DBError($error["code"], $error["message"]);
         echo(json_encode($result));
